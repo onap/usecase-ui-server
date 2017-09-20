@@ -23,11 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * 
- * @author xuekui
- *
- */
+
 @Entity
 @Table(name="alarms_commoneventheader")
 public class AlarmsHeader implements Serializable{
@@ -103,7 +99,7 @@ public class AlarmsHeader implements Serializable{
 	private String alarmInterfaceA;
 	
 	@Column(name = "status")
-	private int status;
+	private String status;
 	
 	@Column(name = "createTime")
 	private Date createTime;
@@ -295,11 +291,11 @@ public class AlarmsHeader implements Serializable{
 		this.alarmInterfaceA = alarmInterfaceA;
 	}
 
-	public int getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

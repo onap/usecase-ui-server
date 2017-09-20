@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service;
 
 import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.util.Page;
 
 
 public interface AlarmsInformationService {
@@ -24,4 +25,7 @@ public interface AlarmsInformationService {
     
     String updateAlarmsInformation(AlarmsInformation alarmsInformation);
     
+    int getAllCount();
+    
+    Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation,int currentPage,int pageSize);
 }

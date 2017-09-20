@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service;
 
 import org.onap.usecaseui.server.bean.PerformanceInformation;
+import org.onap.usecaseui.server.util.Page;
 
 
 public interface PerformanceInformationService {
@@ -24,4 +25,7 @@ public interface PerformanceInformationService {
     
     String updatePerformanceInformation(PerformanceInformation performanceInformation);
     
+    int getAllCount();
+    
+    Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation,int currentPage,int pageSize);
 }

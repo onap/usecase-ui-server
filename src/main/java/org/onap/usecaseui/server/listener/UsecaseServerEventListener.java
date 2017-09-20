@@ -22,14 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 
-/**
- * <一句话功能简述>
- * <功能详细描述>
- * @author  donghu
- * @version  [版本号, 2017年8月17日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
- */
+
 public class UsecaseServerEventListener implements ApplicationListener<ApplicationReadyEvent>
 {
     private static final Logger logger = LoggerFactory.getLogger(UsecaseServerEventListener.class);

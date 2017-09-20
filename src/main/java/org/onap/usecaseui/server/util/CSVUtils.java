@@ -19,14 +19,13 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.aspectj.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.List;
+
 
 public class CSVUtils {
     //CSV文件分隔符
@@ -40,6 +39,23 @@ public class CSVUtils {
      * @param filePath 创建的csv文件路径
      * **/
     public static void writeCsv(String[] headers,List<String[]> data,String filePath) {
+        try{
+            CSVFormat formator = CSVFormat.DEFAULT.withHeader(headers);
+            String dir = filePath.substring(0,filePath.lastIndexOf('/'));
+            File file = new File(dir);
+            if (!file.exists())
+                 file.mkdirs();
+            try(Writer writer = new FileWriter(filePath);
+                CSVPrinter printer = new CSVPrinter(writer,formator)){
+                for(String[] str : data){
+                    printer.printRecord(str);
+                }
+            }
+
+            logger.info("CSV File Generate Success,FilePath:"+filePath);
+        }catch (IOException e){
+            logger.error("CSV File Generate Failure:"+e.getMessage());
+        }
     }
 
     /**读取csv文件

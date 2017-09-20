@@ -16,13 +16,18 @@
 package org.onap.usecaseui.server.service.impl;
 
 
+import java.util.Date;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
+import org.onap.usecaseui.server.util.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +45,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
     @Autowired
     private SessionFactory sessionFactory;
 
+
 	@Override
 	public String savePerformanceInformation(PerformanceInformation performanceInformation) {
 		 try {
@@ -55,11 +61,12 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	            session.close();
 	            return "1";
 	        } catch (Exception e) {
-	            logger.error("Exception occurred while performing PerformanceInformationServiceImpl performanceInformation. Details:" + e.getMessage());
+	            logger.error("Exception occurred while performing PerformanceInformationServiceImpl savePerformanceInformation. Details:" + e.getMessage());
 	            return "0";
 	        }
 	        
 	}
+
 
 	@Override
 	public String updatePerformanceInformation(PerformanceInformation performanceInformation) {
@@ -76,8 +83,73 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             session.close();
             return "1";
         } catch (Exception e) {
-            logger.error("Exception occurred while performing PerformanceInformationServiceImpl performanceInformation. Details:" + e.getMessage());
+            logger.error("Exception occurred while performing PerformanceInformationServiceImpl updatePerformanceInformation. Details:" + e.getMessage());
             return "0";
+        }
+	}
+
+
+	public int getAllCount() {
+		try{
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();     
+            long q=(long)session.createQuery("select count(*) from PerformanceInformation").uniqueResult();
+            tx.commit();
+            session.flush();
+            session.close();
+            return (int)q;
+        } catch (Exception e) {
+            logger.error("Exception occurred while performing PerformanceInformationServiceImpl getAllCount. Details:" + e.getMessage());
+            return 0;
+        }
+	}
+
+	@SuppressWarnings("unchecked")	
+	@Override
+	public Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation,
+			int currentPage, int pageSize) {
+		Page<PerformanceInformation> page = new Page<PerformanceInformation>();
+		int allRow =this.getAllCount();
+		int offset = page.countOffset(currentPage, pageSize);
+		
+		try{
+			StringBuffer hql =new StringBuffer("from PerformanceInformation a where 1=1");
+            if (null == performanceInformation) {
+                logger.error("AlarmsInformationServiceImpl queryPerformanceInformation performanceInformation is null!");
+            }else if(null!=performanceInformation.getName()) {
+            	String ver=performanceInformation.getName();
+            	hql.append(" and a.name like '%"+ver+"%'");
+            }else if(null!=performanceInformation.getValue()) {
+            	String ver=performanceInformation.getValue();
+            	hql.append(" and a.value like '%"+ver+"%'");
+            }else if(null!=performanceInformation.getEventId()) {
+            	String ver=performanceInformation.getEventId();
+            	hql.append(" and a.eventId like '%"+ver+"%'");
+            }else if(null!=performanceInformation.getCreateTime()) {
+            	Date ver =performanceInformation.getCreateTime();
+            	hql.append(" and a.createTime like '%"+ver+"%'");
+            }else if(null!=performanceInformation.getUpdateTime()) {
+            	Date ver =performanceInformation.getUpdateTime();
+            	hql.append(" and a.updateTime like '%"+ver+"%'");
+            }
+            logger.info("PerformanceInformationServiceImpl queryPerformanceInformation: performanceInformation={}", performanceInformation);
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction(); 
+            Query query = session.createQuery(hql.toString());
+            query.setFirstResult(offset);
+            query.setMaxResults(pageSize);
+            List<PerformanceInformation> list= query.list();
+            page.setPageNo(currentPage);
+            page.setPageSize(pageSize);
+            page.setTotalRecords(allRow);
+            page.setList(list);
+            tx.commit();
+            session.flush();
+            session.close();
+            return page;
+        } catch (Exception e) {
+            logger.error("Exception occurred while performing PerformanceInformationServiceImpl queryPerformanceInformation. Details:" + e.getMessage());
+            return null;
         }
 	}
 

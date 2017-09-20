@@ -15,136 +15,90 @@
  */
 package org.onap.usecaseui.server.bean;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * <活跃告警管理>
- * @author donghu
- * @version [版本号, 2017年8月17日]
- * @see [相关类/方法]
- * @since [产品/模块版本]
- */
+
 @Entity
 @Table(name = "EP_ACTIVE_ALARM")
-public class ActiveAlarmInfo implements Serializable
+public class ActiveAlarmInfo 
 {
-	/**
-	 * 主键
-	 */
+
 	@Id
 	@Column(name = "id", nullable = true)
 	private String id;
 
-    /**
-	 * 设备名称
-	 */
+
 	@Column(name = "devName")
 	private String devName;
 	
-	/**
-     * 设备IP
-     */
+
     @Column(name = "devIp")
     private String devIp;
     
-    /**
-     * 设备序列号
-     */
+
     @Column(name = "serialNumber")
     private String serialNumber;
     
-	/**
-     * 告警产生时间
-     */
+
 	@Column(name = "alarmRaisedTime")
 	private String alarmRaisedTime;
 	
-    /**
-     * 告警更新时间
-     */
+
     @Column(name = "alarmChangedTime")
     private String alarmChangedTime;
 
-	/**
-     * 告警序列号
-     */
+
 	@Column(name = "alarmIdentifier")
 	private String alarmIdentifier;
 	
-	/**
-     * 通知类型
-     */
+
     @Column(name = "notificationType")
     private String notificationType;
 
-	/**
-     * 告警对象实例
-     */
+
 	@Column(name = "managedObjectInstance")
 	private String managedObjectInstance;
 
-	/**
-     * 告警类型
-     */
+
 	@Column(name = "eventType")
 	private Integer eventType;
 
-	 /**
-     * 告警可能原因
-     */
+
 	@Column(name = "probableCause")
 	private String probableCause;
 
-	/**
-     * 告警描述
-     */
+
     @Column(name = "specificProblem")
     private String specificProblem;
 
-	/**
-     * 告警级别
-     */
+
 	@Column(name = "perceivedSeverity")
 	private String perceivedSeverity;
 
-	/**
-     * 告警附加文本
-     */
+
 	@Column(name = "additionalText")
 	private String additionalText;
 
-	/**
-     * 告警附加信息
-     */
+
 	@Column(name = "additionalInformation")
 	private String additionalInformation;
 	
-	/**
-     * 告警清除类型
-     */
+
     @Column(name = "clearedManner")
     private String clearedManner;
 	
-    /**
-     * 告警状态
-     */
+
 	@Column(name = "alarmState")
 	private Integer alarmState;
 	
-    /**
-	 * 确认时间
-	 */
+
 	@Column(name = "ackTime")
 	private String ackTime;
 	
-	/**
-	 * 确认人
-	 */
+
 	@Column(name = "ackUser")
     private String ackUser;
 	

@@ -17,14 +17,6 @@ package org.onap.usecaseui.server.service;
 
 import org.onap.usecaseui.server.bean.ActiveAlarmInfo;
 
-/**
- * <一句话功能简述>
- * <功能详细描述>
- * @author  donghu
- * @version  [版本号, 2017年8月17日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
- */
 public interface AlarmService
 {
     String hello();
