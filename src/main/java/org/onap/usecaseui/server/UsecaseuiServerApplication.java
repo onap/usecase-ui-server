@@ -22,7 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "org.openecomp.usecaseui.server")
+@ComponentScan(basePackages = "org.onap.usecaseui.server")
 public class UsecaseuiServerApplication {
 
     @Bean

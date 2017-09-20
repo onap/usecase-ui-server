@@ -15,9 +15,9 @@
  */
 package org.onap.usecaseui.server.service;
 
-import java.util.List;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
+import org.onap.usecaseui.server.util.Page;
 
 public interface AlarmsHeaderService {
     
@@ -25,6 +25,8 @@ public interface AlarmsHeaderService {
     
     String updateAlarmsHeader(AlarmsHeader alarmsHeader);
     
-    List<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader);
+    int getAllCount();
+    
+    Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader,int currentPage,int pageSize);
     
 }

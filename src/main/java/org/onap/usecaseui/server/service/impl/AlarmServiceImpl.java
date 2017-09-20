@@ -30,14 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
-/**
- * <告警接口实现类>
- * <功能详细描述>
- * @author  donghu
- * @version  [版本号, 2017年8月17日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
- */
+
 @Service("AlarmService")
 @Transactional
 @org.springframework.context.annotation.Configuration
@@ -54,13 +47,7 @@ public class AlarmServiceImpl implements AlarmService
         return "Hello";
     }
 
-    /**
-     * <保存活跃告警信息>
-     * <功能详细描述>
-     * @param acAlarmInfo 活跃告警对象
-     * @return 对象id
-     * @see [类、类#方法、类#成员]
-     */
+
     @Transactional
     public String saveActiveAlarmInfo(ActiveAlarmInfo acAlarmInfo)
     {

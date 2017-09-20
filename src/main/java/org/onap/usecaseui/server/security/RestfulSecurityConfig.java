@@ -24,14 +24,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-/**
- * <一句话功能简述>
- * <功能详细描述>
- * @author  donghu
- * @version  [版本号, 2017年8月21日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
- */
+
 //@Configuration
 //@EnableWebSecurity
 public class RestfulSecurityConfig extends WebSecurityConfigurerAdapter

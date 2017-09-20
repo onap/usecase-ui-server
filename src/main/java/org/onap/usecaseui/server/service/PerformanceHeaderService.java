@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service;
 
 import org.onap.usecaseui.server.bean.PerformanceHeader;
+import org.onap.usecaseui.server.util.Page;
 
 
 public interface PerformanceHeaderService {
@@ -24,4 +25,7 @@ public interface PerformanceHeaderService {
     
     String updatePerformanceHeader(PerformanceHeader performanceHeder);
     
+    int getAllCount();
+    
+    Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder,int currentPage,int pageSize);
 }
