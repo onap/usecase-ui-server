@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.exception;
 
+
 public class ErrorCodeException extends Exception
 {
     private static final long serialVersionUID = 3220072444842529499L;

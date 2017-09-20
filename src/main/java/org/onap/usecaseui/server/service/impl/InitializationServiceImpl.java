@@ -23,14 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
-/**
- * <系统初始化>
- * <功能详细描述>
- * @author  donghu
- * @version  [版本号, 2017年8月17日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
- */
+
 @Service("InitializationService")
 @Transactional
 @org.springframework.context.annotation.Configuration

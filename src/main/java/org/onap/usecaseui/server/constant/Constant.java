@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.constant;
 
+
 public final class Constant
 {
     

@@ -16,13 +16,18 @@
 package org.onap.usecaseui.server.service.impl;
 
 
+import java.util.Date;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
+import org.onap.usecaseui.server.util.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +51,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	            if (null == alarmsInformation) {
 	                logger.error("alarmsInformation AlarmsInformation alarmsInformation is null!");
 	            }
-	            logger.info("AlarmsHeaderServiceImpl saveAlarmsInformation: alarmsInformation={}", alarmsInformation);
+	            logger.info("AlarmsInformationServiceImpl saveAlarmsInformation: alarmsInformation={}", alarmsInformation);
 	            Session session = sessionFactory.openSession();
 	            Transaction tx = session.beginTransaction();     
 	            session.save(alarmsInformation);
@@ -67,7 +72,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
             if (null == alarmsInformation) {
                 logger.error("alarmsInformation AlarmsInformation alarmsInformation is null!");
             }
-            logger.info("AlarmsHeaderServiceImpl saveAlarmsInformation: alarmsInformation={}", alarmsInformation);
+            logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}", alarmsInformation);
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();     
             session.update(alarmsInformation);
@@ -76,8 +81,73 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
             session.close();
             return "1";
         } catch (Exception e) {
-            logger.error("Exception occurred while performing AlarmsInformationServiceImpl saveAlarmsInformation. Details:" + e.getMessage());
+            logger.error("Exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
             return "0";
+        }
+	}
+	
+
+	public int getAllCount() {
+		try{
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction();     
+            long q=(long)session.createQuery("select count(*) from AlarmsInformation").uniqueResult();
+            tx.commit();
+            session.flush();
+            session.close();
+            return (int)q;
+        } catch (Exception e) {
+            logger.error("Exception occurred while performing AlarmsInformationServiceImpl getAllCount. Details:" + e.getMessage());
+            return 0;
+        }
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation, int currentPage,
+			int pageSize) {
+		Page<AlarmsInformation> page = new Page<AlarmsInformation>();
+		int allRow =this.getAllCount();
+		int offset = page.countOffset(currentPage, pageSize);
+		
+		try{
+			StringBuffer hql =new StringBuffer("from AlarmsInformation a where 1=1");
+            if (null == alarmsInformation) {
+                logger.error("AlarmsInformationServiceImpl queryAlarmsInformation alarmsInformation is null!");
+            }else if(null!=alarmsInformation.getName()) {
+            	String ver=alarmsInformation.getName();
+            	hql.append(" and a.name like '%"+ver+"%'");
+            }else if(null!=alarmsInformation.getValue()) {
+            	String ver=alarmsInformation.getValue();
+            	hql.append(" and a.value like '%"+ver+"%'");
+            }else if(null!=alarmsInformation.getEventId()) {
+            	String ver=alarmsInformation.getEventId();
+            	hql.append(" and a.eventId like '%"+ver+"%'");
+            }else if(null!=alarmsInformation.getCreateTime()) {
+            	Date ver =alarmsInformation.getCreateTime();
+            	hql.append(" and a.createTime like '%"+ver+"%'");
+            }else if(null!=alarmsInformation.getUpdateTime()) {
+            	Date ver =alarmsInformation.getUpdateTime();
+            	hql.append(" and a.updateTime like '%"+ver+"%'");
+            }
+            logger.info("AlarmsInformationServiceImpl queryAlarmsInformation: alarmsInformation={}", alarmsInformation);
+            Session session = sessionFactory.openSession();
+            Transaction tx = session.beginTransaction(); 
+            Query query = session.createQuery(hql.toString());
+            query.setFirstResult(offset);
+            query.setMaxResults(pageSize);
+            List<AlarmsInformation> list= query.list();
+            page.setPageNo(currentPage);
+            page.setPageSize(pageSize);
+            page.setTotalRecords(allRow);
+            page.setList(list);
+            tx.commit();
+            session.flush();
+            session.close();
+            return page;
+        } catch (Exception e) {
+            logger.error("Exception occurred while performing AlarmsInformationServiceImpl queryAlarmsInformation. Details:" + e.getMessage());
+            return null;
         }
 	}
 

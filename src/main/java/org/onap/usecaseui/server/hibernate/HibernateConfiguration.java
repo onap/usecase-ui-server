@@ -25,14 +25,7 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-/**
- * <Hibernate配置>
- * <功能详细描述>
- * @author  donghu
- * @version  [版本号, 2017年8月17日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
- */
+
 @org.springframework.context.annotation.Configuration
 public class HibernateConfiguration
 {
@@ -45,7 +38,7 @@ public class HibernateConfiguration
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setHibernateProperties(hibernateProperties());
-        sessionFactory.setPackagesToScan(new String[] {"org.openecomp.usecaseui.server.bean"});
+        sessionFactory.setPackagesToScan(new String[] {"org.onap.usecaseui.server.bean"});
         return sessionFactory;
     }
 
