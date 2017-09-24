@@ -15,26 +15,35 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplate;
+import com.google.common.io.Files;
+import okhttp3.ResponseBody;
+import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
+import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
+import org.onap.usecaseui.server.bean.lcm.TemplateInput;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
 import org.onap.usecaseui.server.util.RestfulServices;
+import org.openecomp.sdc.toscaparser.api.ToscaTemplate;
+import org.openecomp.sdc.toscaparser.api.common.JToscaException;
+import org.openecomp.sdc.toscaparser.api.parameters.Input;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.CATEGORY_E2E_SERVICE;
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.DISTRIBUTION_STATUS_DISTRIBUTED;
 
 @Service("ServiceTemplateService")
-@Transactional
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
 public class DefaultServiceTemplateService implements ServiceTemplateService {
@@ -43,19 +52,21 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
 
     private SDCCatalogService sdcCatalog;
 
+    private AAIService aaiService;
+
     public DefaultServiceTemplateService() {
-        this(RestfulServices.create(SDCCatalogService.class));
+        this(RestfulServices.create(SDCCatalogService.class), RestfulServices.create(AAIService.class));
     }
 
-    public DefaultServiceTemplateService(SDCCatalogService sdcCatalog) {
+    public DefaultServiceTemplateService(SDCCatalogService sdcCatalog, AAIService aaiService) {
         this.sdcCatalog = sdcCatalog;
+        this.aaiService = aaiService;
     }
 
     @Override
-    public List<ServiceTemplate> listDistributedServiceTemplate() {
+    public List<SDCServiceTemplate> listDistributedServiceTemplate() {
         try {
-            List<SDCServiceTemplate> serviceTemplate = this.sdcCatalog.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
-            return translate(serviceTemplate);
+            return this.sdcCatalog.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
         } catch (IOException e) {
             logger.error("Visit SDC Catalog occur exception");
             logger.info("SDC Catalog Exception: ", e);
@@ -63,7 +74,49 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         }
     }
 
-    private List<ServiceTemplate> translate(List<SDCServiceTemplate> serviceTemplate) {
-        return null;
+    @Override
+    public ServiceTemplateInputRsp fetchServiceTemplateInput(String uuid, String toscaModelPath) {
+        String rootPath = "http://localhost";// get from msb
+        String templateUrl = String.format("%s/%s", rootPath, toscaModelPath);
+
+        String toPath = String.format("temp/%s.csar", uuid);
+        try {
+            downloadFile(templateUrl, toPath);
+            ServiceTemplateInput serviceTemplateInput = extractInputs(toPath);
+            List<VimInfo> vimInfos = aaiService.listVimInfo().execute().body();
+            return new ServiceTemplateInputRsp(serviceTemplateInput, vimInfos);
+        }  catch (IOException e) {
+            throw new SDCCatalogException("download csar file failed!", e);
+        } catch (JToscaException e) {
+            throw new SDCCatalogException("parse csar file failed!", e);
+        }
+    }
+
+    private void downloadFile(String templateUrl, String toPath) throws IOException {
+        try {
+            ResponseBody body = sdcCatalog.downloadCsar(templateUrl).execute().body();
+            Files.write(body.bytes(),new File(toPath));
+        } catch (IOException e) {
+            logger.error(String.format("Download %s failed!", templateUrl));
+            throw e;
+        }
+    }
+
+    private ServiceTemplateInput extractInputs(String toPath) throws JToscaException {
+        ToscaTemplate tosca = new ToscaTemplate(toPath,null,true,null,true);
+        String name = tosca.getMetaData().getValue("name");
+        String type = tosca.getMetaData().getValue("type");
+        List<TemplateInput> templateInputs = new ArrayList<>();
+        for(Input input : tosca.getInputs()) {
+            templateInputs.add(new TemplateInput(
+                    input.getName(),
+                    input.getType(),
+                    input.getDescription(),
+                    String.valueOf(input.isRequired()),
+                    String.valueOf(input.getDefault())
+            ));
+
+        }
+        return new ServiceTemplateInput(name, type, templateInputs);
     }
 }

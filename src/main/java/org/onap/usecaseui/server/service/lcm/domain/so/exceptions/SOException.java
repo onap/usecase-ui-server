@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.lcm;
+package org.onap.usecaseui.server.service.lcm.domain.so.exceptions;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+public class SOException extends RuntimeException {
 
-import java.util.List;
-
-public interface ServiceTemplateService {
-
-    List<SDCServiceTemplate> listDistributedServiceTemplate();
-
-    ServiceTemplateInputRsp fetchServiceTemplateInput(String uuid, String toscaModelPath);
+    public SOException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

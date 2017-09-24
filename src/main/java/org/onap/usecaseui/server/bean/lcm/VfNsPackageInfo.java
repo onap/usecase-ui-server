@@ -13,31 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.lcm.domain.sdc;
+package org.onap.usecaseui.server.bean.lcm;
 
-import okhttp3.ResponseBody;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Headers;
-import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 import java.util.List;
 
-public interface SDCCatalogService {
+public class VfNsPackageInfo {
 
-    @GET("sdc/v1/catalog/services")
-    Call<List<SDCServiceTemplate>> listServices(@Query("category")String category, @Query("distributionStatus") String distributionStatus);
+    private List<SDCServiceTemplate> nsPackage;
 
-    @Headers({
-            "X-ECOMP-InstanceID: 777",
-            "Authorization: what?"
-    })
-    @GET
-    Call<ResponseBody> downloadCsar(@Url String fileUrl);
+    private List<Vnf> vnfPackages;
 
-    @GET("sdc/v1/catalog/resources")
-    Call<List<Vnf>> listResources(@Query("resourceType") String resourceType, @Query("distributionStatus") String distributionStatus);
+    private List<VimInfo> vimInfos;
+
+    public VfNsPackageInfo(List<SDCServiceTemplate> nsPackage, List<Vnf> vnfPackages, List<VimInfo> vimInfos) {
+        this.nsPackage = nsPackage;
+        this.vnfPackages = vnfPackages;
+        this.vimInfos = vimInfos;
+    }
+
+    public List<SDCServiceTemplate> getNsPackage() {
+        return nsPackage;
+    }
+
+    public List<Vnf> getVnfPackages() {
+        return vnfPackages;
+    }
+
+    public List<VimInfo> getVimInfos() {
+        return vimInfos;
+    }
 }

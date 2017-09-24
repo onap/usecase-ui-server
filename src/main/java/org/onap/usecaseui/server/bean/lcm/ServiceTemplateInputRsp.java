@@ -13,16 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.lcm;
+package org.onap.usecaseui.server.bean.lcm;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 
 import java.util.List;
 
-public interface ServiceTemplateService {
+public class ServiceTemplateInputRsp {
 
-    List<SDCServiceTemplate> listDistributedServiceTemplate();
+    private ServiceTemplateInput serviceTemplateInput;
 
-    ServiceTemplateInputRsp fetchServiceTemplateInput(String uuid, String toscaModelPath);
+    private List<VimInfo> vimInfos;
+
+    public ServiceTemplateInputRsp(ServiceTemplateInput serviceTemplateInput, List<VimInfo> vimInfos) {
+        this.serviceTemplateInput = serviceTemplateInput;
+        this.vimInfos = vimInfos;
+    }
+
+    public ServiceTemplateInput getServiceTemplateInput() {
+        return serviceTemplateInput;
+    }
+
+    public List<VimInfo> getVimInfos() {
+        return vimInfos;
+    }
 }

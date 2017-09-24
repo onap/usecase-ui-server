@@ -13,16 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.lcm;
-
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+package org.onap.usecaseui.server.bean.lcm;
 
 import java.util.List;
 
-public interface ServiceTemplateService {
+public class ServiceTemplateInput {
 
-    List<SDCServiceTemplate> listDistributedServiceTemplate();
+    private String name;
 
-    ServiceTemplateInputRsp fetchServiceTemplateInput(String uuid, String toscaModelPath);
+    private String type;
+
+    private List<TemplateInput> inputs;
+
+    public ServiceTemplateInput(String name, String type, List<TemplateInput> inputs) {
+        this.name = name;
+        this.type = type;
+        this.inputs = inputs;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public List<TemplateInput> getInputs() {
+        return inputs;
+    }
 }

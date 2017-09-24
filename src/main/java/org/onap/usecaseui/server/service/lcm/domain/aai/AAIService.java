@@ -17,6 +17,7 @@ package org.onap.usecaseui.server.service.lcm.domain.aai;
 
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -41,4 +42,12 @@ public interface AAIService {
     })
     @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<List<ServiceInstance>> listServiceInstances(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: QUFJOkFBSQ=="
+    })
+    @GET("/cloud-infrastructure/cloud-regions")
+    Call<List<VimInfo>> listVimInfo();
 }

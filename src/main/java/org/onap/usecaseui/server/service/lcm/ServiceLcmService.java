@@ -15,14 +15,15 @@
  */
 package org.onap.usecaseui.server.service.lcm;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceInstantiationRequest;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 
-import java.util.List;
+public interface ServiceLcmService {
 
-public interface ServiceTemplateService {
+    ServiceOperation instantiateService(ServiceInstantiationRequest request);
 
-    List<SDCServiceTemplate> listDistributedServiceTemplate();
+    OperationProgressInformation queryOperationProgress(String serviceId, String operationId);
 
-    ServiceTemplateInputRsp fetchServiceTemplateInput(String uuid, String toscaModelPath);
+    ServiceOperation terminateService(String serviceId);
 }

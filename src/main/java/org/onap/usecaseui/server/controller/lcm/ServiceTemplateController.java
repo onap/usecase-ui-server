@@ -15,18 +15,16 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplate;
+import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -41,9 +39,13 @@ public class ServiceTemplateController {
 
     @ResponseBody
     @RequestMapping(value = {"/lcm/service-templates"}, method = RequestMethod.GET , produces = "application/json")
-    public List<ServiceTemplate> getServiceTemplates(HttpServletRequest request){
+    public List<SDCServiceTemplate> getServiceTemplates(){
         return serviceTemplateService.listDistributedServiceTemplate();
     }
 
-
+    @ResponseBody
+    @RequestMapping(value = {"/lcm/service-templates/service-template/{uuid}"}, method = RequestMethod.GET , produces = "application/json")
+    public ServiceTemplateInputRsp getServiceTemplateInput(@PathVariable("uuid") String uuid, @RequestParam("toscaModelPath") String toscaModelPath){
+        return serviceTemplateService.fetchServiceTemplateInput(uuid, toscaModelPath);
+    }
 }

@@ -15,14 +15,9 @@
  */
 package org.onap.usecaseui.server.service.lcm;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 
-import java.util.List;
+public interface PackageDistributionService {
 
-public interface ServiceTemplateService {
-
-    List<SDCServiceTemplate> listDistributedServiceTemplate();
-
-    ServiceTemplateInputRsp fetchServiceTemplateInput(String uuid, String toscaModelPath);
+    VfNsPackageInfo retrievePackageInfo();
 }
