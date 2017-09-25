@@ -21,16 +21,16 @@ import java.util.List;
 
 public class ServiceTemplateInputRsp {
 
-    private ServiceTemplateInput serviceTemplateInput;
+    private List<ServiceTemplateInput> serviceTemplateInput;
 
     private List<VimInfo> vimInfos;
 
-    public ServiceTemplateInputRsp(ServiceTemplateInput serviceTemplateInput, List<VimInfo> vimInfos) {
+    public ServiceTemplateInputRsp(List<ServiceTemplateInput> serviceTemplateInput, List<VimInfo> vimInfos) {
         this.serviceTemplateInput = serviceTemplateInput;
         this.vimInfos = vimInfos;
     }
 
-    public ServiceTemplateInput getServiceTemplateInput() {
+    public List<ServiceTemplateInput> getServiceTemplateInput() {
         return serviceTemplateInput;
     }
 

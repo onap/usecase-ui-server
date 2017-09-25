@@ -19,25 +19,37 @@ import okhttp3.ResponseBody;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
 import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Headers;
-import retrofit2.http.Query;
-import retrofit2.http.Url;
+import retrofit2.http.*;
 
 import java.util.List;
 
 public interface SDCCatalogService {
 
+    @Headers({
+            "X-ECOMP-InstanceID: 777",
+            "authorization :  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
+    })
     @GET("sdc/v1/catalog/services")
     Call<List<SDCServiceTemplate>> listServices(@Query("category")String category, @Query("distributionStatus") String distributionStatus);
 
     @Headers({
             "X-ECOMP-InstanceID: 777",
-            "Authorization: what?"
+            "authorization :  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
+    })
+    @GET("sdc/v1/catalog/services/{uuid}/metadata")
+    Call<SDCServiceTemplate> getService(@Path("uuid") String uuid);
+
+    @Headers({
+            "X-ECOMP-InstanceID: 777",
+            "authorization :  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
     })
     @GET
     Call<ResponseBody> downloadCsar(@Url String fileUrl);
 
+    @Headers({
+            "X-ECOMP-InstanceID: 777",
+            "authorization :  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
+    })
     @GET("sdc/v1/catalog/resources")
     Call<List<Vnf>> listResources(@Query("resourceType") String resourceType, @Query("distributionStatus") String distributionStatus);
 }

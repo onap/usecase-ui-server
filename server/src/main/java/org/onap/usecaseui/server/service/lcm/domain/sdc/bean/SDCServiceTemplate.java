@@ -17,5 +17,41 @@ package org.onap.usecaseui.server.service.lcm.domain.sdc.bean;
 
 public class SDCServiceTemplate {
 
+    private String uuid;
 
+    private String invariantUUID;
+
+    private String name;
+
+    private String toscaModelURL;
+
+    private String category;
+
+    public SDCServiceTemplate(String uuid, String invariantUUID, String name, String toscaModelURL, String category) {
+        this.uuid = uuid;
+        this.invariantUUID = invariantUUID;
+        this.name = name;
+        this.toscaModelURL = toscaModelURL;
+        this.category = category;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getInvariantUUID() {
+        return invariantUUID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getToscaModelURL() {
+        return toscaModelURL;
+    }
+
+    public String getCategory() {
+        return category;
+    }
 }

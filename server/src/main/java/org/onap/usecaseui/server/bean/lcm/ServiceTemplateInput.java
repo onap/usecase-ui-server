@@ -19,16 +19,47 @@ import java.util.List;
 
 public class ServiceTemplateInput {
 
+    private String invariantUUID;
+
+    private String uuid;
+
     private String name;
 
     private String type;
 
+    private String description;
+
+    private String category;
+
+    private String subcategory;
+
     private List<TemplateInput> inputs;
 
-    public ServiceTemplateInput(String name, String type, List<TemplateInput> inputs) {
+    public ServiceTemplateInput(
+            String invariantUUID,
+            String uuid,
+            String name,
+            String type,
+            String description,
+            String category,
+            String subcategory,
+            List<TemplateInput> inputs) {
+        this.invariantUUID = invariantUUID;
+        this.uuid = uuid;
         this.name = name;
         this.type = type;
+        this.description = description;
+        this.category = category;
+        this.subcategory = subcategory;
         this.inputs = inputs;
+    }
+
+    public String getInvariantUUID() {
+        return invariantUUID;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 
     public String getName() {
@@ -37,6 +68,18 @@ public class ServiceTemplateInput {
 
     public String getType() {
         return type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getSubcategory() {
+        return subcategory;
     }
 
     public List<TemplateInput> getInputs() {

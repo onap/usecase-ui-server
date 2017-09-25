@@ -27,6 +27,7 @@ import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
 import org.onap.usecaseui.server.util.RestfulServices;
+import org.openecomp.sdc.toscaparser.api.NodeTemplate;
 import org.openecomp.sdc.toscaparser.api.ToscaTemplate;
 import org.openecomp.sdc.toscaparser.api.common.JToscaException;
 import org.openecomp.sdc.toscaparser.api.parameters.Input;
@@ -82,9 +83,10 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         String toPath = String.format("temp/%s.csar", uuid);
         try {
             downloadFile(templateUrl, toPath);
-            ServiceTemplateInput serviceTemplateInput = extractInputs(toPath);
-            List<VimInfo> vimInfos = aaiService.listVimInfo().execute().body();
-            return new ServiceTemplateInputRsp(serviceTemplateInput, vimInfos);
+            List<ServiceTemplateInput> serviceTemplateInputs = new ArrayList<>();
+            serviceTemplateInputs = extractInputs(toPath, serviceTemplateInputs);
+            List<VimInfo> vimInfo = aaiService.listVimInfo().execute().body();
+            return new ServiceTemplateInputRsp(serviceTemplateInputs, vimInfo);
         }  catch (IOException e) {
             throw new SDCCatalogException("download csar file failed!", e);
         } catch (JToscaException e) {
@@ -102,10 +104,35 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         }
     }
 
-    private ServiceTemplateInput extractInputs(String toPath) throws JToscaException {
+    private List<ServiceTemplateInput> extractInputs(String toPath, List<ServiceTemplateInput> serviceTemplateInputs) throws JToscaException, IOException {
         ToscaTemplate tosca = new ToscaTemplate(toPath,null,true,null,true);
+        ServiceTemplateInput serviceTemplateInput = fetchServiceTemplateInput(tosca);
+        serviceTemplateInputs.add(serviceTemplateInput);
+        for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
+            String nodeUUID = nodeTemplate.getMetaData().getValue("UUID");
+            SDCServiceTemplate template = sdcCatalog.getService(nodeUUID).execute().body();
+            String toscaModelURL = template.getToscaModelURL();
+            if (toscaModelURL == null) {
+                continue;
+            }
+            String savePath = String.format("temp/%s.csar", nodeUUID);
+            downloadFile(toscaModelURL, savePath);
+            extractInputs(savePath, serviceTemplateInputs);
+        }
+        return serviceTemplateInputs;
+    }
+
+    private static ServiceTemplateInput fetchServiceTemplateInput(ToscaTemplate tosca) {
+        String invariantUUID = tosca.getMetaData().getValue("invariantUUID");
+        String uuid = tosca.getMetaData().getValue("UUID");
         String name = tosca.getMetaData().getValue("name");
         String type = tosca.getMetaData().getValue("type");
+        String description = tosca.getMetaData().getValue("description");
+        String category = tosca.getMetaData().getValue("category");
+        String subcategory = tosca.getMetaData().getValue("subcategory");
+        if(subcategory == null) {
+            subcategory = "";
+        }
         List<TemplateInput> templateInputs = new ArrayList<>();
         for(Input input : tosca.getInputs()) {
             templateInputs.add(new TemplateInput(
@@ -115,8 +142,15 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
                     String.valueOf(input.isRequired()),
                     String.valueOf(input.getDefault())
             ));
-
         }
-        return new ServiceTemplateInput(name, type, templateInputs);
+        return new ServiceTemplateInput(
+                invariantUUID,
+                uuid,
+                name,
+                type,
+                description,
+                category,
+                subcategory,
+                templateInputs);
     }
 }
