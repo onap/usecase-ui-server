@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.lcm;
+package org.onap.usecaseui.server.service.lcm.domain.vfc.beans;
 
-import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
-import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
-import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
-import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
-import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
+public class JobStatus {
 
-public interface PackageDistributionService {
+    private String jobId;
 
-    VfNsPackageInfo retrievePackageInfo();
+    private ResponseDescriptor responseDescriptor;
 
-    DistributionResult postNsPackage(Csar csar);
+    public String getJobId() {
+        return jobId;
+    }
 
-    Job postVfPackage(Csar csar);
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
 
-    JobStatus getJobStatus(String jobId);
+    public ResponseDescriptor getResponseDescriptor() {
+        return responseDescriptor;
+    }
+
+    public void setResponseDescriptor(ResponseDescriptor responseDescriptor) {
+        this.responseDescriptor = responseDescriptor;
+    }
 }

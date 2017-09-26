@@ -17,13 +17,15 @@ package org.onap.usecaseui.server.controller.lcm;
 
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -41,5 +43,23 @@ public class PackageDistributionController {
     @RequestMapping(value = {"/lcm/vf-ns-packages"}, method = RequestMethod.GET , produces = "application/json")
     public VfNsPackageInfo instantiateService(){
         return packageDistributionService.retrievePackageInfo();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/lcm/ns-packages"}, method = RequestMethod.POST , produces = "application/json")
+    public DistributionResult distributeNsPackage(@RequestBody Csar csar){
+        return packageDistributionService.postNsPackage(csar);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/lcm/vf-packages"}, method = RequestMethod.POST , produces = "application/json")
+    public Job distributeVfPackage(@RequestBody Csar csar){
+        return packageDistributionService.postVfPackage(csar);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/lcm/jobs/{jobId}"}, method = RequestMethod.POST , produces = "application/json")
+    public JobStatus getJobStatus(@PathVariable(value="jobId") String jobId){
+        return packageDistributionService.getJobStatus(jobId);
     }
 }

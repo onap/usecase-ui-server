@@ -23,7 +23,12 @@ import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
-import org.onap.usecaseui.server.util.RestfulServices;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcService;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.exceptions.VfcException;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +36,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.*;
+import static org.onap.usecaseui.server.util.RestfulServices.create;
 
 @Service("PackageDistributionService")
 @org.springframework.context.annotation.Configuration
@@ -41,13 +47,16 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
     private AAIService aaiService;
 
+    private VfcService vfcService;
+
     public DefaultPackageDistributionService() {
-        this(RestfulServices.create(SDCCatalogService.class), RestfulServices.create(AAIService.class));
+        this(create(SDCCatalogService.class), create(AAIService.class), create(VfcService.class));
     }
 
-    public DefaultPackageDistributionService(SDCCatalogService sdcCatalogService, AAIService aaiService) {
+    public DefaultPackageDistributionService(SDCCatalogService sdcCatalogService, AAIService aaiService, VfcService vfcService) {
         this.sdcCatalogService = sdcCatalogService;
         this.aaiService = aaiService;
+        this.vfcService = vfcService;
     }
 
     @Override
@@ -59,6 +68,33 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             return new VfNsPackageInfo(nsTemplate, vnfs, vim);
         } catch (IOException e) {
             throw new SDCCatalogException("SDC Service is not available!", e);
+        }
+    }
+
+    @Override
+    public DistributionResult postNsPackage(Csar csar) {
+        try {
+            return vfcService.distributeNsPackage(csar).execute().body();
+        } catch (IOException e) {
+            throw new VfcException("VFC service is not available!", e);
+        }
+    }
+
+    @Override
+    public Job postVfPackage(Csar csar) {
+        try {
+            return vfcService.distributeVnfPackage(csar).execute().body();
+        } catch (IOException e) {
+            throw new VfcException("VFC service is not available!", e);
+        }
+    }
+
+    @Override
+    public JobStatus getJobStatus(String jobId) {
+        try {
+            return vfcService.getJobStatus(jobId).execute().body();
+        } catch (IOException e) {
+            throw new VfcException("VFC service is not available!", e);
         }
     }
 }

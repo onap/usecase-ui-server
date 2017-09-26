@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.lcm;
+package org.onap.usecaseui.server.service.lcm.domain.vfc;
 
-import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
-public interface PackageDistributionService {
+public interface VfcService {
 
-    VfNsPackageInfo retrievePackageInfo();
+    @POST("/nspackages")
+    Call<DistributionResult> distributeNsPackage(@Body Csar csar);
 
-    DistributionResult postNsPackage(Csar csar);
+    @POST("/vnfpackages")
+    Call<Job> distributeVnfPackage(@Body Csar csar);
 
-    Job postVfPackage(Csar csar);
-
-    JobStatus getJobStatus(String jobId);
+    @GET("/jobs/{jobId}")
+    Call<JobStatus> getJobStatus(@Path("jobId") String jobId);
 }
