@@ -5,8 +5,14 @@ MAINTAINER "Lu Ji" <lu.ji3@zte.com.cn>
 EXPOSE 8082
 EXPOSE 3306
 
-#install openjdk-1.8
-#RUN sed -i 's#http://archive.ubuntu.com#http://mirrors.163.com#g' /etc/apt/sources.list
+ARG HTTP_PROXY=${HTTP_PROXY}
+ARG HTTPS_PROXY=${HTTPS_PROXY}
+
+ENV http_proxy $HTTP_PROXY
+ENV https_proxy $HTTPS_PROXY
+
+RUN echo "mysql-server mysql-server/root_password password root" | debconf-set-selections
+RUN echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections
 
 RUN apt-get update && \
     apt-get install -y openjdk-8-jdk && \
