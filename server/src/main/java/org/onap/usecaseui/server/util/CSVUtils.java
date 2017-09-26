@@ -28,16 +28,9 @@ import java.util.List;
 
 
 public class CSVUtils {
-    //CSV文件分隔符
-    private final static String NEW_LINE_SEPARATOR="\n";
+
     private static Logger logger = LoggerFactory.getLogger(CSVUtils.class);
 
-
-    /**写入csv文件
-     * @param headers 列头
-     * @param data 数据内容
-     * @param filePath 创建的csv文件路径
-     * **/
     public static void writeCsv(String[] headers,List<String[]> data,String filePath) {
         try{
             CSVFormat formator = CSVFormat.DEFAULT.withHeader(headers);
@@ -58,11 +51,12 @@ public class CSVUtils {
         }
     }
 
-    /**读取csv文件
-     * @param filePath 文件路径
-     * @param headers csv列头
-     * @return CSVRecord 列表
-     * @throws IOException **/
+
+    public static boolean wCsv(){
+
+        return false;
+    }
+
     public static List<CSVRecord> readCSV(String filePath, String[] headers) throws IOException{
         //创建CSVFormat
         CSVFormat formator = CSVFormat.DEFAULT.withHeader(headers);
