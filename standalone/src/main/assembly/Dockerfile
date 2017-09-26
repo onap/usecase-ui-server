@@ -36,6 +36,11 @@ ENV JRE_HOME ${JAVA_HOME}/jre
 RUN mkdir /home/uui
 WORKDIR /home/uui
 ADD usecase-ui-server-*-linux64.tar.gz /home/uui/
+
+#init db
+RUN chmod 755 /home/uui/resources/bin/*.sh
+RUN /home/uui/resources/bin/initDB.sh
+
 RUN chmod 755 /home/uui/bin/*.sh
 
 ENTRYPOINT /home/uui/bin/run.sh
