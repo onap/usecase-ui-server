@@ -15,6 +15,9 @@
  */
 package org.onap.usecaseui.server.service;
 
+import java.util.List;
+
+import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.util.Page;
 
@@ -27,5 +30,7 @@ public interface PerformanceHeaderService {
     
     int getAllCount();
     
-    Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder,int currentPage,int pageSize);
+    Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder, int currentPage, int pageSize);
+    
+    List<PerformanceHeader> queryId(String[] id);
 }

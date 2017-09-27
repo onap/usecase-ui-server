@@ -23,10 +23,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
+/**
+ * 
+ * @author xuekui
+ *
+ */
 @Entity
 @Table(name="alarms_commoneventheader")
-public class PerformanceHeader implements Serializable{
+public class PerformanceHeader implements Serializable {
 	
 	@Column(name = "version")
 	private String version;
@@ -85,6 +89,33 @@ public class PerformanceHeader implements Serializable{
 	
 	@Column(name = "updateTime")
 	private Date updateTime;
+
+	public PerformanceHeader() {
+	}
+
+
+
+	public PerformanceHeader(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String sequence, String measurementsForVfScalingVersion, String measurementInterval, Date createTime, Date updateTime) {
+		this.version = version;
+		this.eventName = eventName;
+		this.domain = domain;
+		this.eventId = eventId;
+		this.eventType = eventType;
+		this.nfcNamingCode = nfcNamingCode;
+		this.nfNamingCode = nfNamingCode;
+		this.sourceId = sourceId;
+		this.sourceName = sourceName;
+		this.reportingEntityId = reportingEntityId;
+		this.reportingEntityName = reportingEntityName;
+		this.priority = priority;
+		this.startEpochMicrosec = startEpochMicrosec;
+		this.lastEpochMicroSec = lastEpochMicroSec;
+		this.sequence = sequence;
+		this.measurementsForVfScalingVersion = measurementsForVfScalingVersion;
+		this.measurementInterval = measurementInterval;
+		this.createTime = createTime;
+		this.updateTime = updateTime;
+	}
 
 	public String getVersion() {
 		return version;

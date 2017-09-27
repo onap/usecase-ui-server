@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service.impl;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -90,9 +91,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	public int getAllCount() {
 		try{
             Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction();     
             long q=(long)session.createQuery("select count(*) from AlarmsInformation").uniqueResult();
-            tx.commit();
             session.flush();
             session.close();
             return (int)q;
@@ -122,17 +121,16 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
             	hql.append(" and a.value like '%"+ver+"%'");
             }else if(null!=alarmsInformation.getEventId()) {
             	String ver=alarmsInformation.getEventId();
-            	hql.append(" and a.eventId like '%"+ver+"%'");
+            	hql.append(" and a.eventId = '"+ver+"'");
             }else if(null!=alarmsInformation.getCreateTime()) {
             	Date ver =alarmsInformation.getCreateTime();
-            	hql.append(" and a.createTime like '%"+ver+"%'");
+            	hql.append(" and a.createTime > '%"+ver+"%'");
             }else if(null!=alarmsInformation.getUpdateTime()) {
             	Date ver =alarmsInformation.getUpdateTime();
             	hql.append(" and a.updateTime like '%"+ver+"%'");
             }
             logger.info("AlarmsInformationServiceImpl queryAlarmsInformation: alarmsInformation={}", alarmsInformation);
             Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction(); 
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
@@ -141,7 +139,6 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
             page.setPageSize(pageSize);
             page.setTotalRecords(allRow);
             page.setList(list);
-            tx.commit();
             session.flush();
             session.close();
             return page;
@@ -149,6 +146,24 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
             logger.error("Exception occurred while performing AlarmsInformationServiceImpl queryAlarmsInformation. Details:" + e.getMessage());
             return null;
         }
+	}
+
+	@Override
+	public List<AlarmsInformation> queryId(String[] id) {
+		try {
+			if(id.length==0) {
+				logger.error("AlarmsInformationServiceImpl queryId is null!");
+			}
+			List<AlarmsInformation> list = new ArrayList<AlarmsInformation>();
+			Session session = sessionFactory.openSession();
+			Query query = session.createQuery("from AlarmsInformation a where a.eventId IN (:alist)");
+			list = query.setParameterList("alist", id).list();
+			session.close();
+			return list;
+		} catch (Exception e) {
+			logger.error("Exception occurred while performing AlarmsInformationServiceImpl queryId. Details:" + e.getMessage());
+			return null;
+		}
 	}
 
     

@@ -15,6 +15,9 @@
  */
 package org.onap.usecaseui.server.service;
 
+import java.util.List;
+
+import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.util.Page;
 
@@ -27,5 +30,7 @@ public interface PerformanceInformationService {
     
     int getAllCount();
     
-    Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation,int currentPage,int pageSize);
+    Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation, int currentPage, int pageSize);
+    
+    List<PerformanceInformation> queryId(String[] id);
 }

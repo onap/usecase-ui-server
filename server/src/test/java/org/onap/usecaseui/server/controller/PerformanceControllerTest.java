@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service;
+package org.onap.usecaseui.server.controller;
 
-import org.onap.usecaseui.server.bean.ActiveAlarmInfo;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-public interface AlarmService
-{
-    String hello();
-    
-    String saveActiveAlarmInfo(ActiveAlarmInfo acAlarmInfo);
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class PerformanceControllerTest {
 }
