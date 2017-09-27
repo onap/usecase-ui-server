@@ -15,57 +15,38 @@
  */
 package org.onap.usecaseui.server;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.junit.Assert;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.service.AlarmsHeaderService;
-import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.service.impl.AlarmsHeaderServiceImpl;
-import org.onap.usecaseui.server.service.impl.AlarmsInformationServiceImpl;
-import org.onap.usecaseui.server.util.Page;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.text.ParseException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UsecaseuiServerApplicationTests {
-	
-//	@Autowired
-//	AlarmsInformationService info;
-	
-	@Autowired
-	AlarmsHeaderService alarm;
-	
+
+
+
+
 	@Test
-	public void contextLoads() throws ParseException {
-//		AlarmsInformation in= new AlarmsInformation();
-//		Date date =new Date();
-//		in.setName("name");
-//		in.setEventId("eventId");
-//		in.setValue("value");
-//		in.setCreateTime(date);
-//		in.setUpdateTime(date);
-//		String d=info.saveAlarmsInformation(in);
-//		String d=info.updateAlarmsInformation(in);
-		
-//		int c=alarm.getAllCount();
-		
-		AlarmsHeader a = new AlarmsHeader();
-//		a.setVersion("1");
-		a.setDomain("3");
-//		SimpleDateFormat e =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//		a.setCreateTime(e.parse("2017-09-03 15:25:11"));
-		Page<AlarmsHeader> b = alarm.queryAlarmsHeader(a, 1, 5);
-		String c =b.getList().get(0).getEventName();
-		System.out.println("============"+c);
-		Assert.assertEquals("2", c);
-		
+	public void contextLoads() throws JsonProcessingException, ParseException {
+		/*ObjectMapper objectMapper = new ObjectMapper();
+		AlarmsHeader alarmsHeader = new AlarmsHeader();
+		alarmsHeader.setAlarmCondition("send to my phone");
+		alarmsHeader.setAlarmInterfaceA("Baby have no fear");
+		alarmsHeader.setCreateTime(new Date());
+		alarmsHeader.setDomain("Hope they ready");
+		List<AlarmsHeader> alarmsHeaders = new ArrayList<>();
+		alarmsHeaders.add(alarmsHeader);
+		alarmsHeaders.add(alarmsHeader);
+		alarmsHeaders.add(alarmsHeader);
+		Map<String,Object> map = new HashMap<>();
+		map.put("alarms",alarmsHeaders);
+		map.put("asd",alarmsHeader);
+		String jsonStr = objectMapper.writeValueAsString(map);
+		System.out.println(jsonStr);*/
+		//System.out.println(alarmsInformationService.saveAlarmsInformation(new AlarmsInformation("11","22","123",new Date(),new Date())));
 	}
 }

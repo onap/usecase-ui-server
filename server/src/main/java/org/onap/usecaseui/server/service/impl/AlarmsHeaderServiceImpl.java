@@ -16,7 +16,7 @@
 package org.onap.usecaseui.server.service.impl;
 
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -110,7 +110,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		int offset = page.countOffset(currentPage, pageSize);
 		
 		try{
-			Date date = new Date();
+//			Date date = new Date();
 //			SimpleDateFormat date = new SimpleDateFormat("yy-MM-dd hh:mm:ss");
 			StringBuffer hql =new StringBuffer("from AlarmsHeader a where 1=1");
             if (null == alarmsHeader) {
@@ -189,14 +189,13 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             	hql.append(" and a.status like '%"+ver+"%'");
             }else if(null!=alarmsHeader.getCreateTime()) {
             	Date ver =alarmsHeader.getCreateTime();
-            	hql.append(" and a.createTime like '%"+ver+"%'");
+            	hql.append(" and a.createTime > '%"+ver+"%'");
             }else if(null!=alarmsHeader.getUpdateTime()) {
             	Date ver =alarmsHeader.getUpdateTime();
             	hql.append(" and a.updateTime like '%"+ver+"%'");
             }
             logger.info("AlarmsHeaderServiceImpl saveAlarmsHeader: alarmsHeader={}", alarmsHeader);
             Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction(); 
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
@@ -205,7 +204,6 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             page.setPageSize(pageSize);
             page.setTotalRecords(allRow);
             page.setList(list);
-            tx.commit();
             session.flush();
             session.close();
             return page;
@@ -213,6 +211,31 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             logger.error("Exception occurred while performing AlarmsHeaderServiceImpl queryAlarmsHeader. Details:" + e.getMessage());
             return null;
         }
+	}
+
+	
+	@Override
+	public List<AlarmsHeader> queryId(String[] id) {
+		try {
+			if(id.length==0) {
+				logger.error("AlarmsHeaderServiceImpl queryId is null!");
+			}
+			
+			AlarmsHeader alarm = new AlarmsHeader();
+			List<AlarmsHeader> list = new ArrayList<AlarmsHeader>();
+			Session session = sessionFactory.openSession();
+			for(String b:id) {
+				Query query = session.createQuery("from AlarmsHeader a where a.eventId =?0");
+				alarm=(AlarmsHeader) query.setParameter("0", b).uniqueResult();
+				list.add(alarm);
+			}
+			session.flush();
+			session.close();
+			return list;
+		} catch (Exception e) {
+			logger.error("Exception occurred while performing AlarmsHeaderServiceImpl queryId. Details:" + e.getMessage());
+			return null;
+		}
 	}
 
 	

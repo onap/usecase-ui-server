@@ -23,7 +23,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
+/**
+ * 
+ * @author xuekui
+ *
+ */
 @Entity
 @Table(name="alarms_commoneventheader")
 public class AlarmsHeader implements Serializable{
@@ -106,6 +110,42 @@ public class AlarmsHeader implements Serializable{
 	
 	@Column(name = "updateTime")
 	private Date updateTime;
+
+	public AlarmsHeader() {
+	}
+
+	public AlarmsHeader(String eventId) {
+		this.eventId = eventId;
+	}
+
+	public AlarmsHeader(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String sequence, String faultFieldsVersion, String eventServrity, String eventSourceType, String eventCategory, String alarmCondition, String specificProblem, String vfStatus, String alarmInterfaceA, String status, Date createTime, Date updateTime) {
+		this.version = version;
+		this.eventName = eventName;
+		this.domain = domain;
+		this.eventId = eventId;
+		this.eventType = eventType;
+		this.nfcNamingCode = nfcNamingCode;
+		this.nfNamingCode = nfNamingCode;
+		this.sourceId = sourceId;
+		this.sourceName = sourceName;
+		this.reportingEntityId = reportingEntityId;
+		this.reportingEntityName = reportingEntityName;
+		this.priority = priority;
+		this.startEpochMicrosec = startEpochMicrosec;
+		this.lastEpochMicroSec = lastEpochMicroSec;
+		this.sequence = sequence;
+		this.faultFieldsVersion = faultFieldsVersion;
+		this.eventServrity = eventServrity;
+		this.eventSourceType = eventSourceType;
+		this.eventCategory = eventCategory;
+		this.alarmCondition = alarmCondition;
+		this.specificProblem = specificProblem;
+		this.vfStatus = vfStatus;
+		this.alarmInterfaceA = alarmInterfaceA;
+		this.status = status;
+		this.createTime = createTime;
+		this.updateTime = updateTime;
+	}
 
 	public String getVersion() {
 		return version;

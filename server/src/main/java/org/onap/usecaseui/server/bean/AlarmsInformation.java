@@ -23,10 +23,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
+/**
+ * 
+ * @author xuekui
+ *
+ */
 @Entity
 @Table(name="alarms_additionalinformation")
-public class AlarmsInformation implements Serializable{
+public class AlarmsInformation implements Serializable {
 	
 	@Id
 	@Column(name = "name")
@@ -44,6 +48,21 @@ public class AlarmsInformation implements Serializable{
 	
 	@Column(name = "updateTime")
 	private Date updateTime;
+
+	public AlarmsInformation() {
+	}
+
+	public AlarmsInformation(String eventId) {
+		this.eventId = eventId;
+	}
+
+	public AlarmsInformation(String name, String value, String eventId, Date createTime, Date updateTime) {
+		this.name = name;
+		this.value = value;
+		this.eventId = eventId;
+		this.createTime = createTime;
+		this.updateTime = updateTime;
+	}
 
 	public String getName() {
 		return name;

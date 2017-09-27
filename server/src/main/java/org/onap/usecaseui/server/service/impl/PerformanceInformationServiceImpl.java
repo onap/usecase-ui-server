@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service.impl;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -92,9 +93,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	public int getAllCount() {
 		try{
             Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction();     
             long q=(long)session.createQuery("select count(*) from PerformanceInformation").uniqueResult();
-            tx.commit();
             session.flush();
             session.close();
             return (int)q;
@@ -127,14 +126,13 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             	hql.append(" and a.eventId like '%"+ver+"%'");
             }else if(null!=performanceInformation.getCreateTime()) {
             	Date ver =performanceInformation.getCreateTime();
-            	hql.append(" and a.createTime like '%"+ver+"%'");
+            	hql.append(" and a.createTime > '%"+ver+"%'");
             }else if(null!=performanceInformation.getUpdateTime()) {
             	Date ver =performanceInformation.getUpdateTime();
             	hql.append(" and a.updateTime like '%"+ver+"%'");
             }
             logger.info("PerformanceInformationServiceImpl queryPerformanceInformation: performanceInformation={}", performanceInformation);
             Session session = sessionFactory.openSession();
-            Transaction tx = session.beginTransaction(); 
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
@@ -143,7 +141,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             page.setPageSize(pageSize);
             page.setTotalRecords(allRow);
             page.setList(list);
-            tx.commit();
             session.flush();
             session.close();
             return page;
@@ -151,6 +148,30 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             logger.error("Exception occurred while performing PerformanceInformationServiceImpl queryPerformanceInformation. Details:" + e.getMessage());
             return null;
         }
+	}
+
+
+	@Override
+	public List<PerformanceInformation> queryId(String[] id) {
+		try {
+			if(id.length==0) {
+				logger.error("PerformanceInformationServiceImpl queryId is null!");
+			}
+			PerformanceInformation performance = new PerformanceInformation();
+			List<PerformanceInformation> list = new ArrayList<>();
+			Session session = sessionFactory.openSession();
+			Query query = session.createQuery("from PerformanceInformation a where a.eventId = ?0");
+			for(String b:id) {
+				performance=(PerformanceInformation) query.setParameter("0", b).uniqueResult();
+				list.add(performance);
+			}
+            session.flush();
+            session.close();
+			return list;
+		} catch (Exception e) {
+			logger.error("Exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
+			return null;
+		}
 	}
 
 
