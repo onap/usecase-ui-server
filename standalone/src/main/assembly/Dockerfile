@@ -39,7 +39,7 @@ ADD usecase-ui-server-*-linux64.tar.gz /home/uui/
 
 #init db
 RUN chmod 755 /home/uui/resources/bin/*.sh
-RUN /home/uui/resources/bin/initDB.sh
+RUN /home/uui/resources/bin/initDB.sh root root 3306 localhost
 
 RUN chmod 755 /home/uui/bin/*.sh
 
