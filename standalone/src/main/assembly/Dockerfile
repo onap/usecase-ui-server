@@ -43,5 +43,5 @@ ADD usecase-ui-server-*-linux64.tar.gz /home/uui/
 
 #RUN chmod 755 /home/uui/bin/*.sh
 
-ENTRYPOINT /home/uui/resources/bin/initDB.sh root root 3306 127.0.0.1
+#ENTRYPOINT /home/uui/resources/bin/initDB.sh root root 3306 127.0.0.1
 ENTRYPOINT /home/uui/bin/run.sh
