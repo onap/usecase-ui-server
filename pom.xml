@@ -199,6 +199,26 @@
             <artifactId>guava</artifactId>
             <version>23.0</version>
         </dependency>
+
+        <!-- UT coverage dependency start -->
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>1.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit-coverage</artifactId>
+            <version>1.19</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- UT coverage dependency end -->
     </dependencies>
 
     <build>
@@ -236,7 +256,16 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19</version>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <includes>
+                        <include>**/*Spec*</include>
+                        <include>**/Test*.java</include>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestCase.java</include>
+                        <include>**/Test*.scala</include>
+                        <include>**/*Test.scala</include>
+                        <include>**/*TestCase.scala</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
