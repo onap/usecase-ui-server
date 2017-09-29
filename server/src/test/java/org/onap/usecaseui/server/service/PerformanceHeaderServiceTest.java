@@ -38,7 +38,7 @@ public class PerformanceHeaderServiceTest {
     public void save() throws ParseException {
         PerformanceHeader p = new PerformanceHeader();
         p.setCreateTime(DateUtils.now());
-        p.setEventId("110");
+        p.setEventId("1101");
         p.setEventName("fxc");
         p.setDomain("asb");
         p.setCreateTime(DateUtils.now());
@@ -86,6 +86,25 @@ public class PerformanceHeaderServiceTest {
          p.setMeasurementsForVfScalingVersion("12");
         System.out.println(performanceHeaderService.updatePerformanceHeader(p));
     }
+
+    @Test
+    public void update1() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setCreateTime(DateUtils.now());
+        p.setEventId("110");
+        p.setEventName("fxc");
+        p.setDomain("asb");
+        p.setCreateTime(DateUtils.now());
+        p.setEventType("q");
+        p.setLastEpochMicroSec("csa");
+        p.setNfcNamingCode("std");
+        p.setNfNamingCode("cout");
+        p.setPriority("cs");
+        p.setReportingEntityId("112");
+        p.setMeasurementsForVfScalingVersion("12");
+        System.out.println(performanceHeaderService.updatePerformanceHeader(p));
+    }
+
 
     @Test
     public void get() throws ParseException {

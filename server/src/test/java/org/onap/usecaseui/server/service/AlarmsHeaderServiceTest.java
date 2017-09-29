@@ -38,7 +38,7 @@ public class AlarmsHeaderServiceTest {
         a.setEventName("a");
         a.setStatus("1");
         a.setVfStatus("1");
-        a.setEventId("1101");
+        a.setEventId("11011");
         a.setDomain("asb");
         a.setEventCategory("s");
         a.setAlarmCondition("ea");
@@ -64,6 +64,7 @@ public class AlarmsHeaderServiceTest {
         System.out.println(alarmsHeaderService.saveAlarmsHeader(a));
 
     }
+
     @Test
     public void update() throws ParseException {
         AlarmsHeader a = new AlarmsHeader();
@@ -89,6 +90,29 @@ public class AlarmsHeaderServiceTest {
         a.setSequence("cgg");
         a.setSourceId("123");
         a.setSourceName("eggs");
+        a.setSpecificProblem("especially");
+        a.setStartEpochMicrosec("wallet");
+        a.setUpdateTime(DateUtils.now());
+        a.setVersion("va2");
+        System.out.println(alarmsHeaderService.updateAlarmsHeader(a));
+    }
+
+
+    @Test
+    public void update1() throws ParseException {
+        AlarmsHeader a = new AlarmsHeader();
+        a.setEventName("a1");
+        a.setStatus("2");
+        a.setVfStatus("3");
+        a.setEventId("1101");
+        a.setDomain("asb");
+        a.setEventCategory("s");
+        a.setAlarmCondition("ea");
+        a.setAlarmInterfaceA("cs");
+        a.setCreateTime(DateUtils.now());
+        a.setEventServrity("s");
+        a.setEventSourceType("q");
+        a.setEventType("q");
         a.setSpecificProblem("especially");
         a.setStartEpochMicrosec("wallet");
         a.setUpdateTime(DateUtils.now());

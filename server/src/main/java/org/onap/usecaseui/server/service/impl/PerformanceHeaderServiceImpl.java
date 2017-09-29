@@ -63,7 +63,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	            session.close();
 	            return "1";
 	        } catch (Exception e) {
-	            logger.error("Exception occurred while performing PerformanceHeaderServiceImpl savePerformanceHeader. Details:" + e.getMessage());
+	            logger.error("exception occurred while performing PerformanceHeaderServiceImpl savePerformanceHeader. Details:" + e.getMessage());
 	            return "0";
 	        }
 	        
@@ -85,7 +85,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             session.close();
             return "1";
         } catch (Exception e) {
-            logger.error("Exception occurred while performing PerformanceHeaderServiceImpl updatePerformanceHeader. Details:" + e.getMessage());
+            logger.error("exception occurred while performing PerformanceHeaderServiceImpl updatePerformanceHeader. Details:" + e.getMessage());
             return "0";
         }
 	}
@@ -99,7 +99,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             session.close();
             return (int)q;
         } catch (Exception e) {
-            logger.error("Exception occurred while performing PerformanceHeaderServiceImpl getAllCount. Details:" + e.getMessage());
+            logger.error("exception occurred while performing PerformanceHeaderServiceImpl getAllCount. Details:" + e.getMessage());
             return 0;
         }
 	}
@@ -188,7 +188,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             session.close();
             return page;
         } catch (Exception e) {
-            logger.error("Exception occurred while performing PerformanceHeaderServiceImpl queryPerformanceHeader. Details:" + e.getMessage());
+            logger.error("exception occurred while performing PerformanceHeaderServiceImpl queryPerformanceHeader. Details:" + e.getMessage());
             return null;
         }
 	}
@@ -208,7 +208,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             session.close();
 			return list;
 		} catch (Exception e) {
-			logger.error("Exception occurred while performing PerformanceHeaderServiceImpl queryId. Details:" + e.getMessage());
+			logger.error("exception occurred while performing PerformanceHeaderServiceImpl queryId. Details:" + e.getMessage());
 			return null;
 		}
 	}

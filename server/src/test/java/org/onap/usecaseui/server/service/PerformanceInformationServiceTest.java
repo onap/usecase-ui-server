@@ -56,6 +56,15 @@ public class PerformanceInformationServiceTest {
     }
 
     @Test
+    public void update1() throws ParseException {
+        PerformanceInformation a = new PerformanceInformation();
+        a.setEventId("110");
+        a.setName("efw");
+        a.setValue("fko11");
+        System.out.println(performanceInformationService.updatePerformanceInformation(a));
+    }
+
+    @Test
     public void get() throws ParseException {
         performanceInformationService.queryId(new String[]{"110"})
                 .forEach(ai -> System.out.println(ai));

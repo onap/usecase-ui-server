@@ -36,7 +36,7 @@ public class AlarmsInformationServiceTest {
     @Test
     public void save() throws ParseException {
         AlarmsInformation a = new AlarmsInformation();
-        a.setEventId("110");
+        a.setEventId("111");
         a.setName("efw");
         a.setValue("fre");
         a.setCreateTime(DateUtils.now());
@@ -52,6 +52,14 @@ public class AlarmsInformationServiceTest {
         a.setValue("fko");
         a.setUpdateTime(DateUtils.now());
         a.setCreateTime(DateUtils.now());
+        System.out.println(alarmsInformationService.updateAlarmsInformation(a));
+    }
+
+    @Test
+    public void update1() throws ParseException {
+        AlarmsInformation a = new AlarmsInformation();
+        a.setEventId("110");
+        a.setValue("fko");
         System.out.println(alarmsInformationService.updateAlarmsInformation(a));
     }
 

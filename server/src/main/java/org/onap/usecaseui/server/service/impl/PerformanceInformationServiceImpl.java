@@ -62,7 +62,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	            session.close();
 	            return "1";
 	        } catch (Exception e) {
-	            logger.error("Exception occurred while performing PerformanceInformationServiceImpl savePerformanceInformation. Details:" + e.getMessage());
+	            logger.error("exception occurred while performing PerformanceInformationServiceImpl savePerformanceInformation. Details:" + e.getMessage());
 	            return "0";
 	        }
 	        
@@ -84,7 +84,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             session.close();
             return "1";
         } catch (Exception e) {
-            logger.error("Exception occurred while performing PerformanceInformationServiceImpl updatePerformanceInformation. Details:" + e.getMessage());
+            logger.error("exception occurred while performing PerformanceInformationServiceImpl updatePerformanceInformation. Details:" + e.getMessage());
             return "0";
         }
 	}
@@ -98,7 +98,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             session.close();
             return (int)q;
         } catch (Exception e) {
-            logger.error("Exception occurred while performing PerformanceInformationServiceImpl getAllCount. Details:" + e.getMessage());
+            logger.error("exception occurred while performing PerformanceInformationServiceImpl getAllCount. Details:" + e.getMessage());
             return 0;
         }
 	}
@@ -145,7 +145,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             session.close();
             return page;
         } catch (Exception e) {
-            logger.error("Exception occurred while performing PerformanceInformationServiceImpl queryPerformanceInformation. Details:" + e.getMessage());
+            logger.error("exception occurred while performing PerformanceInformationServiceImpl queryPerformanceInformation. Details:" + e.getMessage());
             return null;
         }
 	}
@@ -165,7 +165,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             session.close();
 			return list;
 		} catch (Exception e) {
-			logger.error("Exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
 			return null;
 		}
 	}

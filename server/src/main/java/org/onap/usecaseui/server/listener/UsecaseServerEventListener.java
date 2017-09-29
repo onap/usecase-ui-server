@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.listener;
 
-import org.onap.usecaseui.server.service.InitializationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +25,10 @@ import org.springframework.context.ApplicationListener;
 public class UsecaseServerEventListener implements ApplicationListener<ApplicationReadyEvent>
 {
     private static final Logger logger = LoggerFactory.getLogger(UsecaseServerEventListener.class);
-    
-    @Autowired
-    InitializationService initializationService;
-    
+
+
     public void onApplicationEvent(ApplicationReadyEvent arg0)
     {
-        initializationService.initialize();
     }
-    
+
 }
