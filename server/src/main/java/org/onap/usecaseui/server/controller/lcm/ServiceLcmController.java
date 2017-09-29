@@ -37,6 +37,10 @@ public class ServiceLcmController {
     @Resource(name="ServiceLcmService")
     private ServiceLcmService serviceLcmService;
 
+    public void setServiceLcmService(ServiceLcmService serviceLcmService) {
+        this.serviceLcmService = serviceLcmService;
+    }
+
     @ResponseBody
     @RequestMapping(value = {"/lcm/services"}, method = RequestMethod.POST , produces = "application/json")
     public ServiceOperation instantiateService(@RequestBody ServiceInstantiationRequest request){
@@ -45,7 +49,7 @@ public class ServiceLcmController {
 
     @ResponseBody
     @RequestMapping(value = {"/lcm/services/{serviceId}/operations/{operationId}"}, method = RequestMethod.GET , produces = "application/json")
-    public OperationProgressInformation instantiateService(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId){
+    public OperationProgressInformation queryOperationProgress(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId){
         return serviceLcmService.queryOperationProgress(serviceId, operationId);
     }
 

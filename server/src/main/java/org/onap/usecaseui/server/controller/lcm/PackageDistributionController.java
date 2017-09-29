@@ -39,9 +39,13 @@ public class PackageDistributionController {
     @Resource(name="PackageDistributionService")
     private PackageDistributionService packageDistributionService;
 
+    public void setPackageDistributionService(PackageDistributionService packageDistributionService) {
+        this.packageDistributionService = packageDistributionService;
+    }
+
     @ResponseBody
     @RequestMapping(value = {"/lcm/vf-ns-packages"}, method = RequestMethod.GET , produces = "application/json")
-    public VfNsPackageInfo instantiateService(){
+    public VfNsPackageInfo retrievePackageInfo(){
         return packageDistributionService.retrievePackageInfo();
     }
 

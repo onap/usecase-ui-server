@@ -37,6 +37,10 @@ public class ServiceTemplateController {
     @Resource(name="ServiceTemplateService")
     private ServiceTemplateService serviceTemplateService;
 
+    public void setServiceTemplateService(ServiceTemplateService serviceTemplateService) {
+        this.serviceTemplateService = serviceTemplateService;
+    }
+
     @ResponseBody
     @RequestMapping(value = {"/lcm/service-templates"}, method = RequestMethod.GET , produces = "application/json")
     public List<SDCServiceTemplate> getServiceTemplates(){

@@ -39,9 +39,13 @@ public class ServiceInstanceController {
     @Resource(name="ServiceInstanceService")
     private ServiceInstanceService serviceInstanceService;
 
+    public void setServiceInstanceService(ServiceInstanceService serviceInstanceService) {
+        this.serviceInstanceService = serviceInstanceService;
+    }
+
     @ResponseBody
     @RequestMapping(value = {"/lcm/service-instances"}, method = RequestMethod.GET , produces = "application/json")
-    public List<ServiceInstance> getCustomers(HttpServletRequest request){
+    public List<ServiceInstance> listServiceInstances(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
         logger.info(String.format(
