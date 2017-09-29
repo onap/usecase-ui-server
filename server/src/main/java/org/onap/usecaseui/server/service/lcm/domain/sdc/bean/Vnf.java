@@ -15,5 +15,53 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.sdc.bean;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Objects;
+
 public class Vnf {
+
+    private String uuid;
+
+    private String invariantUUID;
+
+    private String name;
+
+    @JsonCreator
+    public Vnf(
+            @JsonProperty String uuid,
+            @JsonProperty String invariantUUID,
+            @JsonProperty String name) {
+        this.uuid = uuid;
+        this.invariantUUID = invariantUUID;
+        this.name = name;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getInvariantUUID() {
+        return invariantUUID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vnf vnf = (Vnf) o;
+        return Objects.equals(uuid, vnf.uuid) &&
+                Objects.equals(invariantUUID, vnf.invariantUUID) &&
+                Objects.equals(name, vnf.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, invariantUUID, name);
+    }
 }

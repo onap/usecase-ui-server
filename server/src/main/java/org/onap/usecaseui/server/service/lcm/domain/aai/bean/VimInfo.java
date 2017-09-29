@@ -18,6 +18,8 @@ package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 public class VimInfo {
 
     private String cloudOwner;
@@ -40,5 +42,19 @@ public class VimInfo {
     @JsonProperty("cloud-region-id")
     public String getCloudRegionId() {
         return cloudRegionId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VimInfo vimInfo = (VimInfo) o;
+        return Objects.equals(cloudOwner, vimInfo.cloudOwner) &&
+                Objects.equals(cloudRegionId, vimInfo.cloudRegionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cloudOwner, cloudRegionId);
     }
 }

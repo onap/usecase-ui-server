@@ -20,6 +20,7 @@ import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
 
 import java.util.List;
+import java.util.Objects;
 
 public class VfNsPackageInfo {
 
@@ -45,5 +46,20 @@ public class VfNsPackageInfo {
 
     public List<VimInfo> getVimInfos() {
         return vimInfos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VfNsPackageInfo that = (VfNsPackageInfo) o;
+        return Objects.equals(nsPackage, that.nsPackage) &&
+                Objects.equals(vnfPackages, that.vnfPackages) &&
+                Objects.equals(vimInfos, that.vimInfos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nsPackage, vnfPackages, vimInfos);
     }
 }

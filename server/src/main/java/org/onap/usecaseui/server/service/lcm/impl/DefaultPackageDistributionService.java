@@ -63,9 +63,9 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     public VfNsPackageInfo retrievePackageInfo() {
         try {
             List<SDCServiceTemplate> nsTemplate = sdcCatalogService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
-            List<Vnf> vnfs = sdcCatalogService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
+            List<Vnf> vnf = sdcCatalogService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
             List<VimInfo> vim = aaiService.listVimInfo().execute().body();
-            return new VfNsPackageInfo(nsTemplate, vnfs, vim);
+            return new VfNsPackageInfo(nsTemplate, vnf, vim);
         } catch (IOException e) {
             throw new SDCCatalogException("SDC Service is not available!", e);
         }

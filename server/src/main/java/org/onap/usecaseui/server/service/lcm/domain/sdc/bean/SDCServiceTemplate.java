@@ -15,6 +15,11 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.sdc.bean;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Objects;
+
 public class SDCServiceTemplate {
 
     private String uuid;
@@ -27,7 +32,13 @@ public class SDCServiceTemplate {
 
     private String category;
 
-    public SDCServiceTemplate(String uuid, String invariantUUID, String name, String toscaModelURL, String category) {
+    @JsonCreator
+    public SDCServiceTemplate(
+            @JsonProperty String uuid,
+            @JsonProperty String invariantUUID,
+            @JsonProperty String name,
+            @JsonProperty String toscaModelURL,
+            @JsonProperty String category) {
         this.uuid = uuid;
         this.invariantUUID = invariantUUID;
         this.name = name;
@@ -53,5 +64,22 @@ public class SDCServiceTemplate {
 
     public String getCategory() {
         return category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SDCServiceTemplate that = (SDCServiceTemplate) o;
+        return Objects.equals(uuid, that.uuid) &&
+                Objects.equals(invariantUUID, that.invariantUUID) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(toscaModelURL, that.toscaModelURL) &&
+                Objects.equals(category, that.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, invariantUUID, name, toscaModelURL, category);
     }
 }
