@@ -15,6 +15,10 @@
  */
 package org.onap.usecaseui.server.bean.lcm;
 
+import com.google.common.base.MoreObjects;
+
+import java.util.Objects;
+
 public class TemplateInput {
 
     private String name;
@@ -53,5 +57,33 @@ public class TemplateInput {
 
     public String getDefaultValue() {
         return defaultValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TemplateInput that = (TemplateInput) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(isRequired, that.isRequired) &&
+                Objects.equals(defaultValue, that.defaultValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type, description, isRequired, defaultValue);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("type", type)
+                .add("description", description)
+                .add("isRequired", isRequired)
+                .add("defaultValue", defaultValue)
+                .toString();
     }
 }

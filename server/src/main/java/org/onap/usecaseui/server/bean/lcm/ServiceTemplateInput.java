@@ -15,7 +15,10 @@
  */
 package org.onap.usecaseui.server.bean.lcm;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.List;
+import java.util.Objects;
 
 public class ServiceTemplateInput {
 
@@ -84,5 +87,39 @@ public class ServiceTemplateInput {
 
     public List<TemplateInput> getInputs() {
         return inputs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServiceTemplateInput that = (ServiceTemplateInput) o;
+        return Objects.equals(invariantUUID, that.invariantUUID) &&
+                Objects.equals(uuid, that.uuid) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(category, that.category) &&
+                Objects.equals(subcategory, that.subcategory) &&
+                Objects.equals(inputs, that.inputs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(invariantUUID, uuid, name, type, description, category, subcategory, inputs);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("invariantUUID", invariantUUID)
+                .add("uuid", uuid)
+                .add("name", name)
+                .add("type", type)
+                .add("description", description)
+                .add("category", category)
+                .add("subcategory", subcategory)
+                .add("inputs", inputs)
+                .toString();
     }
 }

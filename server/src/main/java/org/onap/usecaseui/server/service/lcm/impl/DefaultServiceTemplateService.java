@@ -70,7 +70,6 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             return this.sdcCatalog.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
         } catch (IOException e) {
             logger.error("Visit SDC Catalog occur exception");
-            logger.info("SDC Catalog Exception: ", e);
             throw new SDCCatalogException("SDC Catalog is not available.", e);
         }
     }
@@ -94,7 +93,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         }
     }
 
-    private void downloadFile(String templateUrl, String toPath) throws IOException {
+    protected void downloadFile(String templateUrl, String toPath) throws IOException {
         try {
             ResponseBody body = sdcCatalog.downloadCsar(templateUrl).execute().body();
             Files.write(body.bytes(),new File(toPath));
@@ -105,7 +104,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     private List<ServiceTemplateInput> extractInputs(String toPath, List<ServiceTemplateInput> serviceTemplateInputs) throws JToscaException, IOException {
-        ToscaTemplate tosca = new ToscaTemplate(toPath,null,true,null,true);
+        ToscaTemplate tosca = translateToToscaTemplate(toPath);
         ServiceTemplateInput serviceTemplateInput = fetchServiceTemplateInput(tosca);
         serviceTemplateInputs.add(serviceTemplateInput);
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
@@ -120,6 +119,10 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             extractInputs(savePath, serviceTemplateInputs);
         }
         return serviceTemplateInputs;
+    }
+
+    protected ToscaTemplate translateToToscaTemplate(String toPath) throws JToscaException {
+        return new ToscaTemplate(toPath,null,true,null,true);
     }
 
     private static ServiceTemplateInput fetchServiceTemplateInput(ToscaTemplate tosca) {

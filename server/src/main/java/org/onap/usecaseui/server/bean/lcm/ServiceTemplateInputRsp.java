@@ -15,9 +15,11 @@
  */
 package org.onap.usecaseui.server.bean.lcm;
 
+import com.google.common.base.MoreObjects;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ServiceTemplateInputRsp {
 
@@ -36,5 +38,27 @@ public class ServiceTemplateInputRsp {
 
     public List<VimInfo> getVimInfos() {
         return vimInfos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServiceTemplateInputRsp that = (ServiceTemplateInputRsp) o;
+        return Objects.equals(serviceTemplateInput, that.serviceTemplateInput) &&
+                Objects.equals(vimInfos, that.vimInfos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serviceTemplateInput, vimInfos);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("serviceTemplateInput", serviceTemplateInput)
+                .add("vimInfos", vimInfos)
+                .toString();
     }
 }
