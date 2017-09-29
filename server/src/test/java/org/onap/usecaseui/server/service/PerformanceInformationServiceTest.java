@@ -36,7 +36,7 @@ public class PerformanceInformationServiceTest {
     @Test
     public void save() throws ParseException {
         PerformanceInformation a = new PerformanceInformation();
-        a.setEventId("110");
+        a.setEventId("112");
         a.setName("efw");
         a.setValue("fre");
         a.setCreateTime(DateUtils.now());
@@ -48,8 +48,8 @@ public class PerformanceInformationServiceTest {
     public void update() throws ParseException {
         PerformanceInformation a = new PerformanceInformation();
         a.setEventId("110");
-        a.setName("fw");
-        a.setValue("fko");
+        a.setName("efw");
+        a.setValue("fko11");
         a.setUpdateTime(DateUtils.now());
         a.setCreateTime(DateUtils.now());
         System.out.println(performanceInformationService.updatePerformanceInformation(a));
@@ -62,12 +62,36 @@ public class PerformanceInformationServiceTest {
     }
 
     @Test
-    public void query() throws ParseException {
+    public void queryEventId() throws ParseException {
         PerformanceInformation a = new PerformanceInformation();
         a.setEventId("110");
+        performanceInformationService.queryPerformanceInformation(a,1,100)
+                .getList().forEach( al -> System.out.println(al));
+    }
+    @Test
+    public void queryName() throws ParseException {
+        PerformanceInformation a = new PerformanceInformation();
         a.setName("kl");
-        a.setUpdateTime(DateUtils.now());
+        performanceInformationService.queryPerformanceInformation(a,1,100)
+                .getList().forEach( al -> System.out.println(al));
+    }
+    @Test
+    public void queryValue() throws ParseException {
+        PerformanceInformation a = new PerformanceInformation();
         a.setValue("yue");
+        performanceInformationService.queryPerformanceInformation(a,1,100)
+                .getList().forEach( al -> System.out.println(al));
+    }
+    @Test
+    public void queryUpdateTime() throws ParseException {
+        PerformanceInformation a = new PerformanceInformation();
+        a.setUpdateTime(DateUtils.now());
+        performanceInformationService.queryPerformanceInformation(a,1,100)
+                .getList().forEach( al -> System.out.println(al));
+    }
+    @Test
+    public void queryCreateTime() throws ParseException {
+        PerformanceInformation a = new PerformanceInformation();
         a.setCreateTime(DateUtils.now());
         performanceInformationService.queryPerformanceInformation(a,1,100)
                 .getList().forEach( al -> System.out.println(al));

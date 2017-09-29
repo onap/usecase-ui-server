@@ -27,6 +27,7 @@ import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.bo.AlarmBo;
+import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.CSVUtils;
@@ -70,17 +71,23 @@ public class AlarmController
         return new ModelAndView("index");
     }
 
-    @RequestMapping(value = {"/usecaseui-server/alarm/{currentPage}/{pageSize}","/usecaseui-server/alarm/{currentPage}/{pageSize}/{eventId}/{eventName}/{name}/{value}/{createTime}"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
+            "/alarm/{currentPage}/{pageSize}/{eventId}/{eventName}/{name}/{value}/{createTime}/{status}/{vfStatus}"},
+            method = RequestMethod.GET , produces = "application/json")
     public String getAlarmData(@PathVariable(required = false) String eventId,@PathVariable(required = false) String eventName,
                                @PathVariable(required = false) String name,@PathVariable(required = false) String value,
-                               @PathVariable(required = false) String createTime,@PathVariable int currentPage,
-                               @PathVariable int pageSize) {
+                               @PathVariable(required = false) String createTime,@PathVariable(required = false) String status,
+                               @PathVariable(required = false) String vfStatus,
+                               @PathVariable int currentPage, @PathVariable int pageSize) {
         List<AlarmsHeader> alarmsHeaders = null;
         List<AlarmBo> maps = new ArrayList<>();
-        if (null != eventId || null != eventName || null != name || null != value || null != createTime ){
+        if (null != eventId || null != eventName || null != name || null != value || null != createTime
+                || null != status || null != vfStatus  ){
             AlarmsHeader alarm = new AlarmsHeader();
             alarm.setEventId(!"null".equals(eventId)?eventId:null);
             alarm.setEventName(!"null".equals(eventName)?eventName:null);
+            alarm.setStatus(!"null".equals(status)?status:null);
+            alarm.setVfStatus(!"null".equals(vfStatus)?vfStatus:null);
             try {
                 alarm.setCreateTime(!"null".equals(createTime)?DateUtils.stringToDate(createTime):null);
             } catch (ParseException e) {
@@ -111,19 +118,18 @@ public class AlarmController
             }
         }
         try {
-            return new ObjectMapper().writeValueAsString(maps);
+            ObjectMapper ojm = new ObjectMapper();
+            ojm.setDateFormat(new SimpleDateFormat(Constant.DATE_FROMAT));
+            return ojm.writeValueAsString(maps);
         } catch (JsonProcessingException e) {
             logger.debug("JsonProcessingException :"+e.getMessage());
             return "";
         }
     }
 
-    @RequestMapping(value = { "/usecaseui-server/alarm/genCsv/{eventId}" } , method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = { "/alarm/genCsv/{eventId}" } , method = RequestMethod.GET , produces = "application/json")
     public String generateCsvFile(HttpServletResponse response, @PathVariable String[] eventId){
         String csvFile = "csvFiles/vnf_alarm_"+new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date())+".csv";
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("application/csv");
-        response.setHeader("Content-Disposition","attachment;filename="+csvFile);
         String[] headers = new String[]{"version",
                 "eventName","domain","eventId","eventType","nfcNamingCode",
                 "nfNamingCode","sourceId","sourceName","reportingEntityId",
@@ -134,51 +140,73 @@ public class AlarmController
                 "createTime","updateTime","name","value"};
         List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryId(eventId);
         List<String[]> csvData = new ArrayList<>();
-        alarmsHeaders.forEach(ala ->{
-            List<AlarmsInformation> information = alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(ala.getEventId()),1,100).getList();
-            String names = new String();
-            String values = new String();
-            if (0 < information.size() && null != information){
-                for (AlarmsInformation a : information){
-                    names += a.getName()+",";
-                    values += a.getValue()+",";
+        try{
+            alarmsHeaders.forEach(ala ->{
+                List<AlarmsInformation> information = alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(ala.getEventId()),1,100).getList();
+                String names = new String();
+                String values = new String();
+                if (0 < information.size() && null != information){
+                    for (AlarmsInformation a : information){
+                        names += a.getName()+",";
+                        values += a.getValue()+",";
+                    }
+                    names = names.substring(0,names.lastIndexOf(','));
+                    values = values.substring(0,values.lastIndexOf(','));
                 }
-                names = names.substring(0,names.lastIndexOf(','));
-                values = values.substring(0,values.lastIndexOf(','));
-            }
-            csvData.add(new String[]{
-                    ala.getVersion(),ala.getEventName(),ala.getDomain(),ala.getEventId(),ala.getEventType(),
-                    ala.getNfcNamingCode(),ala.getNfNamingCode(),ala.getSourceId(),ala.getSourceName(),
-                    ala.getReportingEntityId(),ala.getReportingEntityName(),ala.getPriority(),ala.getStartEpochMicrosec(),
-                    ala.getLastEpochMicroSec(),ala.getSequence(),ala.getFaultFieldsVersion(),ala.getEventServrity(),
-                    ala.getEventSourceType(),ala.getEventCategory(),ala.getAlarmCondition(),ala.getSpecificProblem(),
-                    ala.getVfStatus(),ala.getAlarmInterfaceA(),ala.getStatus(),DateUtils.dateToString(ala.getCreateTime()),
-                    DateUtils.dateToString(ala.getUpdateTime()),names,values
+                csvData.add(new String[]{
+                        ala.getVersion(),ala.getEventName(),ala.getDomain(),ala.getEventId(),ala.getEventType(),
+                        ala.getNfcNamingCode(),ala.getNfNamingCode(),ala.getSourceId(),ala.getSourceName(),
+                        ala.getReportingEntityId(),ala.getReportingEntityName(),ala.getPriority(),ala.getStartEpochMicrosec(),
+                        ala.getLastEpochMicroSec(),ala.getSequence(),ala.getFaultFieldsVersion(),ala.getEventServrity(),
+                        ala.getEventSourceType(),ala.getEventCategory(),ala.getAlarmCondition(),ala.getSpecificProblem(),
+                        ala.getVfStatus(),ala.getAlarmInterfaceA(),ala.getStatus(),DateUtils.dateToString(ala.getCreateTime()),
+                        DateUtils.dateToString(ala.getUpdateTime()),names,values
+                });
             });
-        });
-        CSVUtils.writeCsv(headers,csvData,csvFile);
-        try(InputStream is = new FileInputStream(csvFile);
-            OutputStream os = response.getOutputStream()){
-            byte[] b = new byte[2048];
-            int length;
-            while ((length = is.read(b)) > 0) {
-                os.write(b, 0, length);
-            }
-            return "{'result':'success'}";
-        }catch (IOException e){
-            logger.error("download csv File error :"+e.getMessage());
-            return "{'result':'failed'}";
+            CSVUtils.writeCsv(headers,csvData,csvFile);
+        }catch (Exception e){
+            logger.error(e.getMessage());
         }
+        if (null != response){
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("application/csv");
+            response.setHeader("Content-Disposition","attachment;filename="+csvFile);
+            try(InputStream is = new FileInputStream(csvFile);
+                OutputStream os = response.getOutputStream()){
+                byte[] b = new byte[2048];
+                int length;
+                while ((length = is.read(b)) > 0) {
+                    os.write(b, 0, length);
+                }
+                return "{'result':'success'}";
+            }catch (IOException e){
+                logger.error("download csv File error :"+e.getMessage());
+                return "{'result':'failed'}";
+            }
+        }else
+            return "csvFile generate success,response is null,don't download to local";
     }
 
 
-    @RequestMapping(value = { "/usecaseui-server/alarm" } , method = RequestMethod.PUT )
-    public String updateStatus(@RequestBody List<AlarmsHeader> alarmsHeaders){
-        for (AlarmsHeader a : alarmsHeaders){
-            if ("0".equals(alarmsHeaderService.updateAlarmsHeader(a)))
-                return "{'result':'failed'}";
+    @RequestMapping(value = { "/alarm/{eventId}/{status}/{type}" } , method = RequestMethod.PUT )
+    public String updateStatus(HttpServletResponse response,@PathVariable String[] eventId,@PathVariable String[] status,@PathVariable String type){
+        List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryId(eventId);
+        for (AlarmsHeader ala: alarmsHeaders) {
+            if ("vf".equals(type))
+                ala.setVfStatus(status[0]);
+            else if ("many".equals(type)){
+                ala.setStatus(status[0]);
+                ala.setVfStatus(status[1]);
+            }else {
+                ala.setStatus(status[0]);
+            }
+            if ("0".equals(alarmsHeaderService.updateAlarmsHeader(ala))) {
+                if (null != response)
+                    response.setStatus(400);
+                return "{'result':'update failed'}";
+            }
         }
-        return "{'result':'success'}";
+        return "{'result':'update success'}";
     }
 
 

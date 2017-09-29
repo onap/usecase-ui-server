@@ -50,7 +50,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	public String saveAlarmsInformation(AlarmsInformation alarmsInformation) {
 		 try{
 	            if (null == alarmsInformation) {
-	                logger.error("alarmsInformation AlarmsInformation alarmsInformation is null!");
+	                logger.error("alarmsInformation saveAlarmsInformation alarmsInformation is null!");
 	            }
 	            logger.info("AlarmsInformationServiceImpl saveAlarmsInformation: alarmsInformation={}", alarmsInformation);
 	            Session session = sessionFactory.openSession();
@@ -71,7 +71,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	public String updateAlarmsInformation(AlarmsInformation alarmsInformation) {
 		try{
             if (null == alarmsInformation) {
-                logger.error("alarmsInformation AlarmsInformation alarmsInformation is null!");
+                logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
             }
             logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}", alarmsInformation);
             Session session = sessionFactory.openSession();
@@ -148,6 +148,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
         }
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<AlarmsInformation> queryId(String[] id) {
 		try {

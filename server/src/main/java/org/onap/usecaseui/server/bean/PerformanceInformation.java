@@ -23,13 +23,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * 
- * @author xuekui
- *
- */
+
 @Entity
-@Table(name="alarms_additionalinformation")
+@Table(name="performance_additionalinformation")
 public class PerformanceInformation implements Serializable {
 	
 	@Id

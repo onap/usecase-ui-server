@@ -17,8 +17,6 @@ package org.onap.usecaseui.server.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,8 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
-
-import static org.apache.coyote.http11.Constants.a;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,6 +39,7 @@ public class PerformanceHeaderServiceTest {
         PerformanceHeader p = new PerformanceHeader();
         p.setCreateTime(DateUtils.now());
         p.setEventId("110");
+        p.setEventName("fxc");
         p.setDomain("asb");
         p.setCreateTime(DateUtils.now());
         p.setEventType("q");
@@ -66,22 +63,27 @@ public class PerformanceHeaderServiceTest {
 
     @Test
     public void update() throws ParseException {
-        PerformanceHeader p = new PerformanceHeader();
-        p.setEventId("110");
-        p.setPriority("we");
-        p.setReportingEntityName("xddw");
-        p.setSequence("dwd");
-        p.setSourceName("swde");
-        p.setStartEpochMicrosec("lala");
-        p.setVersion("bgf3");
-        p.setEventName("ds");
-        p.setDomain("ef");
-        p.setEventType("l");
-        p.setLastEpochMicroSec("vf");
-        p.setNfcNamingCode("vds");
-        p.setNfNamingCode("f");
-        p.setCreateTime(DateUtils.now());
-        p.setMeasurementInterval("cdhs");
+    	 PerformanceHeader p = new PerformanceHeader();
+         p.setCreateTime(DateUtils.now());
+         p.setEventId("110");
+         p.setEventName("fxc");
+         p.setDomain("asb");
+         p.setCreateTime(DateUtils.now());
+         p.setEventType("q");
+         p.setLastEpochMicroSec("csa");
+         p.setNfcNamingCode("std");
+         p.setNfNamingCode("cout");
+         p.setPriority("cs");
+         p.setReportingEntityId("112");
+         p.setReportingEntityName("asfs");
+         p.setSequence("cgg");
+         p.setSourceId("123");
+         p.setSourceName("eggs");
+         p.setStartEpochMicrosec("wallet");
+         p.setUpdateTime(DateUtils.now());
+         p.setVersion("va2");
+         p.setMeasurementInterval("12");
+         p.setMeasurementsForVfScalingVersion("12");
         System.out.println(performanceHeaderService.updatePerformanceHeader(p));
     }
 
@@ -92,22 +94,121 @@ public class PerformanceHeaderServiceTest {
     }
 
     @Test
-    public void query() throws ParseException {
+    public void queryEventId() throws ParseException {
         PerformanceHeader p = new PerformanceHeader();
         p.setEventId("110");
-        p.setPriority("we");
-        p.setReportingEntityName("xddw");
-        p.setSequence("dwd");
-        p.setSourceName("swde");
-        p.setStartEpochMicrosec("lala");
-        p.setVersion("bgf3");
-        p.setEventName("ds");
-        p.setDomain("ef");
-        p.setEventType("l");
-        p.setLastEpochMicroSec("vf");
-        p.setNfcNamingCode("vds");
-        p.setNfNamingCode("f");
-        p.setCreateTime(DateUtils.now());
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryEventName() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setEventName("fxc");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryDomain() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setDomain("asb");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryEventType() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setEventType("q");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryLastEpochMicroSec() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setLastEpochMicroSec("csa");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryNfcNamingCode() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setNfcNamingCode("std");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryNfNamingCode() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setNfNamingCode("cout");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryPriority() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setPriority("cs");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryReportingEntityId() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setReportingEntityId("112");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryReportingEntityName() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setReportingEntityName("asfs");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void querySequence() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setSequence("cgg");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void querySourceId() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setSourceId("123");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void querySourceName() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setSourceName("eggs");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryStartEpochMicrosec() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setStartEpochMicrosec("wallet");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryVersion() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setVersion("va2");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryMeasurementInterval() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setMeasurementInterval("12");
+        performanceHeaderService.queryPerformanceHeader(p,1,100)
+                .getList().forEach(per -> System.out.println(per));
+    }
+    @Test
+    public void queryMeasurementsForVfScalingVersion() throws ParseException {
+        PerformanceHeader p = new PerformanceHeader();
+        p.setMeasurementsForVfScalingVersion("12");
         performanceHeaderService.queryPerformanceHeader(p,1,100)
                 .getList().forEach(per -> System.out.println(per));
     }

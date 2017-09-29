@@ -15,6 +15,8 @@
  */
 package org.onap.usecaseui.server.util;
 
+import org.onap.usecaseui.server.constant.Constant;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -82,7 +84,7 @@ public class DateUtils {
          * @throws ParseException
          */
     public static Date initProcessDate(Date d,int year,int month,int day,int hour,int minute,int second) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yy:MM:dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         if(year >= 0){
@@ -148,15 +150,15 @@ public class DateUtils {
     }
 
     public static String dateToString(Date d){
-        return new SimpleDateFormat("yy:MM:dd HH:mm:ss").format(d);
+        return new SimpleDateFormat(Constant.DATE_FROMAT).format(d);
     }
 
     public static Date stringToDate(String d) throws ParseException {
-        return new SimpleDateFormat("yy:MM:dd HH:mm:ss").parse(d);
+        return new SimpleDateFormat(Constant.DATE_FROMAT).parse(d);
     }
 
     public static Date now() throws ParseException {
-        return new SimpleDateFormat("yy:MM:dd HH:mm:ss").parse(dateToString(new Date()));
+        return new SimpleDateFormat(Constant.DATE_FROMAT).parse(dateToString(new Date()));
     }
 
 }

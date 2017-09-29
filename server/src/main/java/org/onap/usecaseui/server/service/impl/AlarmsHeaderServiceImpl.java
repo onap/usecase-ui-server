@@ -73,9 +73,9 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	public String updateAlarmsHeader(AlarmsHeader alarmsHeader) {
 		try{
             if (null == alarmsHeader){
-                logger.error("AlarmsHeaderServiceImpl saveAlarmsHeader alarmsHeader is null!");
+                logger.error("AlarmsHeaderServiceImpl updateAlarmsHeader alarmsHeader is null!");
             }
-            logger.info("AlarmsHeaderServiceImpl saveAlarmsHeader: alarmsHeader={}", alarmsHeader);
+            logger.info("AlarmsHeaderServiceImpl updateAlarmsHeader: alarmsHeader={}", alarmsHeader);
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();     
             session.update(alarmsHeader);
@@ -110,8 +110,6 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		int offset = page.countOffset(currentPage, pageSize);
 		
 		try{
-//			Date date = new Date();
-//			SimpleDateFormat date = new SimpleDateFormat("yy-MM-dd hh:mm:ss");
 			StringBuffer hql =new StringBuffer("from AlarmsHeader a where 1=1");
             if (null == alarmsHeader) {
                 logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
@@ -129,7 +127,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             	hql.append(" and a.domain like '%"+ver+"%'");
             }else if(null!=alarmsHeader.getEventId()) {
             	String ver=alarmsHeader.getEventId();
-            	hql.append(" and a.eventId like '%"+ver+"%'");
+            	hql.append(" and a.eventId = '"+ver+"'");
             }else if(null!=alarmsHeader.getNfcNamingCode()) {
             	String ver=alarmsHeader.getNfcNamingCode();
             	hql.append(" and a.nfcNamingCode like '%"+ver+"%'");
@@ -194,7 +192,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             	Date ver =alarmsHeader.getUpdateTime();
             	hql.append(" and a.updateTime like '%"+ver+"%'");
             }
-            logger.info("AlarmsHeaderServiceImpl saveAlarmsHeader: alarmsHeader={}", alarmsHeader);
+            logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
             Session session = sessionFactory.openSession();
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
@@ -214,22 +212,17 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<AlarmsHeader> queryId(String[] id) {
 		try {
 			if(id.length==0) {
 				logger.error("AlarmsHeaderServiceImpl queryId is null!");
 			}
-			
-			AlarmsHeader alarm = new AlarmsHeader();
 			List<AlarmsHeader> list = new ArrayList<AlarmsHeader>();
 			Session session = sessionFactory.openSession();
-			for(String b:id) {
-				Query query = session.createQuery("from AlarmsHeader a where a.eventId =?0");
-				alarm=(AlarmsHeader) query.setParameter("0", b).uniqueResult();
-				list.add(alarm);
-			}
-			session.flush();
+			Query query = session.createQuery("from AlarmsHeader a where a.eventId IN (:alist)");
+			list = query.setParameterList("alist", id).list();
 			session.close();
 			return list;
 		} catch (Exception e) {

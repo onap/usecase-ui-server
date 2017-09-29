@@ -51,7 +51,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	public String savePerformanceInformation(PerformanceInformation performanceInformation) {
 		 try {
 	            if (null == performanceInformation) {
-	                logger.error("performanceInformation PerformanceInformation performanceInformation is null!");
+	                logger.error("performanceInformation savePerformanceInformation performanceInformation is null!");
 	            }
 	            logger.info("PerformanceInformationServiceImpl savePerformanceInformation: performanceInformation={}", performanceInformation);
 	            Session session = sessionFactory.openSession();
@@ -73,9 +73,9 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	public String updatePerformanceInformation(PerformanceInformation performanceInformation) {
 		try {
             if (null == performanceInformation) {
-                logger.error("performanceInformation PerformanceInformation performanceInformation is null!");
+                logger.error("performanceInformation updatePerformanceInformation performanceInformation is null!");
             }
-            logger.info("PerformanceInformationServiceImpl savePerformanceInformation: performanceInformation={}", performanceInformation);
+            logger.info("PerformanceInformationServiceImpl updatePerformanceInformation: performanceInformation={}", performanceInformation);
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();     
             session.update(performanceInformation);
@@ -123,7 +123,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             	hql.append(" and a.value like '%"+ver+"%'");
             }else if(null!=performanceInformation.getEventId()) {
             	String ver=performanceInformation.getEventId();
-            	hql.append(" and a.eventId like '%"+ver+"%'");
+            	hql.append(" and a.eventId = '"+ver+"'");
             }else if(null!=performanceInformation.getCreateTime()) {
             	Date ver =performanceInformation.getCreateTime();
             	hql.append(" and a.createTime > '%"+ver+"%'");
@@ -151,21 +151,17 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceInformation> queryId(String[] id) {
 		try {
 			if(id.length==0) {
 				logger.error("PerformanceInformationServiceImpl queryId is null!");
 			}
-			PerformanceInformation performance = new PerformanceInformation();
 			List<PerformanceInformation> list = new ArrayList<>();
 			Session session = sessionFactory.openSession();
-			Query query = session.createQuery("from PerformanceInformation a where a.eventId = ?0");
-			for(String b:id) {
-				performance=(PerformanceInformation) query.setParameter("0", b).uniqueResult();
-				list.add(performance);
-			}
-            session.flush();
+			Query query = session.createQuery("from PerformanceInformation a where a.eventId IN (:alist)");
+			list = query.setParameterList("alist", id).list();
             session.close();
 			return list;
 		} catch (Exception e) {

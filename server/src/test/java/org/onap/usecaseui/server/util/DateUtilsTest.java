@@ -20,28 +20,70 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DateUtilsTest {
 
 
-    @Test
-    public void DateTest(){
-        SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-		LocalDateTime ldt = LocalDateTime.now();
-		ldt = ldt.withMonth(2);
-		ldt = ldt.withDayOfMonth(30);
-		//ldt = ldt.withMonth(1);
-		ldt = ldt.withHour(1);
-		ZoneId zone = ZoneId.systemDefault();
-		Instant instant = ldt.atZone(zone).toInstant();
-		System.out.println(ldt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-    }
+	@Test
+	public void stringToDate(){
+		try {
+			System.out.println(DateUtils.stringToDate("2017-09-28 16:00:00"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void dateToString(){
+		System.out.println(DateUtils.dateToString(new Date()));
+	}
+
+	@Test
+	public void initDate(){
+		try {
+			System.out.println(DateUtils.initDate(new Date(),0,0,0,0,0,0));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void initProcessDate(){
+		try {
+			System.out.println(DateUtils.initProcessDate(new Date(),0,0,0,0,0,0));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void now(){
+		try {
+			System.out.println(DateUtils.now());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void addDate(){
+		try {
+			System.out.println(DateUtils.addDate(new Date(),"hour",5));
+			System.out.println(DateUtils.addDate(new Date(),"day",5));
+			System.out.println(DateUtils.addDate(new Date(),"month",5));
+			System.out.println(DateUtils.addDate(new Date(),"year",5));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

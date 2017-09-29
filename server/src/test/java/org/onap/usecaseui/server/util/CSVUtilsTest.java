@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,17 @@ public class CSVUtilsTest {
         data.add(new String[]{"John","20","2011-1-12"});
         String csvPath = "csvFiles/data.csv";
         CSVUtils.writeCsv(headers,data,csvPath);
+    }
+
+    @Test
+    public void CSVRead(){
+        String[] headers = new String[]{"name","age","birthday"};
+        String csvPath = "csvFiles/data.csv";
+        try {
+            CSVUtils.readCSV(csvPath,headers);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

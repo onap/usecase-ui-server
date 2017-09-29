@@ -17,7 +17,6 @@ package org.onap.usecaseui.server.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,7 +48,7 @@ public class AlarmsInformationServiceTest {
     public void update() throws ParseException {
         AlarmsInformation a = new AlarmsInformation();
         a.setEventId("110");
-        a.setName("fw");
+        a.setName("1");
         a.setValue("fko");
         a.setUpdateTime(DateUtils.now());
         a.setCreateTime(DateUtils.now());
@@ -62,9 +61,38 @@ public class AlarmsInformationServiceTest {
     }
 
     @Test
-    public void query() throws ParseException {
+    public void queryEventId() throws ParseException {
         AlarmsInformation a = new AlarmsInformation();
         a.setEventId("110");
+        alarmsInformationService.queryAlarmsInformation(a,1,100)
+                .getList().forEach( al -> System.out.println(al.getEventId()));
+    }
+    @Test
+    public void queryName() throws ParseException {
+        AlarmsInformation a = new AlarmsInformation();
+        a.setName("efw");
+        alarmsInformationService.queryAlarmsInformation(a,1,100)
+                .getList().forEach( al -> System.out.println(al.getEventId()));
+    }
+    @Test
+    public void queryValue() throws ParseException {
+        AlarmsInformation a = new AlarmsInformation();
+        a.setValue("fko");
+        alarmsInformationService.queryAlarmsInformation(a,1,100)
+                .getList().forEach( al -> System.out.println(al.getEventId()));
+    }
+    
+    @Test
+    public void queryCreateTime() throws ParseException {
+        AlarmsInformation a = new AlarmsInformation();
+        a.setCreateTime(DateUtils.now());
+        alarmsInformationService.queryAlarmsInformation(a,1,100)
+                .getList().forEach( al -> System.out.println(al.getEventId()));
+    }
+    @Test
+    public void queryUpdateTime() throws ParseException {
+        AlarmsInformation a = new AlarmsInformation();
+        a.setUpdateTime(DateUtils.now());
         alarmsInformationService.queryAlarmsInformation(a,1,100)
                 .getList().forEach( al -> System.out.println(al.getEventId()));
     }

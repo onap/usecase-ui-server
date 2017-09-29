@@ -20,25 +20,21 @@ import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.util.Page;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class PerformanceBo implements Serializable {
 
     private PerformanceHeader performanceHeader;
 
-    private PerformanceInformation performanceInformation;
+    private List<PerformanceInformation> performanceInformation;
 
-    private int currentPage;
-
-    private int pageSize;
 
     public PerformanceBo() {
     }
 
-    public PerformanceBo(PerformanceHeader performanceHeader, PerformanceInformation performanceInformation, int currentPage, int pageSize) {
+    public PerformanceBo(PerformanceHeader performanceHeader, List<PerformanceInformation> performanceInformation) {
         this.performanceHeader = performanceHeader;
         this.performanceInformation = performanceInformation;
-        this.currentPage = currentPage;
-        this.pageSize = pageSize;
     }
 
     public PerformanceHeader getPerformanceHeader() {
@@ -49,27 +45,11 @@ public class PerformanceBo implements Serializable {
         this.performanceHeader = performanceHeader;
     }
 
-    public PerformanceInformation getPerformanceInformation() {
+    public List<PerformanceInformation> getPerformanceInformation() {
         return performanceInformation;
     }
 
-    public void setPerformanceInformation(PerformanceInformation performanceInformation) {
+    public void setPerformanceInformation(List<PerformanceInformation> performanceInformation) {
         this.performanceInformation = performanceInformation;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
     }
 }

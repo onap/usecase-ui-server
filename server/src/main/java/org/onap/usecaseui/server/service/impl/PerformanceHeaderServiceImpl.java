@@ -76,7 +76,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             if (null == performanceHeder){
                 logger.error("PerformanceHeaderServiceImpl updatePerformanceHeader performanceHeder is null!");
             }
-            logger.info("PerformanceHeaderServiceImpl savePerformanceHeader: performanceHeder={}", performanceHeder);
+            logger.info("PerformanceHeaderServiceImpl updatePerformanceHeader: performanceHeder={}", performanceHeder);
             Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();     
             session.update(performanceHeder);
@@ -115,7 +115,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		try{
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
             if (null == performanceHeder) {
-                logger.error("PerformanceHeaderServiceImpl queryAlarmsHeader performanceHeder is null!");
+                logger.error("PerformanceHeaderServiceImpl queryPerformanceHeader performanceHeder is null!");
             }else if(null!=performanceHeder.getVersion()) {
             	String ver=performanceHeder.getVersion();
             	hql.append(" and a.version like '%"+ver+"%'");
@@ -127,7 +127,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             	hql.append(" and a.domain like '%"+ver+"%'");
             }else if(null!=performanceHeder.getEventId()) {
             	String ver=performanceHeder.getEventId();
-            	hql.append(" and a.eventId like '%"+ver+"%'");
+            	hql.append(" and a.eventId = '"+ver+"'");
             }else if(null!=performanceHeder.getNfcNamingCode()) {
             	String ver=performanceHeder.getNfcNamingCode();
             	hql.append(" and a.nfcNamingCode like '%"+ver+"%'");
@@ -166,7 +166,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             	hql.append(" and a.measurementInterval like '%"+ver+"%'");
             }else if(null!=performanceHeder.getEventType()) {
             	String ver =performanceHeder.getEventType();
-            	hql.append(" and a.eventSourceType like '%"+ver+"%'");
+            	hql.append(" and a.eventType like '%"+ver+"%'");
             }else if(null!=performanceHeder.getCreateTime()) {
             	Date ver =performanceHeder.getCreateTime();
             	hql.append(" and a.createTime > '%"+ver+"%'");
@@ -194,21 +194,17 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceHeader> queryId(String[] id) {
 		try {
 			if(id.length==0) {
 				logger.error("PerformanceHeaderServiceImpl queryId is null!");
 			}
-			PerformanceHeader performance = new PerformanceHeader();
 			List<PerformanceHeader> list = new ArrayList<PerformanceHeader>();
 			Session session = sessionFactory.openSession();
-			Query query = session.createQuery("from PerformanceHeader a where a.eventId = ?0");
-			for(String b:id) {
-				performance=(PerformanceHeader) query.setParameter("0", b).uniqueResult();
-				list.add(performance);
-			}
-            session.flush();
+			Query query = session.createQuery("from PerformanceHeader a where a.eventId IN (:alist)");
+			list = query.setParameterList("alist", id).list();
             session.close();
 			return list;
 		} catch (Exception e) {
