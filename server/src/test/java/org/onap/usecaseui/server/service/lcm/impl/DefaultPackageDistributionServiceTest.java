@@ -17,7 +17,6 @@ package org.onap.usecaseui.server.service.lcm.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
@@ -29,15 +28,20 @@ import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogExc
 import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcService;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.exceptions.VfcException;
-import org.onap.usecaseui.server.util.CallStub;
 import retrofit2.Call;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.*;
+import static org.onap.usecaseui.server.util.CallStub.failedCall;
+import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class DefaultPackageDistributionServiceTest {
 
@@ -56,29 +60,29 @@ public class DefaultPackageDistributionServiceTest {
     }
 
     private AAIService newAAIService(List<VimInfo> vim) {
-        AAIService aaiService = Mockito.mock(AAIService.class);
+        AAIService aaiService = mock(AAIService.class);
 
-        Call<List<VimInfo>> vimCall = CallStub.successfulCall(vim);
-        Mockito.when(aaiService.listVimInfo()).thenReturn(vimCall);
+        Call<List<VimInfo>> vimCall = successfulCall(vim);
+        when(aaiService.listVimInfo()).thenReturn(vimCall);
         return aaiService;
     }
 
     private SDCCatalogService newSDCService(List<SDCServiceTemplate> serviceTemplate, List<Vnf> vnf) {
-        SDCCatalogService sdcService = Mockito.mock(SDCCatalogService.class);
+        SDCCatalogService sdcService = mock(SDCCatalogService.class);
 
-        Call<List<SDCServiceTemplate>> serviceCall = CallStub.successfulCall(serviceTemplate);
-        Mockito.when(sdcService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(serviceCall);
+        Call<List<SDCServiceTemplate>> serviceCall = successfulCall(serviceTemplate);
+        when(sdcService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(serviceCall);
 
-        Call<List<Vnf>> vnfCall = CallStub.successfulCall(vnf);
-        Mockito.when(sdcService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(vnfCall);
+        Call<List<Vnf>> vnfCall = successfulCall(vnf);
+        when(sdcService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(vnfCall);
         return sdcService;
     }
 
     @Test(expected = SDCCatalogException.class)
     public void retrievePackageWillThrowExceptionWhenSDCIsNotAvailable() {
-        SDCCatalogService sdcService = Mockito.mock(SDCCatalogService.class);
-        Call<List<SDCServiceTemplate>> serviceCall = CallStub.failedCall("SDC is not available!");
-        Mockito.when(sdcService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(serviceCall);
+        SDCCatalogService sdcService = mock(SDCCatalogService.class);
+        Call<List<SDCServiceTemplate>> serviceCall = failedCall("SDC is not available!");
+        when(sdcService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(serviceCall);
 
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "regionId"));
         AAIService aaiService = newAAIService(vim);
@@ -89,10 +93,10 @@ public class DefaultPackageDistributionServiceTest {
 
     @Test
     public void itCanPostNsPackageToVFC() {
-        VfcService vfcService = Mockito.mock(VfcService.class);
+        VfcService vfcService = mock(VfcService.class);
         Csar csar = new Csar();
         DistributionResult result = new DistributionResult("status", "description", "errorcode");
-        Mockito.when(vfcService.distributeNsPackage(csar)).thenReturn(CallStub.successfulCall(result));
+        when(vfcService.distributeNsPackage(csar)).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
 
         Assert.assertSame(result, service.postNsPackage(csar));
@@ -100,10 +104,50 @@ public class DefaultPackageDistributionServiceTest {
 
     @Test(expected = VfcException.class)
     public void postNsPackageWillThrowExceptionWhenVFCIsNotAvailable() {
-        VfcService vfcService = Mockito.mock(VfcService.class);
+        VfcService vfcService = mock(VfcService.class);
         Csar csar = new Csar();
-        Mockito.when(vfcService.distributeNsPackage(csar)).thenReturn(CallStub.failedCall("VFC is not available!"));
+        when(vfcService.distributeNsPackage(csar)).thenReturn(failedCall("VFC is not available!"));
         PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
         service.postNsPackage(csar);
+    }
+
+    @Test
+    public void itCanPostVnfPackageToVFC() {
+        VfcService vfcService = mock(VfcService.class);
+        Csar csar = new Csar();
+        Job job = new Job();
+        when(vfcService.distributeVnfPackage(csar)).thenReturn(successfulCall(job));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+
+        Assert.assertSame(job, service.postVfPackage(csar));
+    }
+
+    @Test(expected = VfcException.class)
+    public void postVnfPackageWillThrowExceptionWhenVFCIsNotAvailable() {
+        VfcService vfcService = mock(VfcService.class);
+        Csar csar = new Csar();
+        when(vfcService.distributeVnfPackage(csar)).thenReturn(failedCall("VFC is not available!"));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+        service.postVfPackage(csar);
+    }
+
+    @Test
+    public void itCanGetJobStatusFromVFC() {
+        VfcService vfcService = mock(VfcService.class);
+        String jobId = "1";
+        JobStatus jobStatus = new JobStatus();
+        when(vfcService.getJobStatus(jobId)).thenReturn(successfulCall(jobStatus));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+
+        Assert.assertSame(jobStatus, service.getJobStatus(jobId));
+    }
+
+    @Test(expected = VfcException.class)
+    public void getJobStatusWillThrowExceptionWhenVFCIsNotAvailable() {
+        VfcService vfcService = mock(VfcService.class);
+        String jobId = "1";
+        when(vfcService.getJobStatus(jobId)).thenReturn(failedCall("VFC is not available!"));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+        service.getJobStatus(jobId);
     }
 }

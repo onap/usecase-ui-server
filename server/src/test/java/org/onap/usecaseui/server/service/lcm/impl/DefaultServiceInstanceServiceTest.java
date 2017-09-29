@@ -17,41 +17,42 @@ package org.onap.usecaseui.server.service.lcm.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.onap.usecaseui.server.service.lcm.CustomerService;
+import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
-import retrofit2.Call;
 
+import java.util.Collections;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
-public class DefaultCustomerServiceTest {
+public class DefaultServiceInstanceServiceTest {
 
     @Test
-    public void itCanRetrieveCustomersFromAAI() {
-        List<AAICustomer> customers = singletonList(new AAICustomer("1", "name", "type"));
-
+    public void itCanRetrieveServiceInstanceFromAAI() {
         AAIService aaiService = mock(AAIService.class);
-        Call<List<AAICustomer>> call = successfulCall(customers);
-        when(aaiService.listCustomer()).thenReturn(call);
+        String customerId = "1";
+        String serviceType = "service";
+        List<ServiceInstance> instances = Collections.singletonList(new ServiceInstance("1","service","1","VoLTE","e2eservice","abc","vim1"));
+        when(aaiService.listServiceInstances(customerId, serviceType)).thenReturn(successfulCall(instances));
 
-        CustomerService customerService = new DefaultCustomerService(aaiService);
-        Assert.assertSame(customers, customerService.listCustomer());
+        ServiceInstanceService service = new DefaultServiceInstanceService(aaiService);
+
+        Assert.assertSame(instances, service.listServiceInstances(customerId, serviceType));
     }
 
     @Test(expected = AAIException.class)
-    public void itWillThrowExceptionWhenAAIIsNotAvailable() {
+    public void retrieveServiceInstancesWillThrowExceptionWhenAAIIsNotAvailable() {
         AAIService aaiService = mock(AAIService.class);
-        Call<List<AAICustomer>> call = failedCall("AAI is not available!");
-        when(aaiService.listCustomer()).thenReturn(call);
+        String customerId = "1";
+        String serviceType = "service";
+        when(aaiService.listServiceInstances(customerId, serviceType)).thenReturn(failedCall("AAI is not available!"));
 
-        CustomerService customerService = new DefaultCustomerService(aaiService);
-        customerService.listCustomer();
+        ServiceInstanceService service = new DefaultServiceInstanceService(aaiService);
+        service.listServiceInstances(customerId, serviceType);
     }
 }
