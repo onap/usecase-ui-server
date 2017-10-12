@@ -42,19 +42,19 @@ public class ServiceLcmController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/lcm/services"}, method = RequestMethod.POST , produces = "application/json")
+    @RequestMapping(value = {"/onapapi/uui-lcm/v1/services/"}, method = RequestMethod.POST , produces = "application/json")
     public ServiceOperation instantiateService(@RequestBody ServiceInstantiationRequest request){
         return serviceLcmService.instantiateService(request);
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/lcm/services/{serviceId}/operations/{operationId}"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/onapapi/uui-lcm/v1/services/{serviceId}/operations/{operationId}"}, method = RequestMethod.GET , produces = "application/json")
     public OperationProgressInformation queryOperationProgress(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId){
         return serviceLcmService.queryOperationProgress(serviceId, operationId);
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/lcm/services/{serviceId}"}, method = RequestMethod.DELETE , produces = "application/json")
+    @RequestMapping(value = {"/onapapi/uui-lcm/v1/services/{serviceId}"}, method = RequestMethod.DELETE , produces = "application/json")
     public ServiceOperation terminateService(@PathVariable(value = "serviceId") String serviceId){
         return serviceLcmService.terminateService(serviceId);
     }

@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.bean.lcm;
 
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
 
@@ -28,12 +27,9 @@ public class VfNsPackageInfo {
 
     private List<Vnf> vnfPackages;
 
-    private List<VimInfo> vimInfos;
-
-    public VfNsPackageInfo(List<SDCServiceTemplate> nsPackage, List<Vnf> vnfPackages, List<VimInfo> vimInfos) {
+    public VfNsPackageInfo(List<SDCServiceTemplate> nsPackage, List<Vnf> vnfPackages) {
         this.nsPackage = nsPackage;
         this.vnfPackages = vnfPackages;
-        this.vimInfos = vimInfos;
     }
 
     public List<SDCServiceTemplate> getNsPackage() {
@@ -44,22 +40,17 @@ public class VfNsPackageInfo {
         return vnfPackages;
     }
 
-    public List<VimInfo> getVimInfos() {
-        return vimInfos;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VfNsPackageInfo that = (VfNsPackageInfo) o;
         return Objects.equals(nsPackage, that.nsPackage) &&
-                Objects.equals(vnfPackages, that.vnfPackages) &&
-                Objects.equals(vimInfos, that.vimInfos);
+                Objects.equals(vnfPackages, that.vnfPackages);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nsPackage, vnfPackages, vimInfos);
+        return Objects.hash(nsPackage, vnfPackages);
     }
 }

@@ -17,8 +17,10 @@ package org.onap.usecaseui.server.controller.lcm;
 
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,8 +41,14 @@ public class CustomerController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/lcm/customers"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/onapapi/uui-lcm/v1/customers"}, method = RequestMethod.GET , produces = "application/json")
     public List<AAICustomer> getCustomers(){
         return customerService.listCustomer();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/onapapi/uui-lcm/v1/customers/{customerId}/service-subscriptions"}, method = RequestMethod.GET , produces = "application/json")
+    public List<AAIServiceSubscription> getServiceSubscriptions(@PathVariable(value="customerId") String customerId){
+        return customerService.listServiceSubscriptions(customerId);
     }
 }

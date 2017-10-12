@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
@@ -48,7 +47,7 @@ public class DefaultServiceTemplateServiceTest {
 
     @Test
     public void itCanListDistributedServiceTemplate() {
-        List<SDCServiceTemplate> templates = Collections.singletonList(new SDCServiceTemplate("uuid", "uuid", "name", "url", "category"));
+        List<SDCServiceTemplate> templates = Collections.singletonList(new SDCServiceTemplate("uuid", "uuid", "name", "V1","url", "category"));
         SDCCatalogService sdcService = mock(SDCCatalogService.class);
         when(sdcService.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(successfulCall(templates));
 
@@ -79,7 +78,7 @@ public class DefaultServiceTemplateServiceTest {
 
         ServiceTemplateService service = newServiceTemplateService(uuid, nodeUUID, sdcService, aaiService);
 
-        Assert.assertThat(service.fetchServiceTemplateInput(uuid, modelPath), equalTo(new ServiceTemplateInputRsp(expectedServiceInputs(uuid, nodeUUID),vim)));
+        Assert.assertThat(service.fetchServiceTemplateInput(uuid, modelPath), equalTo(expectedServiceInputs(uuid, nodeUUID)));
     }
 
     private DefaultServiceTemplateService newServiceTemplateService(String uuid, String nodeUUID, SDCCatalogService sdcService, AAIService aaiService) {
@@ -102,17 +101,18 @@ public class DefaultServiceTemplateServiceTest {
 
     private SDCCatalogService newSdcCatalogService(String nodeUUID) throws IOException {
         SDCCatalogService sdcService = mock(SDCCatalogService.class);
-        when(sdcService.getService(nodeUUID)).thenReturn(successfulCall(new SDCServiceTemplate(nodeUUID, nodeUUID, "node", "nodeModelUrl", "service")));
+        when(sdcService.getService(nodeUUID)).thenReturn(successfulCall(new SDCServiceTemplate(nodeUUID, nodeUUID, "node", "V1", "nodeModelUrl", "service")));
         return sdcService;
     }
 
-    private List<ServiceTemplateInput> expectedServiceInputs(String uuid, String nodeUUID) {
+    private ServiceTemplateInput expectedServiceInputs(String uuid, String nodeUUID) {
         ServiceTemplateInput e2eServiceTemplateInput = new ServiceTemplateInput(
-                uuid, uuid, "VoLTE", "service", "VoLTE", "service", "", Collections.EMPTY_LIST);
+                uuid, uuid, "VoLTE", "service","", "VoLTE", "service", "", Collections.EMPTY_LIST);
         TemplateInput templateInput = new TemplateInput("field_name","field_type", "field_description", "true", "field_default");
         ServiceTemplateInput nodeTemplateInput = new ServiceTemplateInput(
-                nodeUUID, nodeUUID, "", "", "", "service", "", Collections.singletonList(templateInput));
-        return Arrays.asList(e2eServiceTemplateInput, nodeTemplateInput);
+                nodeUUID, nodeUUID, "", "", "","", "service", "", Collections.singletonList(templateInput));
+        e2eServiceTemplateInput.addNestedTemplate(nodeTemplateInput);
+        return e2eServiceTemplateInput;
     }
 
     private ToscaTemplate e2eToscaTemplate(String nodeUUID) {

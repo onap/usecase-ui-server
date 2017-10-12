@@ -17,8 +17,6 @@ package org.onap.usecaseui.server.service.lcm.impl;
 
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
@@ -45,17 +43,14 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
     private SDCCatalogService sdcCatalogService;
 
-    private AAIService aaiService;
-
     private VfcService vfcService;
 
     public DefaultPackageDistributionService() {
-        this(create(SDCCatalogService.class), create(AAIService.class), create(VfcService.class));
+        this(create(SDCCatalogService.class), create(VfcService.class));
     }
 
-    public DefaultPackageDistributionService(SDCCatalogService sdcCatalogService, AAIService aaiService, VfcService vfcService) {
+    public DefaultPackageDistributionService(SDCCatalogService sdcCatalogService, VfcService vfcService) {
         this.sdcCatalogService = sdcCatalogService;
-        this.aaiService = aaiService;
         this.vfcService = vfcService;
     }
 
@@ -64,8 +59,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             List<SDCServiceTemplate> nsTemplate = sdcCatalogService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
             List<Vnf> vnf = sdcCatalogService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
-            List<VimInfo> vim = aaiService.listVimInfo().execute().body();
-            return new VfNsPackageInfo(nsTemplate, vnf, vim);
+            return new VfNsPackageInfo(nsTemplate, vnf);
         } catch (IOException e) {
             throw new SDCCatalogException("SDC Service is not available!", e);
         }

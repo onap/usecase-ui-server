@@ -13,7 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.bean.lcm;
+package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
-public class ServiceTemplate {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class AAIServiceSubscription {
+
+    private String serviceType;
+
+    @JsonCreator
+    public AAIServiceSubscription(@JsonProperty("service-type") String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    @JsonProperty("service-type")
+    public String getServiceType() {
+        return serviceType;
+    }
 }

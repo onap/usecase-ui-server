@@ -17,6 +17,7 @@ package org.onap.usecaseui.server.bean.lcm;
 
 import com.google.common.base.MoreObjects;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,8 @@ public class ServiceTemplateInput {
 
     private String type;
 
+    private String version;
+
     private String description;
 
     private String category;
@@ -38,11 +41,14 @@ public class ServiceTemplateInput {
 
     private List<TemplateInput> inputs;
 
+    private List<ServiceTemplateInput> nestedTemplates;
+
     public ServiceTemplateInput(
             String invariantUUID,
             String uuid,
             String name,
             String type,
+            String version,
             String description,
             String category,
             String subcategory,
@@ -51,10 +57,12 @@ public class ServiceTemplateInput {
         this.uuid = uuid;
         this.name = name;
         this.type = type;
+        this.version = version;
         this.description = description;
         this.category = category;
         this.subcategory = subcategory;
         this.inputs = inputs;
+        this.nestedTemplates = new ArrayList<>();
     }
 
     public String getInvariantUUID() {
@@ -73,6 +81,10 @@ public class ServiceTemplateInput {
         return type;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -89,6 +101,14 @@ public class ServiceTemplateInput {
         return inputs;
     }
 
+    public List<ServiceTemplateInput> getNestedTemplates() {
+        return nestedTemplates;
+    }
+
+    public void addNestedTemplate(ServiceTemplateInput template) {
+        this.nestedTemplates.add(template);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -98,15 +118,17 @@ public class ServiceTemplateInput {
                 Objects.equals(uuid, that.uuid) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(type, that.type) &&
+                Objects.equals(version, that.version) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(category, that.category) &&
                 Objects.equals(subcategory, that.subcategory) &&
-                Objects.equals(inputs, that.inputs);
+                Objects.equals(inputs, that.inputs) &&
+                Objects.equals(nestedTemplates, that.nestedTemplates);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(invariantUUID, uuid, name, type, description, category, subcategory, inputs);
+        return Objects.hash(invariantUUID, uuid, name, type, version, description, category, subcategory, inputs, nestedTemplates);
     }
 
     @Override
@@ -116,10 +138,12 @@ public class ServiceTemplateInput {
                 .add("uuid", uuid)
                 .add("name", name)
                 .add("type", type)
+                .add("version", version)
                 .add("description", description)
                 .add("category", category)
                 .add("subcategory", subcategory)
                 .add("inputs", inputs)
+                .add("nestedTemplates", nestedTemplates)
                 .toString();
     }
 }

@@ -15,7 +15,8 @@
  */
 package org.onap.usecaseui.server.service.lcm;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInputRsp;
+import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 
 import java.util.List;
@@ -24,5 +25,7 @@ public interface ServiceTemplateService {
 
     List<SDCServiceTemplate> listDistributedServiceTemplate();
 
-    ServiceTemplateInputRsp fetchServiceTemplateInput(String uuid, String toscaModelPath);
+    ServiceTemplateInput fetchServiceTemplateInput(String uuid, String toscaModelPath);
+
+    List<VimInfo> listVim();
 }

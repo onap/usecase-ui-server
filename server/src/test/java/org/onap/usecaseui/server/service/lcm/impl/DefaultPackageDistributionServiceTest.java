@@ -47,16 +47,16 @@ public class DefaultPackageDistributionServiceTest {
 
     @Test
     public void itCanRetrievePackageFromSDCAndAAI() {
-        List<SDCServiceTemplate> serviceTemplate = Collections.singletonList(new SDCServiceTemplate("1", "1", "service", "", ""));
+        List<SDCServiceTemplate> serviceTemplate = Collections.singletonList(new SDCServiceTemplate("1", "1", "service", "V1","", ""));
         List<Vnf> vnf = Collections.singletonList(new Vnf("2","2","vnf"));
         SDCCatalogService sdcService = newSDCService(serviceTemplate, vnf);
 
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "regionId"));
         AAIService aaiService = newAAIService(vim);
 
-        PackageDistributionService service = new DefaultPackageDistributionService(sdcService,aaiService, null);
+        PackageDistributionService service = new DefaultPackageDistributionService(sdcService, null);
 
-        Assert.assertThat(service.retrievePackageInfo(), equalTo(new VfNsPackageInfo(serviceTemplate, vnf, vim)));
+        Assert.assertThat(service.retrievePackageInfo(), equalTo(new VfNsPackageInfo(serviceTemplate, vnf)));
     }
 
     private AAIService newAAIService(List<VimInfo> vim) {
@@ -87,7 +87,7 @@ public class DefaultPackageDistributionServiceTest {
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "regionId"));
         AAIService aaiService = newAAIService(vim);
 
-        PackageDistributionService service = new DefaultPackageDistributionService(sdcService,aaiService, null);
+        PackageDistributionService service = new DefaultPackageDistributionService(sdcService, null);
         service.retrievePackageInfo();
     }
 
@@ -97,7 +97,7 @@ public class DefaultPackageDistributionServiceTest {
         Csar csar = new Csar();
         DistributionResult result = new DistributionResult("status", "description", "errorcode");
         when(vfcService.distributeNsPackage(csar)).thenReturn(successfulCall(result));
-        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
         Assert.assertSame(result, service.postNsPackage(csar));
     }
@@ -107,7 +107,7 @@ public class DefaultPackageDistributionServiceTest {
         VfcService vfcService = mock(VfcService.class);
         Csar csar = new Csar();
         when(vfcService.distributeNsPackage(csar)).thenReturn(failedCall("VFC is not available!"));
-        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
         service.postNsPackage(csar);
     }
 
@@ -117,7 +117,7 @@ public class DefaultPackageDistributionServiceTest {
         Csar csar = new Csar();
         Job job = new Job();
         when(vfcService.distributeVnfPackage(csar)).thenReturn(successfulCall(job));
-        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
         Assert.assertSame(job, service.postVfPackage(csar));
     }
@@ -127,7 +127,7 @@ public class DefaultPackageDistributionServiceTest {
         VfcService vfcService = mock(VfcService.class);
         Csar csar = new Csar();
         when(vfcService.distributeVnfPackage(csar)).thenReturn(failedCall("VFC is not available!"));
-        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
         service.postVfPackage(csar);
     }
 
@@ -137,7 +137,7 @@ public class DefaultPackageDistributionServiceTest {
         String jobId = "1";
         JobStatus jobStatus = new JobStatus();
         when(vfcService.getJobStatus(jobId)).thenReturn(successfulCall(jobStatus));
-        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
         Assert.assertSame(jobStatus, service.getJobStatus(jobId));
     }
@@ -147,7 +147,7 @@ public class DefaultPackageDistributionServiceTest {
         VfcService vfcService = mock(VfcService.class);
         String jobId = "1";
         when(vfcService.getJobStatus(jobId)).thenReturn(failedCall("VFC is not available!"));
-        PackageDistributionService service = new DefaultPackageDistributionService(null, null, vfcService);
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
         service.getJobStatus(jobId);
     }
 }

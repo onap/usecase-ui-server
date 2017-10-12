@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
@@ -49,6 +50,16 @@ public class DefaultCustomerService implements CustomerService {
     public List<AAICustomer> listCustomer() {
         try {
             return this.aaiService.listCustomer().execute().body();
+        } catch (IOException e) {
+            logger.error("list customers occur exception");
+            throw new AAIException("AAI is not available.", e);
+        }
+    }
+
+    @Override
+    public List<AAIServiceSubscription> listServiceSubscriptions(String customerId) {
+        try {
+            return this.aaiService.listServiceSubscriptions(customerId).execute().body();
         } catch (IOException e) {
             logger.error("list customers occur exception");
             throw new AAIException("AAI is not available.", e);

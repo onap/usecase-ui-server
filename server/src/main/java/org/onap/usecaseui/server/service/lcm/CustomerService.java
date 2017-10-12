@@ -16,9 +16,11 @@
 package org.onap.usecaseui.server.service.lcm;
 
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 
 import java.util.List;
 
 public interface CustomerService {
     List<AAICustomer> listCustomer();
+    List<AAIServiceSubscription> listServiceSubscriptions(String customerId);
 }

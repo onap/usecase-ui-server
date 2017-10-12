@@ -28,6 +28,8 @@ public class SDCServiceTemplate {
 
     private String name;
 
+    private String version;
+
     private String toscaModelURL;
 
     private String category;
@@ -37,11 +39,13 @@ public class SDCServiceTemplate {
             @JsonProperty String uuid,
             @JsonProperty String invariantUUID,
             @JsonProperty String name,
+            @JsonProperty String version,
             @JsonProperty String toscaModelURL,
             @JsonProperty String category) {
         this.uuid = uuid;
         this.invariantUUID = invariantUUID;
         this.name = name;
+        this.version = version;
         this.toscaModelURL = toscaModelURL;
         this.category = category;
     }
@@ -56,6 +60,10 @@ public class SDCServiceTemplate {
 
     public String getName() {
         return name;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     public String getToscaModelURL() {
@@ -74,12 +82,13 @@ public class SDCServiceTemplate {
         return Objects.equals(uuid, that.uuid) &&
                 Objects.equals(invariantUUID, that.invariantUUID) &&
                 Objects.equals(name, that.name) &&
+                Objects.equals(version, that.version) &&
                 Objects.equals(toscaModelURL, that.toscaModelURL) &&
                 Objects.equals(category, that.category);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, invariantUUID, name, toscaModelURL, category);
+        return Objects.hash(uuid, invariantUUID, name, version, toscaModelURL, category);
     }
 }
