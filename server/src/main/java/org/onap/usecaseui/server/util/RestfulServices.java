@@ -15,8 +15,14 @@
  */
 package org.onap.usecaseui.server.util;
 
+import okhttp3.RequestBody;
+import okhttp3.MediaType;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 public class RestfulServices {
 
@@ -26,5 +32,20 @@ public class RestfulServices {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         return retrofit.create(clazz);
+    }
+
+    public static RequestBody extractBody(HttpServletRequest request) throws IOException {
+        int len = request.getContentLength();
+        ServletInputStream inStream = null;
+        try {
+            inStream = request.getInputStream();
+            byte[] buffer = new byte[len];
+            inStream.read(buffer, 0, len);
+            return RequestBody.create(MediaType.parse("application/json"), buffer);
+        }finally {
+            if (inStream != null) {
+                inStream.close();
+            }
+        }
     }
 }

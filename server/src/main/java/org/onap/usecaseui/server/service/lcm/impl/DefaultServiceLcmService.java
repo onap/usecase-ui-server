@@ -15,17 +15,20 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import okhttp3.RequestBody;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceInstantiationRequest;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+
+import static org.onap.usecaseui.server.util.RestfulServices.create;
+import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 
 @Service("ServiceLcmService")
 @org.springframework.context.annotation.Configuration
@@ -35,7 +38,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     private SOService soService;
 
     public DefaultServiceLcmService() {
-        this(RestfulServices.create(SOService.class));
+        this(create(SOService.class));
     }
 
     public DefaultServiceLcmService(SOService soService) {
@@ -43,9 +46,10 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     }
 
     @Override
-    public ServiceOperation instantiateService(ServiceInstantiationRequest request) {
+    public ServiceOperation instantiateService(HttpServletRequest request) {
         try {
-            return soService.instantiateService(request).execute().body();
+            RequestBody requestBody = extractBody(request);
+            return soService.instantiateService(requestBody).execute().body();
         } catch (IOException e) {
             throw new SOException("SO Service is not available!", e);
         }

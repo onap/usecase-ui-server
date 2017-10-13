@@ -18,7 +18,8 @@ package org.onap.usecaseui.server.controller.lcm;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceInstantiationRequest;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.mockito.Mockito.*;
 
@@ -36,7 +37,7 @@ public class ServiceLcmControllerTest {
 
     @Test
     public void testInstantiateService() throws Exception {
-        ServiceInstantiationRequest request = mock(ServiceInstantiationRequest.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
         controller.instantiateService(request);
 
         verify(service, times(1)).instantiateService(request);

@@ -17,15 +17,18 @@ package org.onap.usecaseui.server.controller.lcm;
 
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceInstantiationRequest;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @org.springframework.context.annotation.Configuration
@@ -43,7 +46,7 @@ public class ServiceLcmController {
 
     @ResponseBody
     @RequestMapping(value = {"/onapapi/uui-lcm/v1/services/"}, method = RequestMethod.POST , produces = "application/json")
-    public ServiceOperation instantiateService(@RequestBody ServiceInstantiationRequest request){
+    public ServiceOperation instantiateService(HttpServletRequest request){
         return serviceLcmService.instantiateService(request);
     }
 

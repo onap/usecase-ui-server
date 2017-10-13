@@ -20,12 +20,15 @@ import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceInstantiationRequest;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 
-import java.util.HashMap;
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
@@ -34,34 +37,51 @@ import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 public class DefaultServiceLcmServiceTest {
 
     @Test
-    public void itCanInstantiateService() {
+    public void itCanInstantiateService() throws IOException {
         SOService soService = mock(SOService.class);
-        ServiceInstantiationRequest request = new ServiceInstantiationRequest(
-                "name",
-                "description",
-                "123",
-                "123",
-                new HashMap<>()
-        );
         ServiceOperation operation = new ServiceOperation("1", "1");
-        when(soService.instantiateService(request)).thenReturn(successfulCall(operation));
+        when(soService.instantiateService(anyObject())).thenReturn(successfulCall(operation));
+
+        HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
 
         Assert.assertSame(operation, service.instantiateService(request));
     }
 
+    private HttpServletRequest mockRequest() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getContentLength()).thenReturn(0);
+        ServletInputStream inStream = new ServletInputStream() {
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            public boolean isReady() {
+                return false;
+            }
+
+            @Override
+            public void setReadListener(ReadListener readListener) {
+
+            }
+
+            @Override
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+        when(request.getInputStream()).thenReturn(inStream);
+        return request;
+    }
+
     @Test(expected = SOException.class)
-    public void instantiateServiceWillThrowExceptionWhenSOIsNotAvailable() {
+    public void instantiateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
         SOService soService = mock(SOService.class);
-        ServiceInstantiationRequest request = new ServiceInstantiationRequest(
-                "name",
-                "description",
-                "123",
-                "123",
-                new HashMap<>()
-        );
-        when(soService.instantiateService(request)).thenReturn(failedCall("SO is not available!"));
+        when(soService.instantiateService(anyObject())).thenReturn(failedCall("SO is not available!"));
+        HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
 

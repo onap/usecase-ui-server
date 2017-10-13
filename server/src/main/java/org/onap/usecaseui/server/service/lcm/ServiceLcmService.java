@@ -16,12 +16,13 @@
 package org.onap.usecaseui.server.service.lcm;
 
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceInstantiationRequest;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
+
+import javax.servlet.http.HttpServletRequest;
 
 public interface ServiceLcmService {
 
-    ServiceOperation instantiateService(ServiceInstantiationRequest request);
+    ServiceOperation instantiateService(HttpServletRequest request);
 
     OperationProgressInformation queryOperationProgress(String serviceId, String operationId);
 

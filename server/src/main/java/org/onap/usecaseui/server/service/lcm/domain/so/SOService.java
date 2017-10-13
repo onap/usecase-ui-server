@@ -15,19 +15,16 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.so;
 
+import okhttp3.RequestBody;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceInstantiationRequest;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import retrofit2.Call;
-import retrofit2.http.DELETE;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
+import retrofit2.http.*;
 
 public interface SOService {
 
     @POST("/so/e2eServiceInstances/v2")
-    Call<ServiceOperation> instantiateService(ServiceInstantiationRequest request);
+    Call<ServiceOperation> instantiateService(@Body RequestBody body);
 
     @GET("/so/e2eServiceInstances/v2/{serviceId}/operations/{operationId}")
     Call<OperationProgressInformation> queryOperationProgress(@Path("serviceId") String serviceId, @Path("operationId") String operationId);
