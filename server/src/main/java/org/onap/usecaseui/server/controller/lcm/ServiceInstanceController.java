@@ -44,7 +44,7 @@ public class ServiceInstanceController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/service-instances"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/service-instances"}, method = RequestMethod.GET , produces = "application/json")
     public List<ServiceInstance> listServiceInstances(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");

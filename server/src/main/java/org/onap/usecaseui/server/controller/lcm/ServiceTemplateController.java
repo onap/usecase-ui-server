@@ -43,19 +43,19 @@ public class ServiceTemplateController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/service-templates"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/service-templates"}, method = RequestMethod.GET , produces = "application/json")
     public List<SDCServiceTemplate> getServiceTemplates(){
         return serviceTemplateService.listDistributedServiceTemplate();
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/service-templates/{uuid}"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/service-templates/{uuid}"}, method = RequestMethod.GET , produces = "application/json")
     public ServiceTemplateInput getServiceTemplateInput(@PathVariable("uuid") String uuid, @RequestParam("toscaModelPath") String toscaModelPath){
         return serviceTemplateService.fetchServiceTemplateInput(uuid, toscaModelPath);
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/locations/"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/locations/"}, method = RequestMethod.GET , produces = "application/json")
     public List<VimInfo> getLocations(){
         return serviceTemplateService.listVim();
     }

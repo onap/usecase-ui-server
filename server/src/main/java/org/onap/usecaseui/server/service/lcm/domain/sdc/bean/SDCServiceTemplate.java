@@ -36,12 +36,12 @@ public class SDCServiceTemplate {
 
     @JsonCreator
     public SDCServiceTemplate(
-            @JsonProperty String uuid,
-            @JsonProperty String invariantUUID,
-            @JsonProperty String name,
-            @JsonProperty String version,
-            @JsonProperty String toscaModelURL,
-            @JsonProperty String category) {
+            @JsonProperty("uuid") String uuid,
+            @JsonProperty("invariantUUID") String invariantUUID,
+            @JsonProperty("name") String name,
+            @JsonProperty("version") String version,
+            @JsonProperty("toscaModelURL") String toscaModelURL,
+            @JsonProperty("category") String category) {
         this.uuid = uuid;
         this.invariantUUID = invariantUUID;
         this.name = name;
@@ -50,26 +50,32 @@ public class SDCServiceTemplate {
         this.category = category;
     }
 
+    @JsonProperty("uuid")
     public String getUuid() {
         return uuid;
     }
 
+    @JsonProperty("invariantUUID")
     public String getInvariantUUID() {
         return invariantUUID;
     }
 
+    @JsonProperty("name")
     public String getName() {
         return name;
     }
 
+    @JsonProperty("version")
     public String getVersion() {
         return version;
     }
 
+    @JsonProperty("toscaModelURL")
     public String getToscaModelURL() {
         return toscaModelURL;
     }
 
+    @JsonProperty("category")
     public String getCategory() {
         return category;
     }

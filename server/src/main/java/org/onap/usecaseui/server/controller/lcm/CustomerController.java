@@ -41,13 +41,13 @@ public class CustomerController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/customers"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/customers"}, method = RequestMethod.GET , produces = "application/json")
     public List<AAICustomer> getCustomers(){
         return customerService.listCustomer();
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/customers/{customerId}/service-subscriptions"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/customers/{customerId}/service-subscriptions"}, method = RequestMethod.GET , produces = "application/json")
     public List<AAIServiceSubscription> getServiceSubscriptions(@PathVariable(value="customerId") String customerId){
         return customerService.listServiceSubscriptions(customerId);
     }

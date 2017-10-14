@@ -44,25 +44,25 @@ public class PackageDistributionController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/vf-ns-packages"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/vf-ns-packages"}, method = RequestMethod.GET , produces = "application/json")
     public VfNsPackageInfo retrievePackageInfo(){
         return packageDistributionService.retrievePackageInfo();
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/ns-packages"}, method = RequestMethod.POST , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/ns-packages"}, method = RequestMethod.POST , produces = "application/json")
     public DistributionResult distributeNsPackage(@RequestBody Csar csar){
         return packageDistributionService.postNsPackage(csar);
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/vf-packages"}, method = RequestMethod.POST , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/vf-packages"}, method = RequestMethod.POST , produces = "application/json")
     public Job distributeVfPackage(@RequestBody Csar csar){
         return packageDistributionService.postVfPackage(csar);
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/onapapi/uui-lcm/v1/jobs/{jobId}"}, method = RequestMethod.POST , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/jobs/{jobId}"}, method = RequestMethod.POST , produces = "application/json")
     public JobStatus getJobStatus(@PathVariable(value="jobId") String jobId){
         return packageDistributionService.getJobStatus(jobId);
     }

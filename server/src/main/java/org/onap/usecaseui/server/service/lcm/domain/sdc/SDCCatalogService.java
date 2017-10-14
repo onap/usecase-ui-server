@@ -27,29 +27,29 @@ public interface SDCCatalogService {
 
     @Headers({
             "X-ECOMP-InstanceID: 777",
-            "authorization :  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
+            "Authorization:  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
     })
-    @GET("sdc/v1/catalog/services")
+    @GET("/sdc/v1/catalog/services")
     Call<List<SDCServiceTemplate>> listServices(@Query("category")String category, @Query("distributionStatus") String distributionStatus);
 
     @Headers({
             "X-ECOMP-InstanceID: 777",
-            "authorization :  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
+            "Authorization:  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
     })
-    @GET("sdc/v1/catalog/services/{uuid}/metadata")
+    @GET("/sdc/v1/catalog/services/{uuid}/metadata")
     Call<SDCServiceTemplate> getService(@Path("uuid") String uuid);
 
     @Headers({
             "X-ECOMP-InstanceID: 777",
-            "authorization :  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
+            "Authorization:  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
     })
     @GET
     Call<ResponseBody> downloadCsar(@Url String fileUrl);
 
     @Headers({
             "X-ECOMP-InstanceID: 777",
-            "authorization :  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
+            "Authorization:  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
     })
-    @GET("sdc/v1/catalog/resources")
+    @GET("/sdc/v1/catalog/resources")
     Call<List<Vnf>> listResources(@Query("resourceType") String resourceType, @Query("distributionStatus") String distributionStatus);
 }
