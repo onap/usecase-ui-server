@@ -80,12 +80,9 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     private ServiceTemplateInput fetchServiceTemplate(String uuid, String toscaModelPath) {
-        String rootPath = "http://localhost";// get from msb
-        String templateUrl = String.format("%s/%s", rootPath, toscaModelPath);
-
-        String toPath = String.format("temp/%s.csar", uuid);
+        String toPath = String.format("/home/uui/%s.csar", uuid);
         try {
-            downloadFile(templateUrl, toPath);
+            downloadFile(toscaModelPath, toPath);
             return extractTemplate(toPath);
         }  catch (IOException e) {
             throw new SDCCatalogException("download csar file failed!", e);
@@ -94,12 +91,14 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         }
     }
 
-    protected void downloadFile(String templateUrl, String toPath) throws IOException {
+    protected void downloadFile(String toscaModelPath, String toPath) throws IOException {
         try {
+            String msbUrl = RestfulServices.getMsbAddress();
+            String templateUrl = String.format("http://%s/%s", msbUrl, toscaModelPath);
             ResponseBody body = sdcCatalog.downloadCsar(templateUrl).execute().body();
             Files.write(body.bytes(),new File(toPath));
         } catch (IOException e) {
-            logger.error(String.format("Download %s failed!", templateUrl));
+            logger.error(String.format("Download %s failed!", toscaModelPath));
             throw e;
         }
     }

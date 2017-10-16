@@ -27,11 +27,20 @@ import java.io.IOException;
 public class RestfulServices {
 
     public static <T> T create(Class<T> clazz) {
+        String msbUrl = getMsbAddress();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost")
+                .baseUrl("http://" + msbUrl)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         return retrofit.create(clazz);
+    }
+
+    public static String getMsbAddress() {
+        String msbAddress = System.getenv("MSB_ADDR");
+        if (msbAddress == null) {
+            return "";
+        }
+        return msbAddress;
     }
 
     public static RequestBody extractBody(HttpServletRequest request) throws IOException {
