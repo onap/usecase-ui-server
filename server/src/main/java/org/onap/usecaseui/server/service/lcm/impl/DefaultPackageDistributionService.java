@@ -46,7 +46,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     private VfcService vfcService;
 
     public DefaultPackageDistributionService() {
-        this(create(SDCCatalogService.class), create(VfcService.class));
+        this(create("https://sdc.api.simpledemo.openecomp.org:8443", SDCCatalogService.class), create(VfcService.class));
     }
 
     public DefaultPackageDistributionService(SDCCatalogService sdcCatalogService, VfcService vfcService) {

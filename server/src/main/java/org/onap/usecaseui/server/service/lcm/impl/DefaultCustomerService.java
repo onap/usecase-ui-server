@@ -39,7 +39,7 @@ public class DefaultCustomerService implements CustomerService {
     private AAIService aaiService;
 
     public DefaultCustomerService() {
-        this(RestfulServices.create(AAIService.class));
+        this(RestfulServices.create("https://aai.api.simpledemo.openecomp.org:8443", AAIService.class));
     }
 
     public DefaultCustomerService(AAIService aaiService) {

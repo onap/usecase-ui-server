@@ -26,6 +26,14 @@ import java.io.IOException;
 
 public class RestfulServices {
 
+    public static <T> T create(String baseUrl, Class<T> clazz) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build();
+        return retrofit.create(clazz);
+    }
+
     public static <T> T create(Class<T> clazz) {
         String msbUrl = getMsbAddress();
         Retrofit retrofit = new Retrofit.Builder()

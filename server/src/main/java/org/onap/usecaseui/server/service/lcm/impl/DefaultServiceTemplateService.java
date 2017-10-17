@@ -56,7 +56,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     private AAIService aaiService;
 
     public DefaultServiceTemplateService() {
-        this(RestfulServices.create(SDCCatalogService.class), RestfulServices.create(AAIService.class));
+        this(RestfulServices.create("https://sdc.api.simpledemo.openecomp.org:8443", SDCCatalogService.class), RestfulServices.create("https://aai.api.simpledemo.openecomp.org:8443", AAIService.class));
     }
 
     public DefaultServiceTemplateService(SDCCatalogService sdcCatalog, AAIService aaiService) {

@@ -27,12 +27,12 @@ import retrofit2.http.Path;
 
 public interface VfcService {
 
-    @POST("/nspackages")
+    @POST("/api/catalog/v1/nspackages")
     Call<DistributionResult> distributeNsPackage(@Body Csar csar);
 
-    @POST("/vnfpackages")
+    @POST("/api/catalog/v1/vnfpackages")
     Call<Job> distributeVnfPackage(@Body Csar csar);
 
-    @GET("/jobs/{jobId}")
+    @GET("/api/nslcm/v1/jobs/{jobId}")
     Call<JobStatus> getJobStatus(@Path("jobId") String jobId);
 }
