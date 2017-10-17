@@ -15,6 +15,9 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.vfc.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class ResponseDescriptor {
 
     private String status;

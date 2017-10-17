@@ -28,7 +28,7 @@ public interface AAIService {
     @Headers({
             "X-TransactionId: 7777",
             "X-FromAppId: uui",
-            "Authorization: QUFJOkFBSQ==",
+            "Authorization: Basic QUFJOkFBSQ==",
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers")
@@ -38,7 +38,7 @@ public interface AAIService {
     @Headers({
             "X-TransactionId: 7777",
             "X-FromAppId: uui",
-            "Authorization: QUFJOkFBSQ==",
+            "Authorization: Basic QUFJOkFBSQ==",
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
@@ -48,7 +48,7 @@ public interface AAIService {
     @Headers({
             "X-TransactionId: 7777",
             "X-FromAppId: uui",
-            "Authorization: QUFJOkFBSQ==",
+            "Authorization: Basic QUFJOkFBSQ==",
             "Accept: application/json"
     })
 //    @GET("/cloud-infrastructure/cloud-regions")
@@ -58,7 +58,7 @@ public interface AAIService {
     @Headers({
             "X-TransactionId: 7777",
             "X-FromAppId: uui",
-            "Authorization: QUFJOkFBSQ==",
+            "Authorization: Basic QUFJOkFBSQ==",
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")

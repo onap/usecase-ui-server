@@ -15,6 +15,9 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.so.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class ServiceOperation {
 
     private String serviceId;
