@@ -37,7 +37,7 @@ public class RestfulServices {
     public static <T> T create(Class<T> clazz) {
         String msbUrl = getMsbAddress();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + msbUrl+"/api")
+                .baseUrl("http://" + msbUrl+"/api/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         return retrofit.create(clazz);
