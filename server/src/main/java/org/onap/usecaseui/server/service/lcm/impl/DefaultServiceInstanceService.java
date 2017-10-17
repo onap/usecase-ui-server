@@ -38,7 +38,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     private AAIService aaiService;
 
     public DefaultServiceInstanceService() {
-        this(RestfulServices.create("https://aai.api.simpledemo.openecomp.org:8443", AAIService.class));
+        this(RestfulServices.create(AAIService.class));
     }
 
     public DefaultServiceInstanceService(AAIService aaiService) {

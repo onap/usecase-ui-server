@@ -23,12 +23,12 @@ import retrofit2.http.*;
 
 public interface SOService {
 
-    @POST("/so/e2eServiceInstances/v2")
+    @POST("/so-e2eServiceInstances/v2")
     Call<ServiceOperation> instantiateService(@Body RequestBody body);
 
-    @GET("/so/e2eServiceInstances/v2/{serviceId}/operations/{operationId}")
+    @GET("/so-e2eServiceInstances/v2/{serviceId}/operations/{operationId}")
     Call<OperationProgressInformation> queryOperationProgress(@Path("serviceId") String serviceId, @Path("operationId") String operationId);
 
-    @DELETE("/so/e2eServiceInstances/v2/{serviceId}")
+    @DELETE("/so-e2eServiceInstances/v2/{serviceId}")
     Call<ServiceOperation> terminateService(@Path("serviceId") String serviceId);
 }

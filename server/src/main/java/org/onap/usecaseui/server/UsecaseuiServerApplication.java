@@ -42,32 +42,32 @@ public class UsecaseuiServerApplication {
     
 	public static void main(String[] args) {
 		SpringApplication.run(UsecaseuiServerApplication.class, args);
-        String msbUrl = RestfulServices.getMsbAddress();
-        if (msbUrl.contains(":")) {
-            String[] ipAndPort = msbUrl.split(":");
-            MSBServiceClient msbClient = new MSBServiceClient(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
-
-            MicroServiceInfo msinfo = new MicroServiceInfo();
-            msinfo.setServiceName("usecase-ui-server");
-            msinfo.setVersion("v1");
-            msinfo.setUrl("/api/usecaseui/server/v1");
-            msinfo.setProtocol("REST");
-            msinfo.setVisualRange("0|1");
-
-            try {
-                Set<Node> nodes = new HashSet<>();
-                Node node1 = new Node();
-                node1.setIp(InetAddress.getLocalHost().getHostAddress());
-                node1.setPort("8082");
-                nodes.add(node1);
-                msinfo.setNodes(nodes);
-                msbClient.registerMicroServiceInfo(msinfo, false);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (RouteException e) {
-                e.printStackTrace();
-            }
-        }
+//        String msbUrl = RestfulServices.getMsbAddress();
+//        if (msbUrl.contains(":")) {
+//            String[] ipAndPort = msbUrl.split(":");
+//            MSBServiceClient msbClient = new MSBServiceClient(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
+//
+//            MicroServiceInfo msinfo = new MicroServiceInfo();
+//            msinfo.setServiceName("usecase-ui-server");
+//            msinfo.setVersion("v1");
+//            msinfo.setUrl("/api/usecaseui/server/v1");
+//            msinfo.setProtocol("REST");
+//            msinfo.setVisualRange("0|1");
+//
+//            try {
+//                Set<Node> nodes = new HashSet<>();
+//                Node node1 = new Node();
+//                node1.setIp(InetAddress.getLocalHost().getHostAddress());
+//                node1.setPort("8082");
+//                nodes.add(node1);
+//                msinfo.setNodes(nodes);
+//                msbClient.registerMicroServiceInfo(msinfo, false);
+//            } catch (UnknownHostException e) {
+//                e.printStackTrace();
+//            } catch (RouteException e) {
+//                e.printStackTrace();
+//            }
+//        }
 	}
 	
 }
