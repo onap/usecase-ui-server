@@ -22,6 +22,7 @@ import org.onap.usecaseui.server.bean.lcm.TemplateInput;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
@@ -170,8 +171,9 @@ public class DefaultServiceTemplateServiceTest {
 
     private AAIService newAAIService(List<VimInfo> vim) {
         AAIService aaiService = mock(AAIService.class);
-
-        Call<List<VimInfo>> vimCall = successfulCall(vim);
+        VimInfoRsp rsp = new VimInfoRsp();
+        rsp.setCloudRegion(vim);
+        Call<VimInfoRsp> vimCall = successfulCall(rsp);
         when(aaiService.listVimInfo()).thenReturn(vimCall);
         return aaiService;
     }

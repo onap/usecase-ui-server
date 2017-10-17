@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 
 import java.util.Collections;
@@ -38,7 +39,9 @@ public class DefaultServiceInstanceServiceTest {
         String customerId = "1";
         String serviceType = "service";
         List<ServiceInstance> instances = Collections.singletonList(new ServiceInstance("1","service","1","VoLTE","e2eservice","abc","vim1"));
-        when(aaiService.listServiceInstances(customerId, serviceType)).thenReturn(successfulCall(instances));
+        ServiceInstanceRsp rsp = new ServiceInstanceRsp();
+        rsp.setServiceInstances(instances);
+        when(aaiService.listServiceInstances(customerId, serviceType)).thenReturn(successfulCall(rsp));
 
         ServiceInstanceService service = new DefaultServiceInstanceService(aaiService);
 

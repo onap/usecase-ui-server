@@ -49,7 +49,7 @@ public class DefaultCustomerService implements CustomerService {
     @Override
     public List<AAICustomer> listCustomer() {
         try {
-            return this.aaiService.listCustomer().execute().body();
+            return this.aaiService.listCustomer().execute().body().getCustomer();
         } catch (IOException e) {
             logger.error("list customers occur exception");
             throw new AAIException("AAI is not available.", e);
@@ -59,7 +59,7 @@ public class DefaultCustomerService implements CustomerService {
     @Override
     public List<AAIServiceSubscription> listServiceSubscriptions(String customerId) {
         try {
-            return this.aaiService.listServiceSubscriptions(customerId).execute().body();
+            return this.aaiService.listServiceSubscriptions(customerId).execute().body().getServiceSubscriptions();
         } catch (IOException e) {
             logger.error("list customers occur exception");
             throw new AAIException("AAI is not available.", e);

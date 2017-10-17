@@ -48,7 +48,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     @Override
     public List<ServiceInstance> listServiceInstances(String customerId, String serviceType) {
         try {
-            return aaiService.listServiceInstances(customerId, serviceType).execute().body();
+            return aaiService.listServiceInstances(customerId, serviceType).execute().body().getServiceInstances();
         } catch (IOException e) {
             logger.error("list services instances occur exception");
             throw new AAIException("AAI is not available.", e);

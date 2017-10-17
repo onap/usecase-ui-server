@@ -15,10 +15,7 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.aai;
 
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.*;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -36,7 +33,7 @@ public interface AAIService {
     })
 //    @GET("/api/aai-business/v11/customers")
     @GET("/aai-business/v11/customers")
-    Call<List<AAICustomer>> listCustomer();
+    Call<AAICustomerRsp> listCustomer();
 
     @Headers({
             "X-TransactionId: 7777",
@@ -46,7 +43,7 @@ public interface AAIService {
     })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     @GET("/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
-    Call<List<ServiceInstance>> listServiceInstances(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
+    Call<ServiceInstanceRsp> listServiceInstances(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
 
     @Headers({
             "X-TransactionId: 7777",
@@ -56,7 +53,7 @@ public interface AAIService {
     })
 //    @GET("/cloud-infrastructure/cloud-regions")
     @GET("/aai-cloudInfrastructure/v11/cloud-regions")
-    Call<List<VimInfo>> listVimInfo();
+    Call<VimInfoRsp> listVimInfo();
 
     @Headers({
             "X-TransactionId: 7777",
@@ -66,5 +63,5 @@ public interface AAIService {
     })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
     @GET("/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
-    Call<List<AAIServiceSubscription>> listServiceSubscriptions(@Path("global-customer-id") String customerId);
+    Call<ServiceSubscriptionRsp> listServiceSubscriptions(@Path("global-customer-id") String customerId);
 }

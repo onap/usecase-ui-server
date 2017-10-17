@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import retrofit2.Call;
 
@@ -38,7 +39,9 @@ public class DefaultCustomerServiceTest {
         List<AAICustomer> customers = singletonList(new AAICustomer("1", "name", "type"));
 
         AAIService aaiService = mock(AAIService.class);
-        Call<List<AAICustomer>> call = successfulCall(customers);
+        AAICustomerRsp rsp = new AAICustomerRsp();
+        rsp.setCustomer(customers);
+        Call<AAICustomerRsp> call = successfulCall(rsp);
         when(aaiService.listCustomer()).thenReturn(call);
 
         CustomerService customerService = new DefaultCustomerService(aaiService);
@@ -48,7 +51,7 @@ public class DefaultCustomerServiceTest {
     @Test(expected = AAIException.class)
     public void itWillThrowExceptionWhenAAIIsNotAvailable() {
         AAIService aaiService = mock(AAIService.class);
-        Call<List<AAICustomer>> call = failedCall("AAI is not available!");
+        Call<AAICustomerRsp> call = failedCall("AAI is not available!");
         when(aaiService.listCustomer()).thenReturn(call);
 
         CustomerService customerService = new DefaultCustomerService(aaiService);

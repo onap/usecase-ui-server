@@ -25,6 +25,7 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.openecomp.sdc.toscaparser.api.NodeTemplate;
@@ -166,6 +167,19 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
                     String.valueOf(input.getDefault())
             ));
         }
+        if (SDCConsts.CATEGORY_NS.equals(type)) {
+//            templateInputs.add(new TemplateInput(
+//
+//            ));
+        }
+        // sdn controller
+//        templateInputs.add(new TemplateInput(
+//                "sdncontroller",
+//                "enum",
+//                "sdn controller for the service",
+//                "false",
+//                ""
+//        ));
         return new ServiceTemplateInput(
                 invariantUUID,
                 uuid,
@@ -181,7 +195,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     @Override
     public List<VimInfo> listVim() {
         try {
-            return aaiService.listVimInfo().execute().body();
+            return aaiService.listVimInfo().execute().body().getCloudRegion();
         } catch (IOException e) {
             logger.error("Visit AAI occur exception");
             throw new AAIException("AAI is not available.", e);
