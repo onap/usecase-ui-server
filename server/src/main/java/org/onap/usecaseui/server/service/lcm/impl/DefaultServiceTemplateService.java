@@ -104,7 +104,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     protected void downloadFile(String toscaModelPath, String toPath) throws IOException {
         try {
             String msbUrl = RestfulServices.getMsbAddress();
-            String templateUrl = String.format("http://%s/%s", msbUrl, toscaModelPath);
+            String templateUrl = String.format("http://%s%s", msbUrl, toscaModelPath);
             ResponseBody body = sdcCatalog.downloadCsar(templateUrl).execute().body();
             Files.write(body.bytes(),new File(toPath));
         } catch (IOException e) {
