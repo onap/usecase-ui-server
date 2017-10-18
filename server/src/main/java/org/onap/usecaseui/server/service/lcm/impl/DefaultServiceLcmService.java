@@ -21,11 +21,15 @@ import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import retrofit2.Response;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.onap.usecaseui.server.util.RestfulServices.create;
 import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
@@ -34,6 +38,8 @@ import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
 public class DefaultServiceLcmService implements ServiceLcmService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultServiceLcmService.class);
 
     private SOService soService;
 
@@ -49,7 +55,13 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     public ServiceOperation instantiateService(HttpServletRequest request) {
         try {
             RequestBody requestBody = extractBody(request);
-            return soService.instantiateService(requestBody).execute().body();
+            Response<ServiceOperation> response = soService.instantiateService(requestBody).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not instantiate service[code=%s, message=%s]", response.code(), response.message()));
+                throw new SOException("SO instantiate service failed!");
+            }
         } catch (IOException e) {
             throw new SOException("SO Service is not available!", e);
         }
@@ -58,7 +70,13 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public OperationProgressInformation queryOperationProgress(String serviceId, String operationId) {
         try {
-            return soService.queryOperationProgress(serviceId, operationId).execute().body();
+            Response<OperationProgressInformation> response = soService.queryOperationProgress(serviceId, operationId).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not query operation process[code=%s, message=%s]", response.code(), response.message()));
+                throw new SOException("SO query operation process failed!");
+            }
         } catch (IOException e) {
             throw new SOException("SO Service is not available!", e);
         }
@@ -67,7 +85,13 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public ServiceOperation terminateService(String serviceId) {
         try {
-            return soService.terminateService(serviceId).execute().body();
+            Response<ServiceOperation> response = soService.terminateService(serviceId).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not terminate service[code=%s, message=%s]", response.code(), response.message()));
+                throw new SOException("SO terminate service failed!");
+            }
         } catch (IOException e) {
             throw new SOException("SO Service is not available!", e);
         }

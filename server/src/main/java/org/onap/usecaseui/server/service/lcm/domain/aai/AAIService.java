@@ -32,7 +32,7 @@ public interface AAIService {
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers")
-    @GET("/aai-business/v11/customers")
+    @GET("/api/aai-business/v11/customers")
     Call<AAICustomerRsp> listCustomer();
 
     @Headers({
@@ -42,7 +42,7 @@ public interface AAIService {
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
-    @GET("/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
+    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ServiceInstanceRsp> listServiceInstances(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
 
     @Headers({
@@ -52,7 +52,7 @@ public interface AAIService {
             "Accept: application/json"
     })
 //    @GET("/cloud-infrastructure/cloud-regions")
-    @GET("/aai-cloudInfrastructure/v11/cloud-regions")
+    @GET("/api/aai-cloudInfrastructure/v11/cloud-regions")
     Call<VimInfoRsp> listVimInfo();
 
     @Headers({
@@ -62,6 +62,6 @@ public interface AAIService {
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
-    @GET("/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
+    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
     Call<ServiceSubscriptionRsp> listServiceSubscriptions(@Path("global-customer-id") String customerId);
 }

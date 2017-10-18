@@ -22,6 +22,7 @@ import org.onap.usecaseui.server.bean.lcm.TemplateInput;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
@@ -36,10 +37,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import retrofit2.Response;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.CATEGORY_E2E_SERVICE;
@@ -68,7 +71,13 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     @Override
     public List<SDCServiceTemplate> listDistributedServiceTemplate() {
         try {
-            return this.sdcCatalog.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
+            Response<List<SDCServiceTemplate>> response = this.sdcCatalog.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not get distributed e2e service templates[code=%s, message=%s]", response.code(), response.message()));
+                return Collections.emptyList();
+            }
         } catch (IOException e) {
             logger.error("Visit SDC Catalog occur exception");
             throw new SDCCatalogException("SDC Catalog is not available.", e);
@@ -109,8 +118,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         ServiceTemplateInput serviceTemplateInput = fetchServiceTemplateInput(tosca);
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
             String nodeUUID = nodeTemplate.getMetaData().getValue("UUID");
-            SDCServiceTemplate template = sdcCatalog.getService(nodeUUID).execute().body();
-            String toscaModelURL = template.getToscaModelURL();
+            String toscaModelURL = getToscaUrl(nodeUUID);
             if (toscaModelURL == null) {
                 continue;
             }
@@ -118,6 +126,17 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             serviceTemplateInput.addNestedTemplate(nodeService);
         }
         return serviceTemplateInput;
+    }
+
+    private String getToscaUrl(String nodeUUID) throws IOException {
+        Response<SDCServiceTemplate> response = sdcCatalog.getService(nodeUUID).execute();
+        if (response.isSuccessful()) {
+            SDCServiceTemplate template = response.body();
+            return template.getToscaModelURL();
+        } else {
+            logger.info(String.format("Cannot get tosca model for node template[%s]", nodeUUID));
+            return null;
+        }
     }
 
 //    private List<ServiceTemplateInput> extractInputs(String toPath, List<ServiceTemplateInput> serviceTemplateInputs) throws JToscaException, IOException {
@@ -195,7 +214,13 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     @Override
     public List<VimInfo> listVim() {
         try {
-            return aaiService.listVimInfo().execute().body().getCloudRegion();
+            Response<VimInfoRsp> response = aaiService.listVimInfo().execute();
+            if (response.isSuccessful()) {
+                return response.body().getCloudRegion();
+            } else {
+                logger.info(String.format("Can not get vim info[code=%s, message=%s]", response.code(), response.message()));
+                return Collections.emptyList();
+            }
         } catch (IOException e) {
             logger.error("Visit AAI occur exception");
             throw new AAIException("AAI is not available.", e);

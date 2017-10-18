@@ -17,6 +17,10 @@ package org.onap.usecaseui.server.service.lcm.domain.so.exceptions;
 
 public class SOException extends RuntimeException {
 
+    public SOException(String message) {
+        super(message);
+    }
+
     public SOException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -27,10 +27,14 @@ import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.exceptions.VfcException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import retrofit2.Response;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.*;
@@ -40,6 +44,8 @@ import static org.onap.usecaseui.server.util.RestfulServices.create;
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
 public class DefaultPackageDistributionService implements PackageDistributionService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultPackageDistributionService.class);
 
     private SDCCatalogService sdcCatalogService;
 
@@ -57,18 +63,44 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public VfNsPackageInfo retrievePackageInfo() {
         try {
-            List<SDCServiceTemplate> nsTemplate = sdcCatalogService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
-            List<Vnf> vnf = sdcCatalogService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED).execute().body();
+            List<SDCServiceTemplate> nsTemplate = getNsTemplate();
+            List<Vnf> vnf = getVFResource();
             return new VfNsPackageInfo(nsTemplate, vnf);
         } catch (IOException e) {
             throw new SDCCatalogException("SDC Service is not available!", e);
         }
     }
 
+    private List<Vnf> getVFResource() throws IOException {
+        Response<List<Vnf>> response = sdcCatalogService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED).execute();
+        if (response.isSuccessful()) {
+            return response.body();
+        } else {
+            logger.info(String.format("Can not get VF resources[code=%s, message=%s]", response.code(), response.message()));
+            return Collections.emptyList();
+        }
+    }
+
+    private List<SDCServiceTemplate> getNsTemplate() throws IOException {
+        Response<List<SDCServiceTemplate>> response = sdcCatalogService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED).execute();
+        if (response.isSuccessful()) {
+            return response.body();
+        } else {
+            logger.info(String.format("Can not get NS services[code=%s, message=%s]", response.code(), response.message()));
+            return Collections.emptyList();
+        }
+    }
+
     @Override
     public DistributionResult postNsPackage(Csar csar) {
         try {
-            return vfcService.distributeNsPackage(csar).execute().body();
+            Response<DistributionResult> response = vfcService.distributeNsPackage(csar).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not post NS packages[code=%s, message=%s]", response.code(), response.message()));
+                throw new VfcException("VFC service is not available!");
+            }
         } catch (IOException e) {
             throw new VfcException("VFC service is not available!", e);
         }
@@ -77,7 +109,13 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public Job postVfPackage(Csar csar) {
         try {
-            return vfcService.distributeVnfPackage(csar).execute().body();
+            Response<Job> response = vfcService.distributeVnfPackage(csar).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not get VF packages[code=%s, message=%s]", response.code(), response.message()));
+                throw new VfcException("VFC service is not available!");
+            }
         } catch (IOException e) {
             throw new VfcException("VFC service is not available!", e);
         }
@@ -86,7 +124,13 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public JobStatus getJobStatus(String jobId) {
         try {
-            return vfcService.getJobStatus(jobId).execute().body();
+            Response<JobStatus> response = vfcService.getJobStatus(jobId).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
+                throw new VfcException("VFC service is not available!");
+            }
         } catch (IOException e) {
             throw new VfcException("VFC service is not available!", e);
         }

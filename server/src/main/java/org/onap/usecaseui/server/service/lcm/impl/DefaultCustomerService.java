@@ -18,15 +18,19 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import retrofit2.Response;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Service("CustomerService")
@@ -49,7 +53,13 @@ public class DefaultCustomerService implements CustomerService {
     @Override
     public List<AAICustomer> listCustomer() {
         try {
-            return this.aaiService.listCustomer().execute().body().getCustomer();
+            Response<AAICustomerRsp> response = this.aaiService.listCustomer().execute();
+            if (response.isSuccessful()) {
+                return response.body().getCustomer();
+            } else {
+                logger.info(String.format("Can not get customers[code=%s, message=%s]", response.code(), response.message()));
+                return Collections.emptyList();
+            }
         } catch (IOException e) {
             logger.error("list customers occur exception");
             throw new AAIException("AAI is not available.", e);
@@ -59,7 +69,13 @@ public class DefaultCustomerService implements CustomerService {
     @Override
     public List<AAIServiceSubscription> listServiceSubscriptions(String customerId) {
         try {
-            return this.aaiService.listServiceSubscriptions(customerId).execute().body().getServiceSubscriptions();
+            Response<ServiceSubscriptionRsp> response = this.aaiService.listServiceSubscriptions(customerId).execute();
+            if (response.isSuccessful()) {
+                return response.body().getServiceSubscriptions();
+            } else {
+                logger.info(String.format("Can not get service-subscriptions[code=%s, message=%s]", response.code(), response.message()));
+                return Collections.emptyList();
+            }
         } catch (IOException e) {
             logger.error("list customers occur exception");
             throw new AAIException("AAI is not available.", e);

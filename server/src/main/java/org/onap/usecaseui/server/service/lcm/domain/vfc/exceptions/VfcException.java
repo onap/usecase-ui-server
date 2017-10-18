@@ -17,6 +17,10 @@ package org.onap.usecaseui.server.service.lcm.domain.vfc.exceptions;
 
 public class VfcException extends RuntimeException {
 
+    public VfcException(String message) {
+        super(message);
+    }
+
     public VfcException(String message, Throwable cause) {
         super(message, cause);
     }

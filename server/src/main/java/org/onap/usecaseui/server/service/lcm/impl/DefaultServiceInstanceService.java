@@ -18,14 +18,17 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import retrofit2.Response;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Service("ServiceInstanceService")
@@ -48,7 +51,13 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     @Override
     public List<ServiceInstance> listServiceInstances(String customerId, String serviceType) {
         try {
-            return aaiService.listServiceInstances(customerId, serviceType).execute().body().getServiceInstances();
+            Response<ServiceInstanceRsp> response = aaiService.listServiceInstances(customerId, serviceType).execute();
+            if (response.isSuccessful()) {
+                return response.body().getServiceInstances();
+            } else {
+                logger.info(String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
+                return Collections.emptyList();
+            }
         } catch (IOException e) {
             logger.error("list services instances occur exception");
             throw new AAIException("AAI is not available.", e);
