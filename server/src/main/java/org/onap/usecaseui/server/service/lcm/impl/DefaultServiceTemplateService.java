@@ -186,19 +186,25 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
                     String.valueOf(input.getDefault())
             ));
         }
-        if (SDCConsts.CATEGORY_NS.equals(type)) {
-//            templateInputs.add(new TemplateInput(
-//
-//            ));
+        if (SDCConsts.CATEGORY_NS.equals(subcategory)) {
+            // location
+            templateInputs.add(new TemplateInput(
+                    name + "_Location",
+                    "enum",
+                    "location for the service",
+                    "true",
+                    ""
+            ));
+            // sdn controller
+            templateInputs.add(new TemplateInput(
+                    "sdncontroller",
+                    "enum",
+                    "sdn controller for the service",
+                    "false",
+                    ""
+            ));
         }
-        // sdn controller
-//        templateInputs.add(new TemplateInput(
-//                "sdncontroller",
-//                "enum",
-//                "sdn controller for the service",
-//                "false",
-//                ""
-//        ));
+
         return new ServiceTemplateInput(
                 invariantUUID,
                 uuid,
