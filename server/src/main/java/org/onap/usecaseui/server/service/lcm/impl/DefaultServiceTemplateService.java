@@ -26,10 +26,10 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.openecomp.sdc.toscaparser.api.NodeTemplate;
+import org.openecomp.sdc.toscaparser.api.Property;
 import org.openecomp.sdc.toscaparser.api.ToscaTemplate;
 import org.openecomp.sdc.toscaparser.api.common.JToscaException;
 import org.openecomp.sdc.toscaparser.api.parameters.Input;
@@ -41,9 +41,7 @@ import retrofit2.Response;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.CATEGORY_E2E_SERVICE;
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.DISTRIBUTION_STATUS_DISTRIBUTED;
@@ -86,14 +84,15 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
 
     @Override
     public ServiceTemplateInput fetchServiceTemplateInput(String uuid, String toscaModelPath) {
-        return fetchServiceTemplate(uuid, toscaModelPath);
+        return fetchServiceTemplate(uuid, toscaModelPath, false);
     }
 
-    private ServiceTemplateInput fetchServiceTemplate(String uuid, String toscaModelPath) {
+    private ServiceTemplateInput fetchServiceTemplate(String uuid, String toscaModelPath, boolean isVF) {
         String toPath = String.format("/home/uui/%s.csar", uuid);
+//        String toPath = String.format("D:\\volte/%s.csar", uuid);
         try {
             downloadFile(toscaModelPath, toPath);
-            return extractTemplate(toPath);
+            return extractTemplate(toPath, isVF);
         }  catch (IOException e) {
             throw new SDCCatalogException("download csar file failed!", e);
         } catch (JToscaException e) {
@@ -113,22 +112,150 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         }
     }
 
-    private ServiceTemplateInput extractTemplate(String toPath) throws JToscaException, IOException {
+    public ServiceTemplateInput extractTemplate(String toPath, boolean isVF) throws JToscaException, IOException {
         ToscaTemplate tosca = translateToToscaTemplate(toPath);
-        ServiceTemplateInput serviceTemplateInput = fetchServiceTemplateInput(tosca);
+        ServiceTemplateInput serviceTemplateInput = newServiceTemplateInput(tosca);
+        Map<String, Input> inputsMap = getInputsMap(tosca);
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
-            String nodeUUID = nodeTemplate.getMetaData().getValue("UUID");
-            String toscaModelURL = getToscaUrl(nodeUUID);
-            if (toscaModelURL == null) {
-                continue;
+            String nodeType = nodeTemplate.getMetaData().getValue("type");
+            if ("VF".equals(nodeType)) {
+                ServiceTemplateInput nodeService = fetchVFNodeTemplateInput(nodeTemplate);
+                if (nodeService == null) {
+                    continue;
+                }
+                serviceTemplateInput.addNestedTemplate(nodeService);
+            } else {
+                ServiceTemplateInput nodeService = fetchVLServiceTemplateInput(nodeTemplate, inputsMap);
+                serviceTemplateInput.addNestedTemplate(nodeService);
             }
-            ServiceTemplateInput nodeService = fetchServiceTemplate(nodeUUID, toscaModelURL);
-            serviceTemplateInput.addNestedTemplate(nodeService);
+        }
+        List<TemplateInput> serviceInputs = getServiceInputs(inputsMap.values());
+        serviceTemplateInput.addInputs(serviceInputs);
+        if (isVF) {
+            appendLocationParameters(serviceTemplateInput, tosca);
+            appendSdnControllerParameter(serviceTemplateInput);
         }
         return serviceTemplateInput;
     }
 
-    private String getToscaUrl(String nodeUUID) throws IOException {
+    private void appendLocationParameters(ServiceTemplateInput serviceTemplateInput, ToscaTemplate tosca) {
+        for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
+            String type = nodeTemplate.getMetaData().getValue("type");
+            if ("VF".equals(type)) {
+                serviceTemplateInput.addInput(
+                        new TemplateInput(
+                                nodeTemplate.getName() + "_location",
+                                "vf_location",
+                                "location for the service",
+                                "true",
+                                ""
+                        )
+                );
+            }
+        }
+    }
+
+    private void appendSdnControllerParameter(ServiceTemplateInput serviceTemplateInput) {
+        serviceTemplateInput.addInput(
+                new TemplateInput(
+                        "sdncontroller",
+                        "sdn_controller",
+                        "location for the service",
+                        "true",
+                        ""
+                )
+        );
+    }
+
+    private ServiceTemplateInput fetchVLServiceTemplateInput(NodeTemplate nodeTemplate, Map<String, Input> inputsMap) {
+        ServiceTemplateInput nodeService = newServiceTemplateInput(nodeTemplate);
+        String prefix = getPrefix(nodeTemplate.getName());
+        List<TemplateInput> templateInputs = collectInputs(prefix, inputsMap);
+        nodeService.addInputs(templateInputs);
+        return nodeService;
+    }
+
+    private ServiceTemplateInput fetchVFNodeTemplateInput(NodeTemplate nodeTemplate) throws IOException {
+        String nodeUUID = fetchNodeUUID(nodeTemplate);
+        if (nodeUUID == null) {
+            // not found nested node
+            return null;
+        }
+        String toscaModelURL = getToscaUrl(nodeUUID);
+        if (toscaModelURL == null) {
+            return null;
+        }
+        return fetchServiceTemplate(nodeUUID, toscaModelURL, true);
+    }
+
+    private List<TemplateInput> getServiceInputs(Collection<Input> inputs) {
+        List<TemplateInput> result = new ArrayList<>();
+        for (Input input : inputs) {
+            result.add(
+                    new TemplateInput(
+                            input.getName(),
+                            input.getType(),
+                            input.getDescription(),
+                            String.valueOf(input.isRequired()),
+                            String.valueOf(input.getDefault())
+                    )
+            );
+        }
+        return result;
+    }
+
+    private String fetchNodeUUID(NodeTemplate nodeTemplate) {
+        LinkedHashMap<String, Property> properties = nodeTemplate.getProperties();
+        for (Map.Entry<String, Property> entry : properties.entrySet()) {
+            String key = entry.getKey();
+            if (key.endsWith("providing_service_uuid")) {
+                return String.valueOf(entry.getValue().getValue());
+            }
+        }
+        // not found
+        return null;
+    }
+
+    private List<TemplateInput> collectInputs(String prefix, Map<String, Input> inputsMap) {
+        List<TemplateInput> result = new ArrayList<>();
+        List<String> removeItems = new ArrayList<>();
+        for (Map.Entry<String, Input> entry : inputsMap.entrySet()) {
+            String name = entry.getKey();
+            if (name.startsWith(prefix)) {
+                //remove resource name prefix which sdc added.
+                name = name.substring(prefix.length() + 1);
+                Input in = entry.getValue();
+                result.add(
+                        new TemplateInput(
+                                name,
+                                in.getType(),
+                                in.getDescription(),
+                                String.valueOf(in.isRequired()),
+                                String.valueOf(in.getDefault())
+                        )
+                );
+                removeItems.add(entry.getKey());
+            }
+        }
+        for (String key : removeItems) {
+            inputsMap.remove(key);
+        }
+        return result;
+    }
+
+    private Map<String, Input> getInputsMap(ToscaTemplate tosca) {
+        Map<String, Input> result = new HashMap<>();
+        for (Input input : tosca.getInputs()) {
+            result.put(input.getName(), input);
+        }
+        return result;
+    }
+
+    private String getPrefix(String name) {
+        return name.replaceAll(" +", "").toLowerCase();
+    }
+
+    protected String getToscaUrl(String nodeUUID) throws IOException {
         Response<SDCServiceTemplate> response = sdcCatalog.getService(nodeUUID).execute();
         if (response.isSuccessful()) {
             SDCServiceTemplate template = response.body();
@@ -139,29 +266,11 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         }
     }
 
-//    private List<ServiceTemplateInput> extractInputs(String toPath, List<ServiceTemplateInput> serviceTemplateInputs) throws JToscaException, IOException {
-//        ToscaTemplate tosca = translateToToscaTemplate(toPath);
-//        ServiceTemplateInput serviceTemplateInput = fetchServiceTemplateInput(tosca);
-//        serviceTemplateInputs.add(serviceTemplateInput);
-//        for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
-//            String nodeUUID = nodeTemplate.getMetaData().getValue("UUID");
-//            SDCServiceTemplate template = sdcCatalog.getService(nodeUUID).execute().body();
-//            String toscaModelURL = template.getToscaModelURL();
-//            if (toscaModelURL == null) {
-//                continue;
-//            }
-//            String savePath = String.format("temp/%s.csar", nodeUUID);
-//            downloadFile(toscaModelURL, savePath);
-//            extractInputs(savePath, serviceTemplateInputs);
-//        }
-//        return serviceTemplateInputs;
-//    }
-
     protected ToscaTemplate translateToToscaTemplate(String toPath) throws JToscaException {
         return new ToscaTemplate(toPath,null,true,null,true);
     }
 
-    private static ServiceTemplateInput fetchServiceTemplateInput(ToscaTemplate tosca) {
+    private static ServiceTemplateInput newServiceTemplateInput(ToscaTemplate tosca) {
         String invariantUUID = tosca.getMetaData().getValue("invariantUUID");
         String uuid = tosca.getMetaData().getValue("UUID");
         String name = tosca.getMetaData().getValue("name");
@@ -176,35 +285,6 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         if(subcategory == null) {
             subcategory = "";
         }
-        List<TemplateInput> templateInputs = new ArrayList<>();
-        for(Input input : tosca.getInputs()) {
-            templateInputs.add(new TemplateInput(
-                    input.getName(),
-                    input.getType(),
-                    input.getDescription(),
-                    String.valueOf(input.isRequired()),
-                    String.valueOf(input.getDefault())
-            ));
-        }
-        if (SDCConsts.CATEGORY_NS.equals(subcategory)) {
-            // location
-            templateInputs.add(new TemplateInput(
-                    name + "_Location",
-                    "enum",
-                    "location for the service",
-                    "true",
-                    ""
-            ));
-            // sdn controller
-            templateInputs.add(new TemplateInput(
-                    "sdncontroller",
-                    "enum",
-                    "sdn controller for the service",
-                    "false",
-                    ""
-            ));
-        }
-
         return new ServiceTemplateInput(
                 invariantUUID,
                 uuid,
@@ -214,7 +294,34 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
                 description,
                 category,
                 subcategory,
-                templateInputs);
+                new ArrayList<>());
+    }
+
+    private static ServiceTemplateInput newServiceTemplateInput(NodeTemplate nodeTemplate) {
+        String invariantUUID = nodeTemplate.getMetaData().getValue("invariantUUID");
+        String uuid = nodeTemplate.getMetaData().getValue("UUID");
+        String name = nodeTemplate.getMetaData().getValue("name");
+        String type = nodeTemplate.getMetaData().getValue("type");
+        String version = nodeTemplate.getMetaData().getValue("version");
+        if (version == null) {
+            version = "";
+        }
+        String description = nodeTemplate.getMetaData().getValue("description");
+        String category = nodeTemplate.getMetaData().getValue("category");
+        String subcategory = nodeTemplate.getMetaData().getValue("subcategory");
+        if(subcategory == null) {
+            subcategory = "";
+        }
+        return new ServiceTemplateInput(
+                invariantUUID,
+                uuid,
+                name,
+                type,
+                version,
+                description,
+                category,
+                subcategory,
+                new ArrayList<>());
     }
 
     @Override

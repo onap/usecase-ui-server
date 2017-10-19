@@ -36,7 +36,11 @@ public class TemplateInput {
         this.type = type;
         this.description = description;
         this.isRequired = isRequired;
-        this.defaultValue = defaultValue;
+        if ("{}".equals(defaultValue)) {
+            this.defaultValue = "";
+        } else {
+            this.defaultValue = defaultValue;
+        }
     }
 
     public String getName() {

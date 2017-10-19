@@ -109,6 +109,14 @@ public class ServiceTemplateInput {
         this.nestedTemplates.add(template);
     }
 
+    public void addInputs(List<TemplateInput> inputs) {
+        this.inputs.addAll(inputs);
+    }
+
+    public void addInput(TemplateInput input) {
+        this.inputs.add(input);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

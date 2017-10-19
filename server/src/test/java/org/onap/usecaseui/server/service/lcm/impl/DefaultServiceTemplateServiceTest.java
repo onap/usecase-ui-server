@@ -112,7 +112,7 @@ public class DefaultServiceTemplateServiceTest {
         TemplateInput templateInput = new TemplateInput("field_name","field_type", "field_description", "true", "field_default");
         ServiceTemplateInput nodeTemplateInput = new ServiceTemplateInput(
                 nodeUUID, nodeUUID, "", "", "","", "service", "", Collections.singletonList(templateInput));
-        e2eServiceTemplateInput.addNestedTemplate(nodeTemplateInput);
+//        e2eServiceTemplateInput.addNestedTemplate(nodeTemplateInput);
         return e2eServiceTemplateInput;
     }
 
@@ -136,7 +136,7 @@ public class DefaultServiceTemplateServiceTest {
         when(nodeTemplate.getMetaData()).thenReturn(new Metadata(nodeUUIDAttr));
 
         ArrayList<NodeTemplate> nodeTemplates = new ArrayList<>();
-        nodeTemplates.add(nodeTemplate);
+//        nodeTemplates.add(nodeTemplate);
         when(toscaTemplate.getNodeTemplates()).thenReturn(nodeTemplates);
 
         return toscaTemplate;
@@ -180,7 +180,7 @@ public class DefaultServiceTemplateServiceTest {
 
     @Test(expected = SDCCatalogException.class)
     public void retrieveInputsWillThrowExceptionWhenDownloadFailed() {
-        ServiceTemplateService service = new DefaultServiceTemplateService() {
+        ServiceTemplateService service = new DefaultServiceTemplateService(null, null) {
             @Override
             protected void downloadFile(String templateUrl, String toPath) throws IOException {
                 throw new IOException("download failed!");
@@ -191,7 +191,7 @@ public class DefaultServiceTemplateServiceTest {
 
     @Test(expected = SDCCatalogException.class)
     public void retrieveInputsWillThrowExceptionWhenParsingToscaTemplateFailed() {
-        ServiceTemplateService service = new DefaultServiceTemplateService() {
+        ServiceTemplateService service = new DefaultServiceTemplateService(null, null) {
             @Override
             protected void downloadFile(String templateUrl, String toPath) throws IOException {
                 // download successfully...
