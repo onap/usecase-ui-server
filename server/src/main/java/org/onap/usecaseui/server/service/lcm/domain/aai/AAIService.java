@@ -21,8 +21,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
 
-import java.util.List;
-
 public interface AAIService {
 
     @Headers({
@@ -64,4 +62,13 @@ public interface AAIService {
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
     @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
     Call<ServiceSubscriptionRsp> listServiceSubscriptions(@Path("global-customer-id") String customerId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-externalSystem/v11/esr-thirdparty-sdnc-list")
+    Call<SDNCControllerRsp> listSdncControllers();
 }

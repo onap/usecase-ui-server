@@ -21,6 +21,8 @@ import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
@@ -132,6 +134,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         List<TemplateInput> serviceInputs = getServiceInputs(inputsMap.values());
         serviceTemplateInput.addInputs(serviceInputs);
         if (isVF) {
+            serviceTemplateInput.setType("VF");
             appendLocationParameters(serviceTemplateInput, tosca);
             appendSdnControllerParameter(serviceTemplateInput);
         }
@@ -141,12 +144,13 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     private void appendLocationParameters(ServiceTemplateInput serviceTemplateInput, ToscaTemplate tosca) {
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
             String type = nodeTemplate.getMetaData().getValue("type");
+            String uuid = nodeTemplate.getMetaData().getValue("UUID");
             if ("VF".equals(type)) {
                 serviceTemplateInput.addInput(
                         new TemplateInput(
-                                nodeTemplate.getName() + "_location",
+                                uuid,
                                 "vf_location",
-                                "location for the service",
+                                "location for the service " + uuid,
                                 "true",
                                 ""
                         )
@@ -332,6 +336,22 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
                 return response.body().getCloudRegion();
             } else {
                 logger.info(String.format("Can not get vim info[code=%s, message=%s]", response.code(), response.message()));
+                return Collections.emptyList();
+            }
+        } catch (IOException e) {
+            logger.error("Visit AAI occur exception");
+            throw new AAIException("AAI is not available.", e);
+        }
+    }
+
+    @Override
+    public List<SDNCController> listSDNCControllers() {
+        try {
+            Response<SDNCControllerRsp> response = aaiService.listSdncControllers().execute();
+            if (response.isSuccessful()) {
+                return response.body().getEsrThirdpartySdncList();
+            } else {
+                logger.info(String.format("Can not get sdnc controllers[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {

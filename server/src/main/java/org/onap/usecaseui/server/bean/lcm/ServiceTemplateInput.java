@@ -117,6 +117,10 @@ public class ServiceTemplateInput {
         this.inputs.add(input);
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

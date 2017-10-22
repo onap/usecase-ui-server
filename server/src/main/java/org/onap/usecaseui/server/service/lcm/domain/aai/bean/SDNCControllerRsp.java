@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.lcm;
+package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public interface ServiceTemplateService {
+public class SDNCControllerRsp {
 
-    List<SDCServiceTemplate> listDistributedServiceTemplate();
+    private List<SDNCController> esrThirdpartySdncList;
 
-    ServiceTemplateInput fetchServiceTemplateInput(String uuid, String toscaModelPath);
+    @JsonProperty("esr-thirdparty-sdnc-list")
+    public List<SDNCController> getEsrThirdpartySdncList() {
+        return esrThirdpartySdncList;
+    }
 
-    List<VimInfo> listVim();
-
-    List<SDNCController> listSDNCControllers();
+    @JsonProperty("esr-thirdparty-sdnc-list")
+    public void setEsrThirdpartySdncList(List<SDNCController> esrThirdpartySdncList) {
+        this.esrThirdpartySdncList = esrThirdpartySdncList;
+    }
 }

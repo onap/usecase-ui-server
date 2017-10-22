@@ -17,6 +17,7 @@ package org.onap.usecaseui.server.controller.lcm;
 
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.slf4j.Logger;
@@ -58,5 +59,11 @@ public class ServiceTemplateController {
     @RequestMapping(value = {"/uui-lcm/locations/"}, method = RequestMethod.GET , produces = "application/json")
     public List<VimInfo> getLocations(){
         return serviceTemplateService.listVim();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/sdnc-controllers/"}, method = RequestMethod.GET , produces = "application/json")
+    public List<SDNCController> getSDNCControllers(){
+        return serviceTemplateService.listSDNCControllers();
     }
 }
