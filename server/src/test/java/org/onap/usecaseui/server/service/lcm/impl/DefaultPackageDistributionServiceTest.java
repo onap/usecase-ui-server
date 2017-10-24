@@ -76,7 +76,7 @@ public class DefaultPackageDistributionServiceTest {
         when(sdcService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(serviceCall);
 
         Call<List<Vnf>> vnfCall = successfulCall(vnf);
-        when(sdcService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(vnfCall);
+        when(sdcService.listResources(RESOURCETYPE_VF)).thenReturn(vnfCall);
         return sdcService;
     }
 

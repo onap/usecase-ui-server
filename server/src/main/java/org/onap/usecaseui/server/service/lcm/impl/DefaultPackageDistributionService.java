@@ -72,7 +72,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     }
 
     private List<Vnf> getVFResource() throws IOException {
-        Response<List<Vnf>> response = sdcCatalogService.listResources(RESOURCETYPE_VF, DISTRIBUTION_STATUS_DISTRIBUTED).execute();
+        Response<List<Vnf>> response = sdcCatalogService.listResources(RESOURCETYPE_VF).execute();
         if (response.isSuccessful()) {
             return response.body();
         } else {

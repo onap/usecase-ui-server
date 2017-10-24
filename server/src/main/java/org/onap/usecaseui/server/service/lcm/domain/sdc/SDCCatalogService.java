@@ -51,5 +51,5 @@ public interface SDCCatalogService {
             "Authorization:  Basic YWFpOktwOGJKNFNYc3pNMFdYbGhhazNlSGxjc2UyZ0F3ODR2YW9HR21KdlV5MlU="
     })
     @GET("/api/sdc/v1/catalog/resources")
-    Call<List<Vnf>> listResources(@Query("resourceType") String resourceType, @Query("distributionStatus") String distributionStatus);
+    Call<List<Vnf>> listResources(@Query("resourceType") String resourceType);
 }
