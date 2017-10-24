@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service.lcm.domain.so;
 
 import okhttp3.RequestBody;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import retrofit2.Call;
@@ -23,12 +24,12 @@ import retrofit2.http.*;
 
 public interface SOService {
 
-    @POST("/api/so-e2eServiceInstances/v2")
+    @POST("/api/e2eServiceInstances/v3")
     Call<ServiceOperation> instantiateService(@Body RequestBody body);
 
-    @GET("/api/so-e2eServiceInstances/v2/{serviceId}/operations/{operationId}")
+    @GET("/api/e2eServiceInstances/v3/{serviceId}/operations/{operationId}")
     Call<OperationProgressInformation> queryOperationProgress(@Path("serviceId") String serviceId, @Path("operationId") String operationId);
 
-    @DELETE("/api/so-e2eServiceInstances/v2/{serviceId}")
-    Call<ServiceOperation> terminateService(@Path("serviceId") String serviceId);
+    @DELETE("/api/e2eServiceInstances/v3/{serviceId}")
+    Call<DeleteOperationRsp> terminateService(@Path("serviceId") String serviceId);
 }

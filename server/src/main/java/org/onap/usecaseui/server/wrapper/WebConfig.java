@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.lcm.domain.so.bean;
+package org.onap.usecaseui.server.wrapper;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
-public class OperationProgressInformation {
+@Configuration
+@EnableWebMvc
+public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private OperationProgress operation;
-
-    public OperationProgress getOperation() {
-        return operation;
-    }
-
-    public void setOperation(OperationProgress operation) {
-        this.operation = operation;
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**");
     }
 }

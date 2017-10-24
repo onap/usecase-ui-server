@@ -18,15 +18,15 @@ package org.onap.usecaseui.server.service.lcm.domain.so.bean;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class OperationProgressInformation {
+public class DeleteOperationRsp {
 
-    private OperationProgress operation;
+    private String operationId;
 
-    public OperationProgress getOperation() {
-        return operation;
+    public String getOperationId() {
+        return operationId;
     }
 
-    public void setOperation(OperationProgress operation) {
-        this.operation = operation;
+    public void setOperationId(String operationId) {
+        this.operationId = operationId;
     }
 }

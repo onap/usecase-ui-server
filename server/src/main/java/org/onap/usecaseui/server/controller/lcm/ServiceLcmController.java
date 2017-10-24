@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.controller.lcm;
 
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ public class ServiceLcmController {
 
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/services/{serviceId}"}, method = RequestMethod.DELETE , produces = "application/json")
-    public ServiceOperation terminateService(@PathVariable(value = "serviceId") String serviceId){
+    public DeleteOperationRsp terminateService(@PathVariable(value = "serviceId") String serviceId){
         return serviceLcmService.terminateService(serviceId);
     }
 }

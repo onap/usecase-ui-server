@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import okhttp3.RequestBody;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
@@ -83,9 +84,9 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     }
 
     @Override
-    public ServiceOperation terminateService(String serviceId) {
+    public DeleteOperationRsp terminateService(String serviceId) {
         try {
-            Response<ServiceOperation> response = soService.terminateService(serviceId).execute();
+            Response<DeleteOperationRsp> response = soService.terminateService(serviceId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {

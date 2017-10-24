@@ -20,20 +20,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class ServiceOperation {
 
-    private String serviceId;
+    private Operation service;
 
-    private String operationId;
-
-    public ServiceOperation(String serviceId, String operationId) {
-        this.serviceId = serviceId;
-        this.operationId = operationId;
+    public Operation getService() {
+        return service;
     }
 
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    public String getOperationId() {
-        return operationId;
+    public void setService(Operation service) {
+        this.service = service;
     }
 }

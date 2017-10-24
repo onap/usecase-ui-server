@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.service.lcm;
 
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 
@@ -26,5 +27,5 @@ public interface ServiceLcmService {
 
     OperationProgressInformation queryOperationProgress(String serviceId, String operationId);
 
-    ServiceOperation terminateService(String serviceId);
+    DeleteOperationRsp terminateService(String serviceId);
 }

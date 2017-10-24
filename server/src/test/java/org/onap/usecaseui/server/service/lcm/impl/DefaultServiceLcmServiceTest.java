@@ -19,6 +19,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.Operation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
@@ -39,7 +41,11 @@ public class DefaultServiceLcmServiceTest {
     @Test
     public void itCanInstantiateService() throws IOException {
         SOService soService = mock(SOService.class);
-        ServiceOperation operation = new ServiceOperation("1", "1");
+        Operation op = new Operation();
+        op.setOperationId("1");
+        op.setServiceId("1");
+        ServiceOperation operation = new ServiceOperation();
+        operation.setService(op);
         when(soService.instantiateService(anyObject())).thenReturn(successfulCall(operation));
 
         HttpServletRequest request = mockRequest();
@@ -92,12 +98,13 @@ public class DefaultServiceLcmServiceTest {
     public void itCanTerminateService() {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        ServiceOperation operation = new ServiceOperation("1", "1");
-        when(soService.terminateService(serviceId)).thenReturn(successfulCall(operation));
+        DeleteOperationRsp rsp = new DeleteOperationRsp();
+        rsp.setOperationId("1");
+        when(soService.terminateService(serviceId)).thenReturn(successfulCall(rsp));
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
 
-        Assert.assertSame(operation, service.terminateService(serviceId));
+        Assert.assertSame(rsp, service.terminateService(serviceId));
     }
 
     @Test(expected = SOException.class)
