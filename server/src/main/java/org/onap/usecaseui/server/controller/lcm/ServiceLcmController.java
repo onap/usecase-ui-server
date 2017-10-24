@@ -46,7 +46,7 @@ public class ServiceLcmController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/services/"}, method = RequestMethod.POST , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/services"}, method = RequestMethod.POST , produces = "application/json")
     public ServiceOperation instantiateService(HttpServletRequest request){
         return serviceLcmService.instantiateService(request);
     }
