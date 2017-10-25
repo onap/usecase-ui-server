@@ -24,12 +24,24 @@ import retrofit2.http.*;
 
 public interface SOService {
 
+    @Headers({
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
+    })
     @POST("/api/e2eServiceInstances/v3")
     Call<ServiceOperation> instantiateService(@Body RequestBody body);
 
+    @Headers({
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
+    })
     @GET("/api/e2eServiceInstances/v3/{serviceId}/operations/{operationId}")
     Call<OperationProgressInformation> queryOperationProgress(@Path("serviceId") String serviceId, @Path("operationId") String operationId);
 
+    @Headers({
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
+    })
     @DELETE("/api/e2eServiceInstances/v3/{serviceId}")
     Call<DeleteOperationRsp> terminateService(@Path("serviceId") String serviceId);
 }
