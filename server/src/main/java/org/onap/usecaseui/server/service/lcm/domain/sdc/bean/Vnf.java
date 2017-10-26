@@ -30,26 +30,28 @@ public class Vnf {
 
     private String name;
 
-    @JsonCreator
-    public Vnf(
-            @JsonProperty String uuid,
-            @JsonProperty String invariantUUID,
-            @JsonProperty String name) {
-        this.uuid = uuid;
-        this.invariantUUID = invariantUUID;
-        this.name = name;
-    }
-
     public String getUuid() {
         return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getInvariantUUID() {
         return invariantUUID;
     }
 
+    public void setInvariantUUID(String invariantUUID) {
+        this.invariantUUID = invariantUUID;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

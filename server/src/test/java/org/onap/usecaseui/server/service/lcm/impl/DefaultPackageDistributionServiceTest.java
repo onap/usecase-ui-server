@@ -49,7 +49,11 @@ public class DefaultPackageDistributionServiceTest {
     @Test
     public void itCanRetrievePackageFromSDCAndAAI() {
         List<SDCServiceTemplate> serviceTemplate = Collections.singletonList(new SDCServiceTemplate("1", "1", "service", "V1","", ""));
-        List<Vnf> vnf = Collections.singletonList(new Vnf("2","2","vnf"));
+        Vnf o = new Vnf();
+        o.setInvariantUUID("2");
+        o.setUuid("2");
+        o.setName("vnf");
+        List<Vnf> vnf = Collections.singletonList(o);
         SDCCatalogService sdcService = newSDCService(serviceTemplate, vnf);
 
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "regionId"));
