@@ -101,7 +101,10 @@ public class DefaultPackageDistributionServiceTest {
     public void itCanPostNsPackageToVFC() {
         VfcService vfcService = mock(VfcService.class);
         Csar csar = new Csar();
-        DistributionResult result = new DistributionResult("status", "description", "errorcode");
+        DistributionResult result = new DistributionResult();
+        result.setStatus("status");
+        result.setStatusDescription("description");
+        result.setErrorCode("errorcode");
         when(vfcService.distributeNsPackage(csar)).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 

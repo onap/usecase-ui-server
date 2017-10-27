@@ -26,21 +26,27 @@ public class DistributionResult {
 
     private String errorCode;
 
-    public DistributionResult(String status, String statusDescription, String errorCode) {
-        this.status = status;
-        this.statusDescription = statusDescription;
-        this.errorCode = errorCode;
-    }
-
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getStatusDescription() {
         return statusDescription;
     }
 
+    public void setStatusDescription(String statusDescription) {
+        this.statusDescription = statusDescription;
+    }
+
     public String getErrorCode() {
         return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 }
