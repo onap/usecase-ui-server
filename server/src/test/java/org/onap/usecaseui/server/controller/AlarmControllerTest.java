@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
@@ -41,22 +42,22 @@ public class AlarmControllerTest {
     AlarmController alarmController;
 
     @Test
-    public void getDataNotParam(){
+    public void getDataNotParam() throws JsonProcessingException {
        System.out.println(alarmController.getAlarmData(null,null,null,null,null,null,null,1,100));
     }
 
     @Test
-    public void getDataCarryParam(){
+    public void getDataCarryParam() throws JsonProcessingException {
         System.out.println(alarmController.getAlarmData("110","a","drop","down","1506331166000","1","2",1,100));
     }
 
     @Test
-    public void csvFile(){
+    public void csvFile() throws JsonProcessingException {
         System.out.println(alarmController.generateCsvFile(null,new String[]{"110"}));
     }
 
     @Test
-    public void update(){
+    public void update() throws JsonProcessingException {
         System.out.println(alarmController.updateStatus(null,new String[]{"110"},new String[]{"1"},"s"));
         System.out.println(alarmController.updateStatus(null,new String[]{"110","1101"},new String[]{"1","1"},"many"));
         System.out.println(alarmController.updateStatus(null,new String[]{"110"},new String[]{"1"},"vf"));

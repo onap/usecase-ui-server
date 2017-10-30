@@ -38,7 +38,7 @@ public class PerformanceHeaderServiceTest {
     public void save() throws ParseException {
         PerformanceHeader p = new PerformanceHeader();
         p.setCreateTime(DateUtils.now());
-        p.setEventId("1101");
+        p.setEventId("2202");
         p.setEventName("fxc");
         p.setDomain("asb");
         p.setCreateTime(DateUtils.now());
@@ -109,7 +109,7 @@ public class PerformanceHeaderServiceTest {
     @Test
     public void get() throws ParseException {
         performanceHeaderService.queryId(new String[]{"110"})
-                .forEach(pe -> System.out.println(pe));
+                .forEach(pe -> System.out.println(pe.getCreateTime()));
     }
 
     @Test

@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.onap.usecaseui.server.bean.AlarmsInformation;
@@ -28,9 +29,13 @@ public interface PerformanceInformationService {
     
     String updatePerformanceInformation(PerformanceInformation performanceInformation);
     
-    int getAllCount();
+    int getAllCount(PerformanceInformation performanceInformation, int currentPage, int pageSize);
     
     Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation, int currentPage, int pageSize);
     
     List<PerformanceInformation> queryId(String[] id);
+
+    List<PerformanceInformation> queryDateBetween(String eventId, Date startDate, Date endDate);
+
+    int queryDataBetweenSum(String eventId, String name, Date startDate, Date endDate);
 }

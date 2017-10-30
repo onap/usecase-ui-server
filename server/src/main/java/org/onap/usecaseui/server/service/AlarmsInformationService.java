@@ -28,7 +28,7 @@ public interface AlarmsInformationService {
     
     String updateAlarmsInformation(AlarmsInformation alarmsInformation);
     
-    int getAllCount();
+    int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize);
     
     Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation, int currentPage, int pageSize);
 

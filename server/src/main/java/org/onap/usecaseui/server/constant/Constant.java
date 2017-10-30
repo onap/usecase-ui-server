@@ -19,6 +19,7 @@ package org.onap.usecaseui.server.constant;
 public final class Constant
 {
 
-    public static final String  DATE_FROMAT= "yyyy-MM-dd HH:mm:ss";
-    
+    public static final String DATE_FORMAT= "yyyy-MM-dd HH:mm:ss";
+
+
 }

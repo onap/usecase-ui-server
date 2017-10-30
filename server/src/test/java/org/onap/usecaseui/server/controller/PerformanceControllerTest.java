@@ -46,7 +46,7 @@ public class PerformanceControllerTest {
     private PerformanceController performanceController;
 
     @Test
-    public void getPerformanceData(){
+    public void getPerformanceData() throws JsonProcessingException {
         System.out.println(performanceController.getPerformanceData(null,1,100,null,null,null,null,null));
     }
 
@@ -64,7 +64,7 @@ public class PerformanceControllerTest {
     }
 
     @Test
-    public void generateDiaCsvFile() {
+    public void generateDiaCsvFile() throws JsonProcessingException {
         Map<String,String> p = new HashMap<>();
         p.put("eventId","110");
         p.put("name","110");

@@ -38,7 +38,7 @@ public class AlarmsHeaderServiceTest {
         a.setEventName("a");
         a.setStatus("1");
         a.setVfStatus("1");
-        a.setEventId("11011");
+        a.setEventId("1119");
         a.setDomain("asb");
         a.setEventCategory("s");
         a.setAlarmCondition("ea");
@@ -129,8 +129,11 @@ public class AlarmsHeaderServiceTest {
     @Test
     public void queryEventName() throws ParseException {
       AlarmsHeader a=new AlarmsHeader();
-      a.setEventName("a");
-      System.out.println(alarmsHeaderService.queryAlarmsHeader(a,1,100).getList().size());
+      a.setEventId("110");
+      a.setEventName("asdasds");
+     // a.setVfStatus("2");
+        System.out.println(alarmsHeaderService.queryAlarmsHeader(a,1,100).getList().size());
+      alarmsHeaderService.queryAlarmsHeader(a,1,100).getList().forEach( as->System.out.println(as.toString()));
     }
     
     @Test

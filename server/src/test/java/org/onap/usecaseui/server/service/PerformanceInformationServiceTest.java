@@ -24,6 +24,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
+import java.util.List;
+import java.util.Random;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,12 +38,24 @@ public class PerformanceInformationServiceTest {
     @Test
     public void save() throws ParseException {
         PerformanceInformation a = new PerformanceInformation();
-        a.setEventId("112");
-        a.setName("efw");
-        a.setValue("fre");
-        a.setCreateTime(DateUtils.now());
-        a.setUpdateTime(DateUtils.now());
-        System.out.println(performanceInformationService.savePerformanceInformation(a));
+        for (int y = 1 ; y < 13 ; y++){
+            for (int m = 1 ;m < 31 ; m++){
+                for (int j = 0 ; j < 24 ;j++){
+                    for (int i = 14 ; i <= 59;i += 15){
+                        a.setEventId("2202");
+                        a.setName("memory");
+                        a.setValue((i+j+new Random().nextInt(60))+"");
+                        a.setCreateTime(DateUtils.stringToDate("2016-"+y+"-"+m+" "+j+":"+i+":00"));
+                        a.setUpdateTime(DateUtils.now());
+                        System.out.println(performanceInformationService.savePerformanceInformation(a));
+                    }
+                }
+
+            }
+
+        }
+
+
     }
 
     @Test
@@ -57,25 +71,29 @@ public class PerformanceInformationServiceTest {
 
     @Test
     public void update1() throws ParseException {
-        PerformanceInformation a = new PerformanceInformation();
-        a.setEventId("110");
-        a.setName("efw");
-        a.setValue("fko11");
-        System.out.println(performanceInformationService.updatePerformanceInformation(a));
+        List<PerformanceInformation> as = performanceInformationService.queryId(new String[]{"2202"});
+        as.forEach( a ->{
+            try {
+                a.setCreateTime(DateUtils.stringToDate(DateUtils.addDate(a.getCreateTime(),"day",1)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            System.out.println(performanceInformationService.updatePerformanceInformation(a));
+        });
     }
 
     @Test
     public void get() throws ParseException {
-        performanceInformationService.queryId(new String[]{"110"})
-                .forEach(ai -> System.out.println(ai));
+        performanceInformationService.queryId(new String[]{"2202"})
+                .forEach(ai -> System.out.println(ai.getCreateTime()));
     }
 
     @Test
     public void queryEventId() throws ParseException {
         PerformanceInformation a = new PerformanceInformation();
-        a.setEventId("110");
+       // a.setEventId("2202");
         performanceInformationService.queryPerformanceInformation(a,1,100)
-                .getList().forEach( al -> System.out.println(al));
+                .getList().forEach( al -> System.out.println(al.getValue()));
     }
     @Test
     public void queryName() throws ParseException {
@@ -106,4 +124,13 @@ public class PerformanceInformationServiceTest {
                 .getList().forEach( al -> System.out.println(al));
     }
 
+    @Test
+    public void between() throws ParseException {
+        performanceInformationService.queryDateBetween("2202",DateUtils.stringToDate("2017-10-15 01:00:00"),DateUtils.stringToDate("2017-10-15 02:00:00")).forEach( p -> System.out.println(p));
+    }
+
+    @Test
+    public void sum() throws ParseException {
+        System.out.println(performanceInformationService.queryDataBetweenSum("2202","cpu",DateUtils.stringToDate("2017-10-18 09:00:00"),DateUtils.stringToDate("2017-10-18 10:00:00")));
+    }
 }

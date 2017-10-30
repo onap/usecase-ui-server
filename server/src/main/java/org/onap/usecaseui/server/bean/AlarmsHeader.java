@@ -23,11 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * 
- * @author xuekui
- *
- */
+
 @Entity
 @Table(name="alarms_commoneventheader")
 public class AlarmsHeader implements Serializable{
