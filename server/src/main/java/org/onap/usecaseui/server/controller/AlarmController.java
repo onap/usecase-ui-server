@@ -16,28 +16,22 @@
 package org.onap.usecaseui.server.controller;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.annotations.Parameter;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.bean.PerformanceHeader;
-import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.bo.AlarmBo;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.CSVUtils;
 import org.onap.usecaseui.server.util.DateUtils;
-import org.onap.usecaseui.server.wrapper.AlarmWrapper;
+import org.onap.usecaseui.server.util.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -65,10 +59,35 @@ public class AlarmController
     @Resource(name = "AlarmsInformationService")
     private AlarmsInformationService alarmsInformationService;
 
+    private  String[] AlarmCSVHeaders = new String[]{"version",
+            "eventName","domain","eventId","eventType","nfcNamingCode",
+            "nfNamingCode","sourceId","sourceName","reportingEntityId",
+            "reportingEntityName","priority","startEpochMicrosec","lastEpochMicroSec",
+            "sequence","faultFieldsVersion","eventServrity","eventSourceType",
+            "eventCategory","alarmCondition","specificProblem","vfStatus",
+            "alarmInterfaceA","status",
+            "createTime","updateTime","name","value"};
+
+    private ObjectMapper omAlarm = new ObjectMapper();
+
+    private List<String> last_eventId = new ArrayList<>();
+
+    private List<String> last_status = new ArrayList<>();
+
+    private List<String> last_vfStatus = new ArrayList<>();
 
     @RequestMapping(value = {"/usecase-ui"}, method = RequestMethod.GET)
     public ModelAndView index(){
         return new ModelAndView("index");
+    }
+
+    @RequestMapping(value = {"/alarm/{eventId}/{eventName}/{name}/{value}/{createTime}/{status}/{vfStatus}"})
+    public String getAlarmDateTotal(@PathVariable String eventId,@PathVariable String eventName,
+                                    @PathVariable String name,@PathVariable String value,
+                                    @PathVariable String createTime,@PathVariable String status,
+                                    @PathVariable String vfStatus) throws ParseException {
+
+        return "";
     }
 
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
@@ -78,9 +97,10 @@ public class AlarmController
                                @PathVariable(required = false) String name,@PathVariable(required = false) String value,
                                @PathVariable(required = false) String createTime,@PathVariable(required = false) String status,
                                @PathVariable(required = false) String vfStatus,
-                               @PathVariable int currentPage, @PathVariable int pageSize) {
+                               @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException {
         List<AlarmsHeader> alarmsHeaders = null;
-        List<AlarmBo> maps = new ArrayList<>();
+        List<AlarmBo> list = new ArrayList<>();
+        Page pa = null;
         if (null != eventId || null != eventName || null != name || null != value || null != createTime
                 || null != status || null != vfStatus  ){
             AlarmsHeader alarm = new AlarmsHeader();
@@ -93,7 +113,8 @@ public class AlarmController
             } catch (ParseException e) {
                 logger.error("Parse date error :"+e.getMessage());
             }
-            alarmsHeaders = alarmsHeaderService.queryAlarmsHeader(alarm,currentPage,pageSize).getList();
+            pa = alarmsHeaderService.queryAlarmsHeader(alarm,currentPage,pageSize);
+            alarmsHeaders = pa.getList();
             if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
                 alarmsHeaders.forEach(a ->{
                     AlarmBo abo = new AlarmBo();
@@ -103,48 +124,43 @@ public class AlarmController
                     information.setValue(!"null".equals(value)?value:null);
                     information.setEventId(a.getEventId());
                     abo.setAlarmsInformation(alarmsInformationService.queryAlarmsInformation(information,1,100).getList());
-                    maps.add(abo);
+                    list.add(abo);
                 });
             }
         }else {
-            alarmsHeaders = alarmsHeaderService.queryAlarmsHeader(null, currentPage, pageSize).getList();
+            pa = alarmsHeaderService.queryAlarmsHeader(null, currentPage, pageSize);
+            alarmsHeaders = pa.getList();
             if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
                 alarmsHeaders.forEach(a -> {
                     AlarmBo abo = new AlarmBo();
                     abo.setAlarmsHeader(a);
                     abo.setAlarmsInformation(alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(a.getEventId()),currentPage,pageSize).getList());
-                    maps.add(abo);
+                    list.add(abo);
                 });
             }
         }
         try {
-            ObjectMapper ojm = new ObjectMapper();
-            ojm.setDateFormat(new SimpleDateFormat(Constant.DATE_FROMAT));
-            return ojm.writeValueAsString(maps);
+            Map<String,Object> map = new HashMap<>();
+            map.put("alarms",list);
+            map.put("totalRecords",pa.getTotalRecords());
+            omAlarm.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
+            return omAlarm.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             logger.debug("JsonProcessingException :"+e.getMessage());
-            return "";
+            return omAlarm.writeValueAsString("failed");
         }
     }
 
     @RequestMapping(value = { "/alarm/genCsv/{eventId}" } , method = RequestMethod.GET , produces = "application/json")
-    public String generateCsvFile(HttpServletResponse response, @PathVariable String[] eventId){
+    public String generateCsvFile(HttpServletResponse response, @PathVariable String[] eventId) throws JsonProcessingException {
         String csvFile = "csvFiles/vnf_alarm_"+new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date())+".csv";
-        String[] headers = new String[]{"version",
-                "eventName","domain","eventId","eventType","nfcNamingCode",
-                "nfNamingCode","sourceId","sourceName","reportingEntityId",
-                "reportingEntityName","priority","startEpochMicrosec","lastEpochMicroSec",
-                "sequence","faultFieldsVersion","eventServrity","eventSourceType",
-                "eventCategory","alarmCondition","specificProblem","vfStatus",
-                "alarmInterfaceA","status",
-                "createTime","updateTime","name","value"};
         List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryId(eventId);
         List<String[]> csvData = new ArrayList<>();
         try{
             alarmsHeaders.forEach(ala ->{
                 List<AlarmsInformation> information = alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(ala.getEventId()),1,100).getList();
-                String names = new String();
-                String values = new String();
+                String names = "";
+                String values = "";
                 if (0 < information.size() && null != information){
                     for (AlarmsInformation a : information){
                         names += a.getName()+",";
@@ -163,7 +179,7 @@ public class AlarmController
                         DateUtils.dateToString(ala.getUpdateTime()),names,values
                 });
             });
-            CSVUtils.writeCsv(headers,csvData,csvFile);
+            CSVUtils.writeCsv(AlarmCSVHeaders,csvData,csvFile);
         }catch (Exception e){
             logger.error(e.getMessage());
         }
@@ -178,20 +194,26 @@ public class AlarmController
                 while ((length = is.read(b)) > 0) {
                     os.write(b, 0, length);
                 }
-                return "{'result':'success'}";
+                return omAlarm.writeValueAsString("success");
             }catch (IOException e){
                 logger.error("download csv File error :"+e.getMessage());
-                return "{'result':'failed'}";
+                return omAlarm.writeValueAsString("failed");
             }
         }else
-            return "csvFile generate success,response is null,don't download to local";
+            return omAlarm.writeValueAsString("csvFile generate success,response is null,don't download to local");
     }
 
 
     @RequestMapping(value = { "/alarm/{eventId}/{status}/{type}" } , method = RequestMethod.PUT )
-    public String updateStatus(HttpServletResponse response,@PathVariable String[] eventId,@PathVariable String[] status,@PathVariable String type){
+    public String updateStatus(HttpServletResponse response,@PathVariable String[] eventId,@PathVariable String[] status,@PathVariable String type) throws JsonProcessingException {
         List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryId(eventId);
+        last_eventId.clear();
+        last_vfStatus.clear();
+        last_status.clear();
         for (AlarmsHeader ala: alarmsHeaders) {
+            last_eventId.add(ala.getEventId());
+            last_status.add(ala.getStatus());
+            last_vfStatus.add(ala.getVfStatus());
             if ("vf".equals(type))
                 ala.setVfStatus(status[0]);
             else if ("many".equals(type)){
@@ -203,13 +225,34 @@ public class AlarmController
             if ("0".equals(alarmsHeaderService.updateAlarmsHeader(ala))) {
                 if (null != response)
                     response.setStatus(400);
-                return "{'result':'update failed'}";
+                return omAlarm.writeValueAsString("failed");
             }
         }
-        return "{'result':'update success'}";
+        return omAlarm.writeValueAsString("success");
     }
 
-
+    @RequestMapping(value = {"/alarm/revoke"} , method = RequestMethod.GET)
+    public String revoke() throws JsonProcessingException {
+        String result ;
+        if (last_eventId.size() > 0 && last_vfStatus.size() > 0 && last_status.size() > 0){
+            String[] eids = new String[last_eventId.size()];
+            last_eventId.toArray(eids);
+            List<AlarmsHeader> alarmsHeaders  = alarmsHeaderService.queryId(eids);
+            for (int i = 0;i<alarmsHeaders.size();i++){
+                AlarmsHeader ala =  alarmsHeaders.get(i);
+                ala.setStatus(last_status.get(i));
+                ala.setVfStatus(last_vfStatus.get(i));
+                alarmsHeaderService.updateAlarmsHeader(ala);
+            }
+            last_eventId.clear();
+            last_status.clear();
+            last_vfStatus.clear();
+            result = "revoke success";
+        } else {
+            result = "nothing can revoke";
+        }
+        return omAlarm.writeValueAsString(result);
+    }
 
 
 }

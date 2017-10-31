@@ -29,13 +29,15 @@ import javax.persistence.Table;
 public class PerformanceInformation implements Serializable {
 	
 	@Id
+	@Column(name = "id")
+	private int id;
+	
 	@Column(name = "name")
 	private String name;
 	
 	@Column(name = "value")
 	private String value;
 	
-	@Id
 	@Column(name = "eventId")
 	private String eventId;
 	
@@ -98,6 +100,14 @@ public class PerformanceInformation implements Serializable {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	

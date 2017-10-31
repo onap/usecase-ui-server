@@ -89,10 +89,119 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
         }
 	}
 
-	public int getAllCount() {
+	public int getAllCount(AlarmsHeader alarmsHeader,int currentPage,int pageSize) {
 		try{
+			StringBuffer count=new StringBuffer("select count(*) from AlarmsHeader a where 1=1");
+			if (null == alarmsHeader) {
+                //logger.error("AlarmsHeaderServiceImpl getAllCount alarmsHeader is null!");
+            }else {
+            	if(null!=alarmsHeader.getVersion()) {
+                	String ver=alarmsHeader.getVersion();
+                	count.append(" and a.version like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventName()) {
+                	String ver=alarmsHeader.getEventName();
+                	count.append(" and a.eventName like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getAlarmCondition()) {
+                	String ver=alarmsHeader.getAlarmCondition();
+                	count.append(" and a.alarmCondition like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getDomain()) {
+                	String ver=alarmsHeader.getDomain();
+                	count.append(" and a.domain like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventId()) {
+                	String ver=alarmsHeader.getEventId();
+                	count.append(" and a.eventId = '"+ver+"'");
+                }
+            	if(null!=alarmsHeader.getNfcNamingCode()) {
+                	String ver=alarmsHeader.getNfcNamingCode();
+                	count.append(" and a.nfcNamingCode like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getNfNamingCode()) {
+                	String ver=alarmsHeader.getNfNamingCode();
+                	count.append(" and a.nfNamingCode like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getSourceId()) {
+                	String ver =alarmsHeader.getSourceId();
+                	count.append(" and a.sourceId like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getSourceName()) {
+                	String ver =alarmsHeader.getSourceName();
+                	count.append(" and a.sourceName like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getReportingEntityId()) {
+                	String ver =alarmsHeader.getReportingEntityId();
+                	count.append(" and a.reportingEntityId like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getReportingEntityName()) {
+                	String ver =alarmsHeader.getReportingEntityName();
+                	count.append(" and a.reportingEntityName like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getPriority()) {
+                	String ver =alarmsHeader.getPriority();
+                	count.append(" and a.priority like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getStartEpochMicrosec()) {
+                	String ver =alarmsHeader.getStartEpochMicrosec();
+                	count.append(" and a.startEpochMicrosec like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getLastEpochMicroSec()) {
+                	String ver =alarmsHeader.getLastEpochMicroSec();
+                	count.append(" and a.lastEpochMicroSec like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getSequence()) {
+                	String ver =alarmsHeader.getSequence();
+                	count.append(" and a.sequence like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getFaultFieldsVersion()) {
+                	String ver =alarmsHeader.getFaultFieldsVersion();
+                	count.append(" and a.faultFieldsVersion like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventServrity()) {
+                	String ver =alarmsHeader.getEventServrity();
+                	count.append(" and a.eventServrity like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventType()) {
+                	String ver =alarmsHeader.getEventType();
+                	count.append(" and a.eventSourceType like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventCategory()) {
+                	String ver =alarmsHeader.getEventCategory();
+                	count.append(" and a.eventCategory like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getAlarmCondition()) {
+                	String ver =alarmsHeader.getAlarmCondition();
+                	count.append(" and a.alarmCondition like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getSpecificProblem()) {
+                	String ver =alarmsHeader.getSpecificProblem();
+                	count.append(" and a.specificProblem like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getVfStatus()) {
+                	String ver =alarmsHeader.getVfStatus();
+                	count.append(" and a.vfStatus = '"+ver+"'");
+                }
+            	if(null!=alarmsHeader.getAlarmInterfaceA()) {
+                	String ver =alarmsHeader.getAlarmInterfaceA();
+                	count.append(" and a.alarmInterfaceA like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getStatus()) {
+                	String ver =alarmsHeader.getStatus();
+                	count.append(" and a.status = '"+ver+"'");
+                }
+            	if(null!=alarmsHeader.getCreateTime()) {
+                	Date ver =alarmsHeader.getCreateTime();
+                	count.append(" and a.createTime > '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getUpdateTime()) {
+                	Date ver =alarmsHeader.getUpdateTime();
+                	count.append(" and a.updateTime like '%"+ver+"%'");
+                }
+            } 
             Session session = sessionFactory.openSession();
-            long q=(long)session.createQuery("select count(*) from AlarmsHeader").uniqueResult();
+            long q=(long)session.createQuery(count.toString()).uniqueResult();
             session.flush();
             session.close();
             return (int)q;
@@ -106,91 +215,118 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	@Override
 	public Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader,int currentPage,int pageSize) {
 		Page<AlarmsHeader> page = new Page<AlarmsHeader>();
-		int allRow =this.getAllCount();
+		int allRow =this.getAllCount(alarmsHeader,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
 		try{
 			StringBuffer hql =new StringBuffer("from AlarmsHeader a where 1=1");
             if (null == alarmsHeader) {
-                logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
-            }else if(null!=alarmsHeader.getVersion()) {
-            	String ver=alarmsHeader.getVersion();
-            	hql.append(" and a.version like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getEventName()) {
-            	String ver=alarmsHeader.getEventName();
-            	hql.append(" and a.eventName like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getAlarmCondition()) {
-            	String ver=alarmsHeader.getAlarmCondition();
-            	hql.append(" and a.alarmCondition like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getDomain()) {
-            	String ver=alarmsHeader.getDomain();
-            	hql.append(" and a.domain like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getEventId()) {
-            	String ver=alarmsHeader.getEventId();
-            	hql.append(" and a.eventId = '"+ver+"'");
-            }else if(null!=alarmsHeader.getNfcNamingCode()) {
-            	String ver=alarmsHeader.getNfcNamingCode();
-            	hql.append(" and a.nfcNamingCode like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getNfNamingCode()) {
-            	String ver=alarmsHeader.getNfNamingCode();
-            	hql.append(" and a.nfNamingCode like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getSourceId()) {
-            	String ver =alarmsHeader.getSourceId();
-            	hql.append(" and a.sourceId like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getSourceName()) {
-            	String ver =alarmsHeader.getSourceName();
-            	hql.append(" and a.sourceName like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getReportingEntityId()) {
-            	String ver =alarmsHeader.getReportingEntityId();
-            	hql.append(" and a.reportingEntityId like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getReportingEntityName()) {
-            	String ver =alarmsHeader.getReportingEntityName();
-            	hql.append(" and a.reportingEntityName like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getPriority()) {
-            	String ver =alarmsHeader.getPriority();
-            	hql.append(" and a.priority like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getStartEpochMicrosec()) {
-            	String ver =alarmsHeader.getStartEpochMicrosec();
-            	hql.append(" and a.startEpochMicrosec like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getLastEpochMicroSec()) {
-            	String ver =alarmsHeader.getLastEpochMicroSec();
-            	hql.append(" and a.lastEpochMicroSec like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getSequence()) {
-            	String ver =alarmsHeader.getSequence();
-            	hql.append(" and a.sequence like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getFaultFieldsVersion()) {
-            	String ver =alarmsHeader.getFaultFieldsVersion();
-            	hql.append(" and a.faultFieldsVersion like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getEventServrity()) {
-            	String ver =alarmsHeader.getEventServrity();
-            	hql.append(" and a.eventServrity like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getEventType()) {
-            	String ver =alarmsHeader.getEventType();
-            	hql.append(" and a.eventSourceType like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getEventCategory()) {
-            	String ver =alarmsHeader.getEventCategory();
-            	hql.append(" and a.eventCategory like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getAlarmCondition()) {
-            	String ver =alarmsHeader.getAlarmCondition();
-            	hql.append(" and a.alarmCondition like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getSpecificProblem()) {
-            	String ver =alarmsHeader.getSpecificProblem();
-            	hql.append(" and a.specificProblem like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getVfStatus()) {
-            	String ver =alarmsHeader.getVfStatus();
-            	hql.append(" and a.vfStatus like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getAlarmInterfaceA()) {
-            	String ver =alarmsHeader.getAlarmInterfaceA();
-            	hql.append(" and a.alarmInterfaceA like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getStatus()) {
-            	String ver =alarmsHeader.getStatus();
-            	hql.append(" and a.status like '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getCreateTime()) {
-            	Date ver =alarmsHeader.getCreateTime();
-            	hql.append(" and a.createTime > '%"+ver+"%'");
-            }else if(null!=alarmsHeader.getUpdateTime()) {
-            	Date ver =alarmsHeader.getUpdateTime();
-            	hql.append(" and a.updateTime like '%"+ver+"%'");
+                //logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
+            }else {
+            	if(null!=alarmsHeader.getVersion()) {
+                	String ver=alarmsHeader.getVersion();
+                	hql.append(" and a.version like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventName()) {
+                	String ver=alarmsHeader.getEventName();
+                	hql.append(" and a.eventName like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getAlarmCondition()) {
+                	String ver=alarmsHeader.getAlarmCondition();
+                	hql.append(" and a.alarmCondition like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getDomain()) {
+                	String ver=alarmsHeader.getDomain();
+                	hql.append(" and a.domain like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventId()) {
+                	String ver=alarmsHeader.getEventId();
+                	hql.append(" and a.eventId = '"+ver+"'");
+                }
+            	if(null!=alarmsHeader.getNfcNamingCode()) {
+                	String ver=alarmsHeader.getNfcNamingCode();
+                	hql.append(" and a.nfcNamingCode like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getNfNamingCode()) {
+                	String ver=alarmsHeader.getNfNamingCode();
+                	hql.append(" and a.nfNamingCode like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getSourceId()) {
+                	String ver =alarmsHeader.getSourceId();
+                	hql.append(" and a.sourceId like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getSourceName()) {
+                	String ver =alarmsHeader.getSourceName();
+                	hql.append(" and a.sourceName like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getReportingEntityId()) {
+                	String ver =alarmsHeader.getReportingEntityId();
+                	hql.append(" and a.reportingEntityId like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getReportingEntityName()) {
+                	String ver =alarmsHeader.getReportingEntityName();
+                	hql.append(" and a.reportingEntityName like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getPriority()) {
+                	String ver =alarmsHeader.getPriority();
+                	hql.append(" and a.priority like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getStartEpochMicrosec()) {
+                	String ver =alarmsHeader.getStartEpochMicrosec();
+                	hql.append(" and a.startEpochMicrosec like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getLastEpochMicroSec()) {
+                	String ver =alarmsHeader.getLastEpochMicroSec();
+                	hql.append(" and a.lastEpochMicroSec like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getSequence()) {
+                	String ver =alarmsHeader.getSequence();
+                	hql.append(" and a.sequence like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getFaultFieldsVersion()) {
+                	String ver =alarmsHeader.getFaultFieldsVersion();
+                	hql.append(" and a.faultFieldsVersion like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventServrity()) {
+                	String ver =alarmsHeader.getEventServrity();
+                	hql.append(" and a.eventServrity like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventType()) {
+                	String ver =alarmsHeader.getEventType();
+                	hql.append(" and a.eventSourceType like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getEventCategory()) {
+                	String ver =alarmsHeader.getEventCategory();
+                	hql.append(" and a.eventCategory like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getAlarmCondition()) {
+                	String ver =alarmsHeader.getAlarmCondition();
+                	hql.append(" and a.alarmCondition like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getSpecificProblem()) {
+                	String ver =alarmsHeader.getSpecificProblem();
+                	hql.append(" and a.specificProblem like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getVfStatus()) {
+                	String ver =alarmsHeader.getVfStatus();
+                	hql.append(" and a.vfStatus = '"+ver+"'");
+                }
+            	if(null!=alarmsHeader.getAlarmInterfaceA()) {
+                	String ver =alarmsHeader.getAlarmInterfaceA();
+                	hql.append(" and a.alarmInterfaceA like '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getStatus()) {
+                	String ver =alarmsHeader.getStatus();
+                	hql.append(" and a.status = '"+ver+"'");
+                }
+            	if(null!=alarmsHeader.getCreateTime()) {
+                	Date ver =alarmsHeader.getCreateTime();
+                	hql.append(" and a.createTime > '%"+ver+"%'");
+                }
+            	if(null!=alarmsHeader.getUpdateTime()) {
+                	Date ver =alarmsHeader.getUpdateTime();
+                	hql.append(" and a.updateTime like '%"+ver+"%'");
+                }
             }
             logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
             Session session = sessionFactory.openSession();

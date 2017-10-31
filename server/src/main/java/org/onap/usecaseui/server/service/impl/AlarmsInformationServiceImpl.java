@@ -88,10 +88,35 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	}
 	
 
-	public int getAllCount() {
+	public int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
 		try{
+			StringBuffer hql = new StringBuffer("select count(*) from AlarmsInformation a where 1=1");
+			if (null == alarmsInformation) {
+                //logger.error("AlarmsInformationServiceImpl getAllCount alarmsInformation is null!");
+            }else {
+            	if(null!=alarmsInformation.getName()) {
+                	String ver=alarmsInformation.getName();
+                	hql.append(" and a.name like '%"+ver+"%'");
+                }
+            	if(null!=alarmsInformation.getValue()) {
+                	String ver=alarmsInformation.getValue();
+                	hql.append(" and a.value like '%"+ver+"%'");
+                }
+            	if(null!=alarmsInformation.getEventId()) {
+                	String ver=alarmsInformation.getEventId();
+                	hql.append(" and a.eventId = '"+ver+"'");
+                }
+            	if(null!=alarmsInformation.getCreateTime()) {
+                	Date ver =alarmsInformation.getCreateTime();
+                	hql.append(" and a.createTime > '%"+ver+"%'");
+                }
+            	if(null!=alarmsInformation.getUpdateTime()) {
+                	Date ver =alarmsInformation.getUpdateTime();
+                	hql.append(" and a.updateTime like '%"+ver+"%'");
+                }
+            } 
             Session session = sessionFactory.openSession();
-            long q=(long)session.createQuery("select count(*) from AlarmsInformation").uniqueResult();
+            long q=(long)session.createQuery(hql.toString()).uniqueResult();
             session.flush();
             session.close();
             return (int)q;
@@ -106,28 +131,34 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	public Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation, int currentPage,
 			int pageSize) {
 		Page<AlarmsInformation> page = new Page<AlarmsInformation>();
-		int allRow =this.getAllCount();
+		int allRow =this.getAllCount(alarmsInformation,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
 		try{
 			StringBuffer hql =new StringBuffer("from AlarmsInformation a where 1=1");
             if (null == alarmsInformation) {
-                logger.error("AlarmsInformationServiceImpl queryAlarmsInformation alarmsInformation is null!");
-            }else if(null!=alarmsInformation.getName()) {
-            	String ver=alarmsInformation.getName();
-            	hql.append(" and a.name like '%"+ver+"%'");
-            }else if(null!=alarmsInformation.getValue()) {
-            	String ver=alarmsInformation.getValue();
-            	hql.append(" and a.value like '%"+ver+"%'");
-            }else if(null!=alarmsInformation.getEventId()) {
-            	String ver=alarmsInformation.getEventId();
-            	hql.append(" and a.eventId = '"+ver+"'");
-            }else if(null!=alarmsInformation.getCreateTime()) {
-            	Date ver =alarmsInformation.getCreateTime();
-            	hql.append(" and a.createTime > '%"+ver+"%'");
-            }else if(null!=alarmsInformation.getUpdateTime()) {
-            	Date ver =alarmsInformation.getUpdateTime();
-            	hql.append(" and a.updateTime like '%"+ver+"%'");
+                //logger.error("AlarmsInformationServiceImpl queryAlarmsInformation alarmsInformation is null!");
+            }else {
+            	if(null!=alarmsInformation.getName()) {
+                	String ver=alarmsInformation.getName();
+                	hql.append(" and a.name like '%"+ver+"%'");
+                }
+            	if(null!=alarmsInformation.getValue()) {
+                	String ver=alarmsInformation.getValue();
+                	hql.append(" and a.value like '%"+ver+"%'");
+                }
+            	if(null!=alarmsInformation.getEventId()) {
+                	String ver=alarmsInformation.getEventId();
+                	hql.append(" and a.eventId = '"+ver+"'");
+                }
+            	if(null!=alarmsInformation.getCreateTime()) {
+                	Date ver =alarmsInformation.getCreateTime();
+                	hql.append(" and a.createTime > '%"+ver+"%'");
+                }
+            	if(null!=alarmsInformation.getUpdateTime()) {
+                	Date ver =alarmsInformation.getUpdateTime();
+                	hql.append(" and a.updateTime like '%"+ver+"%'");
+                }
             }
             logger.info("AlarmsInformationServiceImpl queryAlarmsInformation: alarmsInformation={}", alarmsInformation);
             Session session = sessionFactory.openSession();

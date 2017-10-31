@@ -27,7 +27,7 @@ public interface AlarmsHeaderService {
     
     String updateAlarmsHeader(AlarmsHeader alarmsHeader);
     
-    int getAllCount();
+    int getAllCount(AlarmsHeader alarmsHeader, int currentPage, int pageSize);
     
     Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader, int currentPage, int pageSize);
     

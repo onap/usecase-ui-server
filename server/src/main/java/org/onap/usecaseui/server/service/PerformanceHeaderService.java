@@ -28,7 +28,7 @@ public interface PerformanceHeaderService {
     
     String updatePerformanceHeader(PerformanceHeader performanceHeder);
     
-    int getAllCount();
+    int getAllCount(PerformanceHeader performanceHeder, int currentPage, int pageSize);
     
     Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder, int currentPage, int pageSize);
     

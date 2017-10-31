@@ -20,12 +20,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Id;
 import javax.transaction.Transactional;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
 import org.onap.usecaseui.server.util.Page;
@@ -90,10 +88,35 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	}
 
 
-	public int getAllCount() {
+	public int getAllCount(PerformanceInformation performanceInformation, int currentPage, int pageSize) {
 		try{
+			StringBuffer hql = new StringBuffer("select count(*) from PerformanceInformation a where 1=1");
+			if (null == performanceInformation) {
+                //logger.error("AlarmsInformationServiceImpl getAllCount performanceInformation is null!");
+            }else {
+            	if(null!=performanceInformation.getName()) {
+                	String ver=performanceInformation.getName();
+                	hql.append(" and a.name like '%"+ver+"%'");
+                }
+            	if(null!=performanceInformation.getValue()) {
+                	String ver=performanceInformation.getValue();
+                	hql.append(" and a.value like '%"+ver+"%'");
+                }
+            	if(null!=performanceInformation.getEventId()) {
+                	String ver=performanceInformation.getEventId();
+                	hql.append(" and a.eventId = '"+ver+"'");
+                }
+            	if(null!=performanceInformation.getCreateTime()) {
+                	Date ver =performanceInformation.getCreateTime();
+                	hql.append(" and a.createTime > '%"+ver+"%'");
+                }
+            	if(null!=performanceInformation.getUpdateTime()) {
+                	Date ver =performanceInformation.getUpdateTime();
+                	hql.append(" and a.updateTime like '%"+ver+"%'");
+                }
+            }
             Session session = sessionFactory.openSession();
-            long q=(long)session.createQuery("select count(*) from PerformanceInformation").uniqueResult();
+            long q=(long)session.createQuery(hql.toString()).uniqueResult();
             session.flush();
             session.close();
             return (int)q;
@@ -108,35 +131,42 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	public Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation,
 			int currentPage, int pageSize) {
 		Page<PerformanceInformation> page = new Page<PerformanceInformation>();
-		int allRow =this.getAllCount();
+		int allRow =this.getAllCount(performanceInformation,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
 		try{
-			StringBuffer hql =new StringBuffer("from PerformanceInformation a where 1=1");
+			StringBuffer hql =new StringBuffer("from PerformanceInformation a where 1=1 ");
             if (null == performanceInformation) {
-                logger.error("AlarmsInformationServiceImpl queryPerformanceInformation performanceInformation is null!");
-            }else if(null!=performanceInformation.getName()) {
-            	String ver=performanceInformation.getName();
-            	hql.append(" and a.name like '%"+ver+"%'");
-            }else if(null!=performanceInformation.getValue()) {
-            	String ver=performanceInformation.getValue();
-            	hql.append(" and a.value like '%"+ver+"%'");
-            }else if(null!=performanceInformation.getEventId()) {
-            	String ver=performanceInformation.getEventId();
-            	hql.append(" and a.eventId = '"+ver+"'");
-            }else if(null!=performanceInformation.getCreateTime()) {
-            	Date ver =performanceInformation.getCreateTime();
-            	hql.append(" and a.createTime > '%"+ver+"%'");
-            }else if(null!=performanceInformation.getUpdateTime()) {
-            	Date ver =performanceInformation.getUpdateTime();
-            	hql.append(" and a.updateTime like '%"+ver+"%'");
-            }
+                //logger.error("AlarmsInformationServiceImpl queryPerformanceInformation performanceInformation is null!");
+            }else {
+            	if(null!=performanceInformation.getName()) {
+                	String ver=performanceInformation.getName();
+                	hql.append(" and a.name like '%"+ver+"%'");
+                }
+            	if(null!=performanceInformation.getValue()) {
+                	String ver=performanceInformation.getValue();
+                	hql.append(" and a.value like '%"+ver+"%'");
+                }
+            	if(null!=performanceInformation.getEventId()) {
+                	String ver=performanceInformation.getEventId();
+                	hql.append(" and a.eventId = '"+ver+"'");
+                }
+            	if(null!=performanceInformation.getCreateTime()) {
+                	Date ver =performanceInformation.getCreateTime();
+                	hql.append(" and a.createTime > '%"+ver+"%'");
+                }
+            	if(null!=performanceInformation.getUpdateTime()) {
+                	Date ver =performanceInformation.getUpdateTime();
+                	hql.append(" and a.updateTime like '%"+ver+"%'");
+                }
+            } 
             logger.info("PerformanceInformationServiceImpl queryPerformanceInformation: performanceInformation={}", performanceInformation);
             Session session = sessionFactory.openSession();
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
             List<PerformanceInformation> list= query.list();
+
             page.setPageNo(currentPage);
             page.setPageSize(pageSize);
             page.setTotalRecords(allRow);
@@ -171,7 +201,36 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	}
 
 
-    
-    
-    
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PerformanceInformation> queryDateBetween(String eventId,Date startDate, Date endDate) {
+		try {
+			List<PerformanceInformation> list = new ArrayList<>();
+			Session session = sessionFactory.openSession();
+			Query query = session.createQuery("from PerformanceInformation a where a.eventId = :eventId and a.createTime BETWEEN :startDate and :endDate");
+			list = query.setParameter("eventId",eventId).setParameter("startDate", startDate).setParameter("endDate",endDate).list();
+			session.close();
+			return list;
+		} catch (Exception e) {
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
+			return null;
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public int queryDataBetweenSum(String eventId, String name, Date startDate, Date endDate){
+
+		try(Session session = sessionFactory.openSession();) {
+			int sum = 0;
+			Query query = session.createQuery("select sum(a.value) from PerformanceInformation a where a.eventId = :eventId and a.name = :name and a.createTime BETWEEN :startDate and :endDate");
+			sum = Integer.parseInt(query.setParameter("eventId",eventId).setParameter("name",name).setParameter("startDate", startDate).setParameter("endDate",endDate).uniqueResult().toString());
+			return sum;
+		} catch (Exception e) {
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
+			return 0;
+		}
+	}
+
 }

@@ -77,13 +77,17 @@ public class DateUtilsTest {
 	@Test
 	public void addDate(){
 		try {
-			System.out.println(DateUtils.addDate(new Date(),"hour",5));
-			System.out.println(DateUtils.addDate(new Date(),"day",5));
-			System.out.println(DateUtils.addDate(new Date(),"month",5));
-			System.out.println(DateUtils.addDate(new Date(),"year",5));
+			LocalDateTime localDateTime = LocalDateTime.now();
+			System.out.println(localDateTime.withDayOfMonth(0));
+			System.out.println(DateUtils.addDate(new Date(),"day",1));
+			/*System.out.println(DateUtils.addDate(new Date(),"month",1));
+			System.out.println(DateUtils.addDate(new Date(),"year",-1));*/
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}
+
+
+
 
 }

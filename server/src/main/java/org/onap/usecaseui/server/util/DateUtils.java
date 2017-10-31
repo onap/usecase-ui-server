@@ -52,7 +52,7 @@ public class DateUtils {
             ldt = ldt.withDayOfMonth(ldt.getDayOfMonth()-1);
         if(hour >= 0){
             if(hour == 0)
-                ldt = ldt.withHour(1);
+                ldt = ldt.withHour(0);
         } else
             ldt = ldt.withHour(ldt.getHour()-1);
         if(minute >= 0){
@@ -65,7 +65,7 @@ public class DateUtils {
                 ldt = ldt.withSecond(0);
         } else
             ldt = ldt.withMinute(ldt.getSecond()-1);
-        return ldt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return ldt.format(DateTimeFormatter.ofPattern(Constant.DATE_FORMAT));
     }
 
 
@@ -84,7 +84,7 @@ public class DateUtils {
          * @throws ParseException
          */
     public static Date initProcessDate(Date d,int year,int month,int day,int hour,int minute,int second) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(Constant.DATE_FORMAT);
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         if(year >= 0){
@@ -133,32 +133,51 @@ public class DateUtils {
         ZoneId zone = ZoneId.systemDefault();
         LocalDateTime ldt = LocalDateTime.ofInstant(instant,zone);
         switch (unit.toLowerCase()){
+            case "year":
+                ldt = ldt.withYear(ldt.getYear()+addVal);
+                break;
             case "month":
-                ldt = ldt.withMonth(ldt.getMonthValue()+addVal);
+                if (ldt.getMonthValue() + addVal < 13) {
+                    ldt = ldt.withMonth(ldt.getMonthValue() + addVal);
+                }else{
+                    ldt = ldt.withYear(ldt.getYear()+1).withMonth(1);
+                }
                 break;
             case "day":
-                ldt = ldt.withDayOfMonth(ldt.getDayOfMonth()+addVal);
+                if(ldt.getDayOfMonth()+addVal <= ldt.getMonth().length((ldt.getYear()%4==0?true:false))){
+                    ldt = ldt.withDayOfMonth(ldt.getDayOfMonth()+addVal);
+                }else{
+                    ldt = ldt.withMonth(ldt.getMonthValue()+1).withDayOfMonth(1);
+                }
                 break;
             case "hour":
-                ldt = ldt.withHour(ldt.getHour()+addVal);
+                if (ldt.getHour()+addVal < 24)
+                    ldt = ldt.withHour(ldt.getHour()+addVal);
+                else{
+                    ldt = ldt.withDayOfMonth(ldt.getDayOfMonth()+1).withHour(1);
+                }
                 break;
             case "minute":
-                ldt = ldt.withMinute(ldt.getMinute()+addVal);
+                if (ldt.getMinute()+addVal < 60)
+                    ldt = ldt.withMinute(ldt.getMinute()+addVal);
+                else{
+                    ldt = ldt.withMinute(0).withHour(ldt.getHour()+1);
+                }
                 break;
         }
-        return ldt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return ldt.format(DateTimeFormatter.ofPattern(Constant.DATE_FORMAT));
     }
 
     public static String dateToString(Date d){
-        return new SimpleDateFormat(Constant.DATE_FROMAT).format(d);
+        return new SimpleDateFormat(Constant.DATE_FORMAT).format(d);
     }
 
     public static Date stringToDate(String d) throws ParseException {
-        return new SimpleDateFormat(Constant.DATE_FROMAT).parse(d);
+        return new SimpleDateFormat(Constant.DATE_FORMAT).parse(d);
     }
 
     public static Date now() throws ParseException {
-        return new SimpleDateFormat(Constant.DATE_FROMAT).parse(dateToString(new Date()));
+        return new SimpleDateFormat(Constant.DATE_FORMAT).parse(dateToString(new Date()));
     }
 
 }
