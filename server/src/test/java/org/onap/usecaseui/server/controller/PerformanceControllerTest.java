@@ -71,7 +71,7 @@ public class PerformanceControllerTest {
         p.put("value","110");
         p.put("createTime","110");
         p.put("updateTime","110");
-        System.out.println(performanceController.generateDiaCsvFile(null,p));
+        //System.out.println(performanceController.generateDiaCsvFile(null,p));
     }
 
     @Test

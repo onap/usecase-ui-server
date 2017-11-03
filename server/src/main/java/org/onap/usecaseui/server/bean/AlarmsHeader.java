@@ -31,13 +31,14 @@ public class AlarmsHeader implements Serializable{
 	@Column(name = "version")
 	private String version;
 	
+	@Id
 	@Column(name = "eventName")
 	private String eventName;
 	
 	@Column(name = "domain")
 	private String domain;
 	
-	@Id
+	
 	@Column(name = "eventId")
 	private String eventId;
 	

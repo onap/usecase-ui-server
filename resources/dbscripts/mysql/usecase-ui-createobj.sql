@@ -27,7 +27,8 @@ CREATE TABLE `alarms_additionalinformation` (
   `eventId` varchar(30) NOT NULL,
   `createTime` datetime NOT NULL,
   `updateTime` datetime NOT NULL,
-  PRIMARY KEY (`name`,`eventId`)
+  `id` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -61,7 +62,7 @@ CREATE TABLE `alarms_commoneventheader` (
   `status` varchar(11) NOT NULL,
   `createTime` datetime NOT NULL,
   `updateTime` datetime NOT NULL,
-  PRIMARY KEY (`eventId`)
+  PRIMARY KEY (`eventName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -74,7 +75,8 @@ CREATE TABLE `performance_additionalinformation` (
   `eventId` varchar(30) NOT NULL,
   `createTime` datetime NOT NULL,
   `updateTime` datetime NOT NULL,
-  PRIMARY KEY (`name`,`eventId`)
+  `id` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -101,11 +103,9 @@ CREATE TABLE `performance_commoneventheader` (
   `measurementInterval` varchar(10) NOT NULL,
   `createTime` datetime NOT NULL,
   `updateTime` datetime NOT NULL,
-  PRIMARY KEY (`eventId`)
+  PRIMARY KEY (`eventName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Init Records 
 -- ----------------------------
-INSERT INTO `alarms_additionalinformation` VALUES ('name', 'value', 'eventId', '2017-09-19 11:12:34', '2017-09-19 11:12:34');
-INSERT INTO `alarms_commoneventheader` VALUES ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '2017-09-04 15:25:11', '2017-09-11 15:25:19');

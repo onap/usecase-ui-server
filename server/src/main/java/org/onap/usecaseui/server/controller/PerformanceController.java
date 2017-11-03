@@ -27,6 +27,7 @@ import org.onap.usecaseui.server.service.PerformanceInformationService;
 import org.onap.usecaseui.server.util.CSVUtils;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
+import org.onap.usecaseui.server.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -71,6 +72,10 @@ public class PerformanceController {
                                      @PathVariable int pageSize,@PathVariable(required = false) String eventId,
                                      @PathVariable(required = false) String eventName,@PathVariable(required = false) String name,
                                      @PathVariable(required = false) String value,@PathVariable(required = false) String createTime) throws JsonProcessingException {
+        logger.info("transfer getAlarmData Apis, " +
+                        "Parameter all follows : [currentPage : {} , pageSize : {} , eventId : {} , " +
+                        "eventName : {} , name : {} , value :{} , createTime : {} ]"
+                ,currentPage,pageSize,eventId,eventName,name,value,createTime);
         List<Object> list = new ArrayList<>();
         Page pa = null;
         if (null != eventId || null != eventName || null != name || null != value || null != createTime){
@@ -149,61 +154,39 @@ public class PerformanceController {
             });
         });
         CSVUtils.writeCsv(PerformanceCSVHeaders,csvData,csvFile);
-        if (null != response){
-            response.setCharacterEncoding("utf-8");
-            response.setContentType("application/csv");
-            response.setHeader("Content-Disposition","attachment;filename="+csvFile);
-            try(InputStream is = new FileInputStream(csvFile);
-                OutputStream os = response.getOutputStream()){
-                byte[] b = new byte[2048];
-                int length;
-                while ((length = is.read(b)) > 0) {
-                    os.write(b, 0, length);
-                }
-                return omPerformance.writeValueAsString("success");
-            }catch (IOException e){
-                logger.error("download csv File error :"+e.getMessage());
-                return omPerformance.writeValueAsString("failed");
-            }
-        }else
-            return omPerformance.writeValueAsString("csvFile generate success,but response is null,don't download to local");
-
+        if (ResponseUtil.responseDownload(csvFile,response)){
+            return omPerformance.writeValueAsString("success");
+        }else{
+            return omPerformance.writeValueAsString("failed");
+        }
     }
 
-    @RequestMapping(value = {"/performance/genDiaCsv"}, method = RequestMethod.POST, produces = "application/json")
-    public String generateDiaCsvFile(HttpServletResponse response,@RequestBody Map<String,String> p) throws JsonProcessingException {
-        String csvFileName = "csvFiles/"+p.get("name")+"_"+new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date())+".csv";
+    @RequestMapping(value = {"/performance/genDiaCsv/{dataJson}"}, method = RequestMethod.GET, produces = "application/json")
+    public String generateDiaCsvFile(HttpServletResponse response,@PathVariable String dataJson) throws IOException {
+        List<Map<String,Object>> dataList = omPerformance.readValue(dataJson,List.class);
+        String csvFileName = "csvFiles/"+dataList.get(0).get("name")+"_"+new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date())+".csv";
         try{
-            String[] headers = new String[]{"eventId","name","value","createTime","updateTime"};
+            String[] headers = new String[]{"eventId","name","dateUnit","value"};
             List<String[]> csvDatas = new ArrayList<>();
-            if (null != p){
-                StringBuffer fileData = new StringBuffer();
-                p.forEach((k,v)->{
-                    fileData.append(v+",");
+            if (null != dataList){
+                dataList.forEach((l)->{
+                    StringBuffer fileData = new StringBuffer();
+                    l.forEach((k,v)->{
+                        logger.info(v.toString());
+                        fileData.append(v.toString()+",");
+                    });
+                    csvDatas.add(fileData.toString().split(","));
                 });
-                csvDatas.add(fileData.toString().split(","));
             }
             CSVUtils.writeCsv(headers,csvDatas,csvFileName);
         }catch (Exception pe){
             logger.error(pe.getMessage());
         }
-        if (null != response){
-            response.setContentType("application/csv");
-            response.setHeader("Content-Disposition","attachment;filename="+csvFileName+"");
-            try(InputStream is = new FileInputStream(csvFileName);
-                OutputStream os = response.getOutputStream()){
-                byte[] b = new byte[2048];
-                int length;
-                while ((length = is.read(b)) > 0) {
-                    os.write(b, 0, length);
-                }
-                return omPerformance.writeValueAsString("success");
-            }catch (IOException e){
-                logger.error("download csv File error :"+e.getMessage());
-                return omPerformance.writeValueAsString("failed");
-            }
-        }else
-            return omPerformance.writeValueAsString("csvFile generate success,but response is null,don't download to local");
+        if (ResponseUtil.responseDownload(csvFileName,response)){
+            return omPerformance.writeValueAsString("success");
+        }else{
+            return omPerformance.writeValueAsString("failed");
+        }
     }
 
     @ResponseBody
@@ -214,11 +197,13 @@ public class PerformanceController {
         switch (unit){
             case "hour":
                 for(int i = 0 ; i < 4 ; i++){
-                    Date startDateHour = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,1,-1,-1,0,0));
-                    Date endDateHour = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,1,-1,-1,0,0));
+                    Date startDateHour = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,1,1,-1,0,0));
+                    Date endDateHour = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,1,1,-1,0,0));
                     endDateHour = DateUtils.stringToDate(DateUtils.addDate(endDateHour,"minute",15));
                     List<Integer> values = new ArrayList<>();
                     for (int j = 0 ; j < 4 ; j++){
+                        logger.info(DateUtils.dateToString(startDateHour));
+                        logger.info(DateUtils.dateToString(endDateHour));
                         values.add(performanceInformationService.queryDataBetweenSum(eventId,names[i],startDateHour,endDateHour));
                         startDateHour = DateUtils.stringToDate(DateUtils.addDate(startDateHour,"minute",15));
                         endDateHour = DateUtils.stringToDate(DateUtils.addDate(endDateHour,"minute",15));
@@ -261,9 +246,6 @@ public class PerformanceController {
                     endDateYear = DateUtils.stringToDate(DateUtils.addDate(endDateYear,"month",1));
                     List<Integer> values = new ArrayList<>();
                     for (int j = 0 ; j < 12 ; j++){
-                        logger.info(names[i]);
-                        logger.info(DateUtils.dateToString(startDateYear));
-                        logger.info(DateUtils.dateToString(endDateYear));
                         values.add(performanceInformationService.queryDataBetweenSum(eventId,names[i],startDateYear,endDateYear));
                         startDateYear = DateUtils.stringToDate(DateUtils.addDate(startDateYear,"month",1));
                         endDateYear = DateUtils.stringToDate(DateUtils.addDate(endDateYear,"month",1));

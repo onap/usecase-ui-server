@@ -49,7 +49,7 @@ public class DateUtils {
             if(day == 0)
                 ldt = ldt.withDayOfMonth(1);
         } else
-            ldt = ldt.withDayOfMonth(ldt.getDayOfMonth()-1);
+            ldt = ldt.withDayOfMonth(ldt.getDayOfMonth()-1<1?ldt.getDayOfMonth():ldt.getDayOfMonth()+-1);
         if(hour >= 0){
             if(hour == 0)
                 ldt = ldt.withHour(0);
