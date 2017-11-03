@@ -56,12 +56,5 @@ public class AlarmControllerTest {
         System.out.println(alarmController.generateCsvFile(null,new String[]{"110"}));
     }
 
-    @Test
-    public void update() throws JsonProcessingException {
-        System.out.println(alarmController.updateStatus(null,new String[]{"110"},new String[]{"1"},"s"));
-        System.out.println(alarmController.updateStatus(null,new String[]{"110","1101"},new String[]{"1","1"},"many"));
-        System.out.println(alarmController.updateStatus(null,new String[]{"110"},new String[]{"1"},"vf"));
-
-    }
 
 }

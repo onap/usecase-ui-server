@@ -50,17 +50,15 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public String savePerformanceHeader(PerformanceHeader performanceHeder) {
-		 try{
+		 try(Session session = sessionFactory.openSession();){
 	            if (null == performanceHeder){
 	                logger.error("PerformanceHeaderServiceImpl savePerformanceHeader performanceHeder is null!");
 	            }
 	            logger.info("PerformanceHeaderServiceImpl savePerformanceHeader: performanceHeder={}", performanceHeder);
-	            Session session = sessionFactory.openSession();
 	            Transaction tx = session.beginTransaction();     
 	            session.save(performanceHeder);
 	            tx.commit();
 	            session.flush();
-	            session.close();
 	            return "1";
 	        } catch (Exception e) {
 	            logger.error("exception occurred while performing PerformanceHeaderServiceImpl savePerformanceHeader. Details:" + e.getMessage());
@@ -72,17 +70,15 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public String updatePerformanceHeader(PerformanceHeader performanceHeder) {
-		try{
+		try(Session session = sessionFactory.openSession();){
             if (null == performanceHeder){
                 logger.error("PerformanceHeaderServiceImpl updatePerformanceHeader performanceHeder is null!");
             }
             logger.info("PerformanceHeaderServiceImpl updatePerformanceHeader: performanceHeder={}", performanceHeder);
-            Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();     
             session.update(performanceHeder);
             tx.commit();
             session.flush();
-            session.close();
             return "1";
         } catch (Exception e) {
             logger.error("exception occurred while performing PerformanceHeaderServiceImpl updatePerformanceHeader. Details:" + e.getMessage());
@@ -92,7 +88,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 
 	public int getAllCount(PerformanceHeader performanceHeder, int currentPage, int pageSize) {
-		try{
+		try(Session session = sessionFactory.openSession();){
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
 			if (null == performanceHeder) {
                 //logger.error("PerformanceHeaderServiceImpl getAllCount performanceHeder is null!");
@@ -174,10 +170,8 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
                 	hql.append(" and a.updateTime like '%"+ver+"%'");
                 }
             } 
-            Session session = sessionFactory.openSession();
             long q=(long)session.createQuery(hql.toString()).uniqueResult();
             session.flush();
-            session.close();
             return (int)q;
         } catch (Exception e) {
             logger.error("exception occurred while performing PerformanceHeaderServiceImpl getAllCount. Details:" + e.getMessage());
@@ -193,7 +187,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		int allRow =this.getAllCount(performanceHeder,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try{
+		try(Session session = sessionFactory.openSession();){
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
             if (null == performanceHeder) {
                 //logger.error("PerformanceHeaderServiceImpl queryPerformanceHeader performanceHeder is null!");
@@ -276,7 +270,6 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
                 }
             }
             logger.info("PerformanceHeaderServiceImpl queryPerformanceHeader: performanceHeder={}", performanceHeder);
-            Session session = sessionFactory.openSession();
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
@@ -286,7 +279,6 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             page.setTotalRecords(allRow);
             page.setList(list);
             session.flush();
-            session.close();
             return page;
         } catch (Exception e) {
             logger.error("exception occurred while performing PerformanceHeaderServiceImpl queryPerformanceHeader. Details:" + e.getMessage());
@@ -298,15 +290,13 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceHeader> queryId(String[] id) {
-		try {
+		try(Session session = sessionFactory.openSession();) {
 			if(id.length==0) {
 				logger.error("PerformanceHeaderServiceImpl queryId is null!");
 			}
 			List<PerformanceHeader> list = new ArrayList<PerformanceHeader>();
-			Session session = sessionFactory.openSession();
-			Query query = session.createQuery("from PerformanceHeader a where a.eventId IN (:alist)");
+			Query query = session.createQuery("from PerformanceHeader a where a.eventName IN (:alist)");
 			list = query.setParameterList("alist", id).list();
-            session.close();
 			return list;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceHeaderServiceImpl queryId. Details:" + e.getMessage());

@@ -29,6 +29,7 @@ import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.CSVUtils;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
+import org.onap.usecaseui.server.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -70,25 +71,12 @@ public class AlarmController
 
     private ObjectMapper omAlarm = new ObjectMapper();
 
-    private List<String> last_eventId = new ArrayList<>();
-
-    private List<String> last_status = new ArrayList<>();
-
-    private List<String> last_vfStatus = new ArrayList<>();
 
     @RequestMapping(value = {"/usecase-ui"}, method = RequestMethod.GET)
     public ModelAndView index(){
         return new ModelAndView("index");
     }
 
-    @RequestMapping(value = {"/alarm/{eventId}/{eventName}/{name}/{value}/{createTime}/{status}/{vfStatus}"})
-    public String getAlarmDateTotal(@PathVariable String eventId,@PathVariable String eventName,
-                                    @PathVariable String name,@PathVariable String value,
-                                    @PathVariable String createTime,@PathVariable String status,
-                                    @PathVariable String vfStatus) throws ParseException {
-
-        return "";
-    }
 
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{eventId}/{eventName}/{name}/{value}/{createTime}/{status}/{vfStatus}"},
@@ -98,6 +86,10 @@ public class AlarmController
                                @PathVariable(required = false) String createTime,@PathVariable(required = false) String status,
                                @PathVariable(required = false) String vfStatus,
                                @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException {
+        logger.info("transfer getAlarmData Apis, " +
+                "Parameter all follows : [currentPage : {} , pageSize : {} , eventId : {} , " +
+                "eventName : {} , name : {} , value :{} , createTime : {} , status : {} , vfStatus : {}]"
+                ,currentPage,pageSize,eventId,eventName,name,value,createTime,status,vfStatus);
         List<AlarmsHeader> alarmsHeaders = null;
         List<AlarmBo> list = new ArrayList<>();
         Page pa = null;
@@ -153,6 +145,8 @@ public class AlarmController
 
     @RequestMapping(value = { "/alarm/genCsv/{eventId}" } , method = RequestMethod.GET , produces = "application/json")
     public String generateCsvFile(HttpServletResponse response, @PathVariable String[] eventId) throws JsonProcessingException {
+        logger.info("transfer generateCsvFile Apis, " +
+                        "Parameter all follows : [eventId : {}]",eventId);
         String csvFile = "csvFiles/vnf_alarm_"+new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date())+".csv";
         List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryId(eventId);
         List<String[]> csvData = new ArrayList<>();
@@ -183,76 +177,11 @@ public class AlarmController
         }catch (Exception e){
             logger.error(e.getMessage());
         }
-        if (null != response){
-            response.setCharacterEncoding("utf-8");
-            response.setContentType("application/csv");
-            response.setHeader("Content-Disposition","attachment;filename="+csvFile);
-            try(InputStream is = new FileInputStream(csvFile);
-                OutputStream os = response.getOutputStream()){
-                byte[] b = new byte[2048];
-                int length;
-                while ((length = is.read(b)) > 0) {
-                    os.write(b, 0, length);
-                }
-                return omAlarm.writeValueAsString("success");
-            }catch (IOException e){
-                logger.error("download csv File error :"+e.getMessage());
-                return omAlarm.writeValueAsString("failed");
-            }
-        }else
-            return omAlarm.writeValueAsString("csvFile generate success,response is null,don't download to local");
-    }
-
-
-    @RequestMapping(value = { "/alarm/{eventId}/{status}/{type}" } , method = RequestMethod.PUT )
-    public String updateStatus(HttpServletResponse response,@PathVariable String[] eventId,@PathVariable String[] status,@PathVariable String type) throws JsonProcessingException {
-        List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryId(eventId);
-        last_eventId.clear();
-        last_vfStatus.clear();
-        last_status.clear();
-        for (AlarmsHeader ala: alarmsHeaders) {
-            last_eventId.add(ala.getEventId());
-            last_status.add(ala.getStatus());
-            last_vfStatus.add(ala.getVfStatus());
-            if ("vf".equals(type))
-                ala.setVfStatus(status[0]);
-            else if ("many".equals(type)){
-                ala.setStatus(status[0]);
-                ala.setVfStatus(status[1]);
-            }else {
-                ala.setStatus(status[0]);
-            }
-            if ("0".equals(alarmsHeaderService.updateAlarmsHeader(ala))) {
-                if (null != response)
-                    response.setStatus(400);
-                return omAlarm.writeValueAsString("failed");
-            }
+        if (ResponseUtil.responseDownload(csvFile,response)){
+            return omAlarm.writeValueAsString("success");
+        }else{
+            return omAlarm.writeValueAsString("failed");
         }
-        return omAlarm.writeValueAsString("success");
     }
-
-    @RequestMapping(value = {"/alarm/revoke"} , method = RequestMethod.GET)
-    public String revoke() throws JsonProcessingException {
-        String result ;
-        if (last_eventId.size() > 0 && last_vfStatus.size() > 0 && last_status.size() > 0){
-            String[] eids = new String[last_eventId.size()];
-            last_eventId.toArray(eids);
-            List<AlarmsHeader> alarmsHeaders  = alarmsHeaderService.queryId(eids);
-            for (int i = 0;i<alarmsHeaders.size();i++){
-                AlarmsHeader ala =  alarmsHeaders.get(i);
-                ala.setStatus(last_status.get(i));
-                ala.setVfStatus(last_vfStatus.get(i));
-                alarmsHeaderService.updateAlarmsHeader(ala);
-            }
-            last_eventId.clear();
-            last_status.clear();
-            last_vfStatus.clear();
-            result = "revoke success";
-        } else {
-            result = "nothing can revoke";
-        }
-        return omAlarm.writeValueAsString(result);
-    }
-
 
 }

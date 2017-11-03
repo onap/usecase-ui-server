@@ -49,17 +49,15 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
     
     
 	public String saveAlarmsHeader(AlarmsHeader alarmsHeader) {
-		 try{
+		 try(Session session = sessionFactory.openSession();){
 	            if (null == alarmsHeader) {
 	                logger.error("AlarmsHeaderServiceImpl saveAlarmsHeader alarmsHeader is null!");
 	            }
 	            logger.info("AlarmsHeaderServiceImpl saveAlarmsHeader: alarmsHeader={}", alarmsHeader);
-	            Session session = sessionFactory.openSession();
 	            Transaction tx = session.beginTransaction();     
 	            session.save(alarmsHeader);
 	            tx.commit();
 	            session.flush();
-	            session.close();
 	            return "1";
 	        } catch (Exception e) {
 	            logger.error("exception occurred while performing AlarmsHeaderServiceImpl saveAlarmsHeader. Details:" + e.getMessage());
@@ -71,17 +69,15 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 
 	@Override
 	public String updateAlarmsHeader(AlarmsHeader alarmsHeader) {
-		try{
+		try(Session session = sessionFactory.openSession();){
             if (null == alarmsHeader){
                 logger.error("AlarmsHeaderServiceImpl updateAlarmsHeader alarmsHeader is null!");
             }
             logger.info("AlarmsHeaderServiceImpl updateAlarmsHeader: alarmsHeader={}", alarmsHeader);
-            Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();     
             session.update(alarmsHeader);
             tx.commit();
             session.flush();
-            session.close();
             return "1";
         } catch (Exception e) {
             logger.error("exception occurred while performing AlarmsHeaderServiceImpl updateAlarmsHeader. Details:" + e.getMessage());
@@ -90,7 +86,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	}
 
 	public int getAllCount(AlarmsHeader alarmsHeader,int currentPage,int pageSize) {
-		try{
+		try(Session session = sessionFactory.openSession();){
 			StringBuffer count=new StringBuffer("select count(*) from AlarmsHeader a where 1=1");
 			if (null == alarmsHeader) {
                 //logger.error("AlarmsHeaderServiceImpl getAllCount alarmsHeader is null!");
@@ -200,10 +196,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 	count.append(" and a.updateTime like '%"+ver+"%'");
                 }
             } 
-            Session session = sessionFactory.openSession();
             long q=(long)session.createQuery(count.toString()).uniqueResult();
             session.flush();
-            session.close();
             return (int)q;
         } catch (Exception e) {
             logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount. Details:" + e.getMessage());
@@ -218,7 +212,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		int allRow =this.getAllCount(alarmsHeader,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try{
+		try(Session session = sessionFactory.openSession();){
 			StringBuffer hql =new StringBuffer("from AlarmsHeader a where 1=1");
             if (null == alarmsHeader) {
                 //logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
@@ -329,7 +323,6 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 }
             }
             logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
-            Session session = sessionFactory.openSession();
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
@@ -339,7 +332,6 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             page.setTotalRecords(allRow);
             page.setList(list);
             session.flush();
-            session.close();
             return page;
         } catch (Exception e) {
             logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryAlarmsHeader. Details:" + e.getMessage());
@@ -351,15 +343,13 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<AlarmsHeader> queryId(String[] id) {
-		try {
+		try(Session session = sessionFactory.openSession();){
 			if(id.length==0) {
 				logger.error("AlarmsHeaderServiceImpl queryId is null!");
 			}
 			List<AlarmsHeader> list = new ArrayList<AlarmsHeader>();
-			Session session = sessionFactory.openSession();
-			Query query = session.createQuery("from AlarmsHeader a where a.eventId IN (:alist)");
+			Query query = session.createQuery("from AlarmsHeader a where a.eventName IN (:alist)");
 			list = query.setParameterList("alist", id).list();
-			session.close();
 			return list;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryId. Details:" + e.getMessage());

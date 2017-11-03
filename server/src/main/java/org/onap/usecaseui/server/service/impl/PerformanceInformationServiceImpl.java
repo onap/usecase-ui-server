@@ -47,17 +47,15 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 	@Override
 	public String savePerformanceInformation(PerformanceInformation performanceInformation) {
-		 try {
+		 try(Session session = sessionFactory.openSession();) {
 	            if (null == performanceInformation) {
 	                logger.error("performanceInformation savePerformanceInformation performanceInformation is null!");
 	            }
 	            logger.info("PerformanceInformationServiceImpl savePerformanceInformation: performanceInformation={}", performanceInformation);
-	            Session session = sessionFactory.openSession();
 	            Transaction tx = session.beginTransaction();     
 	            session.save(performanceInformation);
 	            tx.commit();
 	            session.flush();
-	            session.close();
 	            return "1";
 	        } catch (Exception e) {
 	            logger.error("exception occurred while performing PerformanceInformationServiceImpl savePerformanceInformation. Details:" + e.getMessage());
@@ -69,17 +67,15 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 	@Override
 	public String updatePerformanceInformation(PerformanceInformation performanceInformation) {
-		try {
+		try(Session session = sessionFactory.openSession();) {
             if (null == performanceInformation) {
                 logger.error("performanceInformation updatePerformanceInformation performanceInformation is null!");
             }
             logger.info("PerformanceInformationServiceImpl updatePerformanceInformation: performanceInformation={}", performanceInformation);
-            Session session = sessionFactory.openSession();
             Transaction tx = session.beginTransaction();     
             session.update(performanceInformation);
             tx.commit();
             session.flush();
-            session.close();
             return "1";
         } catch (Exception e) {
             logger.error("exception occurred while performing PerformanceInformationServiceImpl updatePerformanceInformation. Details:" + e.getMessage());
@@ -89,7 +85,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 
 	public int getAllCount(PerformanceInformation performanceInformation, int currentPage, int pageSize) {
-		try{
+		try(Session session = sessionFactory.openSession();){
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceInformation a where 1=1");
 			if (null == performanceInformation) {
                 //logger.error("AlarmsInformationServiceImpl getAllCount performanceInformation is null!");
@@ -115,10 +111,8 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
                 	hql.append(" and a.updateTime like '%"+ver+"%'");
                 }
             }
-            Session session = sessionFactory.openSession();
             long q=(long)session.createQuery(hql.toString()).uniqueResult();
             session.flush();
-            session.close();
             return (int)q;
         } catch (Exception e) {
             logger.error("exception occurred while performing PerformanceInformationServiceImpl getAllCount. Details:" + e.getMessage());
@@ -134,7 +128,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 		int allRow =this.getAllCount(performanceInformation,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try{
+		try(Session session = sessionFactory.openSession();){
 			StringBuffer hql =new StringBuffer("from PerformanceInformation a where 1=1 ");
             if (null == performanceInformation) {
                 //logger.error("AlarmsInformationServiceImpl queryPerformanceInformation performanceInformation is null!");
@@ -161,7 +155,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
                 }
             } 
             logger.info("PerformanceInformationServiceImpl queryPerformanceInformation: performanceInformation={}", performanceInformation);
-            Session session = sessionFactory.openSession();
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
@@ -172,7 +165,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             page.setTotalRecords(allRow);
             page.setList(list);
             session.flush();
-            session.close();
             return page;
         } catch (Exception e) {
             logger.error("exception occurred while performing PerformanceInformationServiceImpl queryPerformanceInformation. Details:" + e.getMessage());
@@ -184,17 +176,16 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceInformation> queryId(String[] id) {
-		try {
+		try(Session session = sessionFactory.openSession();) {
 			if(id.length==0) {
-				logger.error("PerformanceInformationServiceImpl queryId is null!");
+				//logger.error("PerformanceInformationServiceImpl queryId is null!");
 			}
 			List<PerformanceInformation> list = new ArrayList<>();
-			Session session = sessionFactory.openSession();
 			Query query = session.createQuery("from PerformanceInformation a where a.eventId IN (:alist)");
 			list = query.setParameterList("alist", id).list();
-            session.close();
 			return list;
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
 			return null;
 		}
@@ -204,15 +195,13 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceInformation> queryDateBetween(String eventId,Date startDate, Date endDate) {
-		try {
+		try(Session session = sessionFactory.openSession();) {
 			List<PerformanceInformation> list = new ArrayList<>();
-			Session session = sessionFactory.openSession();
 			Query query = session.createQuery("from PerformanceInformation a where a.eventId = :eventId and a.createTime BETWEEN :startDate and :endDate");
 			list = query.setParameter("eventId",eventId).setParameter("startDate", startDate).setParameter("endDate",endDate).list();
-			session.close();
 			return list;
 		} catch (Exception e) {
-			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
 			return null;
 		}
 	}
@@ -228,7 +217,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 			sum = Integer.parseInt(query.setParameter("eventId",eventId).setParameter("name",name).setParameter("startDate", startDate).setParameter("endDate",endDate).uniqueResult().toString());
 			return sum;
 		} catch (Exception e) {
-			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDataBetweenSum. Details:" + e.getMessage());
 			return 0;
 		}
 	}
