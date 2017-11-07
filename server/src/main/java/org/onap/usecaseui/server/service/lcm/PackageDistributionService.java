@@ -30,4 +30,8 @@ public interface PackageDistributionService {
     Job postVfPackage(Csar csar);
 
     JobStatus getJobStatus(String jobId);
+
+    DistributionResult deleteNsPackage(String csarId);
+
+    DistributionResult deleteVfPackage(String csarId);
 }
