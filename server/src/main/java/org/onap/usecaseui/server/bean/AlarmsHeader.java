@@ -111,9 +111,11 @@ public class AlarmsHeader implements Serializable{
 	public AlarmsHeader() {
 	}
 
-	public AlarmsHeader(String eventId) {
-		this.eventId = eventId;
+	public AlarmsHeader(String sourceId) {
+		this.sourceId = sourceId;
 	}
+
+
 
 	public AlarmsHeader(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String sequence, String faultFieldsVersion, String eventServrity, String eventSourceType, String eventCategory, String alarmCondition, String specificProblem, String vfStatus, String alarmInterfaceA, String status, Date createTime, Date updateTime) {
 		this.version = version;

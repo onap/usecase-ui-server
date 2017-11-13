@@ -23,12 +23,12 @@ public class SDNCControllerRsp {
 
     private List<SDNCController> esrThirdpartySdncList;
 
-    @JsonProperty("esr-thirdparty-sdnc")
+    @JsonProperty("esr-thirdparty-sdnc-list")
     public List<SDNCController> getEsrThirdpartySdncList() {
         return esrThirdpartySdncList;
     }
 
-    @JsonProperty("esr-thirdparty-sdnc")
+    @JsonProperty("esr-thirdparty-sdnc-list")
     public void setEsrThirdpartySdncList(List<SDNCController> esrThirdpartySdncList) {
         this.esrThirdpartySdncList = esrThirdpartySdncList;
     }

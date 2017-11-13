@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
@@ -33,4 +34,6 @@ public interface AlarmsInformationService {
     Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation, int currentPage, int pageSize);
 
     List<AlarmsInformation> queryId(String[] id);
+
+    List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime);
 }
