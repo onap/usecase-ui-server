@@ -20,6 +20,8 @@ import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.mockito.Mockito.*;
 
 public class PackageDistributionControllerTest {
@@ -59,8 +61,11 @@ public class PackageDistributionControllerTest {
     @Test
     public void testGetJobStatus() throws Exception {
         String jobId = "1";
-        controller.getJobStatus(jobId);
+        String responseId = "1";
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("responseId")).thenReturn(responseId);
+        controller.getJobStatus(jobId, request);
 
-        verify(service, times(1)).getJobStatus(jobId);
+        verify(service, times(1)).getJobStatus(jobId, responseId);
     }
 }

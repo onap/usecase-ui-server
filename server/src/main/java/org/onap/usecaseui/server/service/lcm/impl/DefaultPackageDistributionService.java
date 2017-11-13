@@ -122,13 +122,43 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     }
 
     @Override
-    public JobStatus getJobStatus(String jobId) {
+    public JobStatus getJobStatus(String jobId, String responseId) {
         try {
-            Response<JobStatus> response = vfcService.getJobStatus(jobId).execute();
+            Response<JobStatus> response = vfcService.getJobStatus(jobId, responseId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
                 logger.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
+                throw new VfcException("VFC service is not available!");
+            }
+        } catch (IOException e) {
+            throw new VfcException("VFC service is not available!", e);
+        }
+    }
+
+    @Override
+    public DistributionResult deleteNsPackage(String csarId) {
+        try {
+            Response<DistributionResult> response = vfcService.deleteNsPackage(csarId).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not delete NS packages[code=%s, message=%s]", response.code(), response.message()));
+                throw new VfcException("VFC service is not available!");
+            }
+        } catch (IOException e) {
+            throw new VfcException("VFC service is not available!", e);
+        }
+    }
+
+    @Override
+    public DistributionResult deleteVfPackage(String csarId) {
+        try {
+            Response<DistributionResult> response = vfcService.deleteVnfPackage(csarId).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not delete VF packages[code=%s, message=%s]", response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {

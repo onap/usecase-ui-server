@@ -20,13 +20,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class OperationProgressInformation {
 
-    private OperationProgress operation;
+    private OperationProgress operationStatus;
 
-    public OperationProgress getOperation() {
-        return operation;
+    public OperationProgress getOperationStatus() {
+        return operationStatus;
     }
 
-    public void setOperation(OperationProgress operation) {
-        this.operation = operation;
+    public void setOperationStatus(OperationProgress operationStatus) {
+        this.operationStatus = operationStatus;
     }
 }

@@ -144,19 +144,21 @@ public class DefaultPackageDistributionServiceTest {
     public void itCanGetJobStatusFromVFC() {
         VfcService vfcService = mock(VfcService.class);
         String jobId = "1";
+        String responseId = "1";
         JobStatus jobStatus = new JobStatus();
-        when(vfcService.getJobStatus(jobId)).thenReturn(successfulCall(jobStatus));
+        when(vfcService.getJobStatus(jobId, responseId)).thenReturn(successfulCall(jobStatus));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame(jobStatus, service.getJobStatus(jobId));
+        Assert.assertSame(jobStatus, service.getJobStatus(jobId, responseId));
     }
 
     @Test(expected = VfcException.class)
     public void getJobStatusWillThrowExceptionWhenVFCIsNotAvailable() {
         VfcService vfcService = mock(VfcService.class);
         String jobId = "1";
-        when(vfcService.getJobStatus(jobId)).thenReturn(failedCall("VFC is not available!"));
+        String responseId = "1";
+        when(vfcService.getJobStatus(jobId, responseId)).thenReturn(failedCall("VFC is not available!"));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
-        service.getJobStatus(jobId);
+        service.getJobStatus(jobId, responseId);
     }
 }

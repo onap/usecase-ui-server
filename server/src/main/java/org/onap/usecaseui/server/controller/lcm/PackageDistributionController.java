@@ -28,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @org.springframework.context.annotation.Configuration
@@ -62,8 +63,21 @@ public class PackageDistributionController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/jobs/{jobId}"}, method = RequestMethod.POST , produces = "application/json")
-    public JobStatus getJobStatus(@PathVariable(value="jobId") String jobId){
-        return packageDistributionService.getJobStatus(jobId);
+    @RequestMapping(value = {"/uui-lcm/jobs/{jobId}"}, method = RequestMethod.GET , produces = "application/json")
+    public JobStatus getJobStatus(@PathVariable(value="jobId") String jobId, HttpServletRequest request){
+        String responseId = request.getParameter("responseId");
+        return packageDistributionService.getJobStatus(jobId, responseId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/ns-packages/{casrId}"}, method = RequestMethod.DELETE , produces = "application/json")
+    public DistributionResult deleteNsPackage(@PathVariable("casrId") String casrId){
+        return packageDistributionService.deleteNsPackage(casrId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/vf-packages/{casrId}"}, method = RequestMethod.DELETE , produces = "application/json")
+    public DistributionResult deleteVfPackage(@PathVariable("casrId") String casrId){
+        return packageDistributionService.deleteVfPackage(casrId);
     }
 }
