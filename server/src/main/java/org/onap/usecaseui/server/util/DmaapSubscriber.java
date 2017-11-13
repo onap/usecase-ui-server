@@ -131,7 +131,7 @@ public class DmaapSubscriber implements Runnable {
         Properties p = new Properties();
         try {
             p.load(inputStream);
-            this.url = p.getProperty("http://") + System.getenv("MS_ADDR");
+            this.url = p.getProperty("dmaap.url") + System.getenv("MR_ADDR");
             this.alarmTopic = p.getProperty("dmaap.alarmTopic");
             this.performanceTopic = p.getProperty("dmaap.performanceTopic");
             this.consumerGroup = p.getProperty("dmaap.consumerGroup");
