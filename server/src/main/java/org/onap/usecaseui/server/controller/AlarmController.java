@@ -79,43 +79,50 @@ public class AlarmController
 
 
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
-            "/alarm/{currentPage}/{pageSize}/{eventId}/{eventName}/{name}/{value}/{createTime}/{status}/{vfStatus}"},
+            "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
             method = RequestMethod.GET , produces = "application/json")
-    public String getAlarmData(@PathVariable(required = false) String eventId,@PathVariable(required = false) String eventName,
-                               @PathVariable(required = false) String name,@PathVariable(required = false) String value,
-                               @PathVariable(required = false) String createTime,@PathVariable(required = false) String status,
-                               @PathVariable(required = false) String vfStatus,
+    public String getAlarmData(@PathVariable(required = false) String sourceId,@PathVariable(required = false) String sourceName,
+                               @PathVariable(required = false) String priority,@PathVariable(required = false) String startTime,
+                               @PathVariable(required = false) String endTime,@PathVariable(required = false) String vfStatus,
                                @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException {
         logger.info("transfer getAlarmData Apis, " +
-                "Parameter all follows : [currentPage : {} , pageSize : {} , eventId : {} , " +
-                "eventName : {} , name : {} , value :{} , createTime : {} , status : {} , vfStatus : {}]"
-                ,currentPage,pageSize,eventId,eventName,name,value,createTime,status,vfStatus);
+                "Parameter all follows : [currentPage : {} , pageSize : {} , sourceId : {} , " +
+                "sourceName : {} , priority : {} , startTime :{} , endTime : {}  , vfStatus : {}]"
+                ,currentPage,pageSize,sourceId,sourceName,priority,startTime,endTime,vfStatus);
         List<AlarmsHeader> alarmsHeaders = null;
         List<AlarmBo> list = new ArrayList<>();
         Page pa = null;
-        if (null != eventId || null != eventName || null != name || null != value || null != createTime
-                || null != status || null != vfStatus  ){
+        if (null != sourceId || null != sourceName || null != priority || null != startTime || null != endTime
+                || null != vfStatus  ){
             AlarmsHeader alarm = new AlarmsHeader();
-            alarm.setEventId(!"null".equals(eventId)?eventId:null);
-            alarm.setEventName(!"null".equals(eventName)?eventName:null);
-            alarm.setStatus(!"null".equals(status)?status:null);
-            alarm.setVfStatus(!"null".equals(vfStatus)?vfStatus:null);
+            alarm.setSourceId(!"null".equals(sourceId)?sourceId:null);
+            alarm.setSourceName(!"null".equals(sourceName)?sourceName:null);
+            alarm.setStatus(!"null".equals(vfStatus)?vfStatus:null);
             try {
-                alarm.setCreateTime(!"null".equals(createTime)?DateUtils.stringToDate(createTime):null);
+                alarm.setCreateTime(!"null".equals(startTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(startTime):null);
+                alarm.setUpdateTime(!"null".equals(endTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(endTime):null);
             } catch (ParseException e) {
                 logger.error("Parse date error :"+e.getMessage());
             }
             pa = alarmsHeaderService.queryAlarmsHeader(alarm,currentPage,pageSize);
+
             alarmsHeaders = pa.getList();
             if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
                 alarmsHeaders.forEach(a ->{
                     AlarmBo abo = new AlarmBo();
                     abo.setAlarmsHeader(a);
                     AlarmsInformation information = new AlarmsInformation();
-                    information.setName(!"null".equals(name)?name:null);
-                    information.setValue(!"null".equals(value)?value:null);
-                    information.setEventId(a.getEventId());
-                    abo.setAlarmsInformation(alarmsInformationService.queryAlarmsInformation(information,1,100).getList());
+                    information.setEventId(a.getSourceId());
+                    List<AlarmsInformation> informationList = alarmsInformationService.queryAlarmsInformation(information,1,100).getList();
+                    informationList.forEach( il -> {
+                        if (il.getValue().equals("")){
+                            StringBuffer value1 = new StringBuffer();
+                            alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(il.getName()),1,100).getList()
+                                    .forEach( val -> value1.append(val.getValue()) );
+                            il.setValue(value1.toString());
+                        }
+                    } );
+                    abo.setAlarmsInformation(informationList);
                     list.add(abo);
                 });
             }
@@ -181,6 +188,30 @@ public class AlarmController
             return omAlarm.writeValueAsString("success");
         }else{
             return omAlarm.writeValueAsString("failed");
+        }
+    }
+
+    @RequestMapping(value = {"/alarm/sourceId"},method = RequestMethod.GET)
+    public String getSourceId(){
+        List<String> sourceIds = new ArrayList<>();
+        alarmsHeaderService.queryAlarmsHeader(null,1,Integer.MAX_VALUE).getList().forEach( al ->{
+            sourceIds.add(al.getSourceId());
+        } );
+        try {
+            return omAlarm.writeValueAsString(sourceIds);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.POST)
+    public String genDiagram(@RequestParam String sourceId,@RequestParam String startTime,@RequestParam String endTime){
+        try {
+            return omAlarm.writeValueAsString(alarmsInformationService.queryDateBetween(sourceId,startTime,endTime));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "";
         }
     }
 

@@ -30,8 +30,6 @@ public class Vnf {
 
     private String name;
 
-    private String version;
-
     public String getUuid() {
         return uuid;
     }
@@ -56,14 +54,6 @@ public class Vnf {
         this.name = name;
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,12 +61,11 @@ public class Vnf {
         Vnf vnf = (Vnf) o;
         return Objects.equals(uuid, vnf.uuid) &&
                 Objects.equals(invariantUUID, vnf.invariantUUID) &&
-                Objects.equals(name, vnf.name) &&
-                Objects.equals(version, vnf.version);
+                Objects.equals(name, vnf.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, invariantUUID, name, version);
+        return Objects.hash(uuid, invariantUUID, name);
     }
 }

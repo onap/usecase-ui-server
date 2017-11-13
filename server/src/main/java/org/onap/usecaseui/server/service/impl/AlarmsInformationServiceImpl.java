@@ -16,9 +16,8 @@
 package org.onap.usecaseui.server.service.impl;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -190,7 +189,39 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 		}
 	}
 
-    
-    
-    
+
+	@Override
+	public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
+		try(Session session = sessionFactory.openSession();) {
+			List<Map<String,String>> mapList = new ArrayList<>();
+			String hql = "select a.createTime,count(*) from AlarmsInformation a where 1=1 ";
+			if (sourceId != null && !"".equals(sourceId)){
+				hql += " and a.eventId = :sourceId";
+			}
+			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
+				hql += " and a.createTime between :startTime and :endTime ";
+			}
+			hql += " group by a.createTime";
+			Query query = session.createQuery(hql);
+			if (sourceId != null && !"".equals(sourceId)){
+				query.setString("sourceId",sourceId);
+			}
+			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
+				query.setString("startTime", startTime).setString("endTime", endTime);
+			}
+			Iterator it= query.list().iterator();
+			while(it.hasNext()){
+				Object[] res=(Object[]) it.next();
+				Map<String,String> map = new HashMap<>();
+				map.put("Time",res[0].toString());
+				map.put("Count",res[1].toString());
+				mapList.add(map);
+			}
+			logger.info("AlarmsInformationServiceImpl queryDateBetween: list={}", mapList);
+			return mapList;
+		} catch (Exception e) {
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
+			return null;
+		}
+	}
 }

@@ -51,6 +51,18 @@ public class AlarmsInformation implements Serializable {
 	@Column(name = "updateTime")
 	private Date updateTime;
 
+	@Override
+	public String toString() {
+		return "AlarmsInformation{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", value='" + value + '\'' +
+				", eventId='" + eventId + '\'' +
+				", createTime=" + createTime +
+				", updateTime=" + updateTime +
+				'}';
+	}
+
 	public AlarmsInformation() {
 	}
 
