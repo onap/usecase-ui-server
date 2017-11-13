@@ -43,12 +43,12 @@ public class AlarmControllerTest {
 
     @Test
     public void getDataNotParam() throws JsonProcessingException {
-       System.out.println(alarmController.getAlarmData(null,null,null,null,null,null,null,1,100));
+       System.out.println(alarmController.getAlarmData(null,null,null,null,null,null,1,100));
     }
 
     @Test
     public void getDataCarryParam() throws JsonProcessingException {
-        System.out.println(alarmController.getAlarmData("110","a","drop","down","1506331166000","1","2",1,100));
+        System.out.println(alarmController.getAlarmData("110","a","drop","down","1506331166000","2",1,100));
     }
 
     @Test

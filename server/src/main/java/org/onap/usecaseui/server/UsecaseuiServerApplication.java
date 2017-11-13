@@ -31,10 +31,9 @@ public class UsecaseuiServerApplication {
         return new RestTemplate();
     }
 
-	public static void main(String[] args) {
-		SpringApplication.run(UsecaseuiServerApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(UsecaseuiServerApplication.class, args);
         DmaapSubscriber dmaapSubscriber = new DmaapSubscriber();
         dmaapSubscriber.run();
-	}
-	
+    }
 }
