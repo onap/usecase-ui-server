@@ -90,7 +90,9 @@ public class PerformanceHeader implements Serializable {
 	public PerformanceHeader() {
 	}
 
-
+	public PerformanceHeader(String sourceId) {
+		this.sourceId = sourceId;
+	}
 
 	public PerformanceHeader(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String sequence, String measurementsForVfScalingVersion, String measurementInterval, Date createTime, Date updateTime) {
 		this.version = version;

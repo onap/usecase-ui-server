@@ -115,29 +115,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     public ServiceTemplateInput extractTemplate(String toPath, boolean isVF) throws JToscaException, IOException {
-        ToscaTemplate tosca = translateToToscaTemplate(toPath);
         ServiceTemplateInput serviceTemplateInput = newServiceTemplateInput(tosca);
-        Map<String, Input> inputsMap = getInputsMap(tosca);
-        for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
-            String nodeType = nodeTemplate.getMetaData().getValue("type");
-            if ("VF".equals(nodeType)) {
-                ServiceTemplateInput nodeService = fetchVFNodeTemplateInput(nodeTemplate);
-                if (nodeService == null) {
-                    continue;
-                }
-                serviceTemplateInput.addNestedTemplate(nodeService);
-            } else {
-                ServiceTemplateInput nodeService = fetchVLServiceTemplateInput(nodeTemplate, inputsMap);
-                serviceTemplateInput.addNestedTemplate(nodeService);
-            }
-        }
-        List<TemplateInput> serviceInputs = getServiceInputs(inputsMap.values());
-        serviceTemplateInput.addInputs(serviceInputs);
-        if (isVF) {
-            serviceTemplateInput.setType("VF");
-            appendLocationParameters(serviceTemplateInput, tosca);
-            appendSdnControllerParameter(serviceTemplateInput);
-        }
         return serviceTemplateInput;
     }
 
@@ -271,7 +249,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     protected ToscaTemplate translateToToscaTemplate(String toPath) throws JToscaException {
-        return new ToscaTemplate(toPath,null,true,null,true);
+        return null;
     }
 
     private static ServiceTemplateInput newServiceTemplateInput(ToscaTemplate tosca) {

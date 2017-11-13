@@ -161,16 +161,15 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
                 	String ver =performanceHeder.getEventType();
                 	hql.append(" and a.eventType like '%"+ver+"%'");
                 }
-            	if(null!=performanceHeder.getCreateTime()) {
-                	Date ver =performanceHeder.getCreateTime();
-                	hql.append(" and a.createTime > '%"+ver+"%'");
+            	if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
+                	hql.append(" and a.createTime between :startTime and :endTime ");
                 }
-            	if(null!=performanceHeder.getUpdateTime()) {
-                	Date ver =performanceHeder.getUpdateTime();
-                	hql.append(" and a.updateTime like '%"+ver+"%'");
-                }
-            } 
-            long q=(long)session.createQuery(hql.toString()).uniqueResult();
+            }
+            Query query = session.createQuery(hql.toString());
+			if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
+				query.setDate("startTime",performanceHeder.getCreateTime()).setDate("endTime",performanceHeder.getUpdateTime());
+			}
+            long q=(long)query.uniqueResult();
             session.flush();
             return (int)q;
         } catch (Exception e) {
@@ -218,7 +217,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
                 }
             	if(null!=performanceHeder.getSourceId()) {
                 	String ver =performanceHeder.getSourceId();
-                	hql.append(" and a.sourceId like '%"+ver+"%'");
+                	hql.append(" and a.sourceId = '"+ver+"'");
                 }
             	if(null!=performanceHeder.getSourceName()) {
                 	String ver =performanceHeder.getSourceName();
@@ -260,17 +259,15 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
                 	String ver =performanceHeder.getEventType();
                 	hql.append(" and a.eventType like '%"+ver+"%'");
                 }
-            	if(null!=performanceHeder.getCreateTime()) {
-                	Date ver =performanceHeder.getCreateTime();
-                	hql.append(" and a.createTime > '%"+ver+"%'");
-                }
-            	if(null!=performanceHeder.getUpdateTime()) {
-                	Date ver =performanceHeder.getUpdateTime();
-                	hql.append(" and a.updateTime like '%"+ver+"%'");
-                }
+				if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
+					hql.append(" and a.createTime between :startTime and :endTime ");
+				}
             }
             logger.info("PerformanceHeaderServiceImpl queryPerformanceHeader: performanceHeder={}", performanceHeder);
             Query query = session.createQuery(hql.toString());
+			if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
+				query.setDate("startTime",performanceHeder.getCreateTime()).setDate("endTime",performanceHeder.getUpdateTime());
+			}
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
             List<PerformanceHeader> list= query.list();
@@ -305,6 +302,14 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	}
 
 
-    
-    
+	@Override
+	public List<String> queryAllSourceId() {
+		try(Session session = sessionFactory.openSession();) {
+			Query query = session.createQuery("select a.sourceId from PerformanceHeader a");
+			return query.list();
+		} catch (Exception e) {
+			logger.error("exception occurred while performing PerformanceHeaderServiceImpl queryAllSourceId. Details:" + e.getMessage());
+			return null;
+		}
+	}
 }
