@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service.impl;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
+import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,16 +189,16 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 	String ver =alarmsHeader.getStatus();
                 	count.append(" and a.status = '"+ver+"'");
                 }
-            	if(null!=alarmsHeader.getCreateTime()) {
-                	Date ver =alarmsHeader.getCreateTime();
-                	count.append(" and a.createTime > '%"+ver+"%'");
-                }
-            	if(null!=alarmsHeader.getUpdateTime()) {
-                	Date ver =alarmsHeader.getUpdateTime();
-                	count.append(" and a.updateTime like '%"+ver+"%'");
-                }
-            } 
-            long q=(long)session.createQuery(count.toString()).uniqueResult();
+				if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
+					count.append(" and a.createTime between :startTime and :endTime");
+				}
+            }
+            Query query = session.createQuery(count.toString());
+			if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
+				query.setDate("startTime",alarmsHeader.getCreateTime());
+				query.setDate("endTime",alarmsHeader.getUpdateTime());
+			}
+            long q=(long)query.uniqueResult();
             session.flush();
             return (int)q;
         } catch (Exception e) {
@@ -223,7 +225,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 }
             	if(null!=alarmsHeader.getEventName()) {
                 	String ver=alarmsHeader.getEventName();
-                	hql.append(" and a.eventName like '%"+ver+"%'");
+                	hql.append(" and a.eventName = '"+ver+"'");
                 }
             	if(null!=alarmsHeader.getAlarmCondition()) {
                 	String ver=alarmsHeader.getAlarmCondition();
@@ -313,17 +315,16 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 	String ver =alarmsHeader.getStatus();
                 	hql.append(" and a.status = '"+ver+"'");
                 }
-            	if(null!=alarmsHeader.getCreateTime()) {
-                	Date ver =alarmsHeader.getCreateTime();
-                	hql.append(" and a.createTime > '%"+ver+"%'");
-                }
-            	if(null!=alarmsHeader.getUpdateTime()) {
-                	Date ver =alarmsHeader.getUpdateTime();
-                	hql.append(" and a.updateTime like '%"+ver+"%'");
+            	if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
+                	hql.append(" and a.createTime between :startTime and :endTime");
                 }
             }
             logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
             Query query = session.createQuery(hql.toString());
+			if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
+				query.setDate("startTime",alarmsHeader.getCreateTime());
+				query.setDate("endTime",alarmsHeader.getUpdateTime());
+			}
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
             List<AlarmsHeader> list= query.list();

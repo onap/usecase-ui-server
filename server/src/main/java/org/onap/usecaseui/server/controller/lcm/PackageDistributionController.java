@@ -66,16 +66,4 @@ public class PackageDistributionController {
     public JobStatus getJobStatus(@PathVariable(value="jobId") String jobId){
         return packageDistributionService.getJobStatus(jobId);
     }
-
-    @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/ns-packages/{casrId}"}, method = RequestMethod.GET , produces = "application/json")
-    public DistributionResult deleteNsPackage(@PathVariable("casrId") String casrId){
-        return packageDistributionService.deleteNsPackage(casrId);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/vf-packages/{casrId}"}, method = RequestMethod.GET , produces = "application/json")
-    public DistributionResult deleteVfPackage(@PathVariable("casrId") String casrId){
-        return packageDistributionService.deleteVfPackage(casrId);
-    }
 }

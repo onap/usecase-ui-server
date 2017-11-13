@@ -20,7 +20,10 @@ import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
 import retrofit2.Call;
-import retrofit2.http.*;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface VfcService {
 
@@ -32,10 +35,4 @@ public interface VfcService {
 
     @GET("/api/nslcm/v1/jobs/{jobId}")
     Call<JobStatus> getJobStatus(@Path("jobId") String jobId);
-
-    @DELETE("/api/catalog/v1/nspackages/{csarId}")
-    Call<DistributionResult> deleteNsPackage(@Path("csarId") String csarId);
-
-    @DELETE("/api/catalog/v1/vnfpackages/{csarId}")
-    Call<DistributionResult> deleteVnfPackage(@Path("csarId") String csarId);
 }
