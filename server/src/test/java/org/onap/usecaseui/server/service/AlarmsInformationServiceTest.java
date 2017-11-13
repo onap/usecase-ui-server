@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,7 +37,7 @@ public class AlarmsInformationServiceTest {
     @Test
     public void save() throws ParseException {
         AlarmsInformation a = new AlarmsInformation();
-        a.setEventId("111");
+        a.setEventId("1119");
         a.setName("efw");
         a.setValue("fre");
         a.setCreateTime(DateUtils.now());
@@ -105,6 +106,12 @@ public class AlarmsInformationServiceTest {
                 .getList().forEach( al -> System.out.println(al.getEventId()));
     }
 
+    @Test
+    public void queryData() throws ParseException {
+        alarmsInformationService.queryDateBetween("MME40","","").forEach( in -> {
+            System.out.println(in);
+        });
+    }
 }
 
 

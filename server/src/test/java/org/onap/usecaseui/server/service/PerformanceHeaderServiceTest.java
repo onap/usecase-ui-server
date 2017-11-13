@@ -232,5 +232,10 @@ public class PerformanceHeaderServiceTest {
                 .getList().forEach(per -> System.out.println(per));
     }
 
+    @Test
+    public void queryAllSourceId(){
+        performanceHeaderService.queryAllSourceId().forEach( a-> System.out.println(a) );
+    }
+
 }
 

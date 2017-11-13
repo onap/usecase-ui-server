@@ -38,4 +38,7 @@ public interface PerformanceInformationService {
     List<PerformanceInformation> queryDateBetween(String eventId, Date startDate, Date endDate);
 
     int queryDataBetweenSum(String eventId, String name, Date startDate, Date endDate);
+
+    List<PerformanceInformation> queryDateBetween(String resourceId, String name, String startTime, String endTime);
+
 }

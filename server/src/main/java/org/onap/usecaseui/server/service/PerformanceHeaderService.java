@@ -33,4 +33,6 @@ public interface PerformanceHeaderService {
     Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder, int currentPage, int pageSize);
     
     List<PerformanceHeader> queryId(String[] id);
+
+    List<String> queryAllSourceId();
 }
