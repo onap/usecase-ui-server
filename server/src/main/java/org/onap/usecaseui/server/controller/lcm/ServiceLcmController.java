@@ -59,7 +59,7 @@ public class ServiceLcmController {
 
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/services/{serviceId}"}, method = RequestMethod.DELETE , produces = "application/json")
-    public DeleteOperationRsp terminateService(@PathVariable(value = "serviceId") String serviceId){
-        return serviceLcmService.terminateService(serviceId);
+    public DeleteOperationRsp terminateService(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request){
+        return serviceLcmService.terminateService(serviceId, request);
     }
 }

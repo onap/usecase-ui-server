@@ -84,9 +84,10 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     }
 
     @Override
-    public DeleteOperationRsp terminateService(String serviceId) {
+    public DeleteOperationRsp terminateService(String serviceId, HttpServletRequest request) {
         try {
-            Response<DeleteOperationRsp> response = soService.terminateService(serviceId).execute();
+            RequestBody requestBody = extractBody(request);
+            Response<DeleteOperationRsp> response = soService.terminateService(serviceId, requestBody).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {

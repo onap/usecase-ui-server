@@ -43,5 +43,5 @@ public interface SOService {
             "Accept: application/json"
     })
     @DELETE("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}")
-    Call<DeleteOperationRsp> terminateService(@Path("serviceId") String serviceId);
+    Call<DeleteOperationRsp> terminateService(@Path("serviceId") String serviceId, @Body RequestBody body);
 }

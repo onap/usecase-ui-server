@@ -55,9 +55,10 @@ public class ServiceLcmControllerTest {
     @Test
     public void testTerminateService() throws Exception {
         String serviceId = "1";
-        controller.terminateService(serviceId);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        controller.terminateService(serviceId, request);
 
-        verify(service, times(1)).terminateService(serviceId);
+        verify(service, times(1)).terminateService(serviceId, request);
     }
 
 }

@@ -95,27 +95,29 @@ public class DefaultServiceLcmServiceTest {
     }
 
     @Test
-    public void itCanTerminateService() {
+    public void itCanTerminateService() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
         DeleteOperationRsp rsp = new DeleteOperationRsp();
         rsp.setOperationId("1");
-        when(soService.terminateService(serviceId)).thenReturn(successfulCall(rsp));
+        when(soService.terminateService(serviceId, anyObject())).thenReturn(successfulCall(rsp));
+        HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
 
-        Assert.assertSame(rsp, service.terminateService(serviceId));
+        Assert.assertSame(rsp, service.terminateService(serviceId, request));
     }
 
     @Test(expected = SOException.class)
-    public void terminateServiceWillThrowExceptionWhenSOIsNotAvailable() {
+    public void terminateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        when(soService.terminateService(serviceId)).thenReturn(failedCall("SO is not available!"));
+        when(soService.terminateService(serviceId, anyObject())).thenReturn(failedCall("SO is not available!"));
+        HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
 
-        service.terminateService(serviceId);
+        service.terminateService(serviceId, request);
     }
 
     @Test

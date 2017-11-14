@@ -30,7 +30,7 @@ public interface VfcService {
     @POST("/api/catalog/v1/vnfpackages")
     Call<Job> distributeVnfPackage(@Body Csar csar);
 
-    @GET("/api/nslcm/v1/jobs/{jobId}")
+    @GET("/api/catalog/v1/jobs/{jobId}")
     Call<JobStatus> getJobStatus(@Path("jobId") String jobId, @Query("responseId") String responseId);
 
     @DELETE("/api/catalog/v1/nspackages/{csarId}")
