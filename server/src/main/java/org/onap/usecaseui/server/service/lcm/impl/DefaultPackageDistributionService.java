@@ -152,9 +152,9 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     }
 
     @Override
-    public DistributionResult deleteVfPackage(String csarId) {
+    public Job deleteVfPackage(String csarId) {
         try {
-            Response<DistributionResult> response = vfcService.deleteVnfPackage(csarId).execute();
+            Response<Job> response = vfcService.deleteVnfPackage(csarId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {

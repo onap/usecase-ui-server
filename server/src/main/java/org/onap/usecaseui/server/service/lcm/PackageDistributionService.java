@@ -33,5 +33,5 @@ public interface PackageDistributionService {
 
     DistributionResult deleteNsPackage(String csarId);
 
-    DistributionResult deleteVfPackage(String csarId);
+    Job deleteVfPackage(String csarId);
 }

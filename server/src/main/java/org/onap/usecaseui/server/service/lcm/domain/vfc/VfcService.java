@@ -37,5 +37,5 @@ public interface VfcService {
     Call<DistributionResult> deleteNsPackage(@Path("csarId") String csarId);
 
     @DELETE("/api/catalog/v1/vnfpackages/{csarId}")
-    Call<DistributionResult> deleteVnfPackage(@Path("csarId") String csarId);
+    Call<Job> deleteVnfPackage(@Path("csarId") String csarId);
 }

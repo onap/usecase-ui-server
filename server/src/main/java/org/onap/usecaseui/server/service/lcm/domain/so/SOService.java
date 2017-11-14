@@ -42,6 +42,7 @@ public interface SOService {
             "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
-    @DELETE("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}")
+//    @DELETE("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}")
+    @HTTP(method="DELETE", path="/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}", hasBody = true)
     Call<DeleteOperationRsp> terminateService(@Path("serviceId") String serviceId, @Body RequestBody body);
 }

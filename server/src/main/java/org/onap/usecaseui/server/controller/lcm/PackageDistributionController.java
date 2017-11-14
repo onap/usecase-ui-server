@@ -77,7 +77,7 @@ public class PackageDistributionController {
 
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/vf-packages/{casrId}"}, method = RequestMethod.DELETE , produces = "application/json")
-    public DistributionResult deleteVfPackage(@PathVariable("casrId") String casrId){
+    public Job deleteVfPackage(@PathVariable("casrId") String casrId){
         return packageDistributionService.deleteVfPackage(casrId);
     }
 }
