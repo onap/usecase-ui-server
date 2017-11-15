@@ -22,12 +22,12 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `alarms_additionalinformation`;
 CREATE TABLE `alarms_additionalinformation` (
-  `name` varchar(50) NOT NULL,
-  `value` varchar(500) NOT NULL,
-  `eventId` varchar(30) NOT NULL,
-  `createTime` datetime NOT NULL,
-  `updateTime` datetime NOT NULL,
-  `id` int(10) NOT NULL,
+  `name` varchar(500),
+  `value` varchar(500),
+  `eventId` varchar(500),
+  `createTime` datetime,
+  `updateTime` datetime,
+  `id` int(10) NOT NULL auto_increment,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -36,33 +36,34 @@ CREATE TABLE `alarms_additionalinformation` (
 -- ----------------------------
 DROP TABLE IF EXISTS `alarms_commoneventheader`;
 CREATE TABLE `alarms_commoneventheader` (
-  `version` varchar(10) NOT NULL,
-  `eventName` varchar(50) NOT NULL,
-  `domain` varchar(30) NOT NULL,
-  `eventId` varchar(30) NOT NULL,
-  `eventType` varchar(30) NOT NULL,
-  `nfcNamingCode` varchar(30) DEFAULT NULL,
-  `nfNamingCode` varchar(30) DEFAULT NULL,
-  `sourceId` varchar(50) NOT NULL,
-  `sourceName` varchar(50) NOT NULL,
-  `reportingEntityId` varchar(30) NOT NULL,
-  `reportingEntityName` varchar(30) NOT NULL,
-  `priority` varchar(20) NOT NULL,
-  `startEpochMicrosec` varchar(20) NOT NULL,
-  `lastEpochMicroSec` varchar(20) NOT NULL,
-  `sequence` varchar(10) NOT NULL,
-  `faultFieldsVersion` varchar(10) NOT NULL,
-  `eventServrity` varchar(30) NOT NULL,
-  `eventSourceType` varchar(30) NOT NULL,
-  `eventCategory` varchar(30) NOT NULL,
-  `alarmCondition` varchar(400) NOT NULL,
-  `specificProblem` varchar(400) NOT NULL,
-  `vfStatus` varchar(10) NOT NULL,
-  `alarmInterfaceA` varchar(40) NOT NULL,
-  `status` varchar(11) NOT NULL,
-  `createTime` datetime NOT NULL,
-  `updateTime` datetime NOT NULL,
-  PRIMARY KEY (`eventName`)
+  `version` varchar(500),
+  `eventName` varchar(500),
+  `domain` varchar(500),
+  `eventId` varchar(500),
+  `eventType` varchar(500),
+  `nfcNamingCode` varchar(500) DEFAULT NULL,
+  `nfNamingCode` varchar(500) DEFAULT NULL,
+  `sourceId` varchar(500),
+  `sourceName` varchar(500),
+  `reportingEntityId` varchar(500),
+  `reportingEntityName` varchar(500),
+  `priority` varchar(50),
+  `startEpochMicrosec` varchar(500),
+  `lastEpochMicroSec` varchar(500),
+  `sequence` varchar(500),
+  `faultFieldsVersion` varchar(500),
+  `eventServrity` varchar(500),
+  `eventSourceType` varchar(500),
+  `eventCategory` varchar(500),
+  `alarmCondition` varchar(500),
+  `specificProblem` varchar(500),
+  `vfStatus` varchar(500),
+  `alarmInterfaceA` varchar(500),
+  `status` varchar(50),
+  `createTime` datetime,
+  `updateTime` datetime,
+  `id` int(10) NOT NULL auto_increment,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -70,12 +71,12 @@ CREATE TABLE `alarms_commoneventheader` (
 -- ----------------------------
 DROP TABLE IF EXISTS `performance_additionalinformation`;
 CREATE TABLE `performance_additionalinformation` (
-  `name` varchar(50) NOT NULL,
-  `value` varchar(500) NOT NULL,
-  `eventId` varchar(30) NOT NULL,
-  `createTime` datetime NOT NULL,
-  `updateTime` datetime NOT NULL,
-  `id` int(10) NOT NULL,
+  `name` varchar(500),
+  `value` varchar(500),
+  `eventId` varchar(500),
+  `createTime` datetime,
+  `updateTime` datetime,
+  `id` int(10) NOT NULL auto_increment,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -84,24 +85,25 @@ CREATE TABLE `performance_additionalinformation` (
 -- ----------------------------
 DROP TABLE IF EXISTS `performance_commoneventheader`;
 CREATE TABLE `performance_commoneventheader` (
-  `version` varchar(10) NOT NULL,
-  `eventName` varchar(50) NOT NULL,
-  `domain` varchar(30) NOT NULL,
-  `eventId` varchar(30) NOT NULL,
-  `eventType` varchar(30) NOT NULL,
-  `nfcNamingCode` varchar(30) DEFAULT NULL,
-  `nfNamingCode` varchar(30) DEFAULT NULL,
-  `sourceId` varchar(50) NOT NULL,
-  `sourceName` varchar(50) NOT NULL,
-  `reportingEntityId` varchar(30) NOT NULL,
-  `reportingEntityName` varchar(30) NOT NULL,
-  `priority` varchar(20) NOT NULL,
-  `startEpochMicrosec` varchar(20) NOT NULL,
-  `lastEpochMicroSec` varchar(20) NOT NULL,
-  `sequence` varchar(10) NOT NULL,
-  `measurementsForVfScalingVersion` varchar(10) NOT NULL,
-  `measurementInterval` varchar(10) NOT NULL,
-  `createTime` datetime NOT NULL,
-  `updateTime` datetime NOT NULL,
-  PRIMARY KEY (`eventName`)
+  `version` varchar(500),
+  `eventName` varchar(500),
+  `domain` varchar(500),
+  `eventId` varchar(500),
+  `eventType` varchar(500),
+  `nfcNamingCode` varchar(500) DEFAULT NULL,
+  `nfNamingCode` varchar(500) DEFAULT NULL,
+  `sourceId` varchar(500),
+  `sourceName` varchar(500),
+  `reportingEntityId` varchar(500),
+  `reportingEntityName` varchar(500),
+  `priority` varchar(50),
+  `startEpochMicrosec` varchar(500),
+  `lastEpochMicroSec` varchar(500),
+  `sequence` varchar(500),
+  `measurementsForVfScalingVersion` varchar(500),
+  `measurementInterval` varchar(500),
+  `createTime` datetime,
+  `updateTime` datetime,
+  `id` int(10) NOT NULL auto_increment,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

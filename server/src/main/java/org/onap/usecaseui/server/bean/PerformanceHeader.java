@@ -27,11 +27,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name="performance_commoneventheader")
 public class PerformanceHeader implements Serializable {
-	
+
+	@Id
+	@Column(name = "id")
+	private int id;
+
 	@Column(name = "version")
 	private String version;
 	
-	@Id
 	@Column(name = "eventName")
 	private String eventName;
 	
@@ -268,7 +271,11 @@ public class PerformanceHeader implements Serializable {
 		this.updateTime = updateTime;
 	}
 
-	
-	
-	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 }

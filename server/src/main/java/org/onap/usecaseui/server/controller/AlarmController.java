@@ -71,13 +71,6 @@ public class AlarmController
 
     private ObjectMapper omAlarm = new ObjectMapper();
 
-
-    @RequestMapping(value = {"/usecase-ui"}, method = RequestMethod.GET)
-    public ModelAndView index(){
-        return new ModelAndView("index");
-    }
-
-
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
             method = RequestMethod.GET , produces = "application/json")
@@ -110,20 +103,14 @@ public class AlarmController
             if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
                 alarmsHeaders.forEach(a ->{
                     AlarmBo abo = new AlarmBo();
-                    abo.setAlarmsHeader(a);
-                    AlarmsInformation information = new AlarmsInformation();
-                    information.setEventId(a.getSourceId());
-                    List<AlarmsInformation> informationList = alarmsInformationService.queryAlarmsInformation(information,1,100).getList();
-                    informationList.forEach( il -> {
-                        if (il.getValue().equals("")){
-                            StringBuffer value1 = new StringBuffer();
-                            alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(il.getName()),1,100).getList()
-                                    .forEach( val -> value1.append(val.getValue()) );
-                            il.setValue(value1.toString());
-                        }
-                    } );
-                    abo.setAlarmsInformation(informationList);
-                    list.add(abo);
+                    if (!a.getStatus().equals("3")){
+                        abo.setAlarmsHeader(a);
+                        AlarmsInformation information = new AlarmsInformation();
+                        information.setEventId(a.getSourceId());
+                        List<AlarmsInformation> informationList = alarmsInformationService.queryAlarmsInformation(information,1,100).getList();
+                        abo.setAlarmsInformation(informationList);
+                        list.add(abo);
+                    }
                 });
             }
         }else {
@@ -132,9 +119,12 @@ public class AlarmController
             if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
                 alarmsHeaders.forEach(a -> {
                     AlarmBo abo = new AlarmBo();
-                    abo.setAlarmsHeader(a);
-                    abo.setAlarmsInformation(alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(a.getEventId()),currentPage,pageSize).getList());
-                    list.add(abo);
+                    if (!a.getStatus().equals("3")){
+                        abo.setAlarmsHeader(a);
+                        abo.setAlarmsInformation(alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(a.getEventId()),currentPage,pageSize).getList());
+                        list.add(abo);
+                    }
+
                 });
             }
         }
@@ -194,8 +184,9 @@ public class AlarmController
     @RequestMapping(value = {"/alarm/sourceId"},method = RequestMethod.GET)
     public String getSourceId(){
         List<String> sourceIds = new ArrayList<>();
-        alarmsHeaderService.queryAlarmsHeader(null,1,Integer.MAX_VALUE).getList().forEach( al ->{
-            sourceIds.add(al.getSourceId());
+        alarmsHeaderService.queryAlarmsHeader(new AlarmsHeader(),1,Integer.MAX_VALUE).getList().forEach( al ->{
+            if (!al.getStatus().equals("3") || !sourceIds.contains(al.getSourceId()))
+                sourceIds.add(al.getSourceId());
         } );
         try {
             return omAlarm.writeValueAsString(sourceIds);

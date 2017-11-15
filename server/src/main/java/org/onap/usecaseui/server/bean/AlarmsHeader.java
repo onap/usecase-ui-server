@@ -27,11 +27,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name="alarms_commoneventheader")
 public class AlarmsHeader implements Serializable{
-	
+
+	@Id
+	@Column(name = "id")
+	private int id;
+
 	@Column(name = "version")
 	private String version;
 	
-	@Id
 	@Column(name = "eventName")
 	private String eventName;
 	
@@ -353,6 +356,12 @@ public class AlarmsHeader implements Serializable{
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-	
-	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 }
