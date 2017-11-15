@@ -118,12 +118,10 @@ public class DmaapSubscriber implements Runnable {
         Properties p = new Properties();
         try {
             p.load(inputStream);
-            //this.url = p.getProperty("dmaap.url") + System.getenv("MR_ADDR");
-            this.url = "http://172.30.3.42:3904";
+            this.url = p.getProperty("dmaap.url") + System.getenv("MR_ADDR");
             this.alarmTopic = p.getProperty("dmaap.alarmTopic");
             this.performanceTopic = p.getProperty("dmaap.performanceTopic");
-            //this.consumerGroup = p.getProperty("dmaap.consumerGroup");
-            this.consumerGroup = "gaolei";
+            this.consumerGroup = p.getProperty("dmaap.consumerGroup");
             this.consumer = p.getProperty("dmaap.consumer");
             this.timeout = Integer.parseInt(p.getProperty("dmaap.timeout"));
         } catch (IOException e1) {
@@ -133,7 +131,6 @@ public class DmaapSubscriber implements Runnable {
 
     public void run() {
         try {
-            //logger.info((alarmsHeaderService == null)+"");
             initConfig();
             while (isActive) {
                 logger.info("alarm data subscription is starting......");
