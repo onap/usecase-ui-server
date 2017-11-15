@@ -14,7 +14,7 @@
 -- limitations under the License.
 --
 
-use usercaseui;
+use uui;
 
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------

@@ -16,16 +16,16 @@
 
 /******************drop old database and user***************************/
 use mysql;
-drop database IF EXISTS usercaseui;
+drop database IF EXISTS uui;
 delete from user where User='usecaseui';
 FLUSH PRIVILEGES;
 
 /******************create new database and user***************************/
-create database usercaseui CHARACTER SET utf8;
+create database uui CHARACTER SET utf8;
 
-GRANT ALL PRIVILEGES ON usercaseui.* TO 'usercaseui'@'%' IDENTIFIED BY 'usercaseui' WITH GRANT OPTION;
-GRANT ALL PRIVILEGES ON mysql.* TO 'usercaseui'@'%' IDENTIFIED BY 'usercaseui' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON uui.* TO 'uui'@'%' IDENTIFIED BY 'uui' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON mysql.* TO 'uui'@'%' IDENTIFIED BY 'uui' WITH GRANT OPTION;
 
-GRANT ALL PRIVILEGES ON usercaseui.* TO 'usercaseui'@'localhost' IDENTIFIED BY 'usercaseui' WITH GRANT OPTION;
-GRANT ALL PRIVILEGES ON mysql.* TO 'usercaseui'@'localhost' IDENTIFIED BY 'usercaseui' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON uui.* TO 'uui'@'localhost' IDENTIFIED BY 'uui' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON mysql.* TO 'uui'@'localhost' IDENTIFIED BY 'uui' WITH GRANT OPTION;
 FLUSH PRIVILEGES; 
