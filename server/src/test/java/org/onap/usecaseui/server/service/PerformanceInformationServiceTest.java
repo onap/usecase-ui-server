@@ -124,8 +124,5 @@ public class PerformanceInformationServiceTest {
         performanceInformationService.queryDateBetween("2202", DateUtils.stringToDate("2017-10-15 01:00:00"), DateUtils.stringToDate("2017-10-15 02:00:00")).forEach(p -> System.out.println(p));
     }
 
-    @Test
-    public void sum() throws ParseException {
-        System.out.println(performanceInformationService.queryDataBetweenSum("2202", "cpu", DateUtils.stringToDate("2017-10-18 09:00:00"), DateUtils.stringToDate("2017-10-18 10:00:00")));
-    }
+
 }

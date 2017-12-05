@@ -74,19 +74,7 @@ public class PerformanceControllerTest {
         //System.out.println(performanceController.generateDiaCsvFile(null,p));
     }
 
-    @Test
-    public void generateDiagram(){
-        try {
-            System.out.println(performanceController.generateDiagram("hour","110"));
-            System.out.println(performanceController.generateDiagram("day","110"));
-            System.out.println(performanceController.generateDiagram("month","110"));
-            System.out.println(performanceController.generateDiagram("year","110"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
+
 
 
 }

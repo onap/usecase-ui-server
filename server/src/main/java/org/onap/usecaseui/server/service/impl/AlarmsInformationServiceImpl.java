@@ -224,4 +224,30 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			return null;
 		}
 	}
+
+    @Override
+    public String queryCountValueByDataBetween(String sourceId, String startTime, String endTime) {
+        try(Session session = sessionFactory.openSession()) {
+            String hql = "select count(a.value) from AlarmsInformation a where 1=1 ";
+            if (sourceId != null && !"".equals(sourceId)){
+                hql += " and a.eventId = :sourceId";
+            }
+            if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
+                hql += " and a.createTime between :startTime and :endTime ";
+            }
+            Query query = session.createQuery(hql);
+            if (sourceId != null && !"".equals(sourceId)){
+                query.setString("sourceId",sourceId);
+            }
+            if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
+                query.setString("startTime", startTime).setString("endTime", endTime);
+            }
+            String value = query.uniqueResult().toString();
+            logger.info("AlarmsInformationServiceImpl queryMaxValueByDataBetween: value={}", value);
+            return value;
+        } catch (Exception e) {
+            logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
+            return null;
+        }
+    }
 }
