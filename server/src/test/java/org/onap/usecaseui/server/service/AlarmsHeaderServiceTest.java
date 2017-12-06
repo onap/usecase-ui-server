@@ -15,21 +15,38 @@
  */
 package org.onap.usecaseui.server.service;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.onap.usecaseui.server.UsecaseuiServerApplication;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.util.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = UsecaseuiServerApplication.class)
+@WebAppConfiguration
 public class AlarmsHeaderServiceTest {
 
-    @Resource(name = "AlarmsHeaderService")
+    @Autowired
     private AlarmsHeaderService alarmsHeaderService;
 
     @Test

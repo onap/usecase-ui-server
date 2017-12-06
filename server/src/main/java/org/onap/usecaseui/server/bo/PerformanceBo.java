@@ -32,10 +32,6 @@ public class PerformanceBo implements Serializable {
     public PerformanceBo() {
     }
 
-    public PerformanceBo(PerformanceHeader performanceHeader, List<PerformanceInformation> performanceInformation) {
-        this.performanceHeader = performanceHeader;
-        this.performanceInformation = performanceInformation;
-    }
 
     public PerformanceHeader getPerformanceHeader() {
         return performanceHeader;

@@ -64,6 +64,8 @@ public class PerformanceController {
 
     private ObjectMapper omPerformance = new ObjectMapper();
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
     @RequestMapping(value = {"/performance/{currentPage}/{pageSize}", "/performance/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}"}, method = RequestMethod.GET, produces = "application/json")
     public String getPerformanceData(HttpServletResponse response, @PathVariable int currentPage,
                                      @PathVariable int pageSize, @PathVariable(required = false) String sourceId,
@@ -130,7 +132,7 @@ public class PerformanceController {
         }
     }
 
-    @RequestMapping(value = {"/performance/genCsv/{eventId}"}, method = RequestMethod.GET, produces = "application/json")
+    /*@RequestMapping(value = {"/performance/genCsv/{eventId}"}, method = RequestMethod.GET, produces = "application/json")
     public String generateCsvFile(HttpServletResponse response, @PathVariable String[] eventId) throws JsonProcessingException {
         String csvFile = "csvFiles/vnf_performance_" + new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date()) + ".csv";
         List<PerformanceHeader> performanceHeaders = performanceHeaderService.queryId(eventId);
@@ -163,9 +165,9 @@ public class PerformanceController {
         } else {
             return omPerformance.writeValueAsString("failed");
         }
-    }
+    }*/
 
-    @RequestMapping(value = {"/performance/genDiaCsv/{dataJson}"}, method = RequestMethod.GET, produces = "application/json")
+    /*@RequestMapping(value = {"/performance/genDiaCsv/{dataJson}"}, method = RequestMethod.GET, produces = "application/json")
     public String generateDiaCsvFile(HttpServletResponse response, @PathVariable String dataJson) throws IOException {
         List<Map<String, Object>> dataList = omPerformance.readValue(dataJson, List.class);
         String csvFileName = "csvFiles/" + dataList.get(0).get("name") + "_" + new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date()) + ".csv";
@@ -191,100 +193,19 @@ public class PerformanceController {
         } else {
             return omPerformance.writeValueAsString("failed");
         }
-    }
-
-    @ResponseBody
-    @RequestMapping(value = {"/performance/diagram/{unit}/{eventId}"}, method = RequestMethod.GET, produces = "application/json")
-    public String generateDiagram(@PathVariable String unit, @PathVariable String eventId) throws ParseException, JsonProcessingException {
-        Map<String, List<Integer>> diagramSource = new HashMap<>();
-        String[] names = {"cpu", "network", "disk", "memory"};
-        switch (unit) {
-            case "hour":
-                for (int i = 0; i < 4; i++) {
-                    Date startDateHour = DateUtils.stringToDate(DateUtils.initDate(new Date(), 1, 1, 1, -1, 0, 0));
-                    Date endDateHour = DateUtils.stringToDate(DateUtils.initDate(new Date(), 1, 1, 1, -1, 0, 0));
-                    endDateHour = DateUtils.stringToDate(DateUtils.addDate(endDateHour, "minute", 15));
-                    List<Integer> values = new ArrayList<>();
-                    for (int j = 0; j < 4; j++) {
-                        logger.info(DateUtils.dateToString(startDateHour));
-                        logger.info(DateUtils.dateToString(endDateHour));
-                        values.add(performanceInformationService.queryDataBetweenSum(eventId, names[i], startDateHour, endDateHour));
-                        startDateHour = DateUtils.stringToDate(DateUtils.addDate(startDateHour, "minute", 15));
-                        endDateHour = DateUtils.stringToDate(DateUtils.addDate(endDateHour, "minute", 15));
-                    }
-                    diagramSource.put(names[i], values);
-                }
-                break;
-            case "day":
-                for (int i = 0; i < 4; i++) {
-                    Date startDateDay = DateUtils.stringToDate(DateUtils.initDate(new Date(), 1, 1, -1, 0, 0, 0));
-                    Date endDateDay = DateUtils.stringToDate(DateUtils.initDate(new Date(), 1, 1, -1, 0, 0, 0));
-                    endDateDay = DateUtils.stringToDate(DateUtils.addDate(endDateDay, "hour", 1));
-                    List<Integer> values = new ArrayList<>();
-                    for (int j = 0; j < 24; j++) {
-                        values.add(performanceInformationService.queryDataBetweenSum(eventId, names[i], startDateDay, endDateDay));
-                        startDateDay = DateUtils.stringToDate(DateUtils.addDate(startDateDay, "hour", 1));
-                        endDateDay = DateUtils.stringToDate(DateUtils.addDate(endDateDay, "hour", 1));
-                    }
-                    diagramSource.put(names[i], values);
-                }
-                break;
-            case "month":
-                for (int i = 0; i < 4; i++) {
-                    Date startDateMonth = DateUtils.stringToDate(DateUtils.initDate(new Date(), 1, -1, 0, 0, 0, 0));
-                    Date endDateMonth = DateUtils.stringToDate(DateUtils.initDate(new Date(), 1, -1, 0, 0, 0, 0));
-                    endDateMonth = DateUtils.stringToDate(DateUtils.addDate(endDateMonth, "day", 1));
-                    List<Integer> values = new ArrayList<>();
-                    for (int j = 0; j < 31; j++) {
-                        values.add(performanceInformationService.queryDataBetweenSum(eventId, names[i], startDateMonth, endDateMonth));
-                        startDateMonth = DateUtils.stringToDate(DateUtils.addDate(startDateMonth, "day", 1));
-                        endDateMonth = DateUtils.stringToDate(DateUtils.addDate(endDateMonth, "day", 1));
-                    }
-                    diagramSource.put(names[i], values);
-                }
-                break;
-            case "year":
-                for (int i = 0; i < 4; i++) {
-                    Date startDateYear = DateUtils.stringToDate(DateUtils.initDate(new Date(), -1, 0, 0, 0, 0, 0));
-                    Date endDateYear = DateUtils.stringToDate(DateUtils.initDate(new Date(), -1, 0, 0, 0, 0, 0));
-                    endDateYear = DateUtils.stringToDate(DateUtils.addDate(endDateYear, "month", 1));
-                    List<Integer> values = new ArrayList<>();
-                    for (int j = 0; j < 12; j++) {
-                        values.add(performanceInformationService.queryDataBetweenSum(eventId, names[i], startDateYear, endDateYear));
-                        startDateYear = DateUtils.stringToDate(DateUtils.addDate(startDateYear, "month", 1));
-                        endDateYear = DateUtils.stringToDate(DateUtils.addDate(endDateYear, "month", 1));
-                    }
-                    diagramSource.put(names[i], values);
-                }
-                break;
-        }
-        omPerformance.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
-        return omPerformance.writeValueAsString(diagramSource);
-    }
+    }*/
 
     @RequestMapping(value = {"/performance/diagram"}, method = RequestMethod.POST, produces = "application/json")
-    public String generateDiagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String nameParent, @RequestParam(required = false) String nameChild) {
-        List<Integer> diagramSource = new ArrayList<>();
+    public String generateDiagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String nameParent, @RequestParam String format) {
         try {
-            logger.info(sourceId + ":" + startTime + ":" + endTime + ":" + nameParent + ":" + nameChild);
-            if (performanceHeaderService.queryPerformanceHeader(new PerformanceHeader(sourceId), 1, 10).getList() != null) {
-                if (nameChild != null && !"".equals(nameChild)) {
-                    sourceId = nameParent;
-                    nameParent = nameChild;
-                }
-                performanceInformationService.queryDateBetween(sourceId, nameParent, startTime, endTime)
-                        .forEach(per -> {
-                            diagramSource.add(Integer.parseInt(per.getValue()));
-                        });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            return omPerformance.writeValueAsString(diagramSource);
+            return omPerformance.writeValueAsString(diagramDate(sourceId,nameParent,startTime,endTime,format));
         } catch (JsonProcessingException e) {
             logger.error("JsonProcessingException:" + e.getMessage());
-            return "";
+            return null;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -309,7 +230,8 @@ public class PerformanceController {
             List<String> names = new ArrayList<>();
             performanceInformationService.queryDateBetween(sourceId.toString(), null, null, null).forEach(per -> {
                 if (!names.contains(per.getName()) && per.getValue().matches("[0-9]*"))
-                    names.add(per.getName());
+                    if (Double.parseDouble(per.getValue()) > 0 && !per.getName().equals("Period"))
+                        names.add(per.getName());
 
             });
             return omPerformance.writeValueAsString(names);
@@ -319,5 +241,75 @@ public class PerformanceController {
         }
     }
 
+    private List<List<Long>> dateProcess(String sourceId,String name,long startTimeL,long endTimeL,long timeIteraPlusVal,long keyVal,long keyValIteraVal,String keyUnit) throws ParseException {
+        List<List<Long>> dataList = new ArrayList<>();
+        long tmpEndTimeL = startTimeL + timeIteraPlusVal;
+        while (endTimeL >= tmpEndTimeL){
+            List<Map<String,String>> maps = performanceInformationService.queryMaxValueByBetweenDate(sourceId,name,sdf.format(new Date(startTimeL)),sdf.format(new Date(tmpEndTimeL)));
+            maps.forEach( map -> {
+                try {
+                    List<Long> longList = new ArrayList<>();
+                    if (map.get("Time") != null && !"".equals(map.get("Time")) && !"NULL".equals(map.get("Time")) ){
+                        longList.add(sdf.parse(map.get("Time")).getTime());
+                        if (map.get("Max") != null && !"".equals(map.get("Max")))
+                            longList.add(Long.parseLong(map.get("Max")));
+                        else
+                            longList.add(0L);
+                    }
+                    if (longList.size() > 0)
+                        dataList.add(longList);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+            startTimeL += timeIteraPlusVal;
+            tmpEndTimeL += timeIteraPlusVal;
+            keyVal += keyValIteraVal;
+        }
+        return dataList;
+    }
+
+    private List<List<Long>> diagramDate(String sourceId,String name,String startTime,String endTime,String format){
+        try {
+            long startTimel = sdf.parse(startTime).getTime();
+            long endTimel = sdf.parse(endTime).getTime();
+            if (format != null && !format.equals("auto")){
+                switch (format){
+                    case "minute":
+                        return dateProcess(sourceId,name,startTimel,endTimel,900000,15,15,"minute");
+                    case "hour":
+                        return dateProcess(sourceId,name,startTimel,endTimel,3600000,1,1,"hour");
+                    case "day":
+                        return dateProcess(sourceId,name,startTimel,endTimel,86400000,1,1,"day");
+                    case "month":
+                        return dateProcess(sourceId,name,startTimel,endTimel,2592000000L,1,1,"month");
+                    case "year":
+                        return dateProcess(sourceId,name,startTimel,endTimel,31536000000L,1,1,"year");
+                }
+            }else if (format != null && format.equals("auto")){
+                long minutes = (endTimel - startTimel) / (1000 * 60);
+                long hours = minutes / 60;
+                if (hours > 12){
+                    long days = hours / 24;
+                    if (days > 3){
+                        long months = days / 31;
+                        if (months > 2){
+                            return dateProcess(sourceId,name,startTimel,endTimel,86400000,1,1,"day");
+                        }else {
+                            return dateProcess(sourceId,name,startTimel,endTimel,2592000000L,1,1,"month");
+                        }
+                    }else {
+                        return dateProcess(sourceId,name,startTimel,endTimel,3600000,1,1,"hour");
+                    }
+                }else {
+                    return dateProcess(sourceId,name,startTimel,endTimel,900000,15,15,"minute");
+                }
+            }
+        } catch (ParseException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,78 +15,141 @@
  */
 package org.onap.usecaseui.server.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.bean.PerformanceHeader;
-import org.onap.usecaseui.server.bean.PerformanceInformation;
-import org.onap.usecaseui.server.service.PerformanceHeaderService;
-import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.util.CSVUtils;
-import org.onap.usecaseui.server.util.DateUtils;
+import org.onap.usecaseui.server.UsecaseuiServerApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import javax.annotation.Resource;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = UsecaseuiServerApplication.class)
+@WebAppConfiguration
 public class PerformanceControllerTest {
 
     @Autowired
-    private PerformanceController performanceController;
+    private WebApplicationContext context;
 
-    @Test
-    public void getPerformanceData() throws JsonProcessingException {
-        System.out.println(performanceController.getPerformanceData(null,1,100,null,null,null,null,null));
+    private MockMvc mvc;
+
+    @Before
+    public void setup(){
+        mvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
     @Test
-    public void generateCsvFile() throws JsonProcessingException {
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","efw","fre","2017-09-28 10:00:00"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","efw","fre","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","efw","null","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","null","null","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","null","null","null","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"null","null","null","null","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","efw","null","asdasdasda"));
-
-
+    public void test1() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/performance/1/100")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    public void generateDiaCsvFile() throws JsonProcessingException {
-        Map<String,String> p = new HashMap<>();
-        p.put("eventId","110");
-        p.put("name","110");
-        p.put("value","110");
-        p.put("createTime","110");
-        p.put("updateTime","110");
-        //System.out.println(performanceController.generateDiaCsvFile(null,p));
+    public void test2() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/performance/1/100/null/null/null/null/null")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.get("/performance/1/100/1101ZTHX1MMEGJM1W1/1101ZTHX1MMEGJM1W1/Normal/null/null")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    public void generateDiagram(){
-        try {
-            System.out.println(performanceController.generateDiagram("hour","110"));
-            System.out.println(performanceController.generateDiagram("day","110"));
-            System.out.println(performanceController.generateDiagram("month","110"));
-            System.out.println(performanceController.generateDiagram("year","110"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public void test3() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/performance/resourceIds")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    public void test4() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/performance/names")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","1101ZTHX1SCT3JNRXOOW2")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void test5() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/performance/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","1101ZTHX1SCT3JNRXOOW2")
+                .param("nameParent","SIG.SctpDataChunkReceived")
+                .param("startTime","2017-10-1 17:4")
+                .param("endTime","2017-12-5 17:4")
+                .param("format","auto")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/performance/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","1101ZTHX1SCT3JNRXOOW2")
+                .param("nameParent","SIG.SctpDataChunkReceived")
+                .param("startTime","2017-10-1 17:4")
+                .param("endTime","2017-12-5 17:4")
+                .param("format","year")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/performance/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","1101ZTHX1SCT3JNRXOOW2")
+                .param("nameParent","SIG.SctpDataChunkReceived")
+                .param("startTime","2017-10-1 17:4")
+                .param("endTime","2017-12-5 17:4")
+                .param("format","month")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/performance/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","1101ZTHX1SCT3JNRXOOW2")
+                .param("nameParent","SIG.SctpDataChunkReceived")
+                .param("startTime","2017-10-1 17:4")
+                .param("endTime","2017-12-5 17:4")
+                .param("format","day")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/performance/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","1101ZTHX1SCT3JNRXOOW2")
+                .param("nameParent","SIG.SctpDataChunkReceived")
+                .param("startTime","2017-10-1 17:4")
+                .param("endTime","2017-12-5 17:4")
+                .param("format","hour")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/performance/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","1101ZTHX1SCT3JNRXOOW2")
+                .param("nameParent","SIG.SctpDataChunkReceived")
+                .param("startTime","2017-10-1 17:4")
+                .param("endTime","2017-12-5 17:4")
+                .param("format","minute")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 
 }

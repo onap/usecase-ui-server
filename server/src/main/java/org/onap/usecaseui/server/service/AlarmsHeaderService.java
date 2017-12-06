@@ -32,4 +32,6 @@ public interface AlarmsHeaderService {
     Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader, int currentPage, int pageSize);
     
     List<AlarmsHeader> queryId(String[] id);
+
+    String queryStatusCount(String status);
 }
