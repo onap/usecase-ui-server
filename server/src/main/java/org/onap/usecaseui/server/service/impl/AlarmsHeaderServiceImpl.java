@@ -88,7 +88,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	}
 
 	public int getAllCount(AlarmsHeader alarmsHeader,int currentPage,int pageSize) {
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = sessionFactory.openSession()){
 			StringBuffer count=new StringBuffer("select count(*) from AlarmsHeader a where 1=1");
 			if (null == alarmsHeader) {
                 //logger.error("AlarmsHeaderServiceImpl getAllCount alarmsHeader is null!");
@@ -193,11 +193,13 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 					count.append(" and a.createTime between :startTime and :endTime");
 				}
             }
+            count.append(" and a.status != 3");
             Query query = session.createQuery(count.toString());
-			if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
-				query.setDate("startTime",alarmsHeader.getCreateTime());
-				query.setDate("endTime",alarmsHeader.getUpdateTime());
-			}
+			if (null != alarmsHeader)
+                if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
+                    query.setDate("startTime",alarmsHeader.getCreateTime());
+                    query.setDate("endTime",alarmsHeader.getUpdateTime());
+                }
             long q=(long)query.uniqueResult();
             session.flush();
             return (int)q;
@@ -319,12 +321,14 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 	hql.append(" and a.createTime between :startTime and :endTime");
                 }
             }
+            hql.append(" and a.status != 3");
             logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
             Query query = session.createQuery(hql.toString());
-			if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
-				query.setDate("startTime",alarmsHeader.getCreateTime());
-				query.setDate("endTime",alarmsHeader.getUpdateTime());
-			}
+			if (null != alarmsHeader)
+                if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
+                    query.setDate("startTime",alarmsHeader.getCreateTime());
+                    query.setDate("endTime",alarmsHeader.getUpdateTime());
+                }
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
             List<AlarmsHeader> list= query.list();
@@ -344,7 +348,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<AlarmsHeader> queryId(String[] id) {
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = sessionFactory.openSession()){
 			if(id.length==0) {
 				logger.error("AlarmsHeaderServiceImpl queryId is null!");
 			}
@@ -358,8 +362,22 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		}
 	}
 
-	
-    
-    
-    
+
+    @Override
+    public String queryStatusCount(String status) {
+        try(Session session = sessionFactory.openSession()){
+            String hql = "select count(status) from AlarmsHeader a";
+            if (!status.equals("0"))
+                hql+=" where a.status = :status";
+            else
+                hql+=" where a.status != 3";
+            Query query = session.createQuery(hql);
+            if (!status.equals("0"))
+                query.setString("status",status);
+            return query.uniqueResult().toString();
+        } catch (Exception e) {
+            logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryStatusCount. Details:" + e.getMessage());
+            return null;
+        }
+    }
 }

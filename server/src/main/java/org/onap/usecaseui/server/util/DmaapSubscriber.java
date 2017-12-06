@@ -26,26 +26,17 @@ import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.service.impl.AlarmsHeaderServiceImpl;
-import org.onap.usecaseui.server.service.impl.AlarmsInformationServiceImpl;
-import org.onap.usecaseui.server.service.impl.PerformanceHeaderServiceImpl;
-import org.onap.usecaseui.server.service.impl.PerformanceInformationServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -228,40 +219,43 @@ public class DmaapSubscriber implements Runnable {
                         }
                     }
                 });
-                alarm_informations.forEach(ai -> {
-                    ai.setCreateTime(alarm_header.getCreateTime());
-                    ai.setUpdateTime(new Date());
-                });
-                if (alarm_header.getEventName().contains("Cleared")) {
-                    alarm_header.setStatus("3");
-                    logger.info("alarmCleared data header insert is starting......");
-                    alarmsHeaderService.saveAlarmsHeader(alarm_header);
-                    logger.info("alarmCleared data header insert has finished.");
-                    logger.info("alarmCleared data detail insert is starting......");
-                    alarm_informations.forEach(information ->
-                            alarmsInformationService.saveAlarmsInformation(information));
-                    logger.info("alarmCleared data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
-                    AlarmsHeader header1 = new AlarmsHeader();
-                    header1.setEventName(alarm_header.getEventName().substring(0, alarm_header.getEventName().indexOf("Cleared")));
-                    List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryAlarmsHeader(header1, 1, 10).getList();
-                    alarmsHeaders.forEach(alarms -> {
-                        alarms.setStatus("2");
-                        alarms.setUpdateTime(new Date());
-                        alarmsHeaderService.updateAlarmsHeader(alarms);
-                    });
-                } else {
-                    alarm_header.setUpdateTime(new Date());
-                    alarm_header.setStatus("1");
-                    logger.info("alarm data header insert is starting......");
-                    alarmsHeaderService.saveAlarmsHeader(alarm_header);
-                    logger.info("alarm data header insert has finished.");
-                    logger.info("alarm data detail insert is starting......");
-                    alarm_informations.forEach(information ->
-                            alarmsInformationService.saveAlarmsInformation(information));
-                    logger.info("alarm data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
-                }
+
             }
         });
+        if (alarm_header.getEventName() != null && alarm_informations.size() > 0){
+            alarm_informations.forEach(ai -> {
+                ai.setCreateTime(alarm_header.getCreateTime());
+                ai.setUpdateTime(new Date());
+            });
+            if (alarm_header.getEventName().contains("Cleared")) {
+                alarm_header.setStatus("3");
+                logger.info("alarmCleared data header insert is starting......");
+                alarmsHeaderService.saveAlarmsHeader(alarm_header);
+                logger.info("alarmCleared data header insert has finished.");
+                logger.info("alarmCleared data detail insert is starting......");
+                alarm_informations.forEach(information ->
+                        alarmsInformationService.saveAlarmsInformation(information));
+                logger.info("alarmCleared data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
+                AlarmsHeader header1 = new AlarmsHeader();
+                header1.setEventName(alarm_header.getEventName().substring(0, alarm_header.getEventName().indexOf("Cleared")));
+                List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryAlarmsHeader(header1, 1, 10).getList();
+                alarmsHeaders.forEach(alarms -> {
+                    alarms.setStatus("2");
+                    alarms.setUpdateTime(new Date());
+                    alarmsHeaderService.updateAlarmsHeader(alarms);
+                });
+            } else {
+                alarm_header.setUpdateTime(new Date());
+                alarm_header.setStatus("1");
+                logger.info("alarm data header insert is starting......");
+                alarmsHeaderService.saveAlarmsHeader(alarm_header);
+                logger.info("alarm data header insert has finished.");
+                logger.info("alarm data detail insert is starting......");
+                alarm_informations.forEach(information ->
+                        alarmsInformationService.saveAlarmsInformation(information));
+                logger.info("alarm data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
+            }
+        }
     }
 
     private void performanceProcess(Map<String, Object> eventMap) {
@@ -340,19 +334,19 @@ public class DmaapSubscriber implements Runnable {
                         }
                     }
                 });
-
-                logger.info("performance data header insert is starting......");
-                performanceHeaderService.savePerformanceHeader(performance_header);
-                logger.info("performance data header insert has finished.");
-                logger.info("performance data detail insert is starting......");
-                performance_informations.forEach(ai -> {
-                    ai.setCreateTime(performance_header.getCreateTime());
-                    performanceInformationService.savePerformanceInformation(ai);
-                });
-                logger.info("performance data detail insert has finished. " + performance_informations.size() + " records have been inserted.");
             }
         });
+        if (performance_header.getSourceId() !=null && performance_informations.size() > 0 ){
+            logger.info("performance data header insert is starting......");
+            performanceHeaderService.savePerformanceHeader(performance_header);
+            logger.info("performance data header insert has finished.");
+            logger.info("performance data detail insert is starting......");
+            performance_informations.forEach(ai -> {
+                ai.setCreateTime(performance_header.getCreateTime());
+                performanceInformationService.savePerformanceInformation(ai);
+            });
+            logger.info("performance data detail insert has finished. " + performance_informations.size() + " records have been inserted.");
 
-
+        }
     }
 }

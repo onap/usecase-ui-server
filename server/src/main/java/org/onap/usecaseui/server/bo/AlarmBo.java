@@ -33,11 +33,6 @@ public class AlarmBo implements Serializable {
     public AlarmBo() {
     }
 
-    public AlarmBo(AlarmsHeader alarmsHeader, List<AlarmsInformation> alarmsInformation) {
-        this.alarmsHeader = alarmsHeader;
-        this.alarmsInformation = alarmsInformation;
-    }
-
     public AlarmsHeader getAlarmsHeader() {
         return alarmsHeader;
     }

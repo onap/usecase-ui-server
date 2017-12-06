@@ -15,46 +15,123 @@
  */
 package org.onap.usecaseui.server.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.service.AlarmsHeaderService;
-import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.util.CSVUtils;
-import org.onap.usecaseui.server.util.DateUtils;
+import org.onap.usecaseui.server.UsecaseuiServerApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = UsecaseuiServerApplication.class)
+@WebAppConfiguration
 public class AlarmControllerTest {
 
     @Autowired
-    AlarmController alarmController;
+    private WebApplicationContext context;
 
-    @Test
-    public void getDataNotParam() throws JsonProcessingException {
-       System.out.println(alarmController.getAlarmData(null,null,null,null,null,null,1,100));
+    private MockMvc mvc;
+
+    @Before
+    public void setup(){
+        mvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
     @Test
-    public void getDataCarryParam() throws JsonProcessingException {
-        System.out.println(alarmController.getAlarmData("110","a","drop","down","1506331166000","2",1,100));
+    public void test1() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/alarm/1/100")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    public void csvFile() throws JsonProcessingException {
-        System.out.println(alarmController.generateCsvFile(null,new String[]{"110"}));
+    public void test2() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/alarm/1/100/null/null/null/null/null/null")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.get("/alarm/1/100/502fe15c-aa07-ed26-3f87-4d5c1784bc5b/management-server-backup/High/null/null/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
+    @Test
+    public void test3() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/alarm/statusCount")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void test4() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/alarm/sourceId")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void test5() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/alarm/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","").param("startTime","2017-10-1 16:34")
+                .param("endTime","2017-12-5 0:0").param("showMode","auto")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/alarm/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","").param("startTime","2017-10-1 16:34")
+                .param("endTime","2017-12-5 0:0").param("showMode","year")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/alarm/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","").param("startTime","2017-10-1 16:34")
+                .param("endTime","2017-12-5 0:0").param("showMode","month")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/alarm/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","").param("startTime","2017-10-1 16:34")
+                .param("endTime","2017-12-5 0:0").param("showMode","day")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/alarm/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","").param("startTime","2017-10-1 16:34")
+                .param("endTime","2017-12-5 0:0").param("showMode","hour")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.post("/alarm/diagram")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("sourceId","").param("startTime","2017-10-1 16:34")
+                .param("endTime","2017-12-5 0:0").param("showMode","minute")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 
 }

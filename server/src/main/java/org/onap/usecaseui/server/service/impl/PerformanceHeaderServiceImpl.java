@@ -166,9 +166,10 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
                 }
             }
             Query query = session.createQuery(hql.toString());
-			if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
-				query.setDate("startTime",performanceHeder.getCreateTime()).setDate("endTime",performanceHeder.getUpdateTime());
-			}
+			if (null != performanceHeder)
+                if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
+                    query.setDate("startTime",performanceHeder.getCreateTime()).setDate("endTime",performanceHeder.getUpdateTime());
+                }
             long q=(long)query.uniqueResult();
             session.flush();
             return (int)q;
@@ -265,9 +266,10 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
             }
             logger.info("PerformanceHeaderServiceImpl queryPerformanceHeader: performanceHeder={}", performanceHeder);
             Query query = session.createQuery(hql.toString());
-			if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
-				query.setDate("startTime",performanceHeder.getCreateTime()).setDate("endTime",performanceHeder.getUpdateTime());
-			}
+			if (null != performanceHeder)
+                if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
+                    query.setDate("startTime",performanceHeder.getCreateTime()).setDate("endTime",performanceHeder.getUpdateTime());
+                }
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
             List<PerformanceHeader> list= query.list();

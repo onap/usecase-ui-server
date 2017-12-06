@@ -192,11 +192,11 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
-		try(Session session = sessionFactory.openSession();) {
+		try(Session session = sessionFactory.openSession()) {
 			List<Map<String,String>> mapList = new ArrayList<>();
-			String hql = "select a.createTime,count(*) from AlarmsInformation a where 1=1 ";
+			String hql = "select a.createTime,count(*) from AlarmsHeader a where 1=1 ";
 			if (sourceId != null && !"".equals(sourceId)){
-				hql += " and a.eventId = :sourceId";
+				hql += " and a.sourceId = :sourceId";
 			}
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
 				hql += " and a.createTime between :startTime and :endTime ";
@@ -224,4 +224,6 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			return null;
 		}
 	}
+
+
 }
