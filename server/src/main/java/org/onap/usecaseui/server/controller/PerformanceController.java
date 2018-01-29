@@ -120,16 +120,11 @@ public class PerformanceController {
                     list.add(pbo);
                 });
         }
-        try {
-            Map<String, Object> map = new HashMap<>();
-            map.put("performances", list);
-            map.put("totalRecords", pa.getTotalRecords());
-            omPerformance.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
-            return omPerformance.writeValueAsString(map);
-        } catch (JsonProcessingException e) {
-            logger.error("JsonProcessingException" + e.getMessage());
-            return omPerformance.writeValueAsString("failed");
-        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("performances", list);
+        map.put("totalRecords", pa.getTotalRecords());
+        omPerformance.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
+        return omPerformance.writeValueAsString(map);
     }
 
     /*@RequestMapping(value = {"/performance/genCsv/{eventId}"}, method = RequestMethod.GET, produces = "application/json")
@@ -198,10 +193,7 @@ public class PerformanceController {
     @RequestMapping(value = {"/performance/diagram"}, method = RequestMethod.POST, produces = "application/json")
     public String generateDiagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String nameParent, @RequestParam String format) {
         try {
-            return omPerformance.writeValueAsString(diagramDate(sourceId,nameParent,startTime,endTime,format));
-        } catch (JsonProcessingException e) {
-            logger.error("JsonProcessingException:" + e.getMessage());
-            return null;
+            return omPerformance.writeValueAsString(diagramDate(sourceId, nameParent, startTime, endTime, format));
         } catch (Exception e) {
             logger.error(e.getMessage());
             e.printStackTrace();
@@ -213,14 +205,14 @@ public class PerformanceController {
     public String getSourceIds() {
         List<String> sourceIds = new ArrayList<>();
         try {
-            performanceHeaderService.queryAllSourceId().forEach( ph -> {
+            performanceHeaderService.queryAllSourceId().forEach(ph -> {
                 if (!sourceIds.contains(ph))
                     sourceIds.add(ph);
-            } );
+            });
             return omPerformance.writeValueAsString(sourceIds);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
-            return "";
+            return null;
         }
     }
 
@@ -235,21 +227,21 @@ public class PerformanceController {
 
             });
             return omPerformance.writeValueAsString(names);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return "";
         }
     }
 
-    private List<List<Long>> dateProcess(String sourceId,String name,long startTimeL,long endTimeL,long timeIteraPlusVal,long keyVal,long keyValIteraVal,String keyUnit) throws ParseException {
+    private List<List<Long>> dateProcess(String sourceId, String name, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal, String keyUnit) throws ParseException {
         List<List<Long>> dataList = new ArrayList<>();
         long tmpEndTimeL = startTimeL + timeIteraPlusVal;
-        while (endTimeL >= tmpEndTimeL){
-            List<Map<String,String>> maps = performanceInformationService.queryMaxValueByBetweenDate(sourceId,name,sdf.format(new Date(startTimeL)),sdf.format(new Date(tmpEndTimeL)));
-            maps.forEach( map -> {
+        while (endTimeL >= tmpEndTimeL) {
+            List<Map<String, String>> maps = performanceInformationService.queryMaxValueByBetweenDate(sourceId, name, sdf.format(new Date(startTimeL)), sdf.format(new Date(tmpEndTimeL)));
+            maps.forEach(map -> {
                 try {
                     List<Long> longList = new ArrayList<>();
-                    if (map.get("Time") != null && !"".equals(map.get("Time")) && !"NULL".equals(map.get("Time")) ){
+                    if (map.get("Time") != null && !"".equals(map.get("Time")) && !"NULL".equals(map.get("Time"))) {
                         longList.add(sdf.parse(map.get("Time")).getTime());
                         if (map.get("Max") != null && !"".equals(map.get("Max")))
                             longList.add(Long.parseLong(map.get("Max")));
@@ -269,40 +261,40 @@ public class PerformanceController {
         return dataList;
     }
 
-    private List<List<Long>> diagramDate(String sourceId,String name,String startTime,String endTime,String format){
+    private List<List<Long>> diagramDate(String sourceId, String name, String startTime, String endTime, String format) {
         try {
             long startTimel = sdf.parse(startTime).getTime();
             long endTimel = sdf.parse(endTime).getTime();
-            if (format != null && !format.equals("auto")){
-                switch (format){
+            if (format != null && !format.equals("auto")) {
+                switch (format) {
                     case "minute":
-                        return dateProcess(sourceId,name,startTimel,endTimel,900000,15,15,"minute");
+                        return dateProcess(sourceId, name, startTimel, endTimel, 900000, 15, 15, "minute");
                     case "hour":
-                        return dateProcess(sourceId,name,startTimel,endTimel,3600000,1,1,"hour");
+                        return dateProcess(sourceId, name, startTimel, endTimel, 3600000, 1, 1, "hour");
                     case "day":
-                        return dateProcess(sourceId,name,startTimel,endTimel,86400000,1,1,"day");
+                        return dateProcess(sourceId, name, startTimel, endTimel, 86400000, 1, 1, "day");
                     case "month":
-                        return dateProcess(sourceId,name,startTimel,endTimel,2592000000L,1,1,"month");
+                        return dateProcess(sourceId, name, startTimel, endTimel, 2592000000L, 1, 1, "month");
                     case "year":
-                        return dateProcess(sourceId,name,startTimel,endTimel,31536000000L,1,1,"year");
+                        return dateProcess(sourceId, name, startTimel, endTimel, 31536000000L, 1, 1, "year");
                 }
-            }else if (format != null && format.equals("auto")){
+            } else if (format != null && format.equals("auto")) {
                 long minutes = (endTimel - startTimel) / (1000 * 60);
                 long hours = minutes / 60;
-                if (hours > 12){
+                if (hours > 12) {
                     long days = hours / 24;
-                    if (days > 3){
+                    if (days > 3) {
                         long months = days / 31;
-                        if (months > 2){
-                            return dateProcess(sourceId,name,startTimel,endTimel,86400000,1,1,"day");
-                        }else {
-                            return dateProcess(sourceId,name,startTimel,endTimel,2592000000L,1,1,"month");
+                        if (months > 2) {
+                            return dateProcess(sourceId, name, startTimel, endTimel, 86400000, 1, 1, "day");
+                        } else {
+                            return dateProcess(sourceId, name, startTimel, endTimel, 2592000000L, 1, 1, "month");
                         }
-                    }else {
-                        return dateProcess(sourceId,name,startTimel,endTimel,3600000,1,1,"hour");
+                    } else {
+                        return dateProcess(sourceId, name, startTimel, endTimel, 3600000, 1, 1, "hour");
                     }
-                }else {
-                    return dateProcess(sourceId,name,startTimel,endTimel,900000,15,15,"minute");
+                } else {
+                    return dateProcess(sourceId, name, startTimel, endTimel, 900000, 15, 15, "minute");
                 }
             }
         } catch (ParseException e) {
