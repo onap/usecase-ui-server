@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
@@ -202,16 +204,7 @@ public class DmaapSubscriber implements Runnable {
                         try {
                             List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
                             m.forEach(i -> {
-                                if (i.get("name").toString().equals("eventTime"))
-                                    try {
-                                        alarm_header.setCreateTime(DateUtils.stringToDate(i.get("value").toString()));
-                                        alarm_header.setUpdateTime(DateUtils.now());
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                else {
-                                    alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(), null, new Date()));
-                                }
+                                alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(), new Date(), null));
                             });
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -222,38 +215,45 @@ public class DmaapSubscriber implements Runnable {
 
             }
         });
-        if (alarm_header.getEventName() != null && alarm_informations.size() > 0){
+        if (alarm_header.getEventName() != null){
             alarm_informations.forEach(ai -> {
                 ai.setCreateTime(alarm_header.getCreateTime());
                 ai.setUpdateTime(new Date());
             });
+
+            Long startEpochMicrosec_s = Long.parseLong(alarm_header.getStartEpochMicrosec());
+            String date_get = new DateUtils().getYearMonthDayHourMinuteSecond(startEpochMicrosec_s);
+
             if (alarm_header.getEventName().contains("Cleared")) {
-                alarm_header.setStatus("3");
+                alarm_header.setStatus("close");
                 logger.info("alarmCleared data header insert is starting......");
-                alarmsHeaderService.saveAlarmsHeader(alarm_header);
+                alarmsHeaderService.updateAlarmsHeader2018("close",date_get,alarm_header.getEventName(),alarm_header.getEventName().replace("Cleared",""),alarm_header.getReportingEntityName(),alarm_header.getSpecificProblem());
                 logger.info("alarmCleared data header insert has finished.");
                 logger.info("alarmCleared data detail insert is starting......");
                 alarm_informations.forEach(information ->
-                        alarmsInformationService.saveAlarmsInformation(information));
+                    alarmsInformationService.saveAlarmsInformation(information));
+
                 logger.info("alarmCleared data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
                 AlarmsHeader header1 = new AlarmsHeader();
                 header1.setEventName(alarm_header.getEventName().substring(0, alarm_header.getEventName().indexOf("Cleared")));
                 List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryAlarmsHeader(header1, 1, 10).getList();
                 alarmsHeaders.forEach(alarms -> {
                     alarms.setStatus("2");
-                    alarms.setUpdateTime(new Date());
+                    alarms.setUpdateTime(alarm_header.getCreateTime());
                     alarmsHeaderService.updateAlarmsHeader(alarms);
                 });
             } else {
-                alarm_header.setUpdateTime(new Date());
-                alarm_header.setStatus("1");
+                alarm_header.setCreateTime(new Date());
+                alarm_header.setStatus("active");
                 logger.info("alarm data header insert is starting......");
                 alarmsHeaderService.saveAlarmsHeader(alarm_header);
                 logger.info("alarm data header insert has finished.");
                 logger.info("alarm data detail insert is starting......");
-                alarm_informations.forEach(information ->
-                        alarmsInformationService.saveAlarmsInformation(information));
-                logger.info("alarm data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
+                if(alarm_informations.size() > 0) {
+                    alarm_informations.forEach(information ->
+                            alarmsInformationService.saveAlarmsInformation(information));
+                    logger.info("alarm data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
+                }
             }
         }
     }
@@ -305,29 +305,29 @@ public class DmaapSubscriber implements Runnable {
                         try {
                             List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
                             m.forEach(i -> {
-                                if (i.containsKey("arrayOfFields")){
-                                    List<Map<String,String>> arrayOfFields = (List<Map<String, String>>) i.get("arrayOfFields");
-                                    arrayOfFields.forEach( fields -> {
-                                        if (fields.get("name").equals("StartTime")){
-                                            try {
-                                                performance_informations.add(new PerformanceInformation(fields.get("name"),fields.get("value"),performance_header.getSourceId(),null,DateUtils.now()));
-                                                performance_header.setCreateTime(DateUtils.stringToDate(fields.get("value").replaceAll(Constant.RegEX_DATE_FORMAT," ")));
-                                                performance_header.setUpdateTime(DateUtils.now());
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
+                                i.forEach( (k,v) -> {
+                                    if (k.equals("arrayOfFields")){
+                                        List<Map<String,String>> arrayOfFields = (List<Map<String, String>>) v;
+                                        arrayOfFields.forEach( fields -> {
+                                            if (fields.get("name").equals("StartTime")){
+                                                try {
+                                                    performance_informations.add(new PerformanceInformation(fields.get("name"),fields.get("value"),performance_header.getSourceId(),null,DateUtils.now()));
+                                                    performance_header.setCreateTime(DateUtils.stringToDate(fields.get("value").replaceAll(Constant.RegEX_DATE_FORMAT," ")));
+                                                    performance_header.setUpdateTime(DateUtils.now());
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }else{
+                                                try {
+                                                    performance_informations.add(new PerformanceInformation(fields.get("name"),fields.get("value"),performance_header.getSourceId(),null,DateUtils.now()));
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
-                                        }else{
-                                            try {
-                                                performance_informations.add(new PerformanceInformation(fields.get("name"),fields.get("value"),performance_header.getSourceId(),null,DateUtils.now()));
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    } );
-                                }
-
+                                        } );
+                                    }
+                                });
                             });
-
                         } catch (Exception e) {
                             e.printStackTrace();
                             logger.error("convert performanceAdditionalInformation error：" + e.getMessage());
