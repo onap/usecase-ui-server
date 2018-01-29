@@ -67,7 +67,44 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	        }
 	        
 	}
-	
+
+	@Override
+	public String updateAlarmsHeader2018(String status, String date,String eventNameCleared,String eventName, String reportingEntityName,String specificProblem) {
+
+		try(Session session = sessionFactory.getCurrentSession();){
+			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
+			session.beginTransaction();
+			Query q=session.createQuery("update AlarmsHeader set status='"+status+"', eventName='"+eventNameCleared+"',updateTime='"+date+"' where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"' ");
+			q.executeUpdate();
+			session.getTransaction().commit();
+			session.flush();
+			return "1";
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
+			return "0";
+		}
+	}
+
+	@Override
+	public Boolean getStatusBySourceName(String sourceName) {
+		try(Session session = sessionFactory.openSession()){
+			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
+			Query q=session.createQuery("select status from AlarmsHeader where sourceName='"+sourceName+"'");
+			String s=(String)q.uniqueResult();
+			Boolean status=false;
+			if(s!=null && "active".equals(s)){
+				status = true;
+			}else{
+				status = false;
+			}
+			session.flush();
+			return status;
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
+			return false;
+		}
+	}
+
 
 	@Override
 	public String updateAlarmsHeader(AlarmsHeader alarmsHeader) {

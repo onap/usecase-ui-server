@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
@@ -26,7 +27,10 @@ public interface AlarmsHeaderService {
     String saveAlarmsHeader(AlarmsHeader alarmsHeader);
     
     String updateAlarmsHeader(AlarmsHeader alarmsHeader);
-    
+
+    public String updateAlarmsHeader2018(String status, String date, String eventNameCleared,String eventName, String reportingEntityName,String specificProblem);
+
+    public Boolean getStatusBySourceName(String sourceName);
     int getAllCount(AlarmsHeader alarmsHeader, int currentPage, int pageSize);
     
     Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader, int currentPage, int pageSize);
