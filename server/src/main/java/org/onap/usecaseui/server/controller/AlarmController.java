@@ -29,10 +29,7 @@ import org.onap.usecaseui.server.bo.AlarmBo;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.util.CSVUtils;
-import org.onap.usecaseui.server.util.DateUtils;
-import org.onap.usecaseui.server.util.Page;
-import org.onap.usecaseui.server.util.ResponseUtil;
+import org.onap.usecaseui.server.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -67,6 +64,27 @@ public class AlarmController {
     private ObjectMapper omAlarm = new ObjectMapper();
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+
+
+    @RequestMapping("test")
+    public String test(){
+
+
+/*
+        SocketClient socketClient = new SocketClient();
+
+        SocketServer socketServer = new SocketServer();
+        socketServer.onServer();
+        socketClient.onSocketClient();*/
+
+        return null;
+
+    }
+
+
+
+
 
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
@@ -133,13 +151,78 @@ public class AlarmController {
         return omAlarm.writeValueAsString(map);
     }
 
+
+
+
+    /*public String getAlarmData(@PathVariable(required = false) String sourceId, @PathVariable(required = false) String sourceName,
+                               @PathVariable(required = false) String priority, @PathVariable(required = false) String startTime,
+                               @PathVariable(required = false) String endTime, @PathVariable(required = false) String vfStatus,
+                               @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException {
+        logger.info("transfer getAlarmData Apis, " +
+                        "Parameter all follows : [currentPage : {} , pageSize : {} , sourceId : {} , " +
+                        "sourceName : {} , priority : {} , startTime :{} , endTime : {}  , vfStatus : {}]"
+                , currentPage, pageSize, sourceId, sourceName, priority, startTime, endTime, vfStatus);
+        List<AlarmsHeader> alarmsHeaders = null;
+        List<AlarmBo> list = new ArrayList<>();
+        Page pa = null;
+        if (null != sourceId || null != sourceName || null != priority || null != startTime || null != endTime
+                || null != vfStatus) {
+            AlarmsHeader alarm = new AlarmsHeader();
+            alarm.setSourceId(!"null".equals(sourceId) ? sourceId : null);
+            alarm.setSourceName(!"null".equals(sourceName) ? sourceName : null);
+            alarm.setStatus(!"null".equals(vfStatus) ? vfStatus : null);
+            try {
+                alarm.setCreateTime(!"null".equals(startTime) ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(startTime) : null);
+                alarm.setUpdateTime(!"null".equals(endTime) ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(endTime) : null);
+            } catch (ParseException e) {
+                logger.error("Parse date error :" + e.getMessage());
+            }
+            pa = alarmsHeaderService.queryAlarmsHeader(alarm, currentPage, pageSize);
+
+            alarmsHeaders = pa.getList();
+            if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
+                alarmsHeaders.forEach(a -> {
+                    logger.info(a.toString());
+                    AlarmBo abo = new AlarmBo();
+                    if (!a.getStatus().equals("close")) {
+                        abo.setAlarmsHeader(a);
+                        AlarmsInformation information = new AlarmsInformation();
+                        information.setEventId(a.getSourceId());
+                        List<AlarmsInformation> informationList = alarmsInformationService.queryAlarmsInformation(information, 1, 100).getList();
+                        abo.setAlarmsInformation(informationList);
+                        list.add(abo);
+                    }
+                });
+            }
+        } else {
+            pa = alarmsHeaderService.queryAlarmsHeader(null, currentPage, pageSize);
+            alarmsHeaders = pa.getList();
+            if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
+                alarmsHeaders.forEach(a -> {
+                    AlarmBo abo = new AlarmBo();
+                    if (!a.getStatus().equals("close")) {
+                        abo.setAlarmsHeader(a);
+                        abo.setAlarmsInformation(alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(a.getEventId()), currentPage, pageSize).getList());
+                        list.add(abo);
+                    }
+
+                });
+            }
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("alarms", list);
+        map.put("totalRecords", pa.getTotalRecords());
+        omAlarm.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
+        return omAlarm.writeValueAsString(map);
+    }*/
+
     @RequestMapping(value = "/alarm/statusCount", method = RequestMethod.GET, produces = "application/json")
     public String getStatusCount() {
         List<String> statusCount = new ArrayList<>();
         try {
             statusCount.add(alarmsHeaderService.queryStatusCount("0"));
-            statusCount.add(alarmsHeaderService.queryStatusCount("1"));
-            statusCount.add(alarmsHeaderService.queryStatusCount("2"));
+            statusCount.add(alarmsHeaderService.queryStatusCount("active"));
+            statusCount.add(alarmsHeaderService.queryStatusCount("close"));
             return omAlarm.writeValueAsString(statusCount);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -149,18 +232,29 @@ public class AlarmController {
     }
 
     @RequestMapping(value = {"/topology/{serviceName}"}, method = RequestMethod.GET)
-    public String getTopologyData(@PathVariable String serviceName) {
+    public String getTopologyData(@PathVariable String serviceName){
         Map<String,Object> topologyMap = new HashMap<>();
         try {
             topologyMap.put("name",serviceName);
+            /*List<Map<String,Object>> services = (List<Map<String, Object>>) getTopologyData().get("services");
+            services.forEach( i -> {
+                i.forEach((kk,vv) -> {
+                  if (kk.equals("ServiceName"))
+                      if (vv.equals(serviceName))
+                          topologyMap.put("isAlarm",i.get("isAlarm"));
+                });
+            } );*/
+            //List<Map<String,Object>> networkServices = (List<Map<String, Object>>) getTopologyData().get("networkServices");
+            //List<Map<String,Object>> VNFS = (List<Map<String, Object>>) getTopologyData().get("VNFS");
 
             List<Map<String,Object>> networkServices = (List<Map<String, Object>>) getAllVNFS().get("networkServices");
             List<Map<String,Object>> VNFS = (List<Map<String, Object>>) getAllVNFS().get("VNFS");
 
+
             List<Map<String,Object>> children = new ArrayList<>();
             networkServices.forEach( i -> {
                 Map<String,Object> childrenMap = new HashMap<>();
-                i.forEach( (k,v) -> {
+                i.forEach( (k,v) ->{
                     if (k.equals("parentService"))
                         if (v.equals(serviceName)){
                             childrenMap.put("name",i.get("nsName"));
@@ -169,24 +263,25 @@ public class AlarmController {
                                 Map<String,Object> childrenJMap = new HashMap<>();
                                 j.forEach( (k1,v2) -> {
                                     if (k1.equals("parentNS"))
-                                        if (v2.equals(i.get("nsName"))) {
+                                        if (v2.equals(i.get("nsName"))){
+
                                             childrenJMap.put("name",j.get("vnfName"));
                                             childrenJMap.put("isAlarm",j.get("isAlarm"));
                                         }
-                                });
-                                if (childrenJMap.size() > 0)
+                                } );
+                                if (childrenJMap.size() > 0 )
                                     childrenList.add(childrenJMap);
-                            });
-                            if (childrenList.size() > 0) {
+                            } );
+                            if (childrenList.size() > 0){
                                 childrenMap.put("children",childrenList);
                             }
                         }
-                });
-                if (childrenMap.size() > 0) {
+                } );
+                if (childrenMap.size() > 0){
                     children.add(childrenMap);
                 }
-            });
-            if (children.size() > 0) {
+            } );
+            if (children.size() > 0){
                 topologyMap.put("children",children);
             }
             return omAlarm.writeValueAsString(topologyMap);
@@ -197,25 +292,26 @@ public class AlarmController {
     }
 
     @RequestMapping(value = {"/topology/services"}, method = RequestMethod.GET)
-    public String getTopologyServices() {
+    public String getTopologyServices(){
         try {
+            //List<Map<String,Object>> services = (List<Map<String, Object>>) getTopologyData().get("services");
             List<Map<String,Object>> services = (List<Map<String, Object>>) getAllVNFS().get("services");
             services.forEach( i -> {
                i.forEach( (k,v) -> {
-                   if (k.equals("ServiceName")) {
+                   if (k.equals("ServiceName")){
                        AlarmsHeader alarmsHeader = new AlarmsHeader();
                        alarmsHeader.setSourceId(v.toString());
                        List<AlarmsHeader> alarmsHeaderList = alarmsHeaderService.queryAlarmsHeader(alarmsHeader,1,10).getList();
                        alarmsHeaderList.forEach(alarmsHeader1 -> {
-                           if (alarmsHeader1.getStatus().equals("1")) {
+                           if (alarmsHeader1.getStatus().equals("1")){
                                i.replace("isAlarm","true");
                            }
                        });
                    }
-               });
-            });
+               } );
+            } );
             return omAlarm.writeValueAsString(services);
-        } catch (Exception e) {
+        }catch (Exception e){
             logger.error(e.getMessage());
             return null;
         }
@@ -226,10 +322,11 @@ public class AlarmController {
         try {
             BufferedReader br = new BufferedReader(new FileReader("/home/uui/resources/topologyD_data.json"));
             String tmpStr = "";
-            while ((tmpStr=br.readLine()) != null) {
+            while ((tmpStr=br.readLine()) != null){
                 data += tmpStr;
             }
             br.close();
+            //System.out.println(data);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -239,33 +336,46 @@ public class AlarmController {
         return map;
     }
 
+
     public Map<String,Object>   getAllVNFS() throws IOException {
+
         String data="";
         try {
             String str=null;
             BufferedReader  br = new BufferedReader(new FileReader("/home/uui/resources/topologyD_data.json"));
-            while ((str=br.readLine())!=null) {
+            while ((str=br.readLine())!=null){
                 data += str;
-            }
+
+
+                }
             br.close();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        }catch (IOException e){
             e.printStackTrace();
         }
-        JSONObject jsonObject = (JSONObject) JSON.parseObject(data);
-        JSONArray jsonArray = jsonObject.getJSONArray("VNFS");
+            JSONObject jsonObject = (JSONObject) JSON.parseObject(data);
+            JSONArray jsonArray = jsonObject.getJSONArray("VNFS");
 
-        for (int a=0;a<jsonArray.size();a++) {
-            JSONObject jsonObject1 = jsonArray.getJSONObject(a);
-            String vnfName = jsonObject1.getString("vnfName");
-            Boolean name =   alarmsHeaderService.getStatusBySourceName(vnfName);
-            jsonObject1.put("isAlarm",name);
-            System.out.print("vnfName===="+vnfName+"name====="+name);
-        }
+            for(int a=0;a<jsonArray.size();a++){
+                JSONObject jsonObject1 = jsonArray.getJSONObject(a);
+                String vnfName = jsonObject1.getString("vnfName");
+          Boolean name =   alarmsHeaderService.getStatusBySourceName(vnfName);
+
+                jsonObject1.put("isAlarm",name);
+
+                System.out.print("vnfName===="+vnfName+"name====="+name);
+
+
+            }
 
         String jsonS = jsonObject.toJSONString();
         System.out.print("toJSONString===="+jsonS);
+
+
+
+       // return jsonS;
 
         Map<String,Object> map = omAlarm.readValue(jsonS, Map.class);
         return map;

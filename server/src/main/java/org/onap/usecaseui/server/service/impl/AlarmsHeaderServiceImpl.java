@@ -72,11 +72,26 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	public String updateAlarmsHeader2018(String status, String date,String eventNameCleared,String eventName, String reportingEntityName,String specificProblem) {
 
 		try(Session session = sessionFactory.getCurrentSession();){
+			//String sql = "update AlarmsInformation set status='"+status+"' where eventName='"+eventName+"'";
+			//String sql = "update AlarmsInformation set status=:status where eventName=:eventName";
+			//StringBuffer sql = new StringBuffer("update AlarmsInformation set status='"+status+"' where eventName='"+eventName+"'");
+			/*if (null == alarmsInformation) {
+				logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
+			}*/
+			//logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}", alarmsInformation);
 			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
+			//Transaction tx = session.beginTransaction();
 			session.beginTransaction();
-			Query q=session.createQuery("update AlarmsHeader set status='"+status+"', eventName='"+eventNameCleared+"',updateTime='"+date+"' where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"' ");
-			q.executeUpdate();
+			//session.update(alarmsInformation);
+			//session.createSQLQuery(sql).setParameter("status",status).setParameter("eventName",eventName).executeUpdate();
+			//session.createSQLQuery(sql).executeUpdate();
+
+			//session.update(sql);
+			//Query q=session.createQuery("update AlarmsHeader set status='"+status+"', eventName='"+eventNameCleared+"',updateTime='"+date+"' where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"' ");
+            Query q=session.createQuery("update AlarmsHeader set status='"+status+"', updateTime='"+date+"' where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"' ");
+            q.executeUpdate();
 			session.getTransaction().commit();
+			//tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {
@@ -89,7 +104,10 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	public Boolean getStatusBySourceName(String sourceName) {
 		try(Session session = sessionFactory.openSession()){
 			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
+			//Transaction tx = session.beginTransaction();
+			//session.beginTransaction();
 			Query q=session.createQuery("select status from AlarmsHeader where sourceName='"+sourceName+"'");
+			//tx.commit();
 			String s=(String)q.uniqueResult();
 			Boolean status=false;
 			if(s!=null && "active".equals(s)){
@@ -99,10 +117,12 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			}
 			session.flush();
 			return status;
+			//return "1";
 		} catch (Exception e) {
 			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
 			return false;
 		}
+		//return null;
 	}
 
 
@@ -214,10 +234,10 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 	String ver =alarmsHeader.getSpecificProblem();
                 	count.append(" and a.specificProblem like '%"+ver+"%'");
                 }
-            	if(null!=alarmsHeader.getVfStatus()) {
+            	/*if(null!=alarmsHeader.getVfStatus()) {
                 	String ver =alarmsHeader.getVfStatus();
                 	count.append(" and a.vfStatus = '"+ver+"'");
-                }
+                }*/
             	if(null!=alarmsHeader.getAlarmInterfaceA()) {
                 	String ver =alarmsHeader.getAlarmInterfaceA();
                 	count.append(" and a.alarmInterfaceA like '%"+ver+"%'");
@@ -230,7 +250,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 					count.append(" and a.createTime between :startTime and :endTime");
 				}
             }
-            count.append(" and a.status != 3");
+            //count.append(" and a.status != 3");
             Query query = session.createQuery(count.toString());
 			if (null != alarmsHeader)
                 if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
@@ -342,10 +362,10 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 	String ver =alarmsHeader.getSpecificProblem();
                 	hql.append(" and a.specificProblem like '%"+ver+"%'");
                 }
-            	if(null!=alarmsHeader.getVfStatus()) {
+            	/*if(null!=alarmsHeader.getVfStatus()) {
                 	String ver =alarmsHeader.getVfStatus();
                 	hql.append(" and a.vfStatus = '"+ver+"'");
-                }
+                }*/
             	if(null!=alarmsHeader.getAlarmInterfaceA()) {
                 	String ver =alarmsHeader.getAlarmInterfaceA();
                 	hql.append(" and a.alarmInterfaceA like '%"+ver+"%'");
@@ -358,7 +378,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 	hql.append(" and a.createTime between :startTime and :endTime");
                 }
             }
-            hql.append(" and a.status != 3");
+            //hql.append(" and a.status != 3");
             logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
             Query query = session.createQuery(hql.toString());
 			if (null != alarmsHeader)
@@ -406,8 +426,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             String hql = "select count(status) from AlarmsHeader a";
             if (!status.equals("0"))
                 hql+=" where a.status = :status";
-            else
-                hql+=" where a.status != 3";
+           // else
+             //   hql+=" where a.status != 3";
             Query query = session.createQuery(hql);
             if (!status.equals("0"))
                 query.setString("status",status);
