@@ -106,7 +106,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
 			//Transaction tx = session.beginTransaction();
 			//session.beginTransaction();
-			Query q=session.createQuery("select status from AlarmsHeader where sourceName='"+sourceName+"'");
+			Query q=session.createQuery("select status from AlarmsHeader where sourceName='"+sourceName+"' and status='active'");
+			q.setMaxResults(1);
 			//tx.commit();
 			String s=(String)q.uniqueResult();
 			Boolean status=false;

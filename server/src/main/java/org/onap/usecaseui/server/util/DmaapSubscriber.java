@@ -37,6 +37,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -223,6 +224,7 @@ public class DmaapSubscriber implements Runnable {
 
             Long startEpochMicrosec_s = Long.parseLong(alarm_header.getStartEpochMicrosec());
             String date_get = new DateUtils().getYearMonthDayHourMinuteSecond(startEpochMicrosec_s);
+            Timestamp timestamp = new Timestamp(startEpochMicrosec_s);
 
             if (alarm_header.getEventName().contains("Cleared")) {
                 alarm_header.setStatus("close");
@@ -243,7 +245,7 @@ public class DmaapSubscriber implements Runnable {
                     alarmsHeaderService.updateAlarmsHeader(alarms);
                 });
             } else {
-                alarm_header.setCreateTime(new Date());
+                alarm_header.setCreateTime(timestamp);
                 alarm_header.setStatus("active");
                 logger.info("alarm data header insert is starting......");
                 alarmsHeaderService.saveAlarmsHeader(alarm_header);
