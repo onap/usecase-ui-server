@@ -68,6 +68,11 @@ public class AlarmControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.get("/alarm/1/100/502fe15c-aa07-ed26-3f87-4d5c1784bc5b/management-server-backup/High/123/456/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test

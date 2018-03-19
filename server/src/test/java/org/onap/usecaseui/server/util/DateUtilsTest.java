@@ -20,11 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.usecaseui.server.constant.Constant;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -56,6 +52,14 @@ public class DateUtilsTest {
 	}
 
 	@Test
+	public void testGetYearMonthDayHourMinuteSecond(){
+	    DateUtils dateUtils = new DateUtils();
+	  String str =  dateUtils.getYearMonthDayHourMinuteSecond(System.currentTimeMillis());
+
+
+    }
+
+	@Test
 	public void addDate() throws ParseException {
         Assert.assertNotNull(DateUtils.addDate(new Date(),"year",1));
         Assert.assertNotNull(DateUtils.addDate(new Date(),"month",1));
@@ -66,8 +70,4 @@ public class DateUtilsTest {
         Assert.assertNotNull(DateUtils.addDate(new Date(),"hour",24));
         Assert.assertNotNull(DateUtils.addDate(new Date(),"minute",1));
 	}
-
-
-
-
 }

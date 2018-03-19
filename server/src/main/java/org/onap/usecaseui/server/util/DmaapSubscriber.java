@@ -222,30 +222,21 @@ public class DmaapSubscriber implements Runnable {
                 ai.setUpdateTime(new Date());
             });
 
-            Long startEpochMicrosec_s = Long.parseLong(alarm_header.getStartEpochMicrosec());
-            String date_get = new DateUtils().getYearMonthDayHourMinuteSecond(startEpochMicrosec_s);
-            Timestamp timestamp = new Timestamp(startEpochMicrosec_s);
+            Long l = System.currentTimeMillis();
 
+            Timestamp date_get = new Timestamp(l);
             if (alarm_header.getEventName().contains("Cleared")) {
                 alarm_header.setStatus("close");
                 logger.info("alarmCleared data header insert is starting......");
-                alarmsHeaderService.updateAlarmsHeader2018("close",date_get,alarm_header.getEventName(),alarm_header.getEventName().replace("Cleared",""),alarm_header.getReportingEntityName(),alarm_header.getSpecificProblem());
+                alarmsHeaderService.updateAlarmsHeader2018("close",date_get,alarm_header.getStartEpochMicrosec(),alarm_header.getLastEpochMicroSec(),alarm_header.getEventName().replace("Cleared",""),alarm_header.getReportingEntityName(),alarm_header.getSpecificProblem());
                 logger.info("alarmCleared data header insert has finished.");
                 logger.info("alarmCleared data detail insert is starting......");
                 alarm_informations.forEach(information ->
                     alarmsInformationService.saveAlarmsInformation(information));
 
                 logger.info("alarmCleared data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
-                AlarmsHeader header1 = new AlarmsHeader();
-                header1.setEventName(alarm_header.getEventName().substring(0, alarm_header.getEventName().indexOf("Cleared")));
-                List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryAlarmsHeader(header1, 1, 10).getList();
-                alarmsHeaders.forEach(alarms -> {
-                    alarms.setStatus("2");
-                    alarms.setUpdateTime(alarm_header.getCreateTime());
-                    alarmsHeaderService.updateAlarmsHeader(alarms);
-                });
             } else {
-                alarm_header.setCreateTime(timestamp);
+                alarm_header.setCreateTime(new Date());
                 alarm_header.setStatus("active");
                 logger.info("alarm data header insert is starting......");
                 alarmsHeaderService.saveAlarmsHeader(alarm_header);
