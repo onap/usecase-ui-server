@@ -67,6 +67,11 @@ public class PerformanceControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
+        mvc.perform(MockMvcRequestBuilders.get("/performance/1/100/1101ZTHX1MMEGJM1W1/1101ZTHX1MMEGJM1W1/Normal/123/456")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test

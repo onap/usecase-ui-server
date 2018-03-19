@@ -19,14 +19,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.util.DateUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,31 +35,36 @@ import java.util.Map;
 @SpringBootTest
 public class UsecaseuiServerApplicationTests {
 
-
-
-
 	@Test
-	public void contextLoads() throws IOException, ParseException {
-		/*ObjectMapper objectMapper = new ObjectMapper();
-		AlarmsHeader alarmsHeader = new AlarmsHeader();
-		alarmsHeader.setAlarmCondition("send to my phone");
-		alarmsHeader.setAlarmInterfaceA("Baby have no fear");
-		alarmsHeader.setCreateTime(new Date());
-		alarmsHeader.setDomain("Hope they ready");
-		List<AlarmsHeader> alarmsHeaders = new ArrayList<>();
-		alarmsHeaders.add(alarmsHeader);
-		alarmsHeaders.add(alarmsHeader);
-		alarmsHeaders.add(alarmsHeader);
-		Map<String,Object> map = new HashMap<>();
-		map.put("alarms",alarmsHeaders);
-		map.put("asd",alarmsHeader);
-		String jsonStr = objectMapper.writeValueAsString(map);
-		System.out.println(jsonStr);*/
-		//System.out.println(alarmsInformationService.saveAlarmsInformation(new AlarmsInformation("11","22","123",new Date(),new Date())));
-        long interval = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2017-11-18 11:00").getTime() - new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2017-11-18 12:00").getTime();
-        long hour = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2017-11-18 11:00").getTime() - (1000 * 60 * 15);
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(hour)));
-		//System.out.println(ss.replaceAll("\"\\{\"","{\""));
+	public void contextLoads() {
+        String data = "";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/topologyD_data.json"));
+            String tmpStr = "";
+            while ((tmpStr=br.readLine()) != null){
+                data += tmpStr;
+            }
+            br.close();
+            //System.out.println(data);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper om = new ObjectMapper();
+        try {
+            Map<String,Object> map = om.readValue(data, Map.class);
+            List<Map<String,Object>> list = (List<Map<String, Object>>) map.get("services");
+            list.forEach( i -> {
+                i.forEach( (k,v) ->{
+                    System.out.println(k+"_"+v);
+                } );
+            });
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	}
 }

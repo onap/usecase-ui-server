@@ -65,27 +65,6 @@ public class AlarmController {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-
-
-    @RequestMapping("test")
-    public String test(){
-
-
-/*
-        SocketClient socketClient = new SocketClient();
-
-        SocketServer socketServer = new SocketServer();
-        socketServer.onServer();
-        socketClient.onSocketClient();*/
-
-        return null;
-
-    }
-
-
-
-
-
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
             method = RequestMethod.GET, produces = "application/json")
@@ -150,9 +129,6 @@ public class AlarmController {
         omAlarm.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
         return omAlarm.writeValueAsString(map);
     }
-
-
-
 
     /*public String getAlarmData(@PathVariable(required = false) String sourceId, @PathVariable(required = false) String sourceName,
                                @PathVariable(required = false) String priority, @PathVariable(required = false) String startTime,
@@ -250,7 +226,6 @@ public class AlarmController {
             List<Map<String,Object>> networkServices = (List<Map<String, Object>>) getAllVNFS().get("networkServices");
             List<Map<String,Object>> VNFS = (List<Map<String, Object>>) getAllVNFS().get("VNFS");
 
-
             List<Map<String,Object>> children = new ArrayList<>();
             networkServices.forEach( i -> {
                 Map<String,Object> childrenMap = new HashMap<>();
@@ -336,20 +311,16 @@ public class AlarmController {
         return map;
     }
 
-
     public Map<String,Object>   getAllVNFS() throws IOException {
 
         String data="";
         try {
             String str=null;
             BufferedReader  br = new BufferedReader(new FileReader("/home/uui/resources/topologyD_data.json"));
-            while ((str=br.readLine())!=null){
+            while ((str=br.readLine())!=null) {
                 data += str;
-
-
-                }
+            }
             br.close();
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }catch (IOException e){
@@ -361,26 +332,21 @@ public class AlarmController {
             for(int a=0;a<jsonArray.size();a++){
                 JSONObject jsonObject1 = jsonArray.getJSONObject(a);
                 String vnfName = jsonObject1.getString("vnfName");
-          Boolean name =   alarmsHeaderService.getStatusBySourceName(vnfName);
+
+                Boolean name = false;
+                name =   alarmsHeaderService.getStatusBySourceName(vnfName);
 
                 jsonObject1.put("isAlarm",name);
 
                 System.out.print("vnfName===="+vnfName+"name====="+name);
-
-
             }
 
         String jsonS = jsonObject.toJSONString();
         System.out.print("toJSONString===="+jsonS);
 
-
-
-       // return jsonS;
-
         Map<String,Object> map = omAlarm.readValue(jsonS, Map.class);
         return map;
     }
-
 
     @RequestMapping(value = {"/alarm/sourceId"}, method = RequestMethod.GET)
     public String getSourceId() throws JsonProcessingException {
@@ -423,7 +389,6 @@ public class AlarmController {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
             });
             startTimeL += timeIteraPlusVal;
             tmpEndTimeL += timeIteraPlusVal;
@@ -474,5 +439,6 @@ public class AlarmController {
         }
         return null;
     }
+
 
 }

@@ -16,20 +16,16 @@
 package org.onap.usecaseui.server.service.impl;
 
 
-import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import javax.transaction.Transactional;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
-import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,29 +65,26 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	}
 
 	@Override
-	public String updateAlarmsHeader2018(String status, String date,String eventNameCleared,String eventName, String reportingEntityName,String specificProblem) {
+	public String updateAlarmsHeader2018(String status, Timestamp date, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String eventName, String reportingEntityName, String specificProblem) {
 
-		try(Session session = sessionFactory.getCurrentSession();){
-			//String sql = "update AlarmsInformation set status='"+status+"' where eventName='"+eventName+"'";
-			//String sql = "update AlarmsInformation set status=:status where eventName=:eventName";
-			//StringBuffer sql = new StringBuffer("update AlarmsInformation set status='"+status+"' where eventName='"+eventName+"'");
-			/*if (null == alarmsInformation) {
-				logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
-			}*/
-			//logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}", alarmsInformation);
+		try(Session session = sessionFactory.openSession();){
 			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
-			//Transaction tx = session.beginTransaction();
 			session.beginTransaction();
-			//session.update(alarmsInformation);
-			//session.createSQLQuery(sql).setParameter("status",status).setParameter("eventName",eventName).executeUpdate();
-			//session.createSQLQuery(sql).executeUpdate();
 
-			//session.update(sql);
-			//Query q=session.createQuery("update AlarmsHeader set status='"+status+"', eventName='"+eventNameCleared+"',updateTime='"+date+"' where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"' ");
-            Query q=session.createQuery("update AlarmsHeader set status='"+status+"', updateTime='"+date+"' where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"' ");
+            Query q=session.createQuery("update AlarmsHeader set status=:status, updateTime=:date, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
+
+            q.setString("status",status);
+            q.setDate("date",date);
+
+            q.setString("startEpochMicrosecCleared",startEpochMicrosecCleared);
+            q.setString("lastEpochMicroSecCleared",lastEpochMicroSecCleared);
+            q.setString("eventName",eventName);
+            q.setString("reportingEntityName",reportingEntityName);
+            q.setString("specificProblem",specificProblem);
+
+
             q.executeUpdate();
 			session.getTransaction().commit();
-			//tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {
@@ -123,7 +116,25 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
 			return false;
 		}
-		//return null;
+	}
+
+
+	@Override
+	public AlarmsHeader getIdByStatusSourceName(String sourceName) {
+		AlarmsHeader s = new AlarmsHeader();
+		try(Session session = sessionFactory.openSession()){
+			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
+			Query q=session.createQuery("from AlarmsHeader where sourceName='"+sourceName+"' and status='active' order by createTime desc");
+
+			q.setMaxResults(1);
+			s = (AlarmsHeader)q.uniqueResult();
+
+			session.flush();
+			return s;
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
+			return s;
+		}
 	}
 
 
