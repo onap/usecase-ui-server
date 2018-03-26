@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Tao Shen <shentao@chinamobile.com>
+Code-Review+2: HuabingZhao <zhao.huabing@zte.com.cn>
+Submitted-by: HuabingZhao <zhao.huabing@zte.com.cn>
+Submitted-at: Mon, 26 Mar 2018 15:55:00 +0000
+Reviewed-on: https://gerrit.onap.org/r/38453
+Project: usecase-ui/server
+Branch: refs/heads/master
