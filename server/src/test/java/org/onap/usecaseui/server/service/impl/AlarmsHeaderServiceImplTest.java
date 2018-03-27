@@ -88,5 +88,11 @@ public void testSaveAlarmsHeader() throws Exception {
     System.out.println(alarmsHeaderServiceImpl.saveAlarmsHeader(a));
 } 
 
+@Test
+public void testQueryStatusCount() throws Exception { 
+	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
+    String str =alarmsHeaderServiceImpl.queryStatusCount("close");
+    System.out.println("str ="+str);
+} 
 
 } 
