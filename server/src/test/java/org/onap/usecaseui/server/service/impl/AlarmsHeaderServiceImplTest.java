@@ -41,6 +41,9 @@ import java.util.Date;
 */
 public class AlarmsHeaderServiceImplTest {
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
 @Before
 public void before() throws Exception { 
 } 
