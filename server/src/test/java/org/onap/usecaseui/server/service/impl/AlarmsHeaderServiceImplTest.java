@@ -31,8 +31,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.hibernate.*;
-import org.hibernate.cfg.*;
 
 /** 
 * AlarmsHeaderServiceImpl Tester. 
@@ -41,18 +39,19 @@ import org.hibernate.cfg.*;
 * @since <pre>8, 2018</pre>
 * @version 1.0 
 */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = UsecaseuiServerApplication.class)
+@WebAppConfiguration
 public class AlarmsHeaderServiceImplTest {
-
-    private static SessionFactory sessionFactory;
+    @Autowired
+    private AlarmsHeaderServiceImpl alarmsHeaderServiceImpl;
 
 @Before
 public void before() throws Exception { 
-	sessionFactory = new Configuration().configure().buildSessionFactory();
 } 
 
 @After
-public void after() throws Exception {
-	sessionFactory.close();
+public void after() throws Exception { 
 } 
 
 /** 
@@ -90,15 +89,9 @@ public void testSaveAlarmsHeader() throws Exception {
     a.setStartEpochMicrosec("wallet");
     a.setUpdateTime(DateUtils.now());
     a.setVersion("va2");
-	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
+	alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
     System.out.println(alarmsHeaderServiceImpl.saveAlarmsHeader(a));
 } 
 
-@Test
-public void testQueryStatusCount() throws Exception { 
-	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-    String str =alarmsHeaderServiceImpl.queryStatusCount("close");
-    System.out.println("str ="+str);
-} 
 
 } 
