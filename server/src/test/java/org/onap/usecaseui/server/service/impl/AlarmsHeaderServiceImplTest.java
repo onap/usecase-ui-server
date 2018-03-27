@@ -21,7 +21,7 @@ import org.junit.After;
 import org.junit.runner.RunWith;
 import org.onap.usecaseui.server.UsecaseuiServerApplication;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.service.AlarmsHeaderService;
+import org.onap.usecaseui.server.service.impl.AlarmsHeaderServiceImpl;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,7 +40,7 @@ import java.util.Date;
 * @version 1.0 
 */
 public class AlarmsHeaderServiceImplTest {
-    private AlarmsHeaderService alarmsHeaderService;
+    private AlarmsHeaderServiceImpl alarmsHeaderServiceImpl;
 
 @Before
 public void before() throws Exception { 
@@ -84,6 +84,6 @@ public void testSaveAlarmsHeader() throws Exception {
     a.setStartEpochMicrosec("wallet");
     a.setUpdateTime(DateUtils.now());
     a.setVersion("va2");
-    System.out.println(alarmsHeaderService.saveAlarmsHeader(a));
+    System.out.println(alarmsHeaderServiceImpl.saveAlarmsHeader(a));
 } 
 } 
