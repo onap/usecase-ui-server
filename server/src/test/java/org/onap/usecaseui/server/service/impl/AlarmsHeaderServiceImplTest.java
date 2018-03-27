@@ -31,7 +31,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
+import org.hibernate.cfg.*;
 
 /** 
 * AlarmsHeaderServiceImpl Tester. 
@@ -42,15 +43,16 @@ import org.hibernate.SessionFactory;
 */
 public class AlarmsHeaderServiceImplTest {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
 
 @Before
 public void before() throws Exception { 
+	sessionFactory = new Configuration().configure().buildSessionFactory();
 } 
 
 @After
-public void after() throws Exception { 
+public void after() throws Exception {
+	sessionFactory.close();
 } 
 
 /** 
