@@ -31,6 +31,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.hibernate.SessionFactory;
 
 /** 
 * AlarmsHeaderServiceImpl Tester. 
@@ -40,6 +41,9 @@ import java.util.Date;
 * @version 1.0 
 */
 public class AlarmsHeaderServiceImplTest {
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
 @Before
 public void before() throws Exception { 
