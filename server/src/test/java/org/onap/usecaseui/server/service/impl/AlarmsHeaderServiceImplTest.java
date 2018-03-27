@@ -39,12 +39,7 @@ import java.util.Date;
 * @since <pre>8, 2018</pre>
 * @version 1.0 
 */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = UsecaseuiServerApplication.class)
-@WebAppConfiguration
 public class AlarmsHeaderServiceImplTest {
-    @Autowired
-    private AlarmsHeaderServiceImpl alarmsHeaderServiceImpl;
 
 @Before
 public void before() throws Exception { 
@@ -89,6 +84,7 @@ public void testSaveAlarmsHeader() throws Exception {
     a.setStartEpochMicrosec("wallet");
     a.setUpdateTime(DateUtils.now());
     a.setVersion("va2");
+	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
     System.out.println(alarmsHeaderServiceImpl.saveAlarmsHeader(a));
 } 
 
