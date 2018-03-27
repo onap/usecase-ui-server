@@ -32,6 +32,11 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import mockit.Expectations;
+import mockit.Mocked;
+import mockit.integration.junit4.JMockit;
 /** 
 * AlarmsHeaderServiceImpl Tester. 
 * 
@@ -39,20 +44,15 @@ import java.util.Date;
 * @since <pre>8, 2018</pre>
 * @version 1.0 
 */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = UsecaseuiServerApplication.class)
-@WebAppConfiguration
+@RunWith(JMockit.class)
 public class AlarmsHeaderServiceImplTest {
-    @Autowired
-    private AlarmsHeaderServiceImpl alarmsHeaderServiceImpl;
+	@Before
+		public void before() throws Exception { 
+	}
 
-@Before
-public void before() throws Exception { 
-} 
-
-@After
-public void after() throws Exception { 
-} 
+	@After
+	public void after() throws Exception { 
+	}
 
 /** 
 * 
@@ -60,7 +60,9 @@ public void after() throws Exception {
 * 
 */ 
 @Test
-public void testSaveAlarmsHeader() throws Exception { 
+public void testSaveAlarmsHeader(@Mocked SessionFactory sessionFactory,
+                                 @Mocked Session session
+) throws Exception { 
 //TODO: Test goes here...
     AlarmsHeader a = new AlarmsHeader();
     a.setEventName("a");
@@ -89,7 +91,12 @@ public void testSaveAlarmsHeader() throws Exception {
     a.setStartEpochMicrosec("wallet");
     a.setUpdateTime(DateUtils.now());
     a.setVersion("va2");
-	alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
+
+        new Expectations() {{
+            sessionFactory.openSession(); result = session;
+        }};
+
+	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
     System.out.println(alarmsHeaderServiceImpl.saveAlarmsHeader(a));
 } 
 
