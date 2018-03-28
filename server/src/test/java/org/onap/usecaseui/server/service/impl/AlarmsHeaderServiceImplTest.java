@@ -34,9 +34,8 @@ import java.util.Date;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.integration.junit4.JMockit;
+import mockit.Mock;
+import mockit.MockUp;
 /** 
 * AlarmsHeaderServiceImpl Tester. 
 * 
@@ -44,7 +43,6 @@ import mockit.integration.junit4.JMockit;
 * @since <pre>8, 2018</pre>
 * @version 1.0 
 */
-@RunWith(JMockit.class)
 public class AlarmsHeaderServiceImplTest {
 	@Before
 		public void before() throws Exception { 
@@ -92,9 +90,15 @@ public void testSaveAlarmsHeader(@Mocked SessionFactory sessionFactory,
     a.setUpdateTime(DateUtils.now());
     a.setVersion("va2");
 
-        new Expectations() {{
-            sessionFactory.openSession(); result = session;
-        }};
+    MockUp<Session> mockedSession = new MockUp<Session>() {
+    };
+
+    new MockUp<SessionFactory>() {
+        @Mock
+        private Session openSession() {
+            return mockedSession.getMockInstance();
+        }
+    };
 
 	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
     System.out.println(alarmsHeaderServiceImpl.saveAlarmsHeader(a));
