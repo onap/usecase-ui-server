@@ -95,7 +95,16 @@ public class AlarmsHeaderServiceImplTest {
 		a.setUpdateTime(DateUtils.now());
 		a.setVersion("va2");
 
+		
+		
+		
+        MockUp<Query> mockUpQuery = new MockUp<Query>() {
+        };
 		MockUp<Session> mockedSession = new MockUp<Session>() {
+            @Mock
+            public Query createQuery(String sql) {
+                return mockUpQuery.getMockInstance();
+            }
 			@Mock
 			public Transaction beginTransaction() {
 				return transaction;
@@ -112,6 +121,12 @@ public class AlarmsHeaderServiceImplTest {
 			public void commit() {
 			}
 		};
+        new MockUp<AlarmsHeaderServiceImpl>() {
+            @Mock
+            private Session getSession() {
+                return mockedSession.getMockInstance();
+            }
+        };
 
 		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 		alarmsHeaderServiceImpl.saveAlarmsHeader(a);
