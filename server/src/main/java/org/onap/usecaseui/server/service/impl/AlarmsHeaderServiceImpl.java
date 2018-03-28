@@ -47,8 +47,6 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
     
     
 	public String saveAlarmsHeader(AlarmsHeader alarmsHeader) {
-		String testStr = "shentao_test";
-		logger.error(testStr);
 		 try(Session session = sessionFactory.openSession();){
 	            if (null == alarmsHeader) {
 	                logger.error("AlarmsHeaderServiceImpl saveAlarmsHeader alarmsHeader is null!");

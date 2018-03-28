@@ -100,12 +100,6 @@ public class AlarmsHeaderServiceImplTest {
 			public Transaction beginTransaction() {
 				return transaction;
 			}
-			@Mock
-			public void save(AlarmsHeader alarmsHeader) {
-			}
-			@Mock
-			public void flush() {
-			}
 		};
 		new MockUp<SessionFactory>() {
 			@Mock
@@ -122,103 +116,6 @@ public class AlarmsHeaderServiceImplTest {
 		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 		alarmsHeaderServiceImpl.saveAlarmsHeader(a);
 	} 
-
-	/** 
-	* 
-	* Method: updateAlarmsHeader2018(String status, String date, String eventNameCleared, String eventName, String reportingEntityName, String specificProblem) 
-	* 
-	*/ 
-	@Test
-	public void testUpdateAlarmsHeader2018() throws Exception { 
-		new MockUp<SessionFactory>() {
-			@Mock
-			public Session openSession() {
-				return session;
-			}
-		};
-		new MockUp<Session>() {
-			@Mock
-			public Transaction beginTransaction() {
-				return transaction;
-			}
-			@Mock
-			public void save(AlarmsHeader alarmsHeader) {
-			}
-			@Mock
-			public void flush() {
-			}
-			@Mock
-			public Query createQuery() {
-				return query;
-			}
-		};
-		new MockUp<Transaction>() {
-			@Mock
-			public void commit() {
-			}
-		};
-		new MockUp<Query>() {
-			@Mock
-			public void executeUpdate() {
-			}
-		};
-
-		Long l = System.currentTimeMillis();
-		Timestamp date_get = new Timestamp(l);
-		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		alarmsHeaderServiceImpl.updateAlarmsHeader2018("active",date_get,"112","112","Fault_MultiCloud_VMFailureCleared","Multi-Cloud","Fault_MultiCloud_VMFailure");
-	}
-
-	/**
-	* 
-	* Method: getStatusBySourceName(String sourceName) 
-	* 
-	*/ 
-	@Test
-	public void testGetStatusBySourceName() throws Exception {
-		new MockUp<SessionFactory>() {
-			@Mock
-			public Session openSession() {
-				return session;
-			}
-		};
-		new MockUp<Session>() {
-			@Mock
-			public Transaction beginTransaction() {
-				return transaction;
-			}
-			@Mock
-			public void save(AlarmsHeader alarmsHeader) {
-			}
-			@Mock
-			public void flush() {
-			}
-			@Mock
-			public Query createQuery() {
-				return query;
-			}
-		};
-		new MockUp<Transaction>() {
-			@Mock
-			public void commit() {
-			}
-		};
-		new MockUp<Query>() {
-			@Mock
-			public void executeUpdate() {
-			}
-			@Mock
-			public void setMaxResults() {
-			}
-			@Mock
-			public String uniqueResult() {
-				return "active";
-			}
-		};
-		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		Boolean bl = alarmsHeaderServiceImpl.getStatusBySourceName("vnf_a_3");
-		System.out.println("boolean="+bl);
-	}
 
 
 
