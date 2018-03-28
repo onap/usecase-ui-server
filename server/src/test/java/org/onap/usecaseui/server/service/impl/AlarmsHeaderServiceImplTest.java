@@ -48,14 +48,13 @@ import mockit.MockUp;
 */
 public class AlarmsHeaderServiceImplTest {
 	@Before
-		public void before() throws Exception { 
+	public void before() throws Exception { 
 	}
 
 	@After
 	public void after() throws Exception { 
 	}
 
-	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 	private Session session;
 	private Transaction transaction;
 	private Query query;
@@ -85,14 +84,65 @@ public class AlarmsHeaderServiceImplTest {
 				return mockedSession.getMockInstance();
 			}
 		};
+		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 		AlarmsHeader alarmsHeader = null;
 		alarmsHeaderServiceImpl.saveAlarmsHeader(alarmsHeader);
 	}
 
 	@Test(expected = Exception.class)
 	public void testSaveAlarmsHeaderError(){
+		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 		alarmsHeaderServiceImpl.saveAlarmsHeader(new AlarmsHeader());
 	}
 
+	@Test
+	public void testUpdateAlarmsHeader2018() throws Exception { 
+		MockUp<Query> mockUpQuery = new MockUp<Query>() {
+			@Mock
+			public void setString(String str) {
+			}
+			@Mock
+			public void setDate(Timestamp date) {
+			}
+			@Mock
+			public void executeUpdate() {
+			}
+		};
+		MockUp<Session> mockedSession = new MockUp<Session>() {
+			@Mock
+			public Query createQuery(String hql) {
+				return mockUpQuery.getMockInstance();
+			}
+			@Mock
+			public Transaction beginTransaction() {
+				return transaction;
+			}
+			@Mock
+			public void flush() {
+			}
+		};
+		new MockUp<Transaction>() {
+			@Mock
+			public void getTransaction() {
+			}
+			@Mock
+			public void commit() {
+			}
+		};
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
+		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
+		alarmsHeaderServiceImpl.updateAlarmsHeader2018(null, null, null, null, null, null, null);
+	}
+
+	@Test(expected = Exception.class)
+	public void testUpdateAlarmsHeader2018Error(){
+		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
+		alarmsHeaderServiceImpl.updateAlarmsHeader2018(null, null, null, null, null, null, null);
+	}
 
 } 

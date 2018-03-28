@@ -68,7 +68,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	public String updateAlarmsHeader2018(String status, Timestamp date, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String eventName, String reportingEntityName, String specificProblem) {
 		try(Session session = getSession()){
 			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
-			session.beginTransaction();
+			Transaction tx = session.beginTransaction();
 
             Query q=session.createQuery("update AlarmsHeader set status=:status, updateTime=:date, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
             q.setString("status",status);
@@ -79,7 +79,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             q.setString("reportingEntityName",reportingEntityName);
             q.setString("specificProblem",specificProblem);
             q.executeUpdate();
-			session.getTransaction().commit();
+			tx = session.getTransaction();
+			tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {
