@@ -47,9 +47,12 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
     @Autowired
     private SessionFactory sessionFactory;
     
+	private Session getSession() {
+		return sessionFactory.openSession();
+	}
     
 	public String saveAlarmsHeader(AlarmsHeader alarmsHeader) {
-		 try(Session session = sessionFactory.openSession();){
+		 try(Session session = getSession()){
 	            if (null == alarmsHeader) {
 	                logger.error("AlarmsHeaderServiceImpl saveAlarmsHeader alarmsHeader is null!");
 	            }
