@@ -55,65 +55,23 @@ public class AlarmsHeaderServiceImplTest {
 	public void after() throws Exception { 
 	}
 
+	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 	private Session session;
 	private Transaction transaction;
 	private Query query;
 
-	/** 
-	* 
-	* Method: saveAlarmsHeader(AlarmsHeader alarmsHeader) 
-	* 
-	*/ 
 	@Test
 	public void testSaveAlarmsHeader() throws Exception { 
-	//TODO: Test goes here...
-		AlarmsHeader a = new AlarmsHeader();
-		a.setEventName("a");
-		a.setStatus("1");
-		a.setVfStatus("1");
-		a.setEventId("1119");
-		a.setDomain("asb");
-		a.setEventCategory("s");
-		a.setAlarmCondition("ea");
-		a.setAlarmInterfaceA("cs");
-		a.setCreateTime(DateUtils.now());
-		a.setEventServrity("s");
-		a.setEventSourceType("q");
-		a.setEventType("q");
-		a.setFaultFieldsVersion("v1");
-		a.setLastEpochMicroSec("csa");
-		a.setNfcNamingCode("std");
-		a.setNfNamingCode("cout");
-		a.setPriority("cs");
-		a.setReportingEntityId("112");
-		a.setReportingEntityName("asfs");
-		a.setSequence("cgg");
-		a.setSourceId("123");
-		a.setSourceName("eggs");
-		a.setSpecificProblem("especially");
-		a.setStartEpochMicrosec("wallet");
-		a.setUpdateTime(DateUtils.now());
-		a.setVersion("va2");
-
-		
-		
-		
-        MockUp<Query> mockUpQuery = new MockUp<Query>() {
-        };
 		MockUp<Session> mockedSession = new MockUp<Session>() {
-            @Mock
-            public Query createQuery(String sql) {
-                return mockUpQuery.getMockInstance();
-            }
 			@Mock
 			public Transaction beginTransaction() {
 				return transaction;
 			}
-		};
-		new MockUp<SessionFactory>() {
 			@Mock
-			public Session openSession() {
-				return mockedSession.getMockInstance();
+			public void save(AlarmsHeader alarmsHeader) {
+			}
+			@Mock
+			public void flush() {
 			}
 		};
 		new MockUp<Transaction>() {
@@ -121,20 +79,20 @@ public class AlarmsHeaderServiceImplTest {
 			public void commit() {
 			}
 		};
-        new MockUp<AlarmsHeaderServiceImpl>() {
-            @Mock
-            private Session getSession() {
-                return mockedSession.getMockInstance();
-            }
-        };
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
+		AlarmsHeader alarmsHeader = null;
+		alarmsHeaderServiceImpl.saveAlarmsHeader(alarmsHeader);
+	}
 
-		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		alarmsHeaderServiceImpl.saveAlarmsHeader(a);
-	} 
-
-
-
-
+	@Test(expected = Exception.class)
+	public void testSaveAlarmsHeaderError(){
+		alarmsHeaderServiceImpl.saveAlarmsHeader(new AlarmsHeader());
+	}
 
 
 } 
