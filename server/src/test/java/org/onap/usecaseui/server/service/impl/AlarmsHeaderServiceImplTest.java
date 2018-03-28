@@ -58,9 +58,7 @@ public class AlarmsHeaderServiceImplTest {
 * 
 */ 
 @Test
-public void testSaveAlarmsHeader(@Mocked SessionFactory sessionFactory,
-                                 @Mocked Session session
-) throws Exception { 
+public void testSaveAlarmsHeader() throws Exception { 
 //TODO: Test goes here...
     AlarmsHeader a = new AlarmsHeader();
     a.setEventName("a");
