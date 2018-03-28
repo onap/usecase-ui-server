@@ -52,6 +52,7 @@ public class AlarmsHeaderServiceImplTest {
 	public void after() throws Exception { 
 	}
 
+	private Session session;
 /** 
 * 
 * Method: saveAlarmsHeader(AlarmsHeader alarmsHeader) 
@@ -88,13 +89,10 @@ public void testSaveAlarmsHeader() throws Exception {
     a.setUpdateTime(DateUtils.now());
     a.setVersion("va2");
 
-    MockUp<Session> mockedSession = new MockUp<Session>() {
-    };
-
     new MockUp<SessionFactory>() {
         @Mock
-        private Session openSession() {
-            return mockedSession.getMockInstance();
+        public Session openSession() {
+            return session;
         }
     };
 
