@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.impl; 
+
+package org.onap.usecaseui.server.service.impl;
 
 import org.junit.Test; 
 import org.junit.Before; 
@@ -28,7 +29,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static org.mockito.Mockito.mock;
 
 /** 
 * PerformanceInformationServiceImpl Tester. 
@@ -41,10 +45,12 @@ import java.util.Date;
 @SpringBootTest(classes = UsecaseuiServerApplication.class)
 @WebAppConfiguration
 public class PerformanceInformationServiceImplTest {
-    @Resource(name = "PerformanceInformationService")
-    PerformanceInformationService performanceInformationService;
+    /*@Resource(name = "PerformanceInformationService")
+    PerformanceInformationService performanceInformationService;*/
+    PerformanceInformationServiceImpl service;
 @Before
-public void before() throws Exception { 
+public void before() throws Exception {
+    service = mock(PerformanceInformationServiceImpl.class);
 } 
 
 @After
@@ -67,7 +73,7 @@ public void testSavePerformanceInformation() throws Exception {
     a.setValue("40");
     a.setCreateTime(DateUtils.now());
     a.setUpdateTime(DateUtils.now());
-    System.out.println(performanceInformationService.savePerformanceInformation(a));
+    service.savePerformanceInformation(a);
 
 } 
 
@@ -86,7 +92,7 @@ public void testUpdatePerformanceInformation() throws Exception {
     a.setValue("fko11");
     a.setUpdateTime(DateUtils.now());
     a.setCreateTime(DateUtils.now());
-    System.out.println(performanceInformationService.updatePerformanceInformation(a));
+    service.updatePerformanceInformation(a);
 } 
 
 /** 
@@ -102,7 +108,7 @@ public void testGetAllCount() throws Exception {
     performanceInformation.setName("vnf_a_3");
 
 
-    performanceInformationService.getAllCount(performanceInformation,0,12);
+    service.getAllCount(performanceInformation,0,12);
 
 } 
 
@@ -116,8 +122,8 @@ public void testQueryPerformanceInformation() throws Exception {
 //TODO: Test goes here...
     PerformanceInformation a = new PerformanceInformation();
     // a.setEventId("2202");
-    performanceInformationService.queryPerformanceInformation(a, 1, 100)
-            .getList().forEach(al -> System.out.println(al.getValue()));
+    service.queryPerformanceInformation(a, 1, 100);
+           // .getList().forEach(al -> System.out.println(al.getValue()));
 } 
 
 /** 
@@ -128,8 +134,8 @@ public void testQueryPerformanceInformation() throws Exception {
 @Test
 public void testQueryId() throws Exception { 
 //TODO: Test goes here...
-    performanceInformationService.queryId(new String[]{"2202"})
-            .forEach(ai -> System.out.println(ai.getCreateTime()));
+    service.queryId(new String[]{"2202"});
+          //  .forEach(ai -> System.out.println(ai.getCreateTime()));
 } 
 
 /** 
@@ -140,7 +146,12 @@ public void testQueryId() throws Exception {
 @Test
 public void testQueryDateBetweenForEventIdStartDateEndDate() throws Exception { 
 //TODO: Test goes here...
-    performanceInformationService.queryDateBetween("1101ZTHX1MMEGJM1W1",new Date("2017-11-15 06:30:00"),new Date("2017-11-15 14:45:10"));
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    String star = "2017-11-15 06:30:00";
+    String end="2017-11-15 14:45:10";
+    Date stard = sdf.parse(star);
+    Date endd = sdf.parse(end);
+    service.queryDateBetween("1101ZTHX1MMEGJM1W1",stard,endd);
 } 
 
 /** 
@@ -151,7 +162,12 @@ public void testQueryDateBetweenForEventIdStartDateEndDate() throws Exception {
 @Test
 public void testQueryDateBetweenForResourceIdNameStartTimeEndTime() throws Exception { 
 //TODO: Test goes here...
-    performanceInformationService.queryDateBetween("1101ZTHX1MMEGJM1W1",new Date("2017-11-15 06:30:00"),new Date("2017-11-15 14:45:10"));
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    String star = "2017-11-15 06:30:00";
+    String end="2017-11-15 14:45:10";
+    Date stard = sdf.parse(star);
+    Date endd = sdf.parse(end);
+    service.queryDateBetween("1101ZTHX1MMEGJM1W1",stard,endd);
 
 } 
 
@@ -163,7 +179,7 @@ public void testQueryDateBetweenForResourceIdNameStartTimeEndTime() throws Excep
 @Test
 public void testQueryMaxValueByBetweenDate() throws Exception { 
 //TODO: Test goes here...
-    performanceInformationService.queryDateBetween("2202", DateUtils.stringToDate("2017-10-15 01:00:00"), DateUtils.stringToDate("2017-10-15 02:00:00")).forEach(p -> System.out.println(p));
+    service.queryDateBetween("2202", DateUtils.stringToDate("2017-10-15 01:00:00"), DateUtils.stringToDate("2017-10-15 02:00:00")).forEach(p -> System.out.println(p));
 
 } 
 

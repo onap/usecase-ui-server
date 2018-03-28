@@ -87,6 +87,84 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	}
 
 
+
+
+
+	@Override
+	public int getAllCountByStatus(String status){
+		try (Session session = sessionFactory.openSession()){
+			StringBuffer count = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
+			if(!"0".equals(status)){
+				count.append(" and a.status=:status");
+			}
+			Query  query =session.createQuery(count.toString());
+			query.setString("status",status);
+			//int q = (int)query.uniqueResult();
+			long q=(long)query.uniqueResult();
+			session.flush();
+			return (int)q;
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceHeaderServiceImpl getAllCount."+e.getMessage());
+			return 0;
+		}
+	}
+
+	@Override
+	public List<PerformanceHeader> getAllByStatus(String status,String eventName,String sourceName,String eventServerity,String reportingEntityName,  Date createTime, Date endTime){
+		try (Session session = sessionFactory.openSession()){
+			StringBuffer string = new StringBuffer("from PerformanceHeader a where 1=1");
+			if(!"0".equals(status)){
+				string.append(" and a.status=:status");
+			}if(!"".equals(eventName) &&  eventName!=null){
+                string.append(" and a.eventName=:eventName");
+            }
+            if(!"".equals(sourceName) &&  sourceName!=null){
+                string.append(" and a.sourceName=:sourceName");
+            }
+            if(!"".equals(eventServerity) &&  eventServerity!=null){
+                string.append(" and a.eventServerity=:eventServerity");
+            }
+            if(!"".equals(reportingEntityName) &&  eventServerity!=null){
+                string.append(" and a.reportingEntityName=:reportingEntityName");
+            }
+            if( null!=createTime && endTime!= null) {
+                string.append(" and a.createTime between :startTime and :endTime");
+            }
+            Query query = session.createQuery(string.toString());
+            query.setString("status",status);
+            query.setString("eventName",eventName);
+            query.setString("sourceName",sourceName);
+            query.setString("eventServerity",eventServerity);
+            query.setString("reportingEntityName",reportingEntityName);
+            if( null!=createTime && endTime!= null) {
+                query.setDate("startTime",createTime);
+                query.setDate("endTime",endTime);
+
+            }
+
+			List<PerformanceHeader> list =query.list();
+
+			return list;
+
+		}catch (Exception e){
+
+			logger.error("exception occurred while performing PerformanceHeaderServiceImpl getAllCount."+e.getMessage());
+			return null;
+		}
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+
 	public int getAllCount(PerformanceHeader performanceHeder, int currentPage, int pageSize) {
 		try(Session session = sessionFactory.openSession();){
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");

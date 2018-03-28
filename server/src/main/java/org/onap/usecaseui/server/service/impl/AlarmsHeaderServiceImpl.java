@@ -16,6 +16,8 @@
 package org.onap.usecaseui.server.service.impl;
 
 
+
+import java.util.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,13 +66,34 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	        
 	}
 
+	/*@Override
+	public String updateAlarmsHeader2018(String status, String date,String eventNameCleared,String eventName, String reportingEntityName,String specificProblem) {
+
+		try(Session session = sessionFactory.getCurrentSession();){
+
+			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
+			session.beginTransaction();
+			Query q=session.createQuery("update AlarmsHeader set status='"+status+"', updateTime='"+date+"' where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"' ");
+            q.executeUpdate();
+			session.getTransaction().commit();
+			session.flush();
+			return "1";
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
+			return "0";
+		}
+	}*/
+
+
 	@Override
 	public String updateAlarmsHeader2018(String status, Timestamp date, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String eventName, String reportingEntityName, String specificProblem) {
 
 		try(Session session = sessionFactory.openSession();){
+			//try(Session session = sessionFactory.getCurrentSession();){
 			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
 			session.beginTransaction();
 
+			//Query q=session.createQuery("update AlarmsHeader set status='"+status+"', updateTime='"+date+"' , startEpochMicrosecCleared='"+startEpochMicrosecCleared+"'  ,lastEpochMicroSecCleared='"+lastEpochMicroSecCleared+"'    where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"'");
             Query q=session.createQuery("update AlarmsHeader set status=:status, updateTime=:date, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
 
             q.setString("status",status);
@@ -116,25 +139,36 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
 			return false;
 		}
+		//return null;
 	}
 
 
 	@Override
 	public AlarmsHeader getIdByStatusSourceName(String sourceName) {
+		//List<AlarmsHeader>  list = new ArrayList<>();
 		AlarmsHeader s = new AlarmsHeader();
 		try(Session session = sessionFactory.openSession()){
 			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}");
+			//Transaction tx = session.beginTransaction();
+			//session.beginTransaction();
+			//Query q=session.createQuery("select sourceName,createTime from AlarmsHeader where sourceName='"+sourceName+"' and status='active' order by createTime desc");
 			Query q=session.createQuery("from AlarmsHeader where sourceName='"+sourceName+"' and status='active' order by createTime desc");
 
+			//q.setString(1,sourceName);
 			q.setMaxResults(1);
+			//tx.commit();
+			//String s=(String)q.uniqueResult();
 			s = (AlarmsHeader)q.uniqueResult();
+			// list= q.list();
 
 			session.flush();
 			return s;
+			//return "1";
 		} catch (Exception e) {
 			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
 			return s;
 		}
+		//return null;
 	}
 
 
@@ -155,6 +189,143 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             return "0";
         }
 	}
+
+
+
+
+
+	@Override
+	public int getAllCountByStatus(String status){
+		try (Session session = sessionFactory.openSession()){
+			StringBuffer count = new StringBuffer("select count(*) from AlarmsHeader a where 1=1");
+		if(!"0".equals(status)){
+			count.append(" and a.status=:status");
+		}
+		Query  query =session.createQuery(count.toString());
+		query.setString("status",status);
+		//int q = (int)query.uniqueResult();
+			long q=(long)query.uniqueResult();
+		session.flush();
+		return (int)q;
+		}catch (Exception e){
+			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount."+e.getMessage());
+			return 0;
+		}
+	}
+
+	@Override
+	public List<AlarmsHeader> getAllByStatus(String status,String eventName,String sourceName,String eventServerity,String reportingEntityName,  Date createTime, Date endTime){
+		try (Session session = sessionFactory.openSession()){
+			StringBuffer string = new StringBuffer("from AlarmsHeader a where 1=1");
+			if(!"0".equals(status)){
+				string.append(" and a.status=:status");
+			}
+			if(!"0".equals(eventName) &&  eventName!=null){
+				string.append(" and a.eventName=:eventName");
+			}
+			if(!"0".equals(sourceName) &&  sourceName!=null){
+				string.append(" and a.sourceName=:sourceName");
+			}
+			if(!"0".equals(eventServerity) &&  eventServerity!=null){
+				string.append(" and a.eventServerity=:eventServerity");
+			}
+			if(!"0".equals(reportingEntityName) &&  eventServerity!=null){
+				string.append(" and a.reportingEntityName=:reportingEntityName");
+			}
+			if( null!=createTime && endTime!= null) {
+				string.append(" and a.createTime between :startTime and :endTime");
+			}
+			Query query = session.createQuery(string.toString());
+			query.setString("status",status);
+			query.setString("eventName",eventName);
+			query.setString("sourceName",sourceName);
+			query.setString("eventServerity",eventServerity);
+			query.setString("reportingEntityName",reportingEntityName);
+			if( null!=createTime && endTime!= null) {
+				query.setDate("startTime",createTime);
+				query.setDate("endTime",endTime);
+
+			}
+			List<AlarmsHeader> list =query.list();
+
+			return list;
+
+		}catch (Exception e){
+
+			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount."+e.getMessage());
+			return null;
+		}
+
+
+
+	}
+
+	@Override
+	public AlarmsHeader getAlarmsHeaderDetail(Integer id) {
+		try(Session session = sessionFactory.openSession()) {
+
+			String string = "from AlarmsHeader a where 1=1 and a.id=:id";
+			Query q = session.createQuery(string);
+			q.setInteger("id",id);
+			AlarmsHeader alarmsHeader =(AlarmsHeader)q.uniqueResult();
+			session.flush();
+			return alarmsHeader;
+
+		}catch (Exception e){
+			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAlarmsHeaderDetail."+e.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	public int getAllByDatetime(String status,String eventId, String eventServrity, String createTime) {
+		try (Session session = sessionFactory.openSession();){
+			StringBuffer string = new StringBuffer("select count(*) as count from AlarmsHeader a where 1=1");
+
+			if(!"0".equals(status) &&  status!=null){
+				string.append(" and a.status=:status");
+			}
+			if(!"0".equals(eventId) &&  eventId!=null){
+				string.append(" and a.eventId=:eventId");
+			}
+
+			if(!"0".equals(eventServrity) &&  eventServrity!=null){
+				string.append(" and a.eventServrity=:eventServrity");
+			}
+
+			/*if( null!=createTime && endTime!= null) {
+				string.append(" and a.createTime between :startTime and :endTime");
+			}*/
+			if( null!=createTime) {
+				string.append(" and to_days(a.createTime) = to_days('"+createTime+"')");
+			}
+
+			/*string.append("     group by DATE_FORMAT(a.createTime,'%y-%m-%d')");*/
+			Query query = session.createQuery(string.toString());
+			query.setString("status",status);
+			query.setString("eventId",eventId);
+			query.setString("eventServrity",eventServrity);
+			//query.setDate("createTime",createTime);
+
+			/*if( null!=createTime && endTime!= null) {
+				query.setDate("startTime",createTime);
+				query.setDate("endTime",endTime);
+
+			}*/
+			long l = (long)query.uniqueResult();
+			int a = (int) l;
+			//List<AlarmsHeader> list =query.list();
+			session.flush();
+			return a;
+
+		}catch (Exception e){
+
+			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount."+e.getMessage());
+			return 0;
+		}
+
+	}
+
 
 	public int getAllCount(AlarmsHeader alarmsHeader,int currentPage,int pageSize) {
 		try(Session session = sessionFactory.openSession()){
@@ -278,7 +449,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
         }
 	}
 
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	@Override
 	public Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader,int currentPage,int pageSize) {
 		Page<AlarmsHeader> page = new Page<AlarmsHeader>();
@@ -405,6 +576,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             page.setPageSize(pageSize);
             page.setTotalRecords(allRow);
             page.setList(list);
+
             session.flush();
             return page;
         } catch (Exception e) {

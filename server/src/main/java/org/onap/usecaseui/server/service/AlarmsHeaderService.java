@@ -29,6 +29,7 @@ public interface AlarmsHeaderService {
     
     String updateAlarmsHeader(AlarmsHeader alarmsHeader);
 
+    //public String updateAlarmsHeader2018(String status, String date, String eventNameCleared,String eventName, String reportingEntityName,String specificProblem);
     public String updateAlarmsHeader2018(String status, Timestamp date, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String eventName, String reportingEntityName, String specificProblem);
     public Boolean getStatusBySourceName(String sourceName);
     public AlarmsHeader getIdByStatusSourceName(String sourceName);
@@ -41,4 +42,12 @@ public interface AlarmsHeaderService {
     List<AlarmsHeader> queryId(String[] id);
 
     String queryStatusCount(String status);
+
+    public int getAllCountByStatus(String status);
+    public List<AlarmsHeader> getAllByStatus(String status,String eventName,String sourceName,String eventServerity,String reportingEntityName ,Date createTime, Date endTime);
+
+    public AlarmsHeader getAlarmsHeaderDetail(Integer id);
+
+    public int getAllByDatetime(String status,String eventId,String eventServerity,String createTime);
+
 }

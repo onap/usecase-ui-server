@@ -50,6 +50,16 @@ public class PerformanceController {
     @Resource(name = "PerformanceHeaderService")
     private PerformanceHeaderService performanceHeaderService;
 
+
+    public void setPerformanceHeaderService(PerformanceHeaderService performanceHeaderService) {
+        this.performanceHeaderService = performanceHeaderService;
+    }
+
+
+    public void setPerformanceInformationService(PerformanceInformationService performanceInformationService) {
+        this.performanceInformationService = performanceInformationService;
+    }
+
     @Resource(name = "PerformanceInformationService")
     private PerformanceInformationService performanceInformationService;
 

@@ -15,8 +15,7 @@
  */
 package org.onap.usecaseui.server.bo;
 
-import org.onap.usecaseui.server.bean.PerformanceHeader;
-import org.onap.usecaseui.server.bean.PerformanceInformation;
+import org.onap.usecaseui.server.bean.*;
 import org.onap.usecaseui.server.util.Page;
 
 import java.io.Serializable;
@@ -27,6 +26,8 @@ public class PerformanceBo implements Serializable {
     private PerformanceHeader performanceHeader;
 
     private List<PerformanceInformation> performanceInformation;
+
+
 
 
     public PerformanceBo() {
@@ -48,4 +49,12 @@ public class PerformanceBo implements Serializable {
     public void setPerformanceInformation(List<PerformanceInformation> performanceInformation) {
         this.performanceInformation = performanceInformation;
     }
+
+
+
+
+
+
+
+
 }

@@ -190,6 +190,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	}
 
 
+
+
 	@Override
 	public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
 		try(Session session = sessionFactory.openSession()) {
@@ -223,6 +225,25 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
 			return null;
 		}
+	}
+
+	@Override
+	public List<AlarmsInformation> getAllAlarmsInformationByeventId(String eventId) {
+		try (Session session = sessionFactory.openSession()){
+			String string = "from AlarmsInformation a where 1=1 and a.eventId=:eventId";
+			Query query = session.createQuery(string);
+			query.setString("eventId",eventId);
+			List<AlarmsInformation> list = query.list();
+			session.flush();
+			return list;
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. LIST:" + e.getMessage());
+
+			return null;
+		}
+
+
+
 	}
 
 

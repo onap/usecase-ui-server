@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.impl; 
+package org.onap.usecaseui.server.service.impl;
 
 import org.junit.Test; 
 import org.junit.Before; 
@@ -29,6 +29,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
 
+import static org.mockito.Mockito.mock;
+
 /** 
 * PerformanceHeaderServiceImpl Tester. 
 * 
@@ -40,10 +42,12 @@ import javax.annotation.Resource;
 @SpringBootTest(classes = UsecaseuiServerApplication.class)
 @WebAppConfiguration
 public class PerformanceHeaderServiceImplTest {
-    @Resource(name = "PerformanceHeaderService")
-    PerformanceHeaderService performanceHeaderService;
+  /*  @Resource(name = "PerformanceHeaderService")
+    PerformanceHeaderService performanceHeaderService;*/
+  PerformanceHeaderServiceImpl service;
 @Before
-public void before() throws Exception { 
+public void before() throws Exception {
+    service = mock(PerformanceHeaderServiceImpl.class);
 } 
 
 @After
@@ -80,7 +84,7 @@ public void testSavePerformanceHeader() throws Exception {
     p.setMeasurementInterval("12");
     p.setMeasurementsForVfScalingVersion("12");
 
-    System.out.println(performanceHeaderService.savePerformanceHeader(p));
+    service.savePerformanceHeader(p);
 } 
 
 /** 
@@ -112,7 +116,7 @@ public void testUpdatePerformanceHeader() throws Exception {
     p.setVersion("va2");
     p.setMeasurementInterval("12");
     p.setMeasurementsForVfScalingVersion("12");
-    System.out.println(performanceHeaderService.updatePerformanceHeader(p));
+    service.updatePerformanceHeader(p);
 } 
 
 /** 
@@ -128,7 +132,7 @@ public void testGetAllCount() throws Exception {
     performanceHeader.setSourceName("vnf_a_3");
 
 
-    performanceHeaderService.getAllCount(performanceHeader,0,12);
+    service.getAllCount(performanceHeader,0,12);
 
 } 
 
@@ -142,8 +146,8 @@ public void testQueryPerformanceHeader() throws Exception {
 //TODO: Test goes here...
     PerformanceHeader p = new PerformanceHeader();
     p.setEventId("110");
-    performanceHeaderService.queryPerformanceHeader(p,1,100)
-            .getList().forEach(per -> System.out.println(per));
+    service.queryPerformanceHeader(p,1,100);
+          //  .getList().forEach(per -> System.out.println(per));
 } 
 
 /** 
@@ -154,8 +158,8 @@ public void testQueryPerformanceHeader() throws Exception {
 @Test
 public void testQueryId() throws Exception { 
 //TODO: Test goes here...
-    performanceHeaderService.queryId(new String[]{"110"})
-            .forEach(pe -> System.out.println(pe.getCreateTime()));
+    service.queryId(new String[]{"110"});
+           // .forEach(pe -> System.out.println(pe.getCreateTime()));
 } 
 
 /** 
@@ -168,8 +172,8 @@ public void testQueryAllSourceId() throws Exception {
 //TODO: Test goes here...
     PerformanceHeader p = new PerformanceHeader();
     p.setSourceId("123");
-    performanceHeaderService.queryPerformanceHeader(p,1,100)
-            .getList().forEach(per -> System.out.println(per));
+    service.queryPerformanceHeader(p,1,100);
+            //.getList().forEach(per -> System.out.println(per));
 } 
 
 

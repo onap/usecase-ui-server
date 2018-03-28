@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
@@ -35,4 +36,8 @@ public interface PerformanceHeaderService {
     List<PerformanceHeader> queryId(String[] id);
 
     List<String> queryAllSourceId();
+
+
+    public int getAllCountByStatus(String status);
+    public List<PerformanceHeader> getAllByStatus(String status, String eventName, String sourceName, String eventServerity,String reportingEntityName, Date createTime, Date endTime);
 }

@@ -15,8 +15,7 @@
  */
 package org.onap.usecaseui.server.bo;
 
-import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.bean.*;
 import org.onap.usecaseui.server.util.Page;
 
 import java.io.Serializable;
@@ -27,11 +26,17 @@ public class AlarmBo implements Serializable {
 
     private AlarmsHeader alarmsHeader;
 
+
+
     private List<AlarmsInformation> alarmsInformation;
+
+
 
 
     public AlarmBo() {
     }
+
+
 
     public AlarmsHeader getAlarmsHeader() {
         return alarmsHeader;

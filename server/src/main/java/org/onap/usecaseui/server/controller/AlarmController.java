@@ -34,16 +34,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+
 
 import java.io.*;
-import java.text.DateFormat;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.*;
 
 
@@ -58,6 +55,19 @@ public class AlarmController {
     @Resource(name = "AlarmsHeaderService")
     private AlarmsHeaderService alarmsHeaderService;
 
+   /* public AlarmsHeaderService getAlarmsHeaderService() {
+        return alarmsHeaderService;
+    }*/
+
+    public void setAlarmsHeaderService(AlarmsHeaderService alarmsHeaderService) {
+        this.alarmsHeaderService = alarmsHeaderService;
+    }
+
+
+    public void setAlarmsInformationService(AlarmsInformationService alarmsInformationService) {
+        this.alarmsInformationService = alarmsInformationService;
+    }
+
     @Resource(name = "AlarmsInformationService")
     private AlarmsInformationService alarmsInformationService;
 
@@ -65,26 +75,153 @@ public class AlarmController {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
+
+    @RequestMapping("/alarm/getAllByDatetime/{eventId}/{eventServrity}/{startTime}/{endTime}")
+    public String getAllByDatetime(@PathVariable(required = false) String eventId,@PathVariable(required = false) String eventServrity,@PathVariable(required = false) String startTime, @PathVariable(required = false) String endTime) throws ParseException, JsonProcessingException {
+       //String startime_s = "2017-10-29";
+        //String endtime_s = "2017-12-24";
+        String startime_s = startTime;
+        String endtime_s = endTime;
+        String string ="";
+        if(startime_s!=null && endtime_s!=null && !"".equals(startime_s) && !"".equals(endtime_s) ) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date startime = formatter.parse(startime_s);
+            Date endtime = formatter.parse(endtime_s);
+            DateUtils dateUtils = new DateUtils();
+            List<Date> datelist = dateUtils.getBetweenDates(startime, endtime);
+            StringBuffer dateB = new StringBuffer();
+            StringBuffer allB = new StringBuffer();
+            StringBuffer activeB = new StringBuffer();
+            StringBuffer closeB = new StringBuffer();
+
+            for (Date dates : datelist) {
+                String date_s = formatter.format(dates);
+                dateB.append(date_s).append(",");
+                int aa = alarmsHeaderService.getAllByDatetime("active", eventId, eventServrity, date_s);
+                activeB.append(aa + "").append(",");
+                int bb = alarmsHeaderService.getAllByDatetime("close", eventId, eventServrity, date_s);
+                closeB.append(bb + "").append(",");
+                int cc = alarmsHeaderService.getAllByDatetime("0", eventId, eventServrity, date_s);
+                allB.append(cc + "").append(",");
+
+            }
+            String dateBa = dateB.toString();
+            String allBa = allB.toString();
+            String activeBa = activeB.toString();
+            String closeBa = closeB.toString();
+
+            String[] dateArr = dateBa.substring(0, dateBa.length() - 1).split(",");
+            String[] activeArr = activeBa.substring(0, activeBa.length() - 1).split(",");
+            String[] closeArr = closeBa.substring(0, closeBa.length() - 1).split(",");
+            String[] allArr = allBa.substring(0, activeBa.length() - 1).split(",");
+
+            Map map = new HashMap();
+            map.put("dateArr", dateArr);
+            map.put("activeArr", activeArr);
+            map.put("closeArr", closeArr);
+            map.put("allArr", allArr);
+            string = omAlarm.writeValueAsString(map);
+        }
+
+        return string;
+    }
+
+
+    @RequestMapping("/alarm/getAlarmsHeaderDetail/{id}")
+    public String getAlarmsHeaderDetail(@PathVariable Integer id) throws JsonProcessingException {
+        AlarmsHeader alarmsHeader= alarmsHeaderService.getAlarmsHeaderDetail(id);
+        String eventId = alarmsHeader.getEventId();
+        List<AlarmsInformation> list = alarmsInformationService.getAllAlarmsInformationByeventId(eventId);
+        Map map = new HashMap();
+        map.put("alarmsHeader",alarmsHeader);
+        map.put("list",list);
+
+        String string =omAlarm.writeValueAsString(map);
+        return string;
+    }
+
+
+    @RequestMapping(value = {"/alarm/getAlarmDataByStatus/{status}","/alarm/getAlarmDataByStatus/{status}/{eventName}/{sourceName}/{eventServerity}/{reportingEntityName}/{createTime}/{endTime}"},method =RequestMethod.GET,produces = "application/json")
+    public String getAlarmDataByStatus(@PathVariable String status, @PathVariable(required = false) String eventName,@PathVariable(required = false) String sourceName,@PathVariable(required = false) String eventServerity,@PathVariable(required = false) String reportingEntityName,@PathVariable(required = false) String createTime,@PathVariable(required = false) String endTime) throws JsonProcessingException {
+        Map map = new HashMap();
+        Date createTime_s=null;
+        Date endTime_s=null;
+
+       /* Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(currentTime);*/
+
+
+
+        try {
+           createTime_s =(!"null".equals(createTime) ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(createTime) : null);
+          endTime_s =(!"null".equals(endTime) ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(endTime) : null);
+        } catch (ParseException e) {
+            logger.error("Parse date error :" + e.getMessage());
+        }
+       int countClose = alarmsHeaderService.getAllCountByStatus("close");
+       int countActive =  alarmsHeaderService.getAllCountByStatus("active");
+       int countAll =countActive + countClose;
+       Set<String> eventNameList = new HashSet();
+       Set<String> sourceNameList = new HashSet<>();
+        Set<String> reportingEntityNameList = new HashSet<>();
+        Set<String> eventServerityList = new HashSet<>();
+        Set<String> sourceIdList = new HashSet<>();
+
+
+       List<AlarmsHeader> list = alarmsHeaderService.getAllByStatus(status,eventName,sourceName,eventServerity,reportingEntityName,createTime_s,endTime_s);
+       AlarmsHeader alarmsHeader;
+       for(int a=0;a<list.size();a++){
+           alarmsHeader = list.get(a);
+           eventNameList.add(alarmsHeader.getEventName());
+           sourceNameList.add(alarmsHeader.getSourceName());
+           reportingEntityNameList.add(alarmsHeader.getReportingEntityName());
+           eventServerityList.add(alarmsHeader.getEventServrity());
+           sourceIdList.add(alarmsHeader.getSourceId());
+
+       }
+
+       map.put("countClose",countClose);
+        map.put("countActive",countActive);
+        map.put("countAll",countAll);
+        map.put("list",list);
+        map.put("eventNameList",eventNameList);
+        map.put("sourceNameList",sourceNameList);
+        map.put("reportingEntityNameList",reportingEntityNameList);
+        map.put("eventServerityList",eventServerityList);
+        map.put("sourceIdList",sourceIdList);
+
+
+        String string =omAlarm.writeValueAsString(map);
+
+        return string;
+    }
+
+
+
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
             method = RequestMethod.GET, produces = "application/json")
-    public String getAlarmData(@PathVariable(required = false) String sourceId, @PathVariable(required = false) String sourceName,
+    public String getAlarmData(@PathVariable int currentPage, @PathVariable int pageSize,
+                               @PathVariable(required = false) String sourceId, @PathVariable(required = false) String sourceName,
                                @PathVariable(required = false) String priority, @PathVariable(required = false) String startTime,
-                               @PathVariable(required = false) String endTime, @PathVariable(required = false) String vfStatus,
-                               @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException {
+                               @PathVariable(required = false) String endTime, @PathVariable(required = false) String vfStatus
+                               ) throws JsonProcessingException, ParseException {
         logger.info("transfer getAlarmData Apis, " +
                         "Parameter all follows : [currentPage : {} , pageSize : {} , sourceId : {} , " +
                         "sourceName : {} , priority : {} , startTime :{} , endTime : {}  , vfStatus : {}]"
                 , currentPage, pageSize, sourceId, sourceName, priority, startTime, endTime, vfStatus);
         List<AlarmsHeader> alarmsHeaders = null;
         List<AlarmBo> list = new ArrayList<>();
-        Page pa = null;
+        Page pa = new Page();
         if (null != sourceId || null != sourceName || null != priority || null != startTime || null != endTime
                 || null != vfStatus) {
             AlarmsHeader alarm = new AlarmsHeader();
             alarm.setSourceId(!"null".equals(sourceId) ? sourceId : null);
             alarm.setSourceName(!"null".equals(sourceName) ? sourceName : null);
             alarm.setStatus(!"null".equals(vfStatus) ? vfStatus : null);
+            alarm.setPriority(!"null".equals(priority) ? vfStatus : null);
+
             try {
                 alarm.setCreateTime(!"null".equals(startTime) ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(startTime) : null);
                 alarm.setUpdateTime(!"null".equals(endTime) ? new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(endTime) : null);
@@ -95,6 +232,9 @@ public class AlarmController {
 
             alarmsHeaders = pa.getList();
             if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
+
+            //if (null != pa) {
+                alarmsHeaders = pa.getList();
                 alarmsHeaders.forEach(a -> {
                     logger.info(a.toString());
                     AlarmBo abo = new AlarmBo();

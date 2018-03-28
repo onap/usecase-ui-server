@@ -23,13 +23,31 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 public class DateUtils {
 
 
+    /**
+     * 获取两个日期之间的日期
+     * @param start 开始日期
+     * @param end 结束日期
+     * @return 日期集合
+     */
+    public static List<Date> getBetweenDates(Date start, Date end) {
+        List<Date> result = new ArrayList<Date>();
+        Calendar tempStart = Calendar.getInstance();
+        tempStart.setTime(start);
+        tempStart.add(Calendar.DAY_OF_YEAR, 1);
+
+        Calendar tempEnd = Calendar.getInstance();
+        tempEnd.setTime(end);
+        while (tempStart.before(tempEnd)) {
+            result.add(tempStart.getTime());
+            tempStart.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        return result;
+    }
 
 
     /**
@@ -139,7 +157,27 @@ public class DateUtils {
         return  year+ "-" +mToMonth+ "-" +dToDay+ " "+hToHour+ ":" +mToMinute+ ":" +sToSecond;
     }
 
+
+
     public static void main(String[] args) {
-        System.out.println(new DateUtils().getYearMonthDayHourMinuteSecond(System.currentTimeMillis()));
+        // System.out.println(new DateUtils().getYearMonthDayHourMinuteSecond(System.currentTimeMillis()));
+        String startime_s = "2017-10-31";
+        String endtime_s = "2017-12-24";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date startime = null;
+        Date endtime =null;
+        try {
+            startime = formatter.parse(startime_s);
+            endtime = formatter.parse(endtime_s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        List<Date> result =getBetweenDates(startime,endtime);
+
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaa===="+result);
+
     }
+
 }

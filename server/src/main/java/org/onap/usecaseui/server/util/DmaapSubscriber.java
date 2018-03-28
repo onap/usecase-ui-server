@@ -17,15 +17,9 @@ package org.onap.usecaseui.server.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.bean.PerformanceHeader;
-import org.onap.usecaseui.server.bean.PerformanceInformation;
+import org.onap.usecaseui.server.bean.*;
 import org.onap.usecaseui.server.constant.Constant;
-import org.onap.usecaseui.server.service.AlarmsHeaderService;
-import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.service.PerformanceHeaderService;
-import org.onap.usecaseui.server.service.PerformanceInformationService;
+import org.onap.usecaseui.server.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -61,6 +55,7 @@ public class DmaapSubscriber implements Runnable {
     @Resource(name = "AlarmsHeaderService")
     private AlarmsHeaderService alarmsHeaderService;
 
+
     @Resource(name = "AlarmsInformationService")
     private AlarmsInformationService alarmsInformationService;
 
@@ -69,6 +64,14 @@ public class DmaapSubscriber implements Runnable {
 
     @Resource(name = "PerformanceInformationService")
     private PerformanceInformationService performanceInformationService;
+
+
+
+
+
+
+
+
 
     public void subscribe(String topic) {
         try {
@@ -222,13 +225,16 @@ public class DmaapSubscriber implements Runnable {
                 ai.setUpdateTime(new Date());
             });
 
+           // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Long l = System.currentTimeMillis();
 
-            Timestamp date_get = new Timestamp(l);
+            Timestamp date_get = new Timestamp(l); //2013-01-14 22:45:36.484
             if (alarm_header.getEventName().contains("Cleared")) {
                 alarm_header.setStatus("close");
                 logger.info("alarmCleared data header insert is starting......");
-                alarmsHeaderService.updateAlarmsHeader2018("close",date_get,alarm_header.getStartEpochMicrosec(),alarm_header.getLastEpochMicroSec(),alarm_header.getEventName().replace("Cleared",""),alarm_header.getReportingEntityName(),alarm_header.getSpecificProblem());
+
+                    alarmsHeaderService.updateAlarmsHeader2018("close", date_get, alarm_header.getStartEpochMicrosec(), alarm_header.getLastEpochMicroSec(), alarm_header.getEventName().replace("Cleared", ""), alarm_header.getReportingEntityName(), alarm_header.getSpecificProblem());
+
                 logger.info("alarmCleared data header insert has finished.");
                 logger.info("alarmCleared data detail insert is starting......");
                 alarm_informations.forEach(information ->
@@ -238,8 +244,12 @@ public class DmaapSubscriber implements Runnable {
             } else {
                 alarm_header.setCreateTime(new Date());
                 alarm_header.setStatus("active");
-                logger.info("alarm data header insert is starting......");
-                alarmsHeaderService.saveAlarmsHeader(alarm_header);
+
+
+               logger.info("alarm data header insert is starting......");
+
+                    alarmsHeaderService.saveAlarmsHeader(alarm_header);
+
                 logger.info("alarm data header insert has finished.");
                 logger.info("alarm data detail insert is starting......");
                 if(alarm_informations.size() > 0) {
@@ -254,6 +264,9 @@ public class DmaapSubscriber implements Runnable {
     private void performanceProcess(Map<String, Object> eventMap) {
         PerformanceHeader performance_header = new PerformanceHeader();
         List<PerformanceInformation> performance_informations = new ArrayList<>();
+
+
+
         eventMap.forEach((ek1, ev1) -> {
             if (ek1.equals("commonEventHeader")) {
                 ((Map<String, Object>) ev1).forEach((k2, v2) -> {
@@ -303,19 +316,18 @@ public class DmaapSubscriber implements Runnable {
                                         List<Map<String,String>> arrayOfFields = (List<Map<String, String>>) v;
                                         arrayOfFields.forEach( fields -> {
                                             if (fields.get("name").equals("StartTime")){
+
                                                 try {
-                                                    performance_informations.add(new PerformanceInformation(fields.get("name"),fields.get("value"),performance_header.getSourceId(),null,DateUtils.now()));
-                                                    performance_header.setCreateTime(DateUtils.stringToDate(fields.get("value").replaceAll(Constant.RegEX_DATE_FORMAT," ")));
-                                                    performance_header.setUpdateTime(DateUtils.now());
+                                                    String type = performance_header.getEventType();
+                                                       performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), null, DateUtils.now()));
+                                                        performance_header.setCreateTime(DateUtils.stringToDate(fields.get("value").replaceAll(Constant.RegEX_DATE_FORMAT, " ")));
+                                                        performance_header.setUpdateTime(DateUtils.now());
+
                                                 } catch (ParseException e) {
                                                     e.printStackTrace();
                                                 }
                                             }else{
-                                                try {
-                                                    performance_informations.add(new PerformanceInformation(fields.get("name"),fields.get("value"),performance_header.getSourceId(),null,DateUtils.now()));
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
-                                                }
+
                                             }
                                         } );
                                     }
@@ -330,6 +342,38 @@ public class DmaapSubscriber implements Runnable {
             }
         });
         if (performance_header.getSourceId() !=null && performance_informations.size() > 0 ){
+
+            String version = performance_header.getVersion();
+            String eventName = performance_header.getEventName();
+            String domain = performance_header.getDomain();
+            String eventId = performance_header.getEventId();
+            String eventType = performance_header.getEventType();
+            String nfcNamingCode = performance_header.getNfcNamingCode();
+            String nfNamingCode = performance_header.getNfNamingCode();
+            String sourceId = performance_header.getSourceId();
+            String sourceName = performance_header.getSourceName();
+            String reportingEntityId = performance_header.getReportingEntityId();
+            String reportingEntityName = performance_header.getReportingEntityName();
+            String priority = performance_header.getPriority();
+            String startEpochMicrosec = performance_header.getStartEpochMicrosec();
+            String lastEpochMicroSec = performance_header.getLastEpochMicroSec();
+            String sequence = performance_header.getSequence();
+            String measurementsForVfScalingVersion = performance_header.getMeasurementsForVfScalingVersion();
+            String measurementInterval = performance_header.getMeasurementInterval();
+            Date createTime = performance_header.getCreateTime();
+            Date updateTime = performance_header.getUpdateTime();
+
+
+
+
+
+
+
+
+
+
+
+
             logger.info("performance data header insert is starting......");
             performanceHeaderService.savePerformanceHeader(performance_header);
             logger.info("performance data header insert has finished.");
@@ -340,6 +384,12 @@ public class DmaapSubscriber implements Runnable {
             });
             logger.info("performance data detail insert has finished. " + performance_informations.size() + " records have been inserted.");
 
+          //  }//else 结束
         }
+
+
+
+
+
     }
 }
