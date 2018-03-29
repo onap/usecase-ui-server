@@ -36,7 +36,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import java.io.Serializable
+import java.io.*;
 import mockit.Mock;
 import mockit.MockUp;
 
