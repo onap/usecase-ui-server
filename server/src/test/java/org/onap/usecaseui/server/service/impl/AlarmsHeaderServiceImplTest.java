@@ -102,7 +102,7 @@ public class AlarmsHeaderServiceImplTest {
 				return transaction;
 			}
 			@Mock
-			public void save(AlarmsHeader alarmsHeader) {
+			public void save(Object object) {
 			}
 			@Mock
 			public void flush() {
