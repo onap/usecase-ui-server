@@ -101,6 +101,12 @@ public class AlarmsHeaderServiceImplTest {
 			public Transaction beginTransaction() {
 				return transaction;
 			}
+			@Mock
+			public void save(Object object) {
+			}
+			@Mock
+			public void flush() {
+			}
 		};
 		new MockUp<SessionFactory>() {
 			@Mock
