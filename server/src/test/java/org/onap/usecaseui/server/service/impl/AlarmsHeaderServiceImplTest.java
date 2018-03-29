@@ -36,7 +36,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
+import java.io.Serializable
 import mockit.Mock;
 import mockit.MockUp;
 
@@ -65,7 +65,7 @@ public class AlarmsHeaderServiceImplTest {
 				return transaction;
 			}
 			@Mock
-			public void save(Object object) {
+			public Serializable save(Object object) {
 			}
 			@Mock
 			public void flush() {
