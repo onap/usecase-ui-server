@@ -101,12 +101,6 @@ public class AlarmsHeaderServiceImplTest {
 			public Transaction beginTransaction() {
 				return transaction;
 			}
-			@Mock
-			public void save(Object object) {
-			}
-			@Mock
-			public void flush() {
-			}
 		};
 		new MockUp<SessionFactory>() {
 			@Mock
@@ -130,11 +124,6 @@ public class AlarmsHeaderServiceImplTest {
 		alarmsHeaderServiceImpl.saveAlarmsHeader(ah);
 	} 
 
-	@Test(expected = Exception.class)
-	public void testSaveAlarmsHeaderError(){
-		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		alarmsHeaderServiceImpl.saveAlarmsHeader(new AlarmsHeader());
-	}
 
 
 
