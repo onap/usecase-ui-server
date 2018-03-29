@@ -39,6 +39,7 @@ import org.hibernate.Transaction;
 
 import mockit.Mock;
 import mockit.MockUp;
+
 /** 
 * AlarmsHeaderServiceImpl Tester. 
 * 
@@ -48,7 +49,7 @@ import mockit.MockUp;
 */
 public class AlarmsHeaderServiceImplTest {
 	@Before
-		public void before() throws Exception { 
+	public void before() throws Exception { 
 	}
 
 	@After
@@ -59,55 +60,52 @@ public class AlarmsHeaderServiceImplTest {
 	private Transaction transaction;
 	private Query query;
 
-	/** 
-	* 
-	* Method: saveAlarmsHeader(AlarmsHeader alarmsHeader) 
-	* 
-	*/ 
 	@Test
 	public void testSaveAlarmsHeader() throws Exception { 
-	//TODO: Test goes here...
-		AlarmsHeader a = new AlarmsHeader();
-		a.setEventName("a");
-		a.setStatus("1");
-		a.setVfStatus("1");
-		a.setEventId("1119");
-		a.setDomain("asb");
-		a.setEventCategory("s");
-		a.setAlarmCondition("ea");
-		a.setAlarmInterfaceA("cs");
-		a.setCreateTime(DateUtils.now());
-		a.setEventServrity("s");
-		a.setEventSourceType("q");
-		a.setEventType("q");
-		a.setFaultFieldsVersion("v1");
-		a.setLastEpochMicroSec("csa");
-		a.setNfcNamingCode("std");
-		a.setNfNamingCode("cout");
-		a.setPriority("cs");
-		a.setReportingEntityId("112");
-		a.setReportingEntityName("asfs");
-		a.setSequence("cgg");
-		a.setSourceId("123");
-		a.setSourceName("eggs");
-		a.setSpecificProblem("especially");
-		a.setStartEpochMicrosec("wallet");
-		a.setUpdateTime(DateUtils.now());
-		a.setVersion("va2");
+		AlarmsHeader ah = new AlarmsHeader();
+		ah.setEventName("a");
+		ah.setStatus("1");
+		ah.setVfStatus("1");
+		ah.setEventId("1119");
+		ah.setDomain("asb");
+		ah.setEventCategory("s");
+		ah.setAlarmCondition("ea");
+		ah.setAlarmInterfaceA("cs");
+		ah.setCreateTime(DateUtils.now());
+		ah.setEventServrity("s");
+		ah.setEventSourceType("q");
+		ah.setEventType("q");
+		ah.setFaultFieldsVersion("v1");
+		ah.setLastEpochMicroSec("csa");
+		ah.setNfcNamingCode("std");
+		ah.setNfNamingCode("cout");
+		ah.setPriority("cs");
+		ah.setReportingEntityId("112");
+		ah.setReportingEntityName("asfs");
+		ah.setSequence("cgg");
+		ah.setSourceId("123");
+		ah.setSourceName("eggs");
+		ah.setSpecificProblem("especially");
+		ah.setStartEpochMicrosec("wallet");
+		ah.setUpdateTime(DateUtils.now());
+		ah.setVersion("va2");
 
-		
-		
-		
-        MockUp<Query> mockUpQuery = new MockUp<Query>() {
-        };
+		MockUp<Query> mockUpQuery = new MockUp<Query>() {
+		};
 		MockUp<Session> mockedSession = new MockUp<Session>() {
-            @Mock
-            public Query createQuery(String sql) {
-                return mockUpQuery.getMockInstance();
-            }
+			@Mock
+			public Query createQuery(String sql) {
+				return mockUpQuery.getMockInstance();
+			}
 			@Mock
 			public Transaction beginTransaction() {
 				return transaction;
+			}
+			@Mock
+			public void save(AlarmsHeader alarmsHeader) {
+			}
+			@Mock
+			public void flush() {
 			}
 		};
 		new MockUp<SessionFactory>() {
@@ -121,17 +119,22 @@ public class AlarmsHeaderServiceImplTest {
 			public void commit() {
 			}
 		};
-        new MockUp<AlarmsHeaderServiceImpl>() {
-            @Mock
-            private Session getSession() {
-                return mockedSession.getMockInstance();
-            }
-        };
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
 
 		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		alarmsHeaderServiceImpl.saveAlarmsHeader(a);
+		alarmsHeaderServiceImpl.saveAlarmsHeader(ah);
 	} 
 
+	@Test(expected = Exception.class)
+	public void testSaveAlarmsHeaderError(){
+		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
+		alarmsHeaderServiceImpl.saveAlarmsHeader(new AlarmsHeader());
+	}
 
 
 
