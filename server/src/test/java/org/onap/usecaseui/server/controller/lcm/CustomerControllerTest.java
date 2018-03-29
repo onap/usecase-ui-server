@@ -31,4 +31,15 @@ public class CustomerControllerTest {
 
         verify(customerService, times(1)).listCustomer();
     }
+
+    @Test
+    public void testGetServiceSubscriptions() {
+        CustomerService customerService = mock(CustomerService.class);
+        CustomerController controller = new CustomerController();
+        controller.setCustomerService(customerService);
+
+        controller.getServiceSubscriptions("1");
+
+        verify(customerService, times(1)).listServiceSubscriptions("1");
+    }
 }

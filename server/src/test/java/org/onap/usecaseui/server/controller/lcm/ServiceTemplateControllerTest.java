@@ -47,4 +47,18 @@ public class ServiceTemplateControllerTest {
 
         verify(service, times(1)).fetchServiceTemplateInput(uuid, modelPath);
     }
+
+    @Test
+    public void testGetLocations() throws Exception {
+        controller.getLocations();
+
+        verify(service, times(1)).listVim();
+    }
+
+    @Test
+    public void testGetSDNCControllers() throws Exception {
+        controller.getSDNCControllers();
+
+        verify(service, times(1)).listSDNCControllers();
+    }
 }

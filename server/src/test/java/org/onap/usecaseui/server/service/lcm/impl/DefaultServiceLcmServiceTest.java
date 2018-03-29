@@ -31,8 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
@@ -94,13 +96,24 @@ public class DefaultServiceLcmServiceTest {
         service.instantiateService(request);
     }
 
+    @Test(expected = SOException.class)
+    public void instantiateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
+        SOService soService = mock(SOService.class);
+        when(soService.instantiateService(anyObject())).thenReturn(emptyBodyCall());
+        HttpServletRequest request = mockRequest();
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        service.instantiateService(request);
+    }
+
     @Test
     public void itCanTerminateService() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
         DeleteOperationRsp rsp = new DeleteOperationRsp();
         rsp.setOperationId("1");
-        when(soService.terminateService(serviceId, anyObject())).thenReturn(successfulCall(rsp));
+        when(soService.terminateService(eq(serviceId), anyObject())).thenReturn(successfulCall(rsp));
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -112,7 +125,19 @@ public class DefaultServiceLcmServiceTest {
     public void terminateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        when(soService.terminateService(serviceId, anyObject())).thenReturn(failedCall("SO is not available!"));
+        when(soService.terminateService(eq(serviceId), anyObject())).thenReturn(failedCall("SO is not available!"));
+        HttpServletRequest request = mockRequest();
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        service.terminateService(serviceId, request);
+    }
+
+    @Test(expected = SOException.class)
+    public void terminateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
+        SOService soService = mock(SOService.class);
+        String serviceId = "1";
+        when(soService.terminateService(eq(serviceId), anyObject())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -139,6 +164,18 @@ public class DefaultServiceLcmServiceTest {
         String serviceId = "1";
         String operationId = "1";
         when(soService.queryOperationProgress(serviceId, operationId)).thenReturn(failedCall("SO is not available!"));
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        service.queryOperationProgress(serviceId, operationId);
+    }
+
+    @Test(expected = SOException.class)
+    public void queryOperationProgressWillThrowExceptionWhenSOResponseError() {
+        SOService soService = mock(SOService.class);
+        String serviceId = "1";
+        String operationId = "1";
+        when(soService.queryOperationProgress(serviceId, operationId)).thenReturn(emptyBodyCall());
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
 

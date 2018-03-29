@@ -41,6 +41,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.*;
+import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
@@ -98,6 +99,22 @@ public class DefaultPackageDistributionServiceTest {
     }
 
     @Test
+    public void retrievePackageWillBeEmptyWhenNoNsServiceAndVfInSDC() {
+        SDCCatalogService sdcService = mock(SDCCatalogService.class);
+        Call<List<SDCServiceTemplate>> serviceCall = emptyBodyCall();
+        when(sdcService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(serviceCall);
+
+        Call<List<Vnf>> resourceCall = emptyBodyCall();
+        when(sdcService.listResources(RESOURCETYPE_VF)).thenReturn(resourceCall);
+
+        PackageDistributionService service = new DefaultPackageDistributionService(sdcService, null);
+        VfNsPackageInfo vfNsPackageInfo = service.retrievePackageInfo();
+
+        Assert.assertTrue("ns should be empty!", vfNsPackageInfo.getNsPackage().isEmpty());
+        Assert.assertTrue("vf should be empty!", vfNsPackageInfo.getVnfPackages().isEmpty());
+    }
+
+    @Test
     public void itCanPostNsPackageToVFC() {
         VfcService vfcService = mock(VfcService.class);
         Csar csar = new Csar();
@@ -116,6 +133,15 @@ public class DefaultPackageDistributionServiceTest {
         VfcService vfcService = mock(VfcService.class);
         Csar csar = new Csar();
         when(vfcService.distributeNsPackage(csar)).thenReturn(failedCall("VFC is not available!"));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+        service.postNsPackage(csar);
+    }
+
+    @Test(expected = VfcException.class)
+    public void postNsPackageWillThrowExceptionWhenVFCResponseError() {
+        VfcService vfcService = mock(VfcService.class);
+        Csar csar = new Csar();
+        when(vfcService.distributeNsPackage(csar)).thenReturn(emptyBodyCall());
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
         service.postNsPackage(csar);
     }
@@ -140,6 +166,15 @@ public class DefaultPackageDistributionServiceTest {
         service.postVfPackage(csar);
     }
 
+    @Test(expected = VfcException.class)
+    public void postVnfPackageWillThrowExceptionWhenVFCResponseError() {
+        VfcService vfcService = mock(VfcService.class);
+        Csar csar = new Csar();
+        when(vfcService.distributeVnfPackage(csar)).thenReturn(emptyBodyCall());
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+        service.postVfPackage(csar);
+    }
+
     @Test
     public void itCanGetJobStatusFromVFC() {
         VfcService vfcService = mock(VfcService.class);
@@ -160,5 +195,73 @@ public class DefaultPackageDistributionServiceTest {
         when(vfcService.getJobStatus(jobId, responseId)).thenReturn(failedCall("VFC is not available!"));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
         service.getJobStatus(jobId, responseId);
+    }
+
+    @Test(expected = VfcException.class)
+    public void getJobStatusWillThrowExceptionWhenVFCResponseError() {
+        VfcService vfcService = mock(VfcService.class);
+        String jobId = "1";
+        String responseId = "1";
+        when(vfcService.getJobStatus(jobId, responseId)).thenReturn(emptyBodyCall());
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+        service.getJobStatus(jobId, responseId);
+    }
+
+    @Test
+    public void itCanDeleteNsPackage() {
+        String csarId = "1";
+        DistributionResult result = new DistributionResult();
+        VfcService vfcService = mock(VfcService.class);
+        when(vfcService.deleteNsPackage(csarId)).thenReturn(successfulCall(result));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+
+        Assert.assertSame(result, service.deleteNsPackage(csarId));
+    }
+
+    @Test(expected = VfcException.class)
+    public void deleteNsPackageWillThrowExceptionWhenVFCIsNotAvailable() {
+        String csarId = "1";
+        VfcService vfcService = mock(VfcService.class);
+        when(vfcService.deleteNsPackage(csarId)).thenReturn(failedCall("VFC is not available!"));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+        service.deleteNsPackage(csarId);
+    }
+
+    @Test(expected = VfcException.class)
+    public void deleteNsPackageWillThrowExceptionWhenVFCResponseError() {
+        String csarId = "1";
+        VfcService vfcService = mock(VfcService.class);
+        when(vfcService.deleteNsPackage(csarId)).thenReturn(emptyBodyCall());
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+        service.deleteNsPackage(csarId);
+    }
+
+    @Test
+    public void itCanDeleteVFPackage() {
+        String csarId = "1";
+        Job job = new Job();
+        VfcService vfcService = mock(VfcService.class);
+        when(vfcService.deleteVnfPackage(csarId)).thenReturn(successfulCall(job));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+
+        Assert.assertSame(job, service.deleteVfPackage(csarId));
+    }
+
+    @Test(expected = VfcException.class)
+    public void deleteVfPackageWillThrowExceptionWhenVFCIsNotAvailable() {
+        String csarId = "1";
+        VfcService vfcService = mock(VfcService.class);
+        when(vfcService.deleteVnfPackage(csarId)).thenReturn(failedCall("VFC is not available!"));
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+        service.deleteVfPackage(csarId);
+    }
+
+    @Test(expected = VfcException.class)
+    public void deleteVfPackageWillThrowExceptionWhenVFCResponseError() {
+        String csarId = "1";
+        VfcService vfcService = mock(VfcService.class);
+        when(vfcService.deleteVnfPackage(csarId)).thenReturn(emptyBodyCall());
+        PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
+        service.deleteVfPackage(csarId);
     }
 }

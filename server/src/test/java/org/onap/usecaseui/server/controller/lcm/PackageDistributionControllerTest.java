@@ -68,4 +68,20 @@ public class PackageDistributionControllerTest {
 
         verify(service, times(1)).getJobStatus(jobId, responseId);
     }
+
+    @Test
+    public void testDeleteNsPackage() {
+        String csarId = "1";
+        controller.deleteNsPackage(csarId);
+
+        verify(service, times(1)).deleteNsPackage(csarId);
+    }
+
+    @Test
+    public void testDeleteVfPackage() {
+        String csarId = "1";
+        controller.deleteVfPackage(csarId);
+
+        verify(service, times(1)).deleteVfPackage(csarId);
+    }
 }

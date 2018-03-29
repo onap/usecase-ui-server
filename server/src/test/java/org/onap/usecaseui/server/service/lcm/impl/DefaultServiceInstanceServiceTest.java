@@ -28,6 +28,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
@@ -57,5 +58,18 @@ public class DefaultServiceInstanceServiceTest {
 
         ServiceInstanceService service = new DefaultServiceInstanceService(aaiService);
         service.listServiceInstances(customerId, serviceType);
+    }
+
+    @Test
+    public void retrieveServiceInstancesWillThrowExceptionWhenNoServiceInstancesInAAI() {
+        AAIService aaiService = mock(AAIService.class);
+        String customerId = "1";
+        String serviceType = "service";
+        when(aaiService.listServiceInstances(customerId, serviceType)).thenReturn(emptyBodyCall());
+
+        ServiceInstanceService service = new DefaultServiceInstanceService(aaiService);
+        List<ServiceInstance> serviceInstances = service.listServiceInstances(customerId, serviceType);
+
+        Assert.assertTrue("service instances should be empty.", serviceInstances.isEmpty());
     }
 }
