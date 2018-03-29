@@ -48,7 +48,7 @@ import mockit.MockUp;
 */
 public class AlarmsHeaderServiceImplTest {
 	@Before
-	public void before() throws Exception { 
+		public void before() throws Exception { 
 	}
 
 	@After
@@ -59,18 +59,55 @@ public class AlarmsHeaderServiceImplTest {
 	private Transaction transaction;
 	private Query query;
 
+	/** 
+	* 
+	* Method: saveAlarmsHeader(AlarmsHeader alarmsHeader) 
+	* 
+	*/ 
 	@Test
 	public void testSaveAlarmsHeader() throws Exception { 
+	//TODO: Test goes here...
+		AlarmsHeader a = new AlarmsHeader();
+		a.setEventName("a");
+		a.setStatus("1");
+		a.setVfStatus("1");
+		a.setEventId("1119");
+		a.setDomain("asb");
+		a.setEventCategory("s");
+		a.setAlarmCondition("ea");
+		a.setAlarmInterfaceA("cs");
+		a.setCreateTime(DateUtils.now());
+		a.setEventServrity("s");
+		a.setEventSourceType("q");
+		a.setEventType("q");
+		a.setFaultFieldsVersion("v1");
+		a.setLastEpochMicroSec("csa");
+		a.setNfcNamingCode("std");
+		a.setNfNamingCode("cout");
+		a.setPriority("cs");
+		a.setReportingEntityId("112");
+		a.setReportingEntityName("asfs");
+		a.setSequence("cgg");
+		a.setSourceId("123");
+		a.setSourceName("eggs");
+		a.setSpecificProblem("especially");
+		a.setStartEpochMicrosec("wallet");
+		a.setUpdateTime(DateUtils.now());
+		a.setVersion("va2");
+
+		
+		
+		
+        MockUp<Query> mockUpQuery = new MockUp<Query>() {
+        };
 		MockUp<Session> mockedSession = new MockUp<Session>() {
+            @Mock
+            public Query createQuery(String sql) {
+                return mockUpQuery.getMockInstance();
+            }
 			@Mock
 			public Transaction beginTransaction() {
 				return transaction;
-			}
-			@Mock
-			public void save(AlarmsHeader alarmsHeader) {
-			}
-			@Mock
-			public void flush() {
 			}
 		};
 		new MockUp<SessionFactory>() {
@@ -84,77 +121,20 @@ public class AlarmsHeaderServiceImplTest {
 			public void commit() {
 			}
 		};
-		new MockUp<AlarmsHeaderServiceImpl>() {
-			@Mock
-			private Session getSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
-		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		AlarmsHeader alarmsHeader = null;
-		alarmsHeaderServiceImpl.saveAlarmsHeader(alarmsHeader);
-	}
+        new MockUp<AlarmsHeaderServiceImpl>() {
+            @Mock
+            private Session getSession() {
+                return mockedSession.getMockInstance();
+            }
+        };
 
-	@Test(expected = Exception.class)
-	public void testSaveAlarmsHeaderError(){
 		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		alarmsHeaderServiceImpl.saveAlarmsHeader(new AlarmsHeader());
-	}
+		alarmsHeaderServiceImpl.saveAlarmsHeader(a);
+	} 
 
-	@Test
-	public void testUpdateAlarmsHeader2018() throws Exception { 
-		MockUp<Query> mockUpQuery = new MockUp<Query>() {
-			@Mock
-			public void setString(String str) {
-			}
-			@Mock
-			public void setDate(Timestamp date) {
-			}
-			@Mock
-			public void executeUpdate() {
-			}
-		};
-		MockUp<Session> mockedSession = new MockUp<Session>() {
-			@Mock
-			public Query createQuery(String hql) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Transaction beginTransaction() {
-				return transaction;
-			}
-			@Mock
-			public void flush() {
-			}
-		};
-		new MockUp<SessionFactory>() {
-			@Mock
-			public Session openSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
-		new MockUp<Transaction>() {
-			@Mock
-			public void getTransaction() {
-			}
-			@Mock
-			public void commit() {
-			}
-		};
-		new MockUp<AlarmsHeaderServiceImpl>() {
-			@Mock
-			private Session getSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
-		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		alarmsHeaderServiceImpl.updateAlarmsHeader2018(null, null, null, null, null, null, null);
-	}
 
-	@Test(expected = Exception.class)
-	public void testUpdateAlarmsHeader2018Error(){
-		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-		alarmsHeaderServiceImpl.updateAlarmsHeader2018(null, null, null, null, null, null, null);
-	}
+
+
+
 
 } 
