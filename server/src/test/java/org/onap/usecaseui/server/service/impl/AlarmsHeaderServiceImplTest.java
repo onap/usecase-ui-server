@@ -66,6 +66,7 @@ public class AlarmsHeaderServiceImplTest {
 			}
 			@Mock
 			public Serializable save(Object object) {
+				return null;
 			}
 			@Mock
 			public void flush() {
