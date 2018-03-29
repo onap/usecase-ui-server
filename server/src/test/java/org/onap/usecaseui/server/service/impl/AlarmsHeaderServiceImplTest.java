@@ -73,6 +73,12 @@ public class AlarmsHeaderServiceImplTest {
 			public void flush() {
 			}
 		};
+		new MockUp<SessionFactory>() {
+			@Mock
+			public Session openSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
 		new MockUp<Transaction>() {
 			@Mock
 			public void commit() {
@@ -119,6 +125,12 @@ public class AlarmsHeaderServiceImplTest {
 			}
 			@Mock
 			public void flush() {
+			}
+		};
+		new MockUp<SessionFactory>() {
+			@Mock
+			public Session openSession() {
+				return mockedSession.getMockInstance();
 			}
 		};
 		new MockUp<Transaction>() {
