@@ -48,8 +48,46 @@ import mockit.MockUp;
 * @version 1.0 
 */
 public class AlarmsHeaderServiceImplTest {
+	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = null;
+
 	@Before
 	public void before() throws Exception { 
+		alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
+		MockUp<Query> mockUpQuery = new MockUp<Query>() {
+		};
+		MockUp<Session> mockedSession = new MockUp<Session>() {
+			@Mock
+			public Query createQuery(String sql) {
+				return mockUpQuery.getMockInstance();
+			}
+			@Mock
+			public Transaction beginTransaction() {
+				return transaction;
+			}
+			@Mock
+			public void save(Object object) {
+			}
+			@Mock
+			public void flush() {
+			}
+		};
+		new MockUp<SessionFactory>() {
+			@Mock
+			public Session openSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
+		new MockUp<Transaction>() {
+			@Mock
+			public void commit() {
+			}
+		};
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
 	}
 
 	@After
@@ -90,43 +128,6 @@ public class AlarmsHeaderServiceImplTest {
 		ah.setUpdateTime(DateUtils.now());
 		ah.setVersion("va2");
 
-		MockUp<Query> mockUpQuery = new MockUp<Query>() {
-		};
-		MockUp<Session> mockedSession = new MockUp<Session>() {
-			@Mock
-			public Query createQuery(String sql) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Transaction beginTransaction() {
-				return transaction;
-			}
-			@Mock
-			public void save(Object object) {
-			}
-			@Mock
-			public void flush() {
-			}
-		};
-		new MockUp<SessionFactory>() {
-			@Mock
-			public Session openSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
-		new MockUp<Transaction>() {
-			@Mock
-			public void commit() {
-			}
-		};
-		new MockUp<AlarmsHeaderServiceImpl>() {
-			@Mock
-			private Session getSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
-
-		AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 		alarmsHeaderServiceImpl.saveAlarmsHeader(ah);
 	} 
 
