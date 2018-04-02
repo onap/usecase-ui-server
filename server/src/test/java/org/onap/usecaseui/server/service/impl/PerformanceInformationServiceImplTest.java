@@ -16,6 +16,9 @@
 
 package org.onap.usecaseui.server.service.impl;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.junit.Test; 
 import org.junit.Before; 
 import org.junit.After;
@@ -29,8 +32,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
+import mockit.Mock;
+import mockit.MockUp;
 
 import static org.mockito.Mockito.mock;
 
@@ -41,9 +54,6 @@ import static org.mockito.Mockito.mock;
 * @since <pre> 8, 2018</pre>
 * @version 1.0 
 */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = UsecaseuiServerApplication.class)
-@WebAppConfiguration
 public class PerformanceInformationServiceImplTest {
     /*@Resource(name = "PerformanceInformationService")
     PerformanceInformationService performanceInformationService;*/
@@ -57,6 +67,43 @@ public void before() throws Exception {
 public void after() throws Exception { 
 } 
 
+private Session session;
+private Transaction transaction;
+private Query query;
+/**
+ * mockupUtil 
+ */
+public void mockupUtil(){
+	 MockUp<Query> mockUpQuery = new MockUp<Query>() {
+     };
+		MockUp<Session> mockedSession = new MockUp<Session>() {
+         @Mock
+         public Query createQuery(String sql) {
+             return mockUpQuery.getMockInstance();
+         }
+			@Mock
+			public Transaction beginTransaction() {
+				return transaction;
+			}
+		};
+		new MockUp<SessionFactory>() {
+			@Mock
+			public Session openSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
+		new MockUp<Transaction>() {
+			@Mock
+			public void commit() {
+			}
+		};
+     new MockUp<AlarmsInformationServiceImpl>() {
+         @Mock
+         private Session getSession() {
+             return mockedSession.getMockInstance();
+         }
+     };
+}
 /** 
 * 
 * Method: savePerformanceInformation(PerformanceInformation performanceInformation) 
@@ -73,6 +120,7 @@ public void testSavePerformanceInformation() throws Exception {
     a.setValue("40");
     a.setCreateTime(DateUtils.now());
     a.setUpdateTime(DateUtils.now());
+    mockupUtil();
     service.savePerformanceInformation(a);
 
 } 
@@ -92,6 +140,7 @@ public void testUpdatePerformanceInformation() throws Exception {
     a.setValue("fko11");
     a.setUpdateTime(DateUtils.now());
     a.setCreateTime(DateUtils.now());
+    mockupUtil();
     service.updatePerformanceInformation(a);
 } 
 
@@ -107,7 +156,7 @@ public void testGetAllCount() throws Exception {
     PerformanceInformation performanceInformation = new PerformanceInformation();
     performanceInformation.setName("vnf_a_3");
 
-
+    mockupUtil();
     service.getAllCount(performanceInformation,0,12);
 
 } 
@@ -122,6 +171,7 @@ public void testQueryPerformanceInformation() throws Exception {
 //TODO: Test goes here...
     PerformanceInformation a = new PerformanceInformation();
     // a.setEventId("2202");
+    mockupUtil();
     service.queryPerformanceInformation(a, 1, 100);
            // .getList().forEach(al -> System.out.println(al.getValue()));
 } 
@@ -134,6 +184,7 @@ public void testQueryPerformanceInformation() throws Exception {
 @Test
 public void testQueryId() throws Exception { 
 //TODO: Test goes here...
+	mockupUtil();
     service.queryId(new String[]{"2202"});
           //  .forEach(ai -> System.out.println(ai.getCreateTime()));
 } 
@@ -151,6 +202,7 @@ public void testQueryDateBetweenForEventIdStartDateEndDate() throws Exception {
     String end="2017-11-15 14:45:10";
     Date stard = sdf.parse(star);
     Date endd = sdf.parse(end);
+    mockupUtil();
     service.queryDateBetween("1101ZTHX1MMEGJM1W1",stard,endd);
 } 
 
@@ -167,6 +219,7 @@ public void testQueryDateBetweenForResourceIdNameStartTimeEndTime() throws Excep
     String end="2017-11-15 14:45:10";
     Date stard = sdf.parse(star);
     Date endd = sdf.parse(end);
+    mockupUtil();
     service.queryDateBetween("1101ZTHX1MMEGJM1W1",stard,endd);
 
 } 
@@ -179,6 +232,7 @@ public void testQueryDateBetweenForResourceIdNameStartTimeEndTime() throws Excep
 @Test
 public void testQueryMaxValueByBetweenDate() throws Exception { 
 //TODO: Test goes here...
+	mockupUtil();
     service.queryDateBetween("2202", DateUtils.stringToDate("2017-10-15 01:00:00"), DateUtils.stringToDate("2017-10-15 02:00:00")).forEach(p -> System.out.println(p));
 
 } 
