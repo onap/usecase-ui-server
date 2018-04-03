@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import java.io.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -65,7 +66,7 @@ public class AlarmsHeaderServiceImplTest {
 				return transaction;
 			}
 			@Mock
-			public Object save(Object object) {
+			public Serializable save(Object object) {
 				return new Object();
 			}
 			@Mock
