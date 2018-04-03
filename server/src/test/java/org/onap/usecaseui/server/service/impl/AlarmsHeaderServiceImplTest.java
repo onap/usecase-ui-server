@@ -67,7 +67,7 @@ public class AlarmsHeaderServiceImplTest {
 			}
 			@Mock
 			public Serializable save(Object object) {
-				return (Serializable) new Object();
+				return (Serializable) serialVersionUID;
 			}
 			@Mock
 			public void flush() {
@@ -96,6 +96,7 @@ public class AlarmsHeaderServiceImplTest {
 	public void after() throws Exception { 
 	}
 
+	private static final long serialVersionUID = 1L
 	private Session session;
 	private Transaction transaction;
 	private Query query;
