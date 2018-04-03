@@ -64,10 +64,10 @@ public class AlarmsHeaderServiceImplTest {
 			public Transaction beginTransaction() {
 				return transaction;
 			}
-			//@Mock
-			//public Object save(Object object) {
-			//	return null;
-			//}
+			@Mock
+			public Object save(Object object) {
+				return new Object();
+			}
 			@Mock
 			public void flush() {
 			}
