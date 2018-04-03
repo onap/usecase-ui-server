@@ -15,6 +15,9 @@
  */
 package org.onap.usecaseui.server.service.impl;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.junit.Test; 
 import org.junit.Before; 
 import org.junit.After;
@@ -29,6 +32,14 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
+import mockit.Mock;
+import mockit.MockUp;
+
 import static org.mockito.Mockito.mock;
 
 /** 
@@ -38,9 +49,6 @@ import static org.mockito.Mockito.mock;
 * @since <pre> 8, 2018</pre>
 * @version 1.0 
 */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = UsecaseuiServerApplication.class)
-@WebAppConfiguration
 public class PerformanceHeaderServiceImplTest {
   /*  @Resource(name = "PerformanceHeaderService")
     PerformanceHeaderService performanceHeaderService;*/
@@ -53,6 +61,44 @@ public void before() throws Exception {
 @After
 public void after() throws Exception { 
 } 
+
+private Session session;
+private Transaction transaction;
+private Query query;
+/**
+ * mockupUtil 
+ */
+public void mockupUtil(){
+	 MockUp<Query> mockUpQuery = new MockUp<Query>() {
+     };
+		MockUp<Session> mockedSession = new MockUp<Session>() {
+         @Mock
+         public Query createQuery(String sql) {
+             return mockUpQuery.getMockInstance();
+         }
+			@Mock
+			public Transaction beginTransaction() {
+				return transaction;
+			}
+		};
+		new MockUp<SessionFactory>() {
+			@Mock
+			public Session openSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
+		new MockUp<Transaction>() {
+			@Mock
+			public void commit() {
+			}
+		};
+     new MockUp<AlarmsInformationServiceImpl>() {
+         @Mock
+         private Session getSession() {
+             return mockedSession.getMockInstance();
+         }
+     };
+}
 
 /** 
 * 
@@ -83,7 +129,7 @@ public void testSavePerformanceHeader() throws Exception {
     p.setVersion("va2");
     p.setMeasurementInterval("12");
     p.setMeasurementsForVfScalingVersion("12");
-
+    mockupUtil();
     service.savePerformanceHeader(p);
 } 
 
@@ -116,6 +162,7 @@ public void testUpdatePerformanceHeader() throws Exception {
     p.setVersion("va2");
     p.setMeasurementInterval("12");
     p.setMeasurementsForVfScalingVersion("12");
+    mockupUtil();
     service.updatePerformanceHeader(p);
 } 
 
@@ -131,7 +178,7 @@ public void testGetAllCount() throws Exception {
     PerformanceHeader performanceHeader = new PerformanceHeader();
     performanceHeader.setSourceName("vnf_a_3");
 
-
+    mockupUtil();
     service.getAllCount(performanceHeader,0,12);
 
 } 
@@ -146,6 +193,7 @@ public void testQueryPerformanceHeader() throws Exception {
 //TODO: Test goes here...
     PerformanceHeader p = new PerformanceHeader();
     p.setEventId("110");
+    mockupUtil();
     service.queryPerformanceHeader(p,1,100);
           //  .getList().forEach(per -> System.out.println(per));
 } 
@@ -158,6 +206,7 @@ public void testQueryPerformanceHeader() throws Exception {
 @Test
 public void testQueryId() throws Exception { 
 //TODO: Test goes here...
+	mockupUtil();
     service.queryId(new String[]{"110"});
            // .forEach(pe -> System.out.println(pe.getCreateTime()));
 } 
@@ -172,6 +221,7 @@ public void testQueryAllSourceId() throws Exception {
 //TODO: Test goes here...
     PerformanceHeader p = new PerformanceHeader();
     p.setSourceId("123");
+    mockupUtil();
     service.queryPerformanceHeader(p,1,100);
             //.getList().forEach(per -> System.out.println(per));
 } 

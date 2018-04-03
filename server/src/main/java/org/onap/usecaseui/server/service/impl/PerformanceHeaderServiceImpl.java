@@ -47,10 +47,14 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
     @Autowired
     private SessionFactory sessionFactory;
 
+	private Session getSession() {
+		return sessionFactory.openSession();
+	}
+
 
 	@Override
 	public String savePerformanceHeader(PerformanceHeader performanceHeder) {
-		 try(Session session = sessionFactory.openSession();){
+		 try(Session session = getSession();){
 	            if (null == performanceHeder){
 	                logger.error("PerformanceHeaderServiceImpl savePerformanceHeader performanceHeder is null!");
 	            }
@@ -70,7 +74,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public String updatePerformanceHeader(PerformanceHeader performanceHeder) {
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = getSession();){
             if (null == performanceHeder){
                 logger.error("PerformanceHeaderServiceImpl updatePerformanceHeader performanceHeder is null!");
             }
@@ -92,7 +96,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public int getAllCountByStatus(String status){
-		try (Session session = sessionFactory.openSession()){
+		try (Session session = getSession()){
 			StringBuffer count = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
 			if(!"0".equals(status)){
 				count.append(" and a.status=:status");
@@ -111,7 +115,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public List<PerformanceHeader> getAllByStatus(String status,String eventName,String sourceName,String eventServerity,String reportingEntityName,  Date createTime, Date endTime){
-		try (Session session = sessionFactory.openSession()){
+		try (Session session = getSession()){
 			StringBuffer string = new StringBuffer("from PerformanceHeader a where 1=1");
 			if(!"0".equals(status)){
 				string.append(" and a.status=:status");
@@ -166,7 +170,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 
 	public int getAllCount(PerformanceHeader performanceHeder, int currentPage, int pageSize) {
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = getSession();){
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
 			if (null == performanceHeder) {
                 //logger.error("PerformanceHeaderServiceImpl getAllCount performanceHeder is null!");
@@ -265,7 +269,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		int allRow =this.getAllCount(performanceHeder,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = getSession();){
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
             if (null == performanceHeder) {
                 //logger.error("PerformanceHeaderServiceImpl queryPerformanceHeader performanceHeder is null!");
@@ -367,7 +371,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceHeader> queryId(String[] id) {
-		try(Session session = sessionFactory.openSession();) {
+		try(Session session = getSession();) {
 			if(id.length==0) {
 				logger.error("PerformanceHeaderServiceImpl queryId is null!");
 			}
@@ -384,7 +388,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public List<String> queryAllSourceId() {
-		try(Session session = sessionFactory.openSession();) {
+		try(Session session = getSession();) {
 			Query query = session.createQuery("select a.sourceId from PerformanceHeader a");
 			return query.list();
 		} catch (Exception e) {

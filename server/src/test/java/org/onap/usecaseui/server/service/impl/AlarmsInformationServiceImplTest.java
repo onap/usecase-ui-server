@@ -15,6 +15,14 @@
  */
 package org.onap.usecaseui.server.service.impl;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
+import mockit.Mock;
+import mockit.MockUp;
+
 import org.junit.Test; 
 import org.junit.Before; 
 import org.junit.After;
@@ -54,6 +62,43 @@ public void before() throws Exception {
 public void after() throws Exception { 
 } 
 
+private Session session;
+private Transaction transaction;
+private Query query;
+/**
+ * mockupUtil 
+ */
+public void mockupUtil(){
+	 MockUp<Query> mockUpQuery = new MockUp<Query>() {
+     };
+		MockUp<Session> mockedSession = new MockUp<Session>() {
+         @Mock
+         public Query createQuery(String sql) {
+             return mockUpQuery.getMockInstance();
+         }
+			@Mock
+			public Transaction beginTransaction() {
+				return transaction;
+			}
+		};
+		new MockUp<SessionFactory>() {
+			@Mock
+			public Session openSession() {
+				return mockedSession.getMockInstance();
+			}
+		};
+		new MockUp<Transaction>() {
+			@Mock
+			public void commit() {
+			}
+		};
+     new MockUp<AlarmsInformationServiceImpl>() {
+         @Mock
+         private Session getSession() {
+             return mockedSession.getMockInstance();
+         }
+     };
+}
 /** 
 * 
 * Method: saveAlarmsInformation(AlarmsInformation alarmsInformation) 
@@ -68,6 +113,7 @@ public void testSaveAlarmsInformation() throws Exception {
     a.setValue("fre");
     a.setCreateTime(DateUtils.now());
     a.setUpdateTime(DateUtils.now());
+    mockupUtil();
     service.saveAlarmsInformation(a);
 } 
 
@@ -85,6 +131,7 @@ public void testUpdateAlarmsInformation() throws Exception {
     a.setValue("fko");
     a.setUpdateTime(DateUtils.now());
     a.setCreateTime(DateUtils.now());
+    mockupUtil();
     service.updateAlarmsInformation(a);
 } 
 
@@ -99,7 +146,7 @@ public void testGetAllCount() throws Exception {
     AlarmsInformation larmsInformation = new AlarmsInformation();
     larmsInformation.setName("vnf_a_3");
 
-
+    mockupUtil();
     service.getAllCount(larmsInformation,0,12);
 } 
 
@@ -113,6 +160,7 @@ public void testQueryAlarmsInformation() throws Exception {
 //TODO: Test goes here...
     AlarmsInformation a = new AlarmsInformation();
     a.setEventId("110");
+    mockupUtil();
     service.queryAlarmsInformation(a,1,100);
          //   .getList().forEach( al -> System.out.println(al.getEventId()));
 } 
@@ -125,6 +173,7 @@ public void testQueryAlarmsInformation() throws Exception {
 @Test
 public void testQueryId() throws Exception { 
 //TODO: Test goes here...
+	mockupUtil();
     service.queryId(new String[]{"110"});
             //.forEach(ai -> System.out.println(ai));
 } 
@@ -137,6 +186,7 @@ public void testQueryId() throws Exception {
 @Test
 public void testQueryDateBetween() throws Exception { 
 //TODO: Test goes here...
+	mockupUtil();
     service.queryDateBetween("MME40","","");
             //.forEach( in -> {
        // System.out.println(in);

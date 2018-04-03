@@ -45,9 +45,14 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
     @Autowired
     private SessionFactory sessionFactory;
 
+	private Session getSession() {
+		return sessionFactory.openSession();
+	}
+
+
 	@Override
 	public String saveAlarmsInformation(AlarmsInformation alarmsInformation) {
-		 try(Session session = sessionFactory.openSession();){
+		 try(Session session = getSession();){
 	            if (null == alarmsInformation) {
 	                logger.error("alarmsInformation saveAlarmsInformation alarmsInformation is null!");
 	            }
@@ -66,7 +71,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public String updateAlarmsInformation(AlarmsInformation alarmsInformation) {
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = getSession();){
             if (null == alarmsInformation) {
                 logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
             }
@@ -84,7 +89,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	
 
 	public int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = getSession();){
 			StringBuffer hql = new StringBuffer("select count(*) from AlarmsInformation a where 1=1");
 			if (null == alarmsInformation) {
                 //logger.error("AlarmsInformationServiceImpl getAllCount alarmsInformation is null!");
@@ -127,7 +132,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 		int allRow =this.getAllCount(alarmsInformation,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = getSession();){
 			StringBuffer hql =new StringBuffer("from AlarmsInformation a where 1=1");
             if (null == alarmsInformation) {
                 //logger.error("AlarmsInformationServiceImpl queryAlarmsInformation alarmsInformation is null!");
@@ -178,7 +183,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 				logger.error("AlarmsInformationServiceImpl queryId is null!");
 			}
 			List<AlarmsInformation> list = new ArrayList<AlarmsInformation>();
-			Session session = sessionFactory.openSession();
+			Session session = getSession();
 			Query query = session.createQuery("from AlarmsInformation a where a.eventId IN (:alist)");
 			list = query.setParameterList("alist", id).list();
 			session.close();
@@ -194,7 +199,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
-		try(Session session = sessionFactory.openSession()) {
+		try(Session session = getSession()) {
 			List<Map<String,String>> mapList = new ArrayList<>();
 			String hql = "select a.createTime,count(*) from AlarmsHeader a where 1=1 ";
 			if (sourceId != null && !"".equals(sourceId)){
@@ -229,7 +234,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public List<AlarmsInformation> getAllAlarmsInformationByeventId(String eventId) {
-		try (Session session = sessionFactory.openSession()){
+		try (Session session = getSession()){
 			String string = "from AlarmsInformation a where 1=1 and a.eventId=:eventId";
 			Query query = session.createQuery(string);
 			query.setString("eventId",eventId);
