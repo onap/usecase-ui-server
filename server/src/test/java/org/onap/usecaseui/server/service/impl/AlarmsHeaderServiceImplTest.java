@@ -65,7 +65,7 @@ public class AlarmsHeaderServiceImplTest {
 				return transaction;
 			}
 			@Mock
-			public Object save(Object object) {
+			public Serializable save(Object object) {
 				return new Object();
 			}
 			@Mock
