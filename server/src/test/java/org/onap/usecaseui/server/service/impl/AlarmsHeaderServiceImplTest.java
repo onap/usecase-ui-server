@@ -318,4 +318,152 @@ public class AlarmsHeaderServiceImplTest {
 	public void testQueryStatusCount() throws Exception {
 		alarmsHeaderServiceImpl.queryStatusCount("status");
 	}
+
+	@Test(expected = Exception.class)
+	public void testSaveAlarmsHeaderException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		AlarmsHeader ah = new AlarmsHeader();
+		alarmsHeaderServiceImpl.saveAlarmsHeader(ah);
+	}
+
+	@Test(expected = Exception.class)
+	public void testUpdateAlarmsHeader2018Exception() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		alarmsHeaderServiceImpl.updateAlarmsHeader2018("status", new Timestamp(System.currentTimeMillis()), "startEpochMicrosecCleared", "lastEpochMicroSecCleared", "eventName", "reportingEntityName", "specificProblem");
+	}
+
+	@Test(expected = Exception.class)
+	public void testGetStatusBySourceNameException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		alarmsHeaderServiceImpl.getStatusBySourceName("sourceName");
+	}
+
+	@Test(expected = Exception.class)
+	public void testGetIdByStatusSourceNameException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		alarmsHeaderServiceImpl.getIdByStatusSourceName("sourceName");
+	}
+
+	@Test(expected = Exception.class)
+	public void testUpdateAlarmsHeaderException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		AlarmsHeader ah = new AlarmsHeader();
+		alarmsHeaderServiceImpl.updateAlarmsHeader(ah);
+	}
+
+	@Test(expected = Exception.class)
+	public void testGetAllCountByStatusException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		alarmsHeaderServiceImpl.getAllCountByStatus("status");
+	}
+
+	@Test(expected = Exception.class)
+	public void testGetAllByStatusException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		alarmsHeaderServiceImpl.getAllByStatus("status", "eventName", "sourceName", "eventServrity", "reportingEntityName", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+	}
+
+	@Test(expected = Exception.class)
+	public void testGetAlarmsHeaderDetailException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		alarmsHeaderServiceImpl.getAlarmsHeaderDetail(1);
+	}
+
+	@Test(expected = Exception.class)
+	public void testGetAllByDatetimeException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		alarmsHeaderServiceImpl.getAllByDatetime("status", "eventId", "eventServrity", "createTime");
+	}
+
+	@Test(expected = Exception.class)
+	public void testGetAllCountException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		AlarmsHeader ah = new AlarmsHeader();
+		alarmsHeaderServiceImpl.getAllCount(ah, 1, 1);
+	}
+
+	@Test(expected = Exception.class)
+	public void testQueryAlarmsHeaderException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		AlarmsHeader ah = new AlarmsHeader();
+		alarmsHeaderServiceImpl.queryAlarmsHeader(ah, 1, 1);
+	}
+
+	@Test(expected = Exception.class)
+	public void testQueryIdException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		String[] id = {"1", "2", "3"};
+		alarmsHeaderServiceImpl.queryId(id);
+	}
+
+	@Test(expected = Exception.class)
+	public void testQueryStatusCountException() {
+		new MockUp<AlarmsHeaderServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		alarmsHeaderServiceImpl.queryStatusCount("status");
+	}
 }
