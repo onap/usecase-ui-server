@@ -73,7 +73,7 @@ public class AlarmsHeaderServiceImplTest {
 				return mockUpQuery.getMockInstance();
 			}
 			@Mock
-			public int executeUpdate(String name, Date value) {
+			public int executeUpdate() {
 				return 0;
 			}
 			@Mock
@@ -82,7 +82,7 @@ public class AlarmsHeaderServiceImplTest {
 			}
 			@Mock
 			public Object uniqueResult() {
-				return "result";
+				return "0";
 			}
 		};
 		MockUp<Session> mockedSession = new MockUp<Session>() {
@@ -104,6 +104,9 @@ public class AlarmsHeaderServiceImplTest {
 			}
 			@Mock
 			public void flush() {
+			}
+			@Mock
+			public void update(Object object) {
 			}
 		};
 		new MockUp<SessionFactory>() {
@@ -154,19 +157,68 @@ public class AlarmsHeaderServiceImplTest {
 		ah.setUpdateTime(DateUtils.now());
 		ah.setVersion("va2");
 		alarmsHeaderServiceImpl.saveAlarmsHeader(ah);
-	} 
+	}
 
 	@Test
 	public void testUpdateAlarmsHeader2018() throws Exception { 
 		alarmsHeaderServiceImpl.updateAlarmsHeader2018("status", new Timestamp(System.currentTimeMillis()), "startEpochMicrosecCleared", "lastEpochMicroSecCleared", "eventName", "reportingEntityName", "specificProblem");
-	} 
+	}
 
 	@Test
 	public void testGetStatusBySourceName() throws Exception { 
 		alarmsHeaderServiceImpl.getStatusBySourceName("sourceName");
-	} 
+	}
+
+	@Test
+	public void testGetIdByStatusSourceName() throws Exception { 
+		alarmsHeaderServiceImpl.getIdByStatusSourceName("sourceName");
+	}
+
+	@Test
+	public void testUpdateAlarmsHeader() throws Exception { 
+		AlarmsHeader ah = new AlarmsHeader();
+		ah.setEventName("a");
+		ah.setStatus("1");
+		ah.setVfStatus("1");
+		ah.setEventId("1119");
+		ah.setDomain("asb");
+		ah.setEventCategory("s");
+		ah.setAlarmCondition("ea");
+		ah.setAlarmInterfaceA("cs");
+		ah.setCreateTime(DateUtils.now());
+		ah.setEventServrity("s");
+		ah.setEventSourceType("q");
+		ah.setEventType("q");
+		ah.setFaultFieldsVersion("v1");
+		ah.setLastEpochMicroSec("csa");
+		ah.setNfcNamingCode("std");
+		ah.setNfNamingCode("cout");
+		ah.setPriority("cs");
+		ah.setReportingEntityId("112");
+		ah.setReportingEntityName("asfs");
+		ah.setSequence("cgg");
+		ah.setSourceId("123");
+		ah.setSourceName("eggs");
+		ah.setSpecificProblem("especially");
+		ah.setStartEpochMicrosec("wallet");
+		ah.setUpdateTime(DateUtils.now());
+		ah.setVersion("va2");
+		alarmsHeaderServiceImpl.updateAlarmsHeader(ah);
+	}
+
+	@Test
+	public void testGetAllCountByStatus() throws Exception { 
+		alarmsHeaderServiceImpl.getAllCountByStatus("status");
+	}
+
+	//@Test
+	//public void testGetAllByStatus() throws Exception { 
+	//	alarmsHeaderServiceImpl.getAllCountByStatus("status");
+	//}
 
 
 
 
-} 
+
+
+}
