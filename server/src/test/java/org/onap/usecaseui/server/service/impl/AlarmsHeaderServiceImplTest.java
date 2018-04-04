@@ -82,6 +82,7 @@ public class AlarmsHeaderServiceImplTest {
 		MockUp<Transaction> mockedTransaction = new MockUp<Transaction>() {
 			@Mock
 			public void commit() {
+				System.out.println("shentaotest");
 			}
 		};
 		new MockUp<AlarmsHeaderServiceImpl>() {
