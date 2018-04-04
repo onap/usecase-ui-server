@@ -79,7 +79,7 @@ public class AlarmsHeaderServiceImplTest {
 				return mockedSession.getMockInstance();
 			}
 		};
-		new MockUp<Transaction>() {
+		MockUp<Transaction> mockedTransaction = new MockUp<Transaction>() {
 			@Mock
 			public void commit() {
 			}
