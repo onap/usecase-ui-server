@@ -97,6 +97,11 @@ public class AlarmsHeaderServiceImplTest {
 			public Object uniqueResult() {
 				return "0";
 			}
+			@Mock
+			public List<AlarmsHeader> list() {
+				AlarmsHeader ah = new AlarmsHeader();
+				return Arrays.asList(ah);
+			}
 		};
 		MockUp<Session> mockedSession = new MockUp<Session>() {
 			@Mock
@@ -120,11 +125,6 @@ public class AlarmsHeaderServiceImplTest {
 			}
 			@Mock
 			public void update(Object object) {
-			}
-			@Mock
-			public List<AlarmsHeader> list() {
-				AlarmsHeader ah = new AlarmsHeader();
-				return Arrays.asList(ah);
 			}
 		};
 		new MockUp<SessionFactory>() {
