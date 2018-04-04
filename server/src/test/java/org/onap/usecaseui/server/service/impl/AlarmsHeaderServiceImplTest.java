@@ -23,6 +23,7 @@ import org.onap.usecaseui.server.UsecaseuiServerApplication;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.service.impl.AlarmsHeaderServiceImpl;
 import org.onap.usecaseui.server.util.DateUtils;
+import org.onap.usecaseui.server.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -53,7 +54,7 @@ public class AlarmsHeaderServiceImplTest {
 	private static final long serialVersionUID = 1L;
 
 	@Before
-	public void before() throws Exception { 
+	public void before() throws Exception {
 		alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 
 		MockUp<Transaction> mockUpTransaction = new MockUp<Transaction>() {
@@ -73,11 +74,23 @@ public class AlarmsHeaderServiceImplTest {
 				return mockUpQuery.getMockInstance();
 			}
 			@Mock
+			public Query setInteger(String name, int value) {
+				return mockUpQuery.getMockInstance();
+			}
+			@Mock
 			public int executeUpdate() {
 				return 0;
 			}
 			@Mock
 			public Query setMaxResults(int value) {
+				return mockUpQuery.getMockInstance();
+			}
+			@Mock
+			public Query setFirstResult(int firstResult) {
+				return mockUpQuery.getMockInstance();
+			}
+			@Mock
+			public Query setParameterList(String name, Object[] values) {
 				return mockUpQuery.getMockInstance();
 			}
 			@Mock
@@ -108,6 +121,11 @@ public class AlarmsHeaderServiceImplTest {
 			@Mock
 			public void update(Object object) {
 			}
+			@Mock
+			public List<AlarmsHeader> list() {
+				AlarmsHeader ah = new AlarmsHeader();
+				return Arrays.asList(ah);
+			}
 		};
 		new MockUp<SessionFactory>() {
 			@Mock
@@ -124,11 +142,11 @@ public class AlarmsHeaderServiceImplTest {
 	}
 
 	@After
-	public void after() throws Exception { 
+	public void after() throws Exception {
 	}
 
 	@Test
-	public void testSaveAlarmsHeader() throws Exception { 
+	public void testSaveAlarmsHeader() throws Exception {
 		AlarmsHeader ah = new AlarmsHeader();
 		ah.setEventName("a");
 		ah.setStatus("1");
@@ -160,22 +178,22 @@ public class AlarmsHeaderServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateAlarmsHeader2018() throws Exception { 
+	public void testUpdateAlarmsHeader2018() throws Exception {
 		alarmsHeaderServiceImpl.updateAlarmsHeader2018("status", new Timestamp(System.currentTimeMillis()), "startEpochMicrosecCleared", "lastEpochMicroSecCleared", "eventName", "reportingEntityName", "specificProblem");
 	}
 
 	@Test
-	public void testGetStatusBySourceName() throws Exception { 
+	public void testGetStatusBySourceName() throws Exception {
 		alarmsHeaderServiceImpl.getStatusBySourceName("sourceName");
 	}
 
 	@Test
-	public void testGetIdByStatusSourceName() throws Exception { 
+	public void testGetIdByStatusSourceName() throws Exception {
 		alarmsHeaderServiceImpl.getIdByStatusSourceName("sourceName");
 	}
 
 	@Test
-	public void testUpdateAlarmsHeader() throws Exception { 
+	public void testUpdateAlarmsHeader() throws Exception {
 		AlarmsHeader ah = new AlarmsHeader();
 		ah.setEventName("a");
 		ah.setStatus("1");
@@ -207,18 +225,97 @@ public class AlarmsHeaderServiceImplTest {
 	}
 
 	@Test
-	public void testGetAllCountByStatus() throws Exception { 
+	public void testGetAllCountByStatus() throws Exception {
 		alarmsHeaderServiceImpl.getAllCountByStatus("status");
 	}
 
-	//@Test
-	//public void testGetAllByStatus() throws Exception { 
-	//	alarmsHeaderServiceImpl.getAllCountByStatus("status");
-	//}
+	@Test
+	public void testGetAllByStatus() throws Exception {
+		alarmsHeaderServiceImpl.getAllByStatus("status", "eventName", "sourceName", "eventServrity", "reportingEntityName", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+	}
 
+	@Test
+	public void testGetAlarmsHeaderDetail() throws Exception {
+		alarmsHeaderServiceImpl.getAlarmsHeaderDetail(1);
+	}
 
+	@Test
+	public void testGetAllByDatetime() throws Exception {
+		alarmsHeaderServiceImpl.getAllByDatetime("status", "eventId", "eventServrity", "createTime");
+	}
 
+	@Test
+	public void testGetAllCount() throws Exception {
+		AlarmsHeader ah = new AlarmsHeader();
+		ah.setVersion("va2");
+		ah.setEventName("a");
+		ah.setAlarmCondition("ea");
+		ah.setDomain("asb");
+		ah.setEventId("1119");
+		ah.setNfcNamingCode("std");
+		ah.setNfNamingCode("cout");
+		ah.setSourceId("123");
+		ah.setSourceName("eggs");
+		ah.setReportingEntityId("112");
+		ah.setReportingEntityName("asfs");
+		ah.setPriority("cs");
+		ah.setStartEpochMicrosec("wallet");
+		ah.setLastEpochMicroSec("csa");
+		ah.setSequence("cgg");
+		ah.setFaultFieldsVersion("v1");
+		ah.setEventServrity("s");
+		ah.setEventType("q");
+		ah.setEventCategory("s");
+		ah.setSpecificProblem("especially");
+		ah.setAlarmInterfaceA("cs");
+		ah.setStatus("1");
+		ah.setCreateTime(DateUtils.now());
+		ah.setUpdateTime(DateUtils.now());
+		ah.setVfStatus("1");
+		ah.setEventSourceType("q");
+		alarmsHeaderServiceImpl.getAllCount(ah, 1, 1);
+	}
 
+	@Test
+	public void testQueryAlarmsHeader() throws Exception {
+		AlarmsHeader ah = new AlarmsHeader();
+		ah.setVersion("va2");
+		ah.setEventName("a");
+		ah.setAlarmCondition("ea");
+		ah.setDomain("asb");
+		ah.setEventId("1119");
+		ah.setNfcNamingCode("std");
+		ah.setNfNamingCode("cout");
+		ah.setSourceId("123");
+		ah.setSourceName("eggs");
+		ah.setReportingEntityId("112");
+		ah.setReportingEntityName("asfs");
+		ah.setPriority("cs");
+		ah.setStartEpochMicrosec("wallet");
+		ah.setLastEpochMicroSec("csa");
+		ah.setSequence("cgg");
+		ah.setFaultFieldsVersion("v1");
+		ah.setEventServrity("s");
+		ah.setEventType("q");
+		ah.setEventCategory("s");
+		ah.setSpecificProblem("especially");
+		ah.setAlarmInterfaceA("cs");
+		ah.setStatus("1");
+		ah.setCreateTime(DateUtils.now());
+		ah.setUpdateTime(DateUtils.now());
+		ah.setVfStatus("1");
+		ah.setEventSourceType("q");
+		alarmsHeaderServiceImpl.queryAlarmsHeader(ah, 1, 1);
+	}
 
+	@Test
+	public void testQueryId() throws Exception {
+		String[] id = {"1", "2", "3"};
+		alarmsHeaderServiceImpl.queryId(id);
+	}
 
+	@Test
+	public void testQueryStatusCount() throws Exception {
+		alarmsHeaderServiceImpl.queryStatusCount("status");
+	}
 }
