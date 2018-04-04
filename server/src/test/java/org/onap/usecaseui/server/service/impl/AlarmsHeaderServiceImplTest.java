@@ -79,12 +79,6 @@ public class AlarmsHeaderServiceImplTest {
 				return mockedSession.getMockInstance();
 			}
 		};
-		MockUp<Transaction> mockedTransaction = new MockUp<Transaction>() {
-			@Mock
-			public void commit() {
-				System.out.println("shentaotest");
-			}
-		};
 		new MockUp<AlarmsHeaderServiceImpl>() {
 			@Mock
 			private Session getSession() {
@@ -104,6 +98,11 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testSaveAlarmsHeader() throws Exception { 
+		new MockUp<Transaction>() {
+			@Mock
+			public void commit() {
+			}
+		};
 		AlarmsHeader ah = new AlarmsHeader();
 		ah.setEventName("a");
 		ah.setStatus("1");
