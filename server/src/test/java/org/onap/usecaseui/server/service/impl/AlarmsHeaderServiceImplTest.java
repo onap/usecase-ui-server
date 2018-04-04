@@ -50,11 +50,32 @@ import mockit.MockUp;
 */
 public class AlarmsHeaderServiceImplTest {
 	AlarmsHeaderServiceImpl alarmsHeaderServiceImpl = null;
+	private static final long serialVersionUID = 1L;
 
 	@Before
 	public void before() throws Exception { 
 		alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
 		MockUp<Query> mockUpQuery = new MockUp<Query>() {
+			@Mock
+			public Query setString(String name, String value) {
+				return mockUpQuery.getMockInstance();
+			}
+			@Mock
+			public Query setDate(String name, Date value) {
+				return mockUpQuery.getMockInstance();
+			}
+			@Mock
+			public int executeUpdate(String name, Date value) {
+				return 0;
+			}
+			@Mock
+			public Query setMaxResults(int value) {
+				return mockUpQuery.getMockInstance();
+			}
+			@Mock
+			public Object uniqueResult() {
+				return "result";
+			}
 		};
 		MockUp<Session> mockedSession = new MockUp<Session>() {
 			@Mock
@@ -63,7 +84,11 @@ public class AlarmsHeaderServiceImplTest {
 			}
 			@Mock
 			public Transaction beginTransaction() {
-				return transaction;
+				return mockUpTransaction.getMockInstance();
+			}
+			@Mock
+			public Transaction getTransaction() {
+				return mockUpTransaction.getMockInstance();
 			}
 			@Mock
 			public Serializable save(Object object) {
@@ -71,6 +96,11 @@ public class AlarmsHeaderServiceImplTest {
 			}
 			@Mock
 			public void flush() {
+			}
+		};
+		MockUp<Transaction> mockUpTransaction = new MockUp<Transaction>() {
+			@Mock
+			public void commit() {
 			}
 		};
 		new MockUp<SessionFactory>() {
@@ -91,23 +121,47 @@ public class AlarmsHeaderServiceImplTest {
 	public void after() throws Exception { 
 	}
 
-	private static final long serialVersionUID = 1L;
-	private Session session;
-	private Transaction transaction;
-	private Query query;
-
 	@Test
 	public void testSaveAlarmsHeader() throws Exception { 
-		new MockUp<Transaction>() {
-			@Mock
-			public void commit() {
-			}
-		};
-		AlarmsHeader ah = null;
+		AlarmsHeader ah = new AlarmsHeader();
+		ah.setEventName("a");
+		ah.setStatus("1");
+		ah.setVfStatus("1");
+		ah.setEventId("1119");
+		ah.setDomain("asb");
+		ah.setEventCategory("s");
+		ah.setAlarmCondition("ea");
+		ah.setAlarmInterfaceA("cs");
+		ah.setCreateTime(DateUtils.now());
+		ah.setEventServrity("s");
+		ah.setEventSourceType("q");
+		ah.setEventType("q");
+		ah.setFaultFieldsVersion("v1");
+		ah.setLastEpochMicroSec("csa");
+		ah.setNfcNamingCode("std");
+		ah.setNfNamingCode("cout");
+		ah.setPriority("cs");
+		ah.setReportingEntityId("112");
+		ah.setReportingEntityName("asfs");
+		ah.setSequence("cgg");
+		ah.setSourceId("123");
+		ah.setSourceName("eggs");
+		ah.setSpecificProblem("especially");
+		ah.setStartEpochMicrosec("wallet");
+		ah.setUpdateTime(DateUtils.now());
+		ah.setVersion("va2");
 		alarmsHeaderServiceImpl.saveAlarmsHeader(ah);
 	} 
 
+	@Test
+	public void testUpdateAlarmsHeader2018() throws Exception { 
+		alarmsHeaderServiceImpl.updateAlarmsHeader2018("status", new Timestamp(), "startEpochMicrosecCleared", "lastEpochMicroSecCleared", "eventName", "reportingEntityName", "specificProblem");
+	} 
 
+	@Test
+	public void testGetStatusBySourceName() throws Exception { 
+		alarmsHeaderServiceImpl.getStatusBySourceName("sourceName");
+	} 
 
 
 
