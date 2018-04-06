@@ -94,10 +94,6 @@ public class AlarmsHeaderServiceImplTest {
 				return mockUpQuery.getMockInstance();
 			}
 			@Mock
-			public Object uniqueResult() {
-				return "0";
-			}
-			@Mock
 			public List<AlarmsHeader> list() {
 				AlarmsHeader ah = new AlarmsHeader();
 				return Arrays.asList(ah);
