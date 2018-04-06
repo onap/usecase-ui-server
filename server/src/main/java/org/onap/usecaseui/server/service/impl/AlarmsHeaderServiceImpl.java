@@ -153,14 +153,14 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	public int getAllCountByStatus(String status){
 		try (Session session = getSession()){
 			StringBuffer count = new StringBuffer("select count(*) from AlarmsHeader a where 1=1");
-		if(!"0".equals(status)){
-			count.append(" and a.status=:status");
-		}
-		Query  query =session.createQuery(count.toString());
-		query.setString("status",status);
-		long q=(long)query.uniqueResult();
-		session.flush();
-		return (int)q;
+			if(!"0".equals(status)){
+				count.append(" and a.status=:status");
+			}
+			Query query = session.createQuery(count.toString());
+			query.setString("status",status);
+			String num = query.uniqueResult().toString();
+			session.flush();
+			return Integer.parseInt(num);
 		}catch (Exception e){
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount."+e.getMessage());
 			return 0;
@@ -255,10 +255,9 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			query.setString("eventId",eventId);
 			query.setString("eventServrity",eventServrity);
 
-			long l = (long)query.uniqueResult();
-			int a = (int) l;
+			String num = query.uniqueResult().toString();
 			session.flush();
-			return a;
+			return Integer.parseInt(num);
 		}catch (Exception e){
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount."+e.getMessage());
 			return 0;
@@ -373,9 +372,10 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                     query.setDate("startTime",alarmsHeader.getCreateTime());
                     query.setDate("endTime",alarmsHeader.getUpdateTime());
                 }
-            long q=(long)query.uniqueResult();
+
+			String num = query.uniqueResult().toString();
             session.flush();
-            return (int)q;
+			return Integer.parseInt(num);
         } catch (Exception e) {
             logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount. Details:" + e.getMessage());
             return -1;

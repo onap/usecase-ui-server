@@ -147,33 +147,7 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testSaveAlarmsHeader() throws Exception {
-		AlarmsHeader ah = new AlarmsHeader();
-		ah.setEventName("a");
-		ah.setStatus("1");
-		ah.setVfStatus("1");
-		ah.setEventId("1119");
-		ah.setDomain("asb");
-		ah.setEventCategory("s");
-		ah.setAlarmCondition("ea");
-		ah.setAlarmInterfaceA("cs");
-		ah.setCreateTime(DateUtils.now());
-		ah.setEventServrity("s");
-		ah.setEventSourceType("q");
-		ah.setEventType("q");
-		ah.setFaultFieldsVersion("v1");
-		ah.setLastEpochMicroSec("csa");
-		ah.setNfcNamingCode("std");
-		ah.setNfNamingCode("cout");
-		ah.setPriority("cs");
-		ah.setReportingEntityId("112");
-		ah.setReportingEntityName("asfs");
-		ah.setSequence("cgg");
-		ah.setSourceId("123");
-		ah.setSourceName("eggs");
-		ah.setSpecificProblem("especially");
-		ah.setStartEpochMicrosec("wallet");
-		ah.setUpdateTime(DateUtils.now());
-		ah.setVersion("va2");
+		AlarmsHeader ah = null;
 		alarmsHeaderServiceImpl.saveAlarmsHeader(ah);
 	}
 
@@ -184,6 +158,12 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetStatusBySourceName() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "active";
+			}
+		};
 		alarmsHeaderServiceImpl.getStatusBySourceName("sourceName");
 	}
 
@@ -194,38 +174,18 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testUpdateAlarmsHeader() throws Exception {
-		AlarmsHeader ah = new AlarmsHeader();
-		ah.setEventName("a");
-		ah.setStatus("1");
-		ah.setVfStatus("1");
-		ah.setEventId("1119");
-		ah.setDomain("asb");
-		ah.setEventCategory("s");
-		ah.setAlarmCondition("ea");
-		ah.setAlarmInterfaceA("cs");
-		ah.setCreateTime(DateUtils.now());
-		ah.setEventServrity("s");
-		ah.setEventSourceType("q");
-		ah.setEventType("q");
-		ah.setFaultFieldsVersion("v1");
-		ah.setLastEpochMicroSec("csa");
-		ah.setNfcNamingCode("std");
-		ah.setNfNamingCode("cout");
-		ah.setPriority("cs");
-		ah.setReportingEntityId("112");
-		ah.setReportingEntityName("asfs");
-		ah.setSequence("cgg");
-		ah.setSourceId("123");
-		ah.setSourceName("eggs");
-		ah.setSpecificProblem("especially");
-		ah.setStartEpochMicrosec("wallet");
-		ah.setUpdateTime(DateUtils.now());
-		ah.setVersion("va2");
+		AlarmsHeader ah = null;
 		alarmsHeaderServiceImpl.updateAlarmsHeader(ah);
 	}
 
 	@Test
 	public void testGetAllCountByStatus() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "1";
+			}
+		};
 		alarmsHeaderServiceImpl.getAllCountByStatus("status");
 	}
 
@@ -241,11 +201,24 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetAllByDatetime() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "1";
+			}
+		};
+		alarmsHeaderServiceImpl.getAllCountByStatus("status");
 		alarmsHeaderServiceImpl.getAllByDatetime("status", "eventId", "eventServrity", "createTime");
 	}
 
 	@Test
 	public void testGetAllCount() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "1";
+			}
+		};
 		AlarmsHeader ah = new AlarmsHeader();
 		ah.setVersion("va2");
 		ah.setEventName("a");
