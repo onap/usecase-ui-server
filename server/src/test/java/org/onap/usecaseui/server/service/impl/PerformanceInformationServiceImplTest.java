@@ -202,7 +202,7 @@ public void testQueryDateBetweenForEventIdStartDateEndDate() throws Exception {
     String end="2017-11-15 14:45:10";
     Date stard = sdf.parse(star);
     Date endd = sdf.parse(end);
-    mockupUtil();
+   // mockupUtil();
     service.queryDateBetween("1101ZTHX1MMEGJM1W1",stard,endd);
 } 
 

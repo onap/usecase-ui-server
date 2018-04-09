@@ -27,7 +27,13 @@ public class PerformanceBo implements Serializable {
 
     private List<PerformanceInformation> performanceInformation;
 
+    private PerformanceHeaderPm performanceHeaderPm;
 
+    private List<PerformanceInformationPm> performanceInformationPm;
+
+    private PerformanceHeaderVm performanceHeaderVm;
+
+    private List<PerformanceInformationVm> performanceInformationVm;
 
 
     public PerformanceBo() {
@@ -51,10 +57,38 @@ public class PerformanceBo implements Serializable {
     }
 
 
+    public PerformanceHeaderPm getPerformanceHeaderPm() {
+        return performanceHeaderPm;
+    }
+
+    public void setPerformanceHeaderPm(PerformanceHeaderPm performanceHeaderPm) {
+        this.performanceHeaderPm = performanceHeaderPm;
+    }
+
+    public List<PerformanceInformationPm> getPerformanceInformationPm() {
+        return performanceInformationPm;
+    }
+
+    public void setPerformanceInformationPm(List<PerformanceInformationPm> performanceInformationPm) {
+        this.performanceInformationPm = performanceInformationPm;
+    }
 
 
 
 
+    public PerformanceHeaderVm getPerformanceHeaderVm() {
+        return performanceHeaderVm;
+    }
 
+    public void setPerformanceHeaderVm(PerformanceHeaderVm performanceHeaderVm) {
+        this.performanceHeaderVm = performanceHeaderVm;
+    }
 
+    public List<PerformanceInformationVm> getPerformanceInformationVm() {
+        return performanceInformationVm;
+    }
+
+    public void setPerformanceInformationVm(List<PerformanceInformationVm> performanceInformationVm) {
+        this.performanceInformationVm = performanceInformationVm;
+    }
 }

@@ -44,14 +44,52 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
     @Autowired
     private SessionFactory sessionFactory;
 
-	private Session getSession() {
+
+	private Session getSessionFactory(){
 		return sessionFactory.openSession();
+	}
+	@Override
+	public List<PerformanceInformation> getAllEventId() {
+		try (Session session = getSessionFactory();){
+			String hql = "from PerformanceInformation a where 1=1";
+			Query query = session.createQuery(hql);
+
+			/*if(eventId!=null && ""!=eventId){
+				query.setString("eventId",eventId);
+			}*/
+			List<PerformanceInformation> list= query.list();
+			session.flush();
+			return list;
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceHeaderServiceImpl getEventServrity. Details:" + e.getMessage());
+
+			return null;
+		}
+	}
+
+	@Override
+	public List<PerformanceInformation> getAllPerformanceInformationByeventId(String eventId) {
+		try (Session session = getSessionFactory()){
+			String string = "from PerformanceInformation a where 1=1 and a.eventId=:eventId";
+			Query query = session.createQuery(string);
+			query.setString("eventId",eventId);
+			List<PerformanceInformation> list = query.list();
+			session.flush();
+			return list;
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. LIST:" + e.getMessage());
+
+			return null;
+		}
+
+
+
 	}
 
 
 	@Override
 	public String savePerformanceInformation(PerformanceInformation performanceInformation) {
-		 try(Session session = getSession();) {
+		 try(Session session = getSessionFactory();) {
 	            if (null == performanceInformation) {
 	                logger.error("performanceInformation savePerformanceInformation performanceInformation is null!");
 	            }
@@ -71,7 +109,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 	@Override
 	public String updatePerformanceInformation(PerformanceInformation performanceInformation) {
-		try(Session session = getSession();) {
+		try(Session session = getSessionFactory();) {
             if (null == performanceInformation) {
                 logger.error("performanceInformation updatePerformanceInformation performanceInformation is null!");
             }
@@ -89,10 +127,10 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 
 	public int getAllCount(PerformanceInformation performanceInformation, int currentPage, int pageSize) {
-		try(Session session = getSession();){
+		try(Session session = getSessionFactory();){
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceInformation a where 1=1");
 			if (null == performanceInformation) {
-                //logger.error("AlarmsInformationServiceImpl getAllCount performanceInformation is null!");
+                //logger.error("PerformanceInformationServiceImpl getAllCount performanceInformation is null!");
             }else {
             	if(null!=performanceInformation.getName()) {
                 	String ver=performanceInformation.getName();
@@ -132,7 +170,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 		int allRow =this.getAllCount(performanceInformation,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try(Session session = getSession()){
+		try(Session session = getSessionFactory()){
 			StringBuffer hql =new StringBuffer("from PerformanceInformation a where 1=1 ");
             if (null == performanceInformation) {
 
@@ -180,7 +218,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceInformation> queryId(String[] id) {
-		try(Session session = getSession();) {
+		try(Session session = getSessionFactory();) {
 			List<PerformanceInformation> list;
 			Query query = session.createQuery("from PerformanceInformation a where a.eventId IN (:alist)");
 			list = query.setParameterList("alist", id).list();
@@ -193,10 +231,10 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	}
 
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")*/
 	@Override
 	public List<PerformanceInformation> queryDateBetween(String eventId,Date startDate, Date endDate) {
-		try(Session session = getSession()) {
+		try(Session session = getSessionFactory()) {
 			List<PerformanceInformation> list ;
 			Query query = session.createQuery("from PerformanceInformation a where a.eventId = :eventId and a.createTime BETWEEN :startDate and :endDate");
 			list = query.setParameter("eventId",eventId).setParameter("startDate", startDate).setParameter("endDate",endDate).list();
@@ -212,7 +250,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 	@Override
 	public List<PerformanceInformation> queryDateBetween(String resourceId, String name, String startTime, String endTime) {
-		try(Session session = getSession()) {
+		try(Session session = getSessionFactory()) {
 			String hql = "from PerformanceInformation a where 1=1 ";
 			if (resourceId != null && !"".equals(resourceId)){
 				hql += " and a.eventId = :resourceId";
@@ -243,7 +281,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
     @Override
     public List<Map<String,String>> queryMaxValueByBetweenDate(String sourceId, String name, String startTime, String endTime) {
-        try(Session session = getSession()) {
+        try(Session session = getSessionFactory()) {
             List<Map<String,String>> mapList = new ArrayList<>();
             String hql = "select a.createTime,max(a.value) from PerformanceInformation a where 1=1 ";
             if (sourceId != null && !"".equals(sourceId)){
