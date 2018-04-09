@@ -55,7 +55,6 @@ public class DmaapSubscriber implements Runnable {
     @Resource(name = "AlarmsHeaderService")
     private AlarmsHeaderService alarmsHeaderService;
 
-
     @Resource(name = "AlarmsInformationService")
     private AlarmsInformationService alarmsInformationService;
 
@@ -65,6 +64,17 @@ public class DmaapSubscriber implements Runnable {
     @Resource(name = "PerformanceInformationService")
     private PerformanceInformationService performanceInformationService;
 
+    @Resource(name = "PerformanceHeaderPmService")
+    private PerformanceHeaderPmService performanceHeaderPmService;
+
+    @Resource(name = "PerformanceInformationPmService")
+    private PerformanceInformationPmService performanceInformationPmService;
+
+    @Resource(name = "PerformanceHeaderVmService")
+    private PerformanceHeaderVmService performanceHeaderVmService;
+
+    @Resource(name = "PerformanceInformationVmService")
+    private PerformanceInformationVmService performanceInformationVmService;
 
 
 
@@ -265,7 +275,11 @@ public class DmaapSubscriber implements Runnable {
         PerformanceHeader performance_header = new PerformanceHeader();
         List<PerformanceInformation> performance_informations = new ArrayList<>();
 
+        PerformanceHeaderPm performance_headerPm = new PerformanceHeaderPm();
+        List<PerformanceInformationPm> performance_informationsPm = new ArrayList<>();
 
+        PerformanceHeaderVm performance_headerVm = new PerformanceHeaderVm();
+        List<PerformanceInformationVm> performance_informationsVm = new ArrayList<>();
 
         eventMap.forEach((ek1, ev1) -> {
             if (ek1.equals("commonEventHeader")) {
@@ -327,7 +341,11 @@ public class DmaapSubscriber implements Runnable {
                                                     e.printStackTrace();
                                                 }
                                             }else{
-
+                                                try {
+                                                    performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), null, DateUtils.now()));
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         } );
                                     }
@@ -370,26 +388,56 @@ public class DmaapSubscriber implements Runnable {
 
 
 
+            if("guestOS".equals(performance_header.getEventType())){
+                performance_headerVm = new PerformanceHeaderVm(
+                  version,  eventName,  domain,  eventId,  eventType,  nfcNamingCode,
+                  nfNamingCode,  sourceId,  sourceName,  reportingEntityId,  reportingEntityName,
+                  priority,  startEpochMicrosec,  lastEpochMicroSec,  sequence,  measurementsForVfScalingVersion,
+                  measurementInterval, createTime, updateTime
+
+                );
+                logger.info("performance data header insert is starting......");
+                performanceHeaderVmService.savePerformanceHeaderVm(performance_headerVm);
+                logger.info("performance data header insert has finished.");
+                logger.info("performance data detail insert is starting......");
+                performance_informationsVm.forEach(aiVm -> {
+                    aiVm.setCreateTime(performance_header.getCreateTime());
+                    performanceInformationVmService.savePerformanceInformationVm(aiVm);
+                });
+                logger.info("performance data detail insert has finished. " + performance_informationsVm.size() + " records have been inserted.");
 
 
 
 
-            logger.info("performance data header insert is starting......");
-            performanceHeaderService.savePerformanceHeader(performance_header);
-            logger.info("performance data header insert has finished.");
-            logger.info("performance data detail insert is starting......");
-            performance_informations.forEach(ai -> {
-                ai.setCreateTime(performance_header.getCreateTime());
-                performanceInformationService.savePerformanceInformation(ai);
-            });
-            logger.info("performance data detail insert has finished. " + performance_informations.size() + " records have been inserted.");
+            }else if("hostOS".equals(performance_header.getEventType())){
 
-          //  }//else 结束
+                performance_headerPm = new PerformanceHeaderPm(
+                    version,  eventName,  domain,  eventId,  eventType,  nfcNamingCode,
+                    nfNamingCode,  sourceId,  sourceName,  reportingEntityId,  reportingEntityName,
+                    priority,  startEpochMicrosec,  lastEpochMicroSec,  sequence,  measurementsForVfScalingVersion,
+                    measurementInterval, createTime, updateTime
+                );
+
+                logger.info("performance data header insert is starting......");
+                performanceHeaderPmService.savePerformanceHeaderPm(performance_headerPm);
+                logger.info("performance data header insert has finished.");
+                logger.info("performance data detail insert is starting......");
+                performance_informationsPm.forEach(aiPm -> {
+                    aiPm.setCreateTime(performance_header.getCreateTime());
+                    performanceInformationPmService.savePerformanceInformationPm(aiPm);
+                });
+                logger.info("performance data detail insert has finished. " + performance_informationsPm.size() + " records have been inserted.");
+            }else{
+                logger.info("performance data header insert is starting......");
+                performanceHeaderService.savePerformanceHeader(performance_header);
+                logger.info("performance data header insert has finished.");
+                logger.info("performance data detail insert is starting......");
+                performance_informations.forEach(ai -> {
+                    ai.setCreateTime(performance_header.getCreateTime());
+                    performanceInformationService.savePerformanceInformation(ai);
+                });
+                logger.info("performance data detail insert has finished. " + performance_informations.size() + " records have been inserted.");
+            }
         }
-
-
-
-
-
     }
 }

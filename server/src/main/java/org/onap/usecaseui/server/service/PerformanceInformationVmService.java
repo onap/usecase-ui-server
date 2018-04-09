@@ -19,29 +19,27 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.onap.usecaseui.server.bean.PerformanceInformation;
+import org.onap.usecaseui.server.bean.PerformanceInformationVm;
 import org.onap.usecaseui.server.util.Page;
 
 
-public interface PerformanceInformationService {
+public interface PerformanceInformationVmService {
     
-    String savePerformanceInformation(PerformanceInformation performanceInformation);
+    String savePerformanceInformationVm(PerformanceInformationVm performanceInformationVm);
     
-    String updatePerformanceInformation(PerformanceInformation performanceInformation);
+    String updatePerformanceInformationVm(PerformanceInformationVm performanceInformationVm);
     
-    int getAllCount(PerformanceInformation performanceInformation, int currentPage, int pageSize);
+    int getAllCount(PerformanceInformationVm performanceInformationVm, int currentPage, int pageSize);
     
-    Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation, int currentPage, int pageSize);
+    Page<PerformanceInformationVm> queryPerformanceInformationVm(PerformanceInformationVm performanceInformationVm, int currentPage, int pageSize);
     
-    List<PerformanceInformation> queryId(String[] id);
+    List<PerformanceInformationVm> queryId(String[] id);
 
-    List<PerformanceInformation> queryDateBetween(String eventId, Date startDate, Date endDate);
+    List<PerformanceInformationVm> queryDateBetween(String eventId, Date startDate, Date endDate);
 
-    List<PerformanceInformation> queryDateBetween(String resourceId, String name, String startTime, String endTime);
+    List<PerformanceInformationVm> queryDateBetween(String resourceId, String name, String startTime, String endTime);
 
     List<Map<String,String>> queryMaxValueByBetweenDate(String sourceId, String name, String startTime, String endTime);
 
-
-    List<PerformanceInformation> getAllPerformanceInformationByeventId(String eventId);
-    public List<PerformanceInformation> getAllEventId();
+    List<PerformanceInformationVm> getAllPerformanceInformationByeventId(String eventId);
 }

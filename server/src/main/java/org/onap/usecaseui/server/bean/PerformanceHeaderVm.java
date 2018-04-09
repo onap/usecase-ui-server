@@ -25,8 +25,8 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name="alarms_commoneventheader")
-public class AlarmsHeader implements Serializable{
+@Table(name="performance_commoneventheader_vm")
+public class PerformanceHeaderVm implements Serializable {
 
 	@Id
 	@Column(name = "id")
@@ -74,45 +74,15 @@ public class AlarmsHeader implements Serializable{
 	
 	@Column(name = "lastEpochMicroSec")
 	private String lastEpochMicroSec;
-
-
-
-	@Column(name = "startEpochMicrosecCleared")
-	private String startEpochMicrosecCleared;
-
-	@Column(name = "lastEpochMicroSecCleared")
-	private String lastEpochMicroSecCleared;
-
 	
 	@Column(name = "sequence")
 	private String sequence;
 	
-	@Column(name = "faultFieldsVersion")
-	private String faultFieldsVersion;
+	@Column(name = "measurementsForVfScalingVersion")
+	private String measurementsForVfScalingVersion;
 	
-	@Column(name = "eventServrity")
-	private String eventServrity;
-	
-	@Column(name = "eventSourceType")
-	private String eventSourceType;
-	
-	@Column(name = "eventCategory")
-	private String eventCategory;
-	
-	@Column(name = "alarmCondition")
-	private String alarmCondition;
-	
-	@Column(name = "specificProblem")
-	private String specificProblem;
-	
-	@Column(name = "vfStatus")
-	private String vfStatus;
-	
-	@Column(name = "alarmInterfaceA")
-	private String alarmInterfaceA;
-	
-	@Column(name = "status")
-	private String status;
+	@Column(name = "measurementInterval")
+	private String measurementInterval;
 	
 	@Column(name = "createTime")
 	private Date createTime;
@@ -120,18 +90,14 @@ public class AlarmsHeader implements Serializable{
 	@Column(name = "updateTime")
 	private Date updateTime;
 
-
-
-	public AlarmsHeader() {
+	public PerformanceHeaderVm() {
 	}
 
-	public AlarmsHeader(String sourceId) {
+	public PerformanceHeaderVm(String sourceId) {
 		this.sourceId = sourceId;
 	}
 
-
-
-	public AlarmsHeader(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String sequence, String faultFieldsVersion, String eventServrity, String eventSourceType, String eventCategory, String alarmCondition, String specificProblem, String vfStatus, String alarmInterfaceA, String status, Date createTime, Date updateTime) {
+	public PerformanceHeaderVm(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String sequence, String measurementsForVfScalingVersion, String measurementInterval, Date createTime, Date updateTime) {
 		this.version = version;
 		this.eventName = eventName;
 		this.domain = domain;
@@ -146,18 +112,9 @@ public class AlarmsHeader implements Serializable{
 		this.priority = priority;
 		this.startEpochMicrosec = startEpochMicrosec;
 		this.lastEpochMicroSec = lastEpochMicroSec;
-		this.startEpochMicrosecCleared = startEpochMicrosecCleared;
-		this.lastEpochMicroSecCleared = lastEpochMicroSecCleared;
 		this.sequence = sequence;
-		this.faultFieldsVersion = faultFieldsVersion;
-		this.eventServrity = eventServrity;
-		this.eventSourceType = eventSourceType;
-		this.eventCategory = eventCategory;
-		this.alarmCondition = alarmCondition;
-		this.specificProblem = specificProblem;
-		this.vfStatus = vfStatus;
-		this.alarmInterfaceA = alarmInterfaceA;
-		this.status = status;
+		this.measurementsForVfScalingVersion = measurementsForVfScalingVersion;
+		this.measurementInterval = measurementInterval;
 		this.createTime = createTime;
 		this.updateTime = updateTime;
 	}
@@ -266,22 +223,6 @@ public class AlarmsHeader implements Serializable{
 		this.startEpochMicrosec = startEpochMicrosec;
 	}
 
-	public String getStartEpochMicrosecCleared() {
-		return startEpochMicrosecCleared;
-	}
-
-	public void setStartEpochMicrosecCleared(String startEpochMicrosecCleared) {
-		this.startEpochMicrosecCleared = startEpochMicrosecCleared;
-	}
-
-	public String getLastEpochMicroSecCleared() {
-		return lastEpochMicroSecCleared;
-	}
-
-	public void setLastEpochMicroSecCleared(String lastEpochMicroSecCleared) {
-		this.lastEpochMicroSecCleared = lastEpochMicroSecCleared;
-	}
-
 	public String getLastEpochMicroSec() {
 		return lastEpochMicroSec;
 	}
@@ -298,76 +239,20 @@ public class AlarmsHeader implements Serializable{
 		this.sequence = sequence;
 	}
 
-	public String getFaultFieldsVersion() {
-		return faultFieldsVersion;
+	public String getMeasurementsForVfScalingVersion() {
+		return measurementsForVfScalingVersion;
 	}
 
-	public void setFaultFieldsVersion(String faultFieldsVersion) {
-		this.faultFieldsVersion = faultFieldsVersion;
+	public void setMeasurementsForVfScalingVersion(String measurementsForVfScalingVersion) {
+		this.measurementsForVfScalingVersion = measurementsForVfScalingVersion;
 	}
 
-	public String getEventServrity() {
-		return eventServrity;
+	public String getMeasurementInterval() {
+		return measurementInterval;
 	}
 
-	public void setEventServrity(String eventServrity) {
-		this.eventServrity = eventServrity;
-	}
-
-	public String getEventSourceType() {
-		return eventSourceType;
-	}
-
-	public void setEventSourceType(String eventSourceType) {
-		this.eventSourceType = eventSourceType;
-	}
-
-	public String getEventCategory() {
-		return eventCategory;
-	}
-
-	public void setEventCategory(String eventCategory) {
-		this.eventCategory = eventCategory;
-	}
-
-	public String getAlarmCondition() {
-		return alarmCondition;
-	}
-
-	public void setAlarmCondition(String alarmCondition) {
-		this.alarmCondition = alarmCondition;
-	}
-
-	public String getSpecificProblem() {
-		return specificProblem;
-	}
-
-	public void setSpecificProblem(String specificProblem) {
-		this.specificProblem = specificProblem;
-	}
-
-	public String getVfStatus() {
-		return vfStatus;
-	}
-
-	public void setVfStatus(String vfStatus) {
-		this.vfStatus = vfStatus;
-	}
-
-	public String getAlarmInterfaceA() {
-		return alarmInterfaceA;
-	}
-
-	public void setAlarmInterfaceA(String alarmInterfaceA) {
-		this.alarmInterfaceA = alarmInterfaceA;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
+	public void setMeasurementInterval(String measurementInterval) {
+		this.measurementInterval = measurementInterval;
 	}
 
 	public Date getCreateTime() {

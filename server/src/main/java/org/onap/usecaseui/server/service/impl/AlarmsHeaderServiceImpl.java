@@ -202,7 +202,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			if(!"0".equals(eventServrity) &&  eventServrity!=null) {
 				query.setString("eventServrity", eventServrity);
 			}
-			if(!"0".equals(reportingEntityName) &&  eventServrity!=null) {
+			if(!"0".equals(reportingEntityName) &&  reportingEntityName!=null) {
 				query.setString("reportingEntityName", reportingEntityName);
 			}
 			if( null!=createTime && endTime!= null) {
@@ -251,9 +251,16 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			}
 
 			Query query = session.createQuery(string.toString());
-			query.setString("status",status);
-			query.setString("eventId",eventId);
-			query.setString("eventServrity",eventServrity);
+
+			if(!"0".equals(status) &&  status!=null) {
+				query.setString("status", status);
+			}
+			if(!"0".equals(eventId) &&  eventId!=null) {
+				query.setString("eventId", eventId);
+			}
+			if(!"0".equals(eventServrity) &&  eventServrity!=null) {
+				query.setString("eventServrity", eventServrity);
+			}
 
 			String num = query.uniqueResult().toString();
 			session.flush();

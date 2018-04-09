@@ -22,12 +22,8 @@ import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.bo.PerformanceBo;
 import org.onap.usecaseui.server.constant.Constant;
-import org.onap.usecaseui.server.service.PerformanceHeaderService;
-import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.util.CSVUtils;
-import org.onap.usecaseui.server.util.DateUtils;
+import org.onap.usecaseui.server.service.*;
 import org.onap.usecaseui.server.util.Page;
-import org.onap.usecaseui.server.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +46,8 @@ public class PerformanceController {
     @Resource(name = "PerformanceHeaderService")
     private PerformanceHeaderService performanceHeaderService;
 
+    @Resource(name = "PerformanceInformationService")
+    private PerformanceInformationService performanceInformationService;
 
     public void setPerformanceHeaderService(PerformanceHeaderService performanceHeaderService) {
         this.performanceHeaderService = performanceHeaderService;
@@ -59,9 +57,6 @@ public class PerformanceController {
     public void setPerformanceInformationService(PerformanceInformationService performanceInformationService) {
         this.performanceInformationService = performanceInformationService;
     }
-
-    @Resource(name = "PerformanceInformationService")
-    private PerformanceInformationService performanceInformationService;
 
     private Logger logger = LoggerFactory.getLogger(PerformanceController.class);
 
@@ -81,7 +76,7 @@ public class PerformanceController {
                                      @PathVariable int pageSize, @PathVariable(required = false) String sourceId,
                                      @PathVariable(required = false) String sourceName, @PathVariable(required = false) String priority,
                                      @PathVariable(required = false) String startTime, @PathVariable(required = false) String endTime) throws JsonProcessingException, ParseException {
-        logger.info("transfer getAlarmData Apis, " +
+        logger.info("transfer getPerformanceData Apis, " +
                         "Parameter all follows : [currentPage : {} , pageSize : {} , sourceId : {} , " +
                         "sourceName : {} , priority : {} , startTime :{} , endTime : {} ]"
                 , currentPage, pageSize, sourceId, sourceName, priority, startTime, endTime);
@@ -146,6 +141,8 @@ public class PerformanceController {
                         pera.setUpdateTime(formatter.parse(updatetime));
                         performanceInformations.add(pera);
 
+
+
                     }else{
                       performanceInformations = performanceInformationService.queryPerformanceInformation(pe, 1, 100).getList();
 
@@ -153,10 +150,8 @@ public class PerformanceController {
                     pbo.setPerformanceHeader(per);
                     performanceInformations.forEach(pi -> {
                         if (pi.getValue().equals("")) {
-                           // List<PerformanceInformation> perf = new ArrayList<PerformanceInformation>();
+                          StringBuffer value1 = new StringBuffer();
 
-                            StringBuffer value1 = new StringBuffer();
-                           // if()
                             performanceInformationService.queryPerformanceInformation(new PerformanceInformation(pi.getName()), 1, 100).getList()
                                     .forEach(val -> value1.append(val.getValue()));
                             pi.setValue(value1.toString());
@@ -164,30 +159,35 @@ public class PerformanceController {
                     });
                     pbo.setPerformanceInformation(performanceInformations);
                     list.add(pbo);
-                //});
+
                 }
             }
 
         } else {
             pa = performanceHeaderService.queryPerformanceHeader(null, currentPage, pageSize);
             if (pa == null) {
-                PerformanceHeader performanceHeader_s = new PerformanceHeader();
+                PerformanceHeader performanceHeader = new PerformanceHeader();
                 //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String createtime="2017-11-15 06:30:00";
                 String upatetime="2017-11-15 14:46:09";
-                performanceHeader_s.setSourceName("101ZTHX1EPO1NK7E0Z2");
-                performanceHeader_s.setSourceId("1101ZTHX1EPO1NK7E0Z2");
-                performanceHeader_s.setEventName("Mfvs_MMEEthernetPort");
-                performanceHeader_s.setEventId("2017-11-15T06:30:00EthernetPort1101ZTHX1EPO1NK7E0Z2");
-                performanceHeader_s.setPriority("Normal");
-                performanceHeader_s.setCreateTime(formatter.parse(createtime));
-                performanceHeader_s.setUpdateTime(formatter.parse(upatetime));
-                performanceHeaderList.add(performanceHeader_s);
-                performanceHeader_s.setId(5);
+                performanceHeader.setSourceName("101ZTHX1EPO1NK7E0Z2");
+                performanceHeader.setSourceId("1101ZTHX1EPO1NK7E0Z2");
+                performanceHeader.setEventName("Mfvs_MMEEthernetPort");
+                performanceHeader.setEventId("2017-11-15T06:30:00EthernetPort1101ZTHX1EPO1NK7E0Z2");
+                performanceHeader.setPriority("Normal");
+                performanceHeader.setCreateTime(formatter.parse(createtime));
+                performanceHeader.setUpdateTime(formatter.parse(upatetime));
+                performanceHeader.setId(5);
+                performanceHeaderList.add(performanceHeader);
+                pa = new Page();
+                pa.setPageNo(1);
+                pa.setPageSize(12);
+                pa.setTotalRecords(1);
+                pa.setList(performanceHeaderList);
             }
 
-            //alarmsHeaders = pa.getList();
-            //if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
+            //performanceHeaders = pa.getList();
+            //if (null != performanceHeaders && performanceHeaders.size() > 0) {
             //list = pa.getList();
 
                 List<PerformanceHeader> p = pa != null ? pa.getList() : null;
@@ -207,104 +207,55 @@ public class PerformanceController {
         return omPerformance.writeValueAsString(map);
     }
 
-    /*@RequestMapping(value = {"/performance/genCsv/{eventId}"}, method = RequestMethod.GET, produces = "application/json")
-    public String generateCsvFile(HttpServletResponse response, @PathVariable String[] eventId) throws JsonProcessingException {
-        String csvFile = "csvFiles/vnf_performance_" + new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date()) + ".csv";
-        List<PerformanceHeader> performanceHeaders = performanceHeaderService.queryId(eventId);
-        if (null == performanceHeaders || performanceHeaders.size() <= 0)
-            return new ObjectMapper().writeValueAsString("selected eventId don't exist");
-        List<String[]> csvData = new ArrayList<>();
-        performanceHeaders.forEach(s -> {
-            List<PerformanceInformation> information = performanceInformationService.queryPerformanceInformation(new PerformanceInformation(s.getEventId()), 1, 100).getList();
-            String names = "";
-            String values = "";
-            if (0 < information.size() && null != information) {
-                for (PerformanceInformation a : information) {
-                    names += a.getName() + ",";
-                    values += a.getValue() + ",";
-                }
-                names = names.substring(0, names.lastIndexOf(','));
-                values = values.substring(0, values.lastIndexOf(','));
-            }
-            csvData.add(new String[]{
-                    s.getVersion(), s.getEventName(), s.getDomain(), s.getEventId(), s.getEventType(), s.getNfcNamingCode(), s.getNfNamingCode(),
-                    s.getSourceId(), s.getSourceName(), s.getReportingEntityId(), s.getReportingEntityName(), s.getPriority(),
-                    s.getStartEpochMicrosec(), s.getLastEpochMicroSec(), s.getSequence(), s.getMeasurementsForVfScalingVersion(),
-                    s.getMeasurementInterval(), DateUtils.dateToString(s.getCreateTime()), DateUtils.dateToString(s.getUpdateTime()),
-                    names, values
-            });
-        });
-        CSVUtils.writeCsv(PerformanceCSVHeaders, csvData, csvFile);
-        if (ResponseUtil.responseDownload(csvFile, response)) {
-            return omPerformance.writeValueAsString("success");
-        } else {
-            return omPerformance.writeValueAsString("failed");
-        }
-    }*/
 
-    /*@RequestMapping(value = {"/performance/genDiaCsv/{dataJson}"}, method = RequestMethod.GET, produces = "application/json")
-    public String generateDiaCsvFile(HttpServletResponse response, @PathVariable String dataJson) throws IOException {
-        List<Map<String, Object>> dataList = omPerformance.readValue(dataJson, List.class);
-        String csvFileName = "csvFiles/" + dataList.get(0).get("name") + "_" + new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date()) + ".csv";
-        try {
-            String[] headers = new String[]{"eventId", "name", "dateUnit", "value"};
-            List<String[]> csvDatas = new ArrayList<>();
-            if (null != dataList) {
-                dataList.forEach((l) -> {
-                    StringBuffer fileData = new StringBuffer();
-                    l.forEach((k, v) -> {
-                        logger.info(v.toString());
-                        fileData.append(v.toString() + ",");
-                    });
-                    csvDatas.add(fileData.toString().split(","));
-                });
-            }
-            CSVUtils.writeCsv(headers, csvDatas, csvFileName);
-        } catch (Exception pe) {
-            logger.error(pe.getMessage());
-        }
-        if (ResponseUtil.responseDownload(csvFileName, response)) {
-            return omPerformance.writeValueAsString("success");
-        } else {
-            return omPerformance.writeValueAsString("failed");
-        }
-    }*/
 
     @RequestMapping(value = {"/performance/diagram"}, method = RequestMethod.POST, produces = "application/json")
-    public String generateDiagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String nameParent, @RequestParam String format) {
-        try {
-            return omPerformance.writeValueAsString(diagramDate(sourceId, nameParent, startTime, endTime, format));
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+    public String generateDiagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String nameParent, @RequestParam String format) throws JsonProcessingException {
+        List<List<Long>> list =null;
+        list = diagramDate(sourceId, nameParent, startTime, endTime, format);
+        return omPerformance.writeValueAsString(list);
     }
 
     @RequestMapping(value = {"/performance/resourceIds"}, method = RequestMethod.GET)
-    public String getSourceIds() {
+    public String getSourceIds() throws JsonProcessingException {
         List<String> sourceIds = new ArrayList<>();
-        try {
-            performanceHeaderService.queryAllSourceId().forEach(ph -> {
-                if (!sourceIds.contains(ph))
-                    sourceIds.add(ph);
-            });
+          List list=  performanceHeaderService.queryAllSourceId();
+            PerformanceHeader performanceHeader;
+            if(list.size()==0){
+                performanceHeader = new PerformanceHeader();
+                performanceHeader.setId(1);
+                performanceHeader.setSourceId("aaaa");
+                list.add(performanceHeader);
+
+            }
+          for(int a=0;a<list.size();a++){
+
+              performanceHeader  = (PerformanceHeader)list.get(a);
+              String sourceid = performanceHeader.getSourceId();
+              if (!sourceIds.contains(sourceid)) {
+                  sourceIds.add(sourceid);
+              }
+          }
+
             return omPerformance.writeValueAsString(sourceIds);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return null;
-        }
+
     }
 
     @RequestMapping(value = {"/performance/names"}, method = RequestMethod.POST)
     public String getNames(@RequestParam Object sourceId) {
         try {
             List<String> names = new ArrayList<>();
-            //String sourceId_s = sourceId.toString();
-
-           //performanceInformationService.queryDateBetween(sourceId.toString(), null, null, null).forEach(per -> {
-            List list =performanceInformationService.queryDateBetween(sourceId.toString(), null, null, null);
+            List<PerformanceInformation> list =performanceInformationService.queryDateBetween(sourceId.toString(), null, null, null);
             PerformanceInformation per;
+            if(list.size()==0){
+                PerformanceInformation perf= new PerformanceInformation();
+                perf.setEventId("1101ZTHX1MMEGJM1W1");
+                perf.setValue("0");
+                perf.setName("DNS.AttDnsQuery");
+                perf.setId(1);
+                list.add(perf);
+
+            }
             for(int a=0;a<list.size();a++) {
                 per = (PerformanceInformation)list.get(a);
                 if (null == per) {
@@ -316,7 +267,6 @@ public class PerformanceController {
                         names.add(per.getName());
 
             }
-           // });
             return omPerformance.writeValueAsString(names);
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -327,9 +277,14 @@ public class PerformanceController {
     private List<List<Long>> dateProcess(String sourceId, String name, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal, String keyUnit) throws ParseException {
         List<List<Long>> dataList = new ArrayList<>();
         long tmpEndTimeL = startTimeL + timeIteraPlusVal;
+        Date datea_a = new Date(startTimeL);
+        Date dateb_a = new Date(tmpEndTimeL);
+        String datea = sdf.format(datea_a);
+        String dateb = sdf.format(dateb_a);
         while (endTimeL >= tmpEndTimeL) {
-            List<Map<String, String>> maps = performanceInformationService.queryMaxValueByBetweenDate(sourceId, name, sdf.format(new Date(startTimeL)), sdf.format(new Date(tmpEndTimeL)));
-            maps.forEach(map -> {
+            List<Map<String, String>> maps = performanceInformationService.queryMaxValueByBetweenDate(sourceId, name, datea, dateb);
+
+           maps.forEach(map -> {
                 try {
                     List<Long> longList = new ArrayList<>();
                     if (map.get("Time") != null && !"".equals(map.get("Time")) && !"NULL".equals(map.get("Time"))) {

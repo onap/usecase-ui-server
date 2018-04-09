@@ -47,14 +47,18 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
     @Autowired
     private SessionFactory sessionFactory;
 
-	private Session getSession() {
+
+
+	private Session getSessionFactory(){
 		return sessionFactory.openSession();
 	}
 
 
+
+
 	@Override
 	public String savePerformanceHeader(PerformanceHeader performanceHeder) {
-		 try(Session session = getSession();){
+		 try(Session session = getSessionFactory();){
 	            if (null == performanceHeder){
 	                logger.error("PerformanceHeaderServiceImpl savePerformanceHeader performanceHeder is null!");
 	            }
@@ -74,7 +78,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public String updatePerformanceHeader(PerformanceHeader performanceHeder) {
-		try(Session session = getSession();){
+		try(Session session = getSessionFactory();){
             if (null == performanceHeder){
                 logger.error("PerformanceHeaderServiceImpl updatePerformanceHeader performanceHeder is null!");
             }
@@ -94,15 +98,17 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 
 
+
+
 	@Override
-	public int getAllCountByStatus(String status){
-		try (Session session = getSession()){
+	public int getAllCountByEventType(){
+		try (Session session = getSessionFactory()){
 			StringBuffer count = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
-			if(!"0".equals(status)){
+			/*if(!"0".equals(status)){
 				count.append(" and a.status=:status");
-			}
+			}*/
 			Query  query =session.createQuery(count.toString());
-			query.setString("status",status);
+			/*query.setString("status",status);*/
 			//int q = (int)query.uniqueResult();
 			long q=(long)query.uniqueResult();
 			session.flush();
@@ -113,33 +119,44 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		}
 	}
 
+	
+	
+	
+	
 	@Override
-	public List<PerformanceHeader> getAllByStatus(String status,String eventName,String sourceName,String eventServerity,String reportingEntityName,  Date createTime, Date endTime){
-		try (Session session = getSession()){
+	public List<PerformanceHeader> getAllByEventType(String eventName,String sourceName,String reportingEntityName,  Date createTime, Date endTime){
+		try (Session session = getSessionFactory()){
 			StringBuffer string = new StringBuffer("from PerformanceHeader a where 1=1");
-			if(!"0".equals(status)){
+			/*if(!"0".equals(status)){
 				string.append(" and a.status=:status");
-			}if(!"".equals(eventName) &&  eventName!=null){
+			}*/
+			if(!"0".equals(eventName) &&  eventName!=null){
                 string.append(" and a.eventName=:eventName");
             }
-            if(!"".equals(sourceName) &&  sourceName!=null){
+            if(!"0".equals(sourceName) &&  sourceName!=null){
                 string.append(" and a.sourceName=:sourceName");
             }
-            if(!"".equals(eventServerity) &&  eventServerity!=null){
-                string.append(" and a.eventServerity=:eventServerity");
-            }
-            if(!"".equals(reportingEntityName) &&  eventServerity!=null){
+
+            if(!"0".equals(reportingEntityName) &&  reportingEntityName!=null){
                 string.append(" and a.reportingEntityName=:reportingEntityName");
             }
             if( null!=createTime && endTime!= null) {
                 string.append(" and a.createTime between :startTime and :endTime");
             }
             Query query = session.createQuery(string.toString());
-            query.setString("status",status);
-            query.setString("eventName",eventName);
-            query.setString("sourceName",sourceName);
-            query.setString("eventServerity",eventServerity);
-            query.setString("reportingEntityName",reportingEntityName);
+			/*if(!"0".equals(status)) {
+				query.setString("status", status);
+			}*/
+			if(!"0".equals(eventName) &&  eventName!=null) {
+				query.setString("eventName", eventName);
+			}
+			if(!"0".equals(sourceName) &&  sourceName!=null) {
+				query.setString("sourceName", sourceName);
+			}
+
+			if(!"0".equals(reportingEntityName) &&  reportingEntityName!=null) {
+				query.setString("reportingEntityName", reportingEntityName);
+			}
             if( null!=createTime && endTime!= null) {
                 query.setDate("startTime",createTime);
                 query.setDate("endTime",endTime);
@@ -164,13 +181,82 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 
 
+	@Override
+	public PerformanceHeader getPerformanceHeaderDetail(Integer id) {
+		try(Session session = getSessionFactory()) {
+
+			String string = "from PerformanceHeader a where 1=1 and a.id=:id";
+			Query q = session.createQuery(string);
+			q.setInteger("id",id);
+			PerformanceHeader performanceHeader =(PerformanceHeader)q.uniqueResult();
+			session.flush();
+			return performanceHeader;
+
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceHeaderServiceImpl getPerformanceHeaderDetail."+e.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	public int getAllByDatetime(String eventId,  String createTime) {
+		try (Session session = getSessionFactory();){
+			StringBuffer string = new StringBuffer("select count(*) as count from PerformanceHeader a where 1=1");
+
+			/*if(!"0".equals(status) &&  status!=null){
+				string.append(" and a.status=:status");
+			}*/
+			if(!"0".equals(eventId) &&  eventId!=null){
+				string.append(" and a.eventId=:eventId");
+			}
+
+
+
+			/*if( null!=createTime && endTime!= null) {
+				string.append(" and a.createTime between :startTime and :endTime");
+			}*/
+			if( null!=createTime) {
+				string.append(" and to_days(a.createTime) = to_days('"+createTime+"')");
+			}
+
+			/*string.append("     group by DATE_FORMAT(a.createTime,'%y-%m-%d')");*/
+			Query query = session.createQuery(string.toString());
+			/*if(!"0".equals(status) &&  status!=null) {
+				query.setString("status", status);
+			}*/
+				if(!"0".equals(eventId) &&  eventId!=null) {
+					query.setString("eventId", eventId);
+				}
+
+			//query.setDate("createTime",createTime);
+
+			/*if( null!=createTime && endTime!= null) {
+				query.setDate("startTime",createTime);
+				query.setDate("endTime",endTime);
+
+			}*/
+			long l = (long)query.uniqueResult();
+			int a = (int) l;
+			//List<PerformanceHeader> list =query.list();
+			session.flush();
+			return a;
+
+		}catch (Exception e){
+
+			logger.error("exception occurred while performing PerformanceHeaderServiceImpl getAllCount."+e.getMessage());
+			return 0;
+		}
+
+	}
+
+
 
 
 
 
 
 	public int getAllCount(PerformanceHeader performanceHeder, int currentPage, int pageSize) {
-		try(Session session = getSession();){
+		try(Session session = getSessionFactory();){
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
 			if (null == performanceHeder) {
                 //logger.error("PerformanceHeaderServiceImpl getAllCount performanceHeder is null!");
@@ -269,7 +355,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		int allRow =this.getAllCount(performanceHeder,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try(Session session = getSession();){
+		try(Session session = getSessionFactory();){
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
             if (null == performanceHeder) {
                 //logger.error("PerformanceHeaderServiceImpl queryPerformanceHeader performanceHeder is null!");
@@ -371,7 +457,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceHeader> queryId(String[] id) {
-		try(Session session = getSession();) {
+		try(Session session = getSessionFactory();) {
 			if(id.length==0) {
 				logger.error("PerformanceHeaderServiceImpl queryId is null!");
 			}
@@ -388,7 +474,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public List<String> queryAllSourceId() {
-		try(Session session = getSession();) {
+		try(Session session = getSessionFactory();) {
 			Query query = session.createQuery("select a.sourceId from PerformanceHeader a");
 			return query.list();
 		} catch (Exception e) {
