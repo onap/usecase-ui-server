@@ -16,11 +16,6 @@
 package org.onap.usecaseui.server.controller;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
@@ -55,9 +50,6 @@ public class AlarmController {
     @Resource(name = "AlarmsHeaderService")
     private AlarmsHeaderService alarmsHeaderService;
 
-   /* public AlarmsHeaderService getAlarmsHeaderService() {
-        return alarmsHeaderService;
-    }*/
 
     public void setAlarmsHeaderService(AlarmsHeaderService alarmsHeaderService) {
         this.alarmsHeaderService = alarmsHeaderService;
@@ -74,17 +66,6 @@ public class AlarmController {
     private ObjectMapper omAlarm = new ObjectMapper();
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-
-
-
-
-
-
-
-
-
-
 
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
@@ -217,32 +198,122 @@ public class AlarmController {
     }
 
 
-
     @RequestMapping(value = "/alarm/statusCount", method = RequestMethod.GET, produces = "application/json")
-    public String getStatusCount() {
+    public String getStatusCount() throws JsonProcessingException {
         List<String> statusCount = new ArrayList<>();
-        try {
+
             statusCount.add(alarmsHeaderService.queryStatusCount("0"));
             statusCount.add(alarmsHeaderService.queryStatusCount("active"));
             statusCount.add(alarmsHeaderService.queryStatusCount("close"));
             return omAlarm.writeValueAsString(statusCount);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+
+    }
+
+    @RequestMapping(value = {"/alarm/sourceId"}, method = RequestMethod.GET)
+    public String getSourceId() throws JsonProcessingException {
+        List<String> sourceIds = new ArrayList<>();
+        Page page  = alarmsHeaderService.queryAlarmsHeader(new AlarmsHeader(), 1, Integer.MAX_VALUE);
+        AlarmsHeader alarmsHeader;
+
+        if(page==null){
+            page = new Page();
+            List list = new ArrayList();
+            alarmsHeader = new AlarmsHeader();
+            alarmsHeader.setId(1);
+            alarmsHeader.setSourceId("aaaa");
+            list.add(alarmsHeader);
+            page.setPageNo(1);
+            page.setPageSize(12);
+            page.setTotalRecords(1);
+            page.setList(list);
+
+        }
+        for(int a=0;a<page.getList().size();a++){
+
+            alarmsHeader  = (AlarmsHeader)page.getList().get(a);
+            String sourceid = alarmsHeader.getSourceId();
+            if (!sourceIds.contains(sourceid)) {
+                sourceIds.add(sourceid);
+            }
+        }
+        return omAlarm.writeValueAsString(sourceIds);
+    }
+
+    @RequestMapping(value = {"/alarm/diagram"}, method = RequestMethod.POST)
+    public String genDiagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String showMode) throws JsonProcessingException {
+
+            return omAlarm.writeValueAsString(diagramDate(sourceId, startTime, endTime, showMode));
+
+    }
+
+    private List<List<Long>> dateProcess(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal, String keyUnit) throws ParseException {
+        List<List<Long>> dataList = new ArrayList<>();
+        long tmpEndTimeL = startTimeL + timeIteraPlusVal;
+        while (endTimeL >= tmpEndTimeL) {
+            List<Map<String, String>> maps = alarmsInformationService.queryDateBetween(sourceId, sdf.format(new Date(startTimeL)), sdf.format(new Date(tmpEndTimeL)));
+            maps.forEach(map -> {
+                try {
+                    List<Long> longList = new ArrayList<>();
+                    if (map.get("Time") != null && !"".equals(map.get("Time")) && !"NULL".equals(map.get("Time"))) {
+                        longList.add(sdf.parse(map.get("Time")).getTime());
+                        if (map.get("Count") != null && !"".equals(map.get("Count")))
+                            longList.add(Long.parseLong(map.get("Count")));
+                        else
+                            longList.add(0L);
+                    }
+                    if (longList.size() > 0)
+                        dataList.add(longList);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+            startTimeL += timeIteraPlusVal;
+            tmpEndTimeL += timeIteraPlusVal;
+            keyVal += keyValIteraVal;
+        }
+        return dataList;
+    }
+
+    private List<List<Long>> diagramDate(String sourceId, String startTime, String endTime, String format) {
+        try {
+            long startTimel = sdf.parse(startTime).getTime();
+            long endTimel = sdf.parse(endTime).getTime();
+            if (format != null && !format.equals("auto")) {
+                switch (format) {
+                    case "minute":
+                        return dateProcess(sourceId, startTimel, endTimel, 900000, 15, 15, "minute");
+                    case "hour":
+                        return dateProcess(sourceId, startTimel, endTimel, 3600000, 1, 1, "hour");
+                    case "day":
+                        return dateProcess(sourceId, startTimel, endTimel, 86400000, 1, 1, "day");
+                    case "month":
+                        return dateProcess(sourceId, startTimel, endTimel, 2592000000L, 1, 1, "month");
+                    case "year":
+                        return dateProcess(sourceId, startTimel, endTimel, 31536000000L, 1, 1, "year");
+                }
+            } else if (format != null && format.equals("auto")) {
+                long minutes = (endTimel - startTimel) / (1000 * 60);
+                long hours = minutes / 60;
+                if (hours > 12) {
+                    long days = hours / 24;
+                    if (days > 3) {
+                        long months = days / 31;
+                        if (months > 2) {
+                            return dateProcess(sourceId, startTimel, endTimel, 86400000, 1, 1, "day");
+                        } else {
+                            return dateProcess(sourceId, startTimel, endTimel, 2592000000L, 1, 1, "month");
+                        }
+                    } else {
+                        return dateProcess(sourceId, startTimel, endTimel, 3600000, 1, 1, "hour");
+                    }
+                } else {
+                    return dateProcess(sourceId, startTimel, endTimel, 900000, 15, 15, "minute");
+                }
+            }
+        } catch (ParseException e) {
             logger.error(e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

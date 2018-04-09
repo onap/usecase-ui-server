@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,36 +18,30 @@ package org.onap.usecaseui.server.service;
 import java.util.Date;
 import java.util.List;
 
-import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
+import org.onap.usecaseui.server.bean.PerformanceHeaderPm;
 import org.onap.usecaseui.server.util.Page;
 
 
-public interface PerformanceHeaderService {
+public interface PerformanceHeaderPmService {
     
-    String savePerformanceHeader(PerformanceHeader performanceHeder);
+    String savePerformanceHeaderPm(PerformanceHeaderPm performanceHederPm);
     
-    String updatePerformanceHeader(PerformanceHeader performanceHeder);
+    String updatePerformanceHeaderPm(PerformanceHeaderPm performanceHederPm);
     
-    int getAllCount(PerformanceHeader performanceHeder, int currentPage, int pageSize);
+    int getAllCount(PerformanceHeaderPm performanceHederPm, int currentPage, int pageSize);
     
-    Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder, int currentPage, int pageSize);
+    Page<PerformanceHeaderPm> queryPerformanceHeaderPm(PerformanceHeaderPm performanceHederPm, int currentPage, int pageSize);
     
-    List<PerformanceHeader> queryId(String[] id);
+    List<PerformanceHeaderPm> queryId(String[] id);
 
     List<String> queryAllSourceId();
 
 
     public int getAllCountByEventType();
-    public List<PerformanceHeader> getAllByEventType( String eventName, String sourceName, String reportingEntityName, Date createTime, Date endTime);
+    public List<PerformanceHeaderPm> getAllByEventType(String eventName, String sourceName, String reportingEntityName, Date createTime, Date endTime);
 
-    public PerformanceHeader getPerformanceHeaderDetail(Integer id);
+    public PerformanceHeaderPm getPerformanceHeaderDetail(Integer id);
 
     public int getAllByDatetime(String eventId,String createTime);
-
-
-
-
-
-
 }

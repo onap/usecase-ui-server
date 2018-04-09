@@ -18,36 +18,32 @@ package org.onap.usecaseui.server.service;
 import java.util.Date;
 import java.util.List;
 
-import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
+import org.onap.usecaseui.server.bean.PerformanceHeaderVm;
 import org.onap.usecaseui.server.util.Page;
 
 
-public interface PerformanceHeaderService {
+public interface PerformanceHeaderVmService {
     
-    String savePerformanceHeader(PerformanceHeader performanceHeder);
+    String savePerformanceHeaderVm(PerformanceHeaderVm performanceHederVm);
     
-    String updatePerformanceHeader(PerformanceHeader performanceHeder);
+    String updatePerformanceHeaderVm(PerformanceHeaderVm performanceHederVm);
     
-    int getAllCount(PerformanceHeader performanceHeder, int currentPage, int pageSize);
+    int getAllCount(PerformanceHeaderVm performanceHederVm, int currentPage, int pageSize);
     
-    Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder, int currentPage, int pageSize);
+    Page<PerformanceHeaderVm> queryPerformanceHeaderVm(PerformanceHeaderVm performanceHederVm, int currentPage, int pageSize);
     
-    List<PerformanceHeader> queryId(String[] id);
+    List<PerformanceHeaderVm> queryId(String[] id);
 
     List<String> queryAllSourceId();
 
 
-    public int getAllCountByEventType();
-    public List<PerformanceHeader> getAllByEventType( String eventName, String sourceName, String reportingEntityName, Date createTime, Date endTime);
 
-    public PerformanceHeader getPerformanceHeaderDetail(Integer id);
+    public int getAllCountByEventType();
+    public List<PerformanceHeaderVm> getAllByEventType(String eventName, String sourceName, String reportingEntityName, Date createTime, Date endTime);
+
+
+    public PerformanceHeaderVm getPerformanceHeaderDetail(Integer id);
 
     public int getAllByDatetime(String eventId,String createTime);
-
-
-
-
-
-
 }
