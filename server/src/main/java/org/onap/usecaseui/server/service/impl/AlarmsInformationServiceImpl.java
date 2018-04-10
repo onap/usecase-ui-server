@@ -243,13 +243,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			return list;
 		}catch (Exception e){
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. LIST:" + e.getMessage());
-
 			return null;
 		}
-
-
-
 	}
-
-
 }
