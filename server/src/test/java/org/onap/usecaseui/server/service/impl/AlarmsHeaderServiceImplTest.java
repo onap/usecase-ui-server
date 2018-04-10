@@ -32,7 +32,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 import java.io.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -98,6 +97,10 @@ public class AlarmsHeaderServiceImplTest {
 				AlarmsHeader ah = new AlarmsHeader();
 				return Arrays.asList(ah);
 			}
+			@Mock
+			public Object uniqueResult() {
+				return "0";
+			}
 		};
 		MockUp<Session> mockedSession = new MockUp<Session>() {
 			@Mock
@@ -154,12 +157,6 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetStatusBySourceName() throws Exception {
-		new MockUp<Query>() {
-			@Mock
-			public Object uniqueResult() {
-				return "active";
-			}
-		};
 		alarmsHeaderServiceImpl.getStatusBySourceName("sourceName");
 	}
 
@@ -176,12 +173,6 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetAllCountByStatus() throws Exception {
-		new MockUp<Query>() {
-			@Mock
-			public Object uniqueResult() {
-				return "1";
-			}
-		};
 		alarmsHeaderServiceImpl.getAllCountByStatus("status");
 	}
 
@@ -197,24 +188,12 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetAllByDatetime() throws Exception {
-		new MockUp<Query>() {
-			@Mock
-			public Object uniqueResult() {
-				return "1";
-			}
-		};
 		alarmsHeaderServiceImpl.getAllCountByStatus("status");
 		alarmsHeaderServiceImpl.getAllByDatetime("status", "eventId", "eventServrity", "createTime");
 	}
 
 	@Test
 	public void testGetAllCount() throws Exception {
-		new MockUp<Query>() {
-			@Mock
-			public Object uniqueResult() {
-				return "1";
-			}
-		};
 		AlarmsHeader ah = new AlarmsHeader();
 		ah.setVersion("va2");
 		ah.setEventName("a");
