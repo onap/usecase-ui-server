@@ -158,9 +158,9 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			}
 			Query query = session.createQuery(count.toString());
 			query.setString("status",status);
-			String num = query.uniqueResult().toString();
+			Object obj = query.uniqueResult();
 			session.flush();
-			return Integer.parseInt(num);
+			return Integer.parseInt(obj.toString());
 		}catch (Exception e){
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount."+e.getMessage());
 			return 0;
@@ -261,9 +261,9 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 				query.setString("eventServrity", eventServrity);
 			}
 
-			String num = query.uniqueResult().toString();
+			Object obj = query.uniqueResult();
 			session.flush();
-			return Integer.parseInt(num);
+			return Integer.parseInt(obj.toString());
 		}catch (Exception e){
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount."+e.getMessage());
 			return 0;
@@ -379,9 +379,9 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                     query.setDate("endTime",alarmsHeader.getUpdateTime());
                 }
 
-			String num = query.uniqueResult().toString();
+			Object obj = query.uniqueResult();
             session.flush();
-			return Integer.parseInt(num);
+			return Integer.parseInt(obj.toString());
         } catch (Exception e) {
             logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAllCount. Details:" + e.getMessage());
             return -1;
@@ -530,7 +530,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			}
 			List<AlarmsHeader> list = new ArrayList<AlarmsHeader>();
 			Query query = session.createQuery("from AlarmsHeader a where a.eventName IN (:alist)");
-			list = query.setParameterList("alist", id).list();
+			query = query.setParameterList("alist", id);
+			list = query.list();
 			return list;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryId. Details:" + e.getMessage());
@@ -542,12 +543,15 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
     public String queryStatusCount(String status) {
         try(Session session = getSession()){
             String hql = "select count(status) from AlarmsHeader a";
-            if (!status.equals("0"))
+            if (!status.equals("0")) {
                 hql+=" where a.status = :status";
+			}
             Query query = session.createQuery(hql);
-            if (!status.equals("0"))
+            if (!status.equals("0")){
                 query.setString("status",status);
-            return query.uniqueResult().toString();
+			}
+			Object obj = query.uniqueResult();
+            return obj.toString();
         } catch (Exception e) {
             logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryStatusCount. Details:" + e.getMessage());
             return null;

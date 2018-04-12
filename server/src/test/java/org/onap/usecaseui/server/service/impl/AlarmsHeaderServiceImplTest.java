@@ -157,11 +157,23 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetStatusBySourceName() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "active";
+			}
+		};
 		alarmsHeaderServiceImpl.getStatusBySourceName("sourceName");
 	}
 
 	@Test
 	public void testGetIdByStatusSourceName() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "AlarmsHeader";
+			}
+		};
 		alarmsHeaderServiceImpl.getIdByStatusSourceName("sourceName");
 	}
 
@@ -173,6 +185,12 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetAllCountByStatus() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "1";
+			}
+		};
 		alarmsHeaderServiceImpl.getAllCountByStatus("status");
 	}
 
@@ -183,17 +201,35 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetAlarmsHeaderDetail() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "AlarmsHeader";
+			}
+		};
 		alarmsHeaderServiceImpl.getAlarmsHeaderDetail(1);
 	}
 
 	@Test
 	public void testGetAllByDatetime() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "1";
+			}
+		};
 		alarmsHeaderServiceImpl.getAllCountByStatus("status");
 		alarmsHeaderServiceImpl.getAllByDatetime("status", "eventId", "eventServrity", "createTime");
 	}
 
 	@Test
 	public void testGetAllCount() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "1";
+			}
+		};
 		AlarmsHeader ah = new AlarmsHeader();
 		ah.setVersion("va2");
 		ah.setEventName("a");
@@ -264,6 +300,12 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testQueryStatusCount() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public Object uniqueResult() {
+				return "1";
+			}
+		};
 		alarmsHeaderServiceImpl.queryStatusCount("status");
 	}
 
