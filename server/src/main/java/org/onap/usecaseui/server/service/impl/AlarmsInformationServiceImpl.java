@@ -185,7 +185,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			List<AlarmsInformation> list = new ArrayList<AlarmsInformation>();
 			Session session = getSession();
 			Query query = session.createQuery("from AlarmsInformation a where a.eventId IN (:alist)");
-			list = query.setParameterList("alist", id).list();
+			query = query.setParameterList("alist", id);
+			list = query.list();
 			session.close();
 			return list;
 		} catch (Exception e) {
@@ -216,7 +217,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
 				query.setString("startTime", startTime).setString("endTime", endTime);
 			}
-			Iterator it= query.list().iterator();
+			List<Object[]> queryResult = query.list();
+			Iterator it= queryResult.iterator();
 			while(it.hasNext()){
 				Object[] res=(Object[]) it.next();
 				Map<String,String> map = new HashMap<>();

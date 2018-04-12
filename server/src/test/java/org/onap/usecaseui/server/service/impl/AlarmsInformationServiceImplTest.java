@@ -138,10 +138,6 @@ public class AlarmsInformationServiceImplTest {
 			private Session getSession() {
 				return mockedSession.getMockInstance();
 			}
-			@Mock
-			private int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
-				return 10;
-			}
 		};
 	}
 
@@ -174,6 +170,12 @@ public class AlarmsInformationServiceImplTest {
 
 	@Test
 	public void testQueryAlarmsInformation() throws Exception {
+		new MockUp<AlarmsInformationServiceImpl>() {
+			@Mock
+			private int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
+				return 10;
+			}
+		};
 		AlarmsInformation ai = new AlarmsInformation();
 		ai.setName("name");
 		ai.setValue("value");
