@@ -193,6 +193,13 @@ public class AlarmsInformationServiceImplTest {
 
 	@Test
 	public void testQueryDateBetween() throws Exception {
+		new MockUp<Query>() {
+			@Mock
+			public List<Object[]> list() {
+				Object[] objlist = {"name", "value"};
+				return Arrays.asList(objlist);
+			}
+		};
 		new MockUp<List>() {
 			@Mock
 			private Iterator iterator() {

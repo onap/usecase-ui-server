@@ -52,7 +52,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public String saveAlarmsInformation(AlarmsInformation alarmsInformation) {
-		 try(Session session = getSession();){
+		 try(Session session = getSession()){
 	            if (null == alarmsInformation) {
 	                logger.error("alarmsInformation saveAlarmsInformation alarmsInformation is null!");
 	            }
@@ -71,7 +71,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public String updateAlarmsInformation(AlarmsInformation alarmsInformation) {
-		try(Session session = getSession();){
+		try(Session session = getSession()){
             if (null == alarmsInformation) {
                 logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
             }
@@ -89,7 +89,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	
 
 	public int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
-		try(Session session = getSession();){
+		try(Session session = getSession()){
 			StringBuffer hql = new StringBuffer("select count(*) from AlarmsInformation a where 1=1");
 			if (null == alarmsInformation) {
                 //logger.error("AlarmsInformationServiceImpl getAllCount alarmsInformation is null!");
@@ -114,11 +114,13 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
                 	Date ver =alarmsInformation.getUpdateTime();
                 	hql.append(" and a.updateTime like '%"+ver+"%'");
                 }
-            } 
-            long q=(long)session.createQuery(hql.toString()).uniqueResult();
-            session.flush();
-            return (int)q;
-        } catch (Exception e) {
+            }
+
+			Query query = session.createQuery(hql.toString());
+			Object obj = query.uniqueResult();
+			session.flush();
+			return Integer.parseInt(obj.toString());
+		} catch (Exception e) {
             logger.error("exception occurred while performing AlarmsInformationServiceImpl getAllCount. Details:" + e.getMessage());
             return 0;
         }
@@ -132,7 +134,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 		int allRow =this.getAllCount(alarmsInformation,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try(Session session = getSession();){
+		try(Session session = getSession()){
 			StringBuffer hql =new StringBuffer("from AlarmsInformation a where 1=1");
             if (null == alarmsInformation) {
                 //logger.error("AlarmsInformationServiceImpl queryAlarmsInformation alarmsInformation is null!");
