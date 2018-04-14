@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
+/**
+ * Copyright 2016-2017 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,75 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.util; 
+package org.onap.usecaseui.server.util;
 
-import org.junit.Test; 
-import org.junit.Before; 
-import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+public class RestfulServicesTest {
+    @Test
+    public void testCreateServiceImpl() throws Exception {
+        Object aaiService = createService(AAIService.class);
 
-/** 
-* RestfulServices Tester. 
-* 
-* @author <Authors name> 
-* @since <pre>���� 14, 2018</pre> 
-* @version 1.0 
-*/ 
-public class RestfulServicesTest { 
+        Assert.assertTrue(aaiService instanceof AAIService);
+    }
 
-@Before
-public void before() throws Exception { 
-} 
-
-@After
-public void after() throws Exception { 
-} 
-
-/** 
-* 
-* Method: create(String baseUrl, Class<T> clazz) 
-* 
-*/ 
-@Test
-public void testCreateForBaseUrlClazz() throws Exception { 
-//TODO: Test goes here... 
-} 
-
-/** 
-* 
-* Method: create(Class<T> clazz) 
-* 
-*/ 
-@Test
-public void testCreateClazz() throws Exception { 
-//TODO: Test goes here...
-    RestfulServices.create(RestfulServicesTest.class);
-} 
-
-/** 
-* 
-* Method: getMsbAddress() 
-* 
-*/ 
-@Test
-public void testGetMsbAddress() throws Exception { 
-//TODO: Test goes here...
-    RestfulServices.getMsbAddress();
-} 
-
-/** 
-* 
-* Method: extractBody(HttpServletRequest request) 
-* 
-*/ 
-@Test
-public void testExtractBody() throws Exception { 
-//TODO: Test goes here...
-    HttpServletRequest request = null;
-    RestfulServices.extractBody(request);
-} 
-
-
-} 
+    private <T> Object createService(Class<T> clazz) {
+        return RestfulServices.create(clazz);
+    }
+}

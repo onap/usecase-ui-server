@@ -13,30 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.bo;
+package org.onap.usecaseui.server.wrapper;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.util.Page;
 
-import java.io.Serializable;
-import java.util.List;
-
-
-public class AlarmBo implements Serializable {
+public class AlarmWrapper {
 
     private AlarmsHeader alarmsHeader;
 
-    private List<AlarmsInformation> alarmsInformation;
+    private AlarmsInformation alarmsInformation;
 
+    private int currentPage = 1;
 
-    public AlarmBo() {
-    }
+    private int pageSize = 100;
 
-    public AlarmBo(AlarmsHeader alarmsHeader, List<AlarmsInformation> alarmsInformation) {
-        this.alarmsHeader = alarmsHeader;
-        this.alarmsInformation = alarmsInformation;
-    }
 
     public AlarmsHeader getAlarmsHeader() {
         return alarmsHeader;
@@ -46,13 +37,27 @@ public class AlarmBo implements Serializable {
         this.alarmsHeader = alarmsHeader;
     }
 
-    public List<AlarmsInformation> getAlarmsInformation() {
+    public AlarmsInformation getAlarmsInformation() {
         return alarmsInformation;
     }
 
-    public void setAlarmsInformation(List<AlarmsInformation> alarmsInformation) {
+    public void setAlarmsInformation(AlarmsInformation alarmsInformation) {
         this.alarmsInformation = alarmsInformation;
     }
 
+    public int getCurrentPage() {
+        return currentPage;
+    }
 
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
 }

@@ -15,14 +15,9 @@
  */
 package org.onap.usecaseui.server.util;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.constant.Constant;
-
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
@@ -33,41 +28,66 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class DateUtilsTest {
 
+
 	@Test
-	public void stringToDate() throws ParseException {
-        Date result = DateUtils.stringToDate("2017-08-12 13:12:12");
-        Assert.assertEquals(result,new SimpleDateFormat(Constant.DATE_FORMAT).parse("2017-08-12 13:12:12"));
+	public void stringToDate(){
+		try {
+			System.out.println(DateUtils.stringToDate("2017-09-28 16:00:00"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
 	public void dateToString(){
-        Assert.assertEquals(DateUtils.dateToString(new Date()),new SimpleDateFormat(Constant.DATE_FORMAT).format(new Date()));
-    }
-
-	@Test
-	public void now() throws ParseException {
-		Assert.assertNotNull(DateUtils.now());
+		System.out.println(DateUtils.dateToString(new Date()));
 	}
 
 	@Test
-	public void testGetYearMonthDayHourMinuteSecond(){
-	    DateUtils dateUtils = new DateUtils();
-	  String str =  dateUtils.getYearMonthDayHourMinuteSecond(System.currentTimeMillis());
-
-
-    }
+	public void initDate(){
+		try {
+			System.out.println(DateUtils.initDate(new Date(),0,0,0,0,0,0));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Test
-	public void addDate() throws ParseException {
-        Assert.assertNotNull(DateUtils.addDate(new Date(),"year",1));
-        Assert.assertNotNull(DateUtils.addDate(new Date(),"month",1));
-        Assert.assertNotNull(DateUtils.addDate(new Date(),"month",13));
-        Assert.assertNotNull(DateUtils.addDate(new Date(),"day",1));
-        Assert.assertNotNull(DateUtils.addDate(new Date(),"day",10));
-        Assert.assertNotNull(DateUtils.addDate(new Date(),"hour",1));
-        Assert.assertNotNull(DateUtils.addDate(new Date(),"hour",24));
-        Assert.assertNotNull(DateUtils.addDate(new Date(),"minute",1));
+	public void initProcessDate(){
+		try {
+			System.out.println(DateUtils.initProcessDate(new Date(),0,0,0,0,0,0));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
+
+	@Test
+	public void now(){
+		try {
+			System.out.println(DateUtils.now());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void addDate(){
+		try {
+			LocalDateTime localDateTime = LocalDateTime.now();
+			System.out.println(localDateTime.withDayOfMonth(0));
+			System.out.println(DateUtils.addDate(new Date(),"day",1));
+			/*System.out.println(DateUtils.addDate(new Date(),"month",1));
+			System.out.println(DateUtils.addDate(new Date(),"year",-1));*/
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
 }

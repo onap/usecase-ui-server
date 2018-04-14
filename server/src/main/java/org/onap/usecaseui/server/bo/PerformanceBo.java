@@ -15,7 +15,8 @@
  */
 package org.onap.usecaseui.server.bo;
 
-import org.onap.usecaseui.server.bean.*;
+import org.onap.usecaseui.server.bean.PerformanceHeader;
+import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.util.Page;
 
 import java.io.Serializable;
@@ -27,18 +28,14 @@ public class PerformanceBo implements Serializable {
 
     private List<PerformanceInformation> performanceInformation;
 
-    private PerformanceHeaderPm performanceHeaderPm;
-
-    private List<PerformanceInformationPm> performanceInformationPm;
-
-    private PerformanceHeaderVm performanceHeaderVm;
-
-    private List<PerformanceInformationVm> performanceInformationVm;
-
 
     public PerformanceBo() {
     }
 
+    public PerformanceBo(PerformanceHeader performanceHeader, List<PerformanceInformation> performanceInformation) {
+        this.performanceHeader = performanceHeader;
+        this.performanceInformation = performanceInformation;
+    }
 
     public PerformanceHeader getPerformanceHeader() {
         return performanceHeader;
@@ -54,41 +51,5 @@ public class PerformanceBo implements Serializable {
 
     public void setPerformanceInformation(List<PerformanceInformation> performanceInformation) {
         this.performanceInformation = performanceInformation;
-    }
-
-
-    public PerformanceHeaderPm getPerformanceHeaderPm() {
-        return performanceHeaderPm;
-    }
-
-    public void setPerformanceHeaderPm(PerformanceHeaderPm performanceHeaderPm) {
-        this.performanceHeaderPm = performanceHeaderPm;
-    }
-
-    public List<PerformanceInformationPm> getPerformanceInformationPm() {
-        return performanceInformationPm;
-    }
-
-    public void setPerformanceInformationPm(List<PerformanceInformationPm> performanceInformationPm) {
-        this.performanceInformationPm = performanceInformationPm;
-    }
-
-
-
-
-    public PerformanceHeaderVm getPerformanceHeaderVm() {
-        return performanceHeaderVm;
-    }
-
-    public void setPerformanceHeaderVm(PerformanceHeaderVm performanceHeaderVm) {
-        this.performanceHeaderVm = performanceHeaderVm;
-    }
-
-    public List<PerformanceInformationVm> getPerformanceInformationVm() {
-        return performanceInformationVm;
-    }
-
-    public void setPerformanceInformationVm(List<PerformanceInformationVm> performanceInformationVm) {
-        this.performanceInformationVm = performanceInformationVm;
     }
 }
