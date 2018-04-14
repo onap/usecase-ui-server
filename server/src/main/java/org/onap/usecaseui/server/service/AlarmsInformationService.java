@@ -36,7 +36,4 @@ public interface AlarmsInformationService {
     List<AlarmsInformation> queryId(String[] id);
 
     List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime);
-
-
-    List<AlarmsInformation> getAllAlarmsInformationByeventId(String eventId);
 }

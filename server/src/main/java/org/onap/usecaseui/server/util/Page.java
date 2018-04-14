@@ -19,13 +19,13 @@ import java.util.List;
 
 public class Page<E> {
 
-	public List<E> list;
+	private List<E> list;
 
-	public int totalRecords;
+	private int totalRecords;
 
-	public int pageSize;
+	private int pageSize;
 
-	public int pageNo;
+	private int pageNo;
 	
 	
 	

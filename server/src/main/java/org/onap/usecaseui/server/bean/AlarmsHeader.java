@@ -27,14 +27,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name="alarms_commoneventheader")
 public class AlarmsHeader implements Serializable{
-
-	@Id
-	@Column(name = "id")
-	private int id;
-
+	
 	@Column(name = "version")
 	private String version;
 	
+	@Id
 	@Column(name = "eventName")
 	private String eventName;
 	
@@ -74,15 +71,6 @@ public class AlarmsHeader implements Serializable{
 	
 	@Column(name = "lastEpochMicroSec")
 	private String lastEpochMicroSec;
-
-
-
-	@Column(name = "startEpochMicrosecCleared")
-	private String startEpochMicrosecCleared;
-
-	@Column(name = "lastEpochMicroSecCleared")
-	private String lastEpochMicroSecCleared;
-
 	
 	@Column(name = "sequence")
 	private String sequence;
@@ -120,8 +108,6 @@ public class AlarmsHeader implements Serializable{
 	@Column(name = "updateTime")
 	private Date updateTime;
 
-
-
 	public AlarmsHeader() {
 	}
 
@@ -131,7 +117,7 @@ public class AlarmsHeader implements Serializable{
 
 
 
-	public AlarmsHeader(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String sequence, String faultFieldsVersion, String eventServrity, String eventSourceType, String eventCategory, String alarmCondition, String specificProblem, String vfStatus, String alarmInterfaceA, String status, Date createTime, Date updateTime) {
+	public AlarmsHeader(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String sequence, String faultFieldsVersion, String eventServrity, String eventSourceType, String eventCategory, String alarmCondition, String specificProblem, String vfStatus, String alarmInterfaceA, String status, Date createTime, Date updateTime) {
 		this.version = version;
 		this.eventName = eventName;
 		this.domain = domain;
@@ -146,8 +132,6 @@ public class AlarmsHeader implements Serializable{
 		this.priority = priority;
 		this.startEpochMicrosec = startEpochMicrosec;
 		this.lastEpochMicroSec = lastEpochMicroSec;
-		this.startEpochMicrosecCleared = startEpochMicrosecCleared;
-		this.lastEpochMicroSecCleared = lastEpochMicroSecCleared;
 		this.sequence = sequence;
 		this.faultFieldsVersion = faultFieldsVersion;
 		this.eventServrity = eventServrity;
@@ -266,22 +250,6 @@ public class AlarmsHeader implements Serializable{
 		this.startEpochMicrosec = startEpochMicrosec;
 	}
 
-	public String getStartEpochMicrosecCleared() {
-		return startEpochMicrosecCleared;
-	}
-
-	public void setStartEpochMicrosecCleared(String startEpochMicrosecCleared) {
-		this.startEpochMicrosecCleared = startEpochMicrosecCleared;
-	}
-
-	public String getLastEpochMicroSecCleared() {
-		return lastEpochMicroSecCleared;
-	}
-
-	public void setLastEpochMicroSecCleared(String lastEpochMicroSecCleared) {
-		this.lastEpochMicroSecCleared = lastEpochMicroSecCleared;
-	}
-
 	public String getLastEpochMicroSec() {
 		return lastEpochMicroSec;
 	}
@@ -385,12 +353,6 @@ public class AlarmsHeader implements Serializable{
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
+	
+	
 }

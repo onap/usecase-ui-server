@@ -16,8 +16,6 @@
 package org.onap.usecaseui.server.service;
 
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
@@ -28,26 +26,10 @@ public interface AlarmsHeaderService {
     String saveAlarmsHeader(AlarmsHeader alarmsHeader);
     
     String updateAlarmsHeader(AlarmsHeader alarmsHeader);
-
-    //public String updateAlarmsHeader2018(String status, String date, String eventNameCleared,String eventName, String reportingEntityName,String specificProblem);
-    public String updateAlarmsHeader2018(String status, Timestamp date, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String eventName, String reportingEntityName, String specificProblem);
-    public Boolean getStatusBySourceName(String sourceName);
-    public AlarmsHeader getIdByStatusSourceName(String sourceName);
-
-
+    
     int getAllCount(AlarmsHeader alarmsHeader, int currentPage, int pageSize);
     
     Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader, int currentPage, int pageSize);
     
     List<AlarmsHeader> queryId(String[] id);
-
-    String queryStatusCount(String status);
-
-    public int getAllCountByStatus(String status);
-    public List<AlarmsHeader> getAllByStatus(String status,String eventName,String sourceName,String eventServerity,String reportingEntityName ,Date createTime, Date endTime);
-
-    public AlarmsHeader getAlarmsHeaderDetail(Integer id);
-
-    public int getAllByDatetime(String status,String eventId,String eventServerity,String createTime);
-
 }

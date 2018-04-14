@@ -17,28 +17,31 @@ package org.onap.usecaseui.server.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.client.ClientConfig;
-import org.onap.usecaseui.server.bean.*;
+import org.onap.usecaseui.server.bean.AlarmsHeader;
+import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.bean.PerformanceHeader;
+import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.constant.Constant;
-import org.onap.usecaseui.server.service.*;
+import org.onap.usecaseui.server.service.AlarmsHeaderService;
+import org.onap.usecaseui.server.service.AlarmsInformationService;
+import org.onap.usecaseui.server.service.PerformanceHeaderService;
+import org.onap.usecaseui.server.service.PerformanceInformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import javax.annotation.Resource;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Timestamp;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Component
+@org.springframework.context.annotation.Configuration
+@EnableAspectJAutoProxy
 public class DmaapSubscriber implements Runnable {
 
     private Logger logger = LoggerFactory.getLogger(DmaapSubscriber.class);
@@ -55,7 +58,6 @@ public class DmaapSubscriber implements Runnable {
     @Resource(name = "AlarmsHeaderService")
     private AlarmsHeaderService alarmsHeaderService;
 
-
     @Resource(name = "AlarmsInformationService")
     private AlarmsInformationService alarmsInformationService;
 
@@ -65,53 +67,63 @@ public class DmaapSubscriber implements Runnable {
     @Resource(name = "PerformanceInformationService")
     private PerformanceInformationService performanceInformationService;
 
-    @Resource(name = "PerformanceHeaderPmService")
-    private PerformanceHeaderPmService performanceHeaderPmService;
-
-    @Resource(name = "PerformanceInformationPmService")
-    private PerformanceInformationPmService performanceInformationPmService;
-
-    @Resource(name = "PerformanceHeaderVmService")
-    private PerformanceHeaderVmService performanceHeaderVmService;
-
-    @Resource(name = "PerformanceInformationVmService")
-    private PerformanceInformationVmService performanceInformationVmService;
-
     public void subscribe(String topic) {
+        String response;
         try {
-            List<String> respList = getDMaaPData(topic);
-            if (respList.size() <= 0 || respList == null) {
+            response = getDMaaPData(topic);
+            logger.info(response);
+            if (response == null && "".equals(response)) {
                 logger.info("response is null");
                 return;
-            }
-            ObjectMapper objMapper = new ObjectMapper();
-            objMapper.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
-            respList.forEach(rl -> {
-                logger.info(rl);
-                try {
-                    Map<String, Object> eventMaps = (Map<String, Object>) objMapper.readValue(rl, Map.class).get("event");
+            } else {
+                ObjectMapper objMapper = new ObjectMapper();
+                objMapper.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
+                if (response.contains("}}\""))
+                    response = response.replaceAll("}}\"","}}");
+                if (response.contains("\"{\"VESversion\""))
+                    response = response.replaceAll("\"\\{\"VESversion\"","{\"VESversion\"");
+                if (response.contains("]\""))
+                    response = response.replaceAll("]\"","]");
+                if (response.contains("\"["))
+                    response = response.replaceAll("\"\\[","[");
+                if (response.contains("Remark:\""))
+                    response = response.replaceAll("Remark:\"",":");
+                if (response.contains("\";"))
+                    response = response.replaceAll("\";",";");
+
+                if (response.indexOf("[") == 0) {
+                    List<Object> eventList = objMapper.readValue(response, List.class);
+
+                    eventList.forEach(el -> {
+                        Map<String, Object> eventMaps = (Map<String, Object>) ((Map<String, Object>) el).get("event");
+                        if (eventMaps.containsKey("measurementsForVfScalingFields")) {
+                            performanceProcess(eventMaps);
+                        } else if (eventMaps.containsKey("faultFields")) {
+                            alarmProcess(eventMaps);
+                        }
+                    });
+                } else if (response.indexOf("{") == 0) {
+                    Map<String, Object> eventMaps = (Map<String, Object>) objMapper.readValue(response, Map.class).get("event");
+
                     if (eventMaps.containsKey("measurementsForVfScalingFields")) {
                         performanceProcess(eventMaps);
                     } else if (eventMaps.containsKey("faultFields")) {
                         alarmProcess(eventMaps);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } else {
+                    logger.error("unknown json type!");
                 }
-            });
-
+            }
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("getDMaaP Information failed :" + e.getMessage());
         }
     }
 
-    private List<String> getDMaaPData(String topic) {
+    private String getDMaaPData(String topic) {
         Client client = ClientBuilder.newClient(new ClientConfig());
         WebTarget webTarget = client.target(url + "/" + topic + "/" + consumerGroup + "/" + consumer);
-        logger.info("target:" + url + "/" + topic + "/" + consumerGroup + "/" + consumer);
         Response response = webTarget.queryParam("timeout", timeout).request().get();
-        return response.readEntity(List.class);
+        return response.readEntity(String.class);
     }
 
     private void initConfig() {
@@ -134,12 +146,8 @@ public class DmaapSubscriber implements Runnable {
         try {
             initConfig();
             while (isActive) {
-                logger.info("alarm data subscription is starting......");
                 subscribe(alarmTopic);
-                logger.info("alarm data subscription has finished.");
-                logger.info("performance data subscription is starting......");
                 subscribe(performanceTopic);
-                logger.info("performance data subscription has finished.");
             }
         } catch (Exception e) {
             try {
@@ -147,9 +155,7 @@ public class DmaapSubscriber implements Runnable {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            e.printStackTrace();
             logger.error("subscribe raise error :" + e.getCause());
-            run();
         }
     }
 
@@ -212,7 +218,40 @@ public class DmaapSubscriber implements Runnable {
                         try {
                             List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
                             m.forEach(i -> {
-                                alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(), new Date(), null));
+                                if (i.get("name").toString().equals("eventTime"))
+                                    try {
+                                        alarm_header.setCreateTime(DateUtils.stringToDate(i.get("value").toString()));
+                                        alarm_header.setUpdateTime(DateUtils.stringToDate(i.get("value").toString()));
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                if (i.get("value").toString().contains(";")) {
+                                    alarm_informations.add(new AlarmsInformation(i.get("name").toString(), "", alarm_header.getSourceId(), null, null));
+                                    char[] valStr = i.get("value").toString().toCharArray();
+                                    String name = "";
+                                    String value = "";
+                                    boolean nameFlag = true;
+                                    boolean valueFlag = false;
+                                    for (int j = 0; j < valStr.length; j++) {
+                                        if (valStr[j] == ':') {
+                                            nameFlag = false;
+                                            valueFlag = true;
+                                            continue;
+                                        }
+                                        if (valStr[j] == ';') {
+                                            nameFlag = true;
+                                            valueFlag = false;
+                                            alarm_informations.add(new AlarmsInformation(name, value, i.get("name").toString(), null, null));
+                                            continue;
+                                        }
+                                        if (nameFlag)
+                                            name += valStr[j];
+                                        if (valueFlag)
+                                            value += valStr[j];
+                                    }
+                                } else {
+                                    alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(), null, null));
+                                }
                             });
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -220,235 +259,136 @@ public class DmaapSubscriber implements Runnable {
                         }
                     }
                 });
-
-            }
-        });
-        if (alarm_header.getEventName() != null){
-            alarm_informations.forEach(ai -> {
-                ai.setCreateTime(alarm_header.getCreateTime());
-                ai.setUpdateTime(new Date());
-            });
-
-           // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Long l = System.currentTimeMillis();
-
-            Timestamp date_get = new Timestamp(l); //2013-01-14 22:45:36.484
-            if (alarm_header.getEventName().contains("Cleared")) {
-                alarm_header.setStatus("close");
-                logger.info("alarmCleared data header insert is starting......");
-
-                    alarmsHeaderService.updateAlarmsHeader2018("close", date_get, alarm_header.getStartEpochMicrosec(), alarm_header.getLastEpochMicroSec(), alarm_header.getEventName().replace("Cleared", ""), alarm_header.getReportingEntityName(), alarm_header.getSpecificProblem());
-
-                logger.info("alarmCleared data header insert has finished.");
-                logger.info("alarmCleared data detail insert is starting......");
-                alarm_informations.forEach(information ->
-                    alarmsInformationService.saveAlarmsInformation(information));
-
-                logger.info("alarmCleared data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
-            } else {
-                alarm_header.setCreateTime(new Date());
-                alarm_header.setStatus("active");
-
-
-               logger.info("alarm data header insert is starting......");
-
+                alarm_informations.forEach(ai -> {
+                    ai.setCreateTime(alarm_header.getCreateTime());
+                    ai.setUpdateTime(new Date());
+                });
+                if (alarm_header.getEventName().contains("Cleared")) {
+                    alarm_header.setStatus("3");
                     alarmsHeaderService.saveAlarmsHeader(alarm_header);
-
-                logger.info("alarm data header insert has finished.");
-                logger.info("alarm data detail insert is starting......");
-                if(alarm_informations.size() > 0) {
                     alarm_informations.forEach(information ->
                             alarmsInformationService.saveAlarmsInformation(information));
-                    logger.info("alarm data detail insert has finished. " + alarm_informations.size() + " records have been inserted.");
+                    AlarmsHeader header1 = new AlarmsHeader();
+                    header1.setEventName(alarm_header.getEventName().substring(0, alarm_header.getEventName().indexOf("Cleared")));
+                    List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryAlarmsHeader(header1, 1, 10).getList();
+                    alarmsHeaders.forEach(alarms -> {
+                        alarms.setStatus("2");
+                        alarms.setUpdateTime(new Date());
+                        alarmsHeaderService.updateAlarmsHeader(alarms);
+                    });
+                } else {
+                    alarm_header.setUpdateTime(new Date());
+                    alarm_header.setStatus("1");
+                    alarmsHeaderService.saveAlarmsHeader(alarm_header);
+                    alarm_informations.forEach(information ->
+                            alarmsInformationService.saveAlarmsInformation(information));
                 }
             }
-        }
+        });
     }
 
-    private void performanceProcess(Map<String, Object> eventMap) {
+    private void performanceProcess(Map<String, Object> maps) {
         PerformanceHeader performance_header = new PerformanceHeader();
         List<PerformanceInformation> performance_informations = new ArrayList<>();
-
-        PerformanceHeaderPm performance_headerPm = new PerformanceHeaderPm();
-        List<PerformanceInformationPm> performance_informationsPm = new ArrayList<>();
-
-
-        PerformanceHeaderVm performance_headerVm = new PerformanceHeaderVm();
-        List<PerformanceInformationVm> performance_informationsVm = new ArrayList<>();
-
-        eventMap.forEach((ek1, ev1) -> {
-            if (ek1.equals("commonEventHeader")) {
-                ((Map<String, Object>) ev1).forEach((k2, v2) -> {
-                    if (k2.equals("version"))
-                        performance_header.setVersion(v2.toString());
-                    if (k2.equals("eventName"))
-                        performance_header.setEventName(v2.toString());
-                    if (k2.equals("domain"))
-                        performance_header.setDomain(v2.toString());
-                    if (k2.equals("eventId"))
-                        performance_header.setEventId(v2.toString());
-                    if (k2.equals("eventType"))
-                        performance_header.setEventType(v2.toString());
-                    if (k2.equals("nfcNamingCode"))
-                        performance_header.setNfcNamingCode(v2.toString());
-                    if (k2.equals("nfNamingCode"))
-                        performance_header.setNfNamingCode(v2.toString());
-                    if (k2.equals("sourceId"))
-                        performance_header.setSourceId(v2.toString());
-                    if (k2.equals("sourceName"))
-                        performance_header.setSourceName(v2.toString());
-                    if (k2.equals("reportingEntityId"))
-                        performance_header.setReportingEntityId(v2.toString());
-                    if (k2.equals("reportingEntityName"))
-                        performance_header.setReportingEntityName(v2.toString());
-                    if (k2.equals("priority"))
-                        performance_header.setPriority(v2.toString());
-                    if (k2.equals("startEpochMicrosec"))
-                        performance_header.setStartEpochMicrosec(v2.toString());
-                    if (k2.equals("lastEpochMicrosec"))
-                        performance_header.setLastEpochMicroSec(v2.toString());
-                    if (k2.equals("sequence"))
-                        performance_header.setSequence(v2.toString());
-                });
-            } else if (ek1.equals("measurementsForVfScalingFields")) {
-                ((Map<String, Object>) ev1).forEach((k3, v3) -> {
-                    if (k3.equals("measurementsForVfScalingVersion"))
-                        performance_header.setMeasurementsForVfScalingVersion(v3.toString());
-                    if (k3.equals("measurementInterval"))
-                        performance_header.setMeasurementInterval(v3.toString());
-                    if (k3.equals("additionalMeasurements")) {
-                        try {
-                            List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
-                            m.forEach(i -> {
-                                i.forEach( (k,v) -> {
-                                    if (k.equals("arrayOfFields")){
-                                        List<Map<String,String>> arrayOfFields = (List<Map<String, String>>) v;
-                                        arrayOfFields.forEach( fields -> {
-                                            if (fields.get("name").equals("StartTime")){
-
-                                                try {
-                                                    String type = performance_header.getEventType();
-                                                       performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), null, DateUtils.now()));
-                                                        performance_header.setCreateTime(DateUtils.stringToDate(fields.get("value").replaceAll(Constant.RegEX_DATE_FORMAT, " ")));
-                                                        performance_header.setUpdateTime(DateUtils.now());
-
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }else{
-                                                try {
-                                                    performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), null, DateUtils.now()));
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
-                                                }
+        maps.forEach((k, v) -> {
+            if (k.equals("event")) {
+                Map<String, Object> eventMap = (Map<String, Object>) v;
+                eventMap.forEach((ek1, ev1) -> {
+                    if (ek1.equals("commonEventHeader")) {
+                        ((Map<String, Object>) ev1).forEach((k2, v2) -> {
+                            if (k2.equals("version"))
+                                performance_header.setVersion(v2.toString());
+                            if (k2.equals("eventName"))
+                                performance_header.setEventName(v2.toString());
+                            if (k2.equals("domain"))
+                                performance_header.setDomain(v2.toString());
+                            if (k2.equals("eventId"))
+                                performance_header.setEventId(v2.toString());
+                            if (k2.equals("eventType"))
+                                performance_header.setEventType(v2.toString());
+                            if (k2.equals("nfcNamingCode"))
+                                performance_header.setNfcNamingCode(v2.toString());
+                            if (k2.equals("nfNamingCode"))
+                                performance_header.setNfNamingCode(v2.toString());
+                            if (k2.equals("sourceId"))
+                                performance_header.setSourceId(v2.toString());
+                            if (k2.equals("sourceName"))
+                                performance_header.setSourceName(v2.toString());
+                            if (k2.equals("reportingEntityId"))
+                                performance_header.setReportingEntityId(v2.toString());
+                            if (k2.equals("reportingEntityName"))
+                                performance_header.setReportingEntityName(v2.toString());
+                            if (k2.equals("priority"))
+                                performance_header.setPriority(v2.toString());
+                            if (k2.equals("startEpochMicrosec"))
+                                performance_header.setStartEpochMicrosec(v2.toString());
+                            if (k2.equals("lastEpochMicrosec"))
+                                performance_header.setLastEpochMicroSec(v2.toString());
+                            if (k2.equals("sequence"))
+                                performance_header.setSequence(v2.toString());
+                        });
+                    } else if (ek1.equals("measurementsForVfScalingFields")) {
+                        ((Map<String, Object>) ev1).forEach((k3, v3) -> {
+                            if (k3.equals("measurementsForVfScalingVersion"))
+                                performance_header.setMeasurementsForVfScalingVersion(v3.toString());
+                            if (k3.equals("measurementInterval"))
+                                performance_header.setMeasurementInterval(v3.toString());
+                            if (k3.equals("additionalMeasurements")) {
+                                try {
+                                    List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
+                                    m.forEach(i -> {
+                                        if (i.get("name").toString().equals("eventTime"))
+                                            try {
+                                                performance_header.setCreateTime(DateUtils.stringToDate(i.get("value").toString()));
+                                                performance_header.setUpdateTime(DateUtils.stringToDate(i.get("value").toString()));
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
                                             }
-                                        } );
-                                    }
-                                });
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            logger.error("convert performanceAdditionalInformation error：" + e.getMessage());
-                        }
+                                        if (i.get("value").toString().contains(";")) {
+                                            performance_informations.add(new PerformanceInformation(i.get("name").toString(), "", performance_header.getSourceId(), null, null));
+
+                                            char[] valStr = i.get("value").toString().replace("=", ":").toCharArray();
+                                            String name = "";
+                                            String value = "";
+                                            boolean nameFlag = true;
+                                            boolean valueFlag = false;
+                                            for (int j = 0; j < valStr.length; j++) {
+                                                if (valStr[j] == ':') {
+                                                    nameFlag = false;
+                                                    valueFlag = true;
+                                                    continue;
+                                                }
+                                                if (valStr[j] == ';') {
+                                                    nameFlag = true;
+                                                    valueFlag = false;
+                                                    performance_informations.add(new PerformanceInformation(name, value, i.get("name").toString(), null, null));
+                                                    continue;
+                                                }
+                                                if (nameFlag)
+                                                    name += valStr[j];
+                                                if (valueFlag)
+                                                    value += valStr[j];
+                                            }
+                                        } else {
+                                            performance_informations.add(new PerformanceInformation(i.get("name").toString(), i.get("value").toString(), performance_header.getSourceId(), null, null));
+                                        }
+                                    });
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    logger.error("convert performanceAdditionalInformation error：" + e.getMessage());
+                                }
+                            }
+                        });
+                        performanceHeaderService.savePerformanceHeader(performance_header);
+                        performance_informations.forEach(ai -> {
+                            ai.setCreateTime(performance_header.getCreateTime());
+                            ai.setUpdateTime(new Date());
+                            performanceInformationService.savePerformanceInformation(ai);
+                        });
                     }
                 });
             }
         });
-        if (performance_header.getSourceId() !=null && performance_informations.size() > 0 ){
-
-            String version = performance_header.getVersion();
-            String eventName = performance_header.getEventName();
-            String domain = performance_header.getDomain();
-            String eventId = performance_header.getEventId();
-            String eventType = performance_header.getEventType();
-            String nfcNamingCode = performance_header.getNfcNamingCode();
-            String nfNamingCode = performance_header.getNfNamingCode();
-            String sourceId = performance_header.getSourceId();
-            String sourceName = performance_header.getSourceName();
-            String reportingEntityId = performance_header.getReportingEntityId();
-            String reportingEntityName = performance_header.getReportingEntityName();
-            String priority = performance_header.getPriority();
-            String startEpochMicrosec = performance_header.getStartEpochMicrosec();
-            String lastEpochMicroSec = performance_header.getLastEpochMicroSec();
-            String sequence = performance_header.getSequence();
-            String measurementsForVfScalingVersion = performance_header.getMeasurementsForVfScalingVersion();
-            String measurementInterval = performance_header.getMeasurementInterval();
-            Date createTime = performance_header.getCreateTime();
-            Date updateTime = performance_header.getUpdateTime();
-
-
-
-
-
-
-
-
-            if("guestOS".equals(performance_header.getEventType())){
-                performance_headerVm = new PerformanceHeaderVm(
-                  version,  eventName,  domain,  eventId,  eventType,  nfcNamingCode,
-                  nfNamingCode,  sourceId,  sourceName,  reportingEntityId,  reportingEntityName,
-                  priority,  startEpochMicrosec,  lastEpochMicroSec,  sequence,  measurementsForVfScalingVersion,
-                  measurementInterval, createTime, updateTime
-
-                );
-                logger.info("performance data header insert is starting......");
-                performanceHeaderVmService.savePerformanceHeaderVm(performance_headerVm);
-                logger.info("performance data header insert has finished.");
-                logger.info("performance data detail insert is starting......");
-                performance_informationsVm.forEach(aiVm -> {
-                    aiVm.setCreateTime(performance_header.getCreateTime());
-                    performanceInformationVmService.savePerformanceInformationVm(aiVm);
-                });
-                logger.info("performance data detail insert has finished. " + performance_informationsVm.size() + " records have been inserted.");
-
-
-
-
-            }else if("hostOS".equals(performance_header.getEventType())){
-
-                 performance_headerPm = new PerformanceHeaderPm(
-                        version,  eventName,  domain,  eventId,  eventType,  nfcNamingCode,
-                        nfNamingCode,  sourceId,  sourceName,  reportingEntityId,  reportingEntityName,
-                        priority,  startEpochMicrosec,  lastEpochMicroSec,  sequence,  measurementsForVfScalingVersion,
-                        measurementInterval, createTime, updateTime
-
-                );
-
-
-
-                logger.info("performance data header insert is starting......");
-                performanceHeaderPmService.savePerformanceHeaderPm(performance_headerPm);
-                logger.info("performance data header insert has finished.");
-                logger.info("performance data detail insert is starting......");
-                performance_informationsPm.forEach(aiPm -> {
-                    aiPm.setCreateTime(performance_header.getCreateTime());
-                    performanceInformationPmService.savePerformanceInformationPm(aiPm);
-                });
-                logger.info("performance data detail insert has finished. " + performance_informationsPm.size() + " records have been inserted.");
-
-
-
-            }else{
-
-
-
-
-            logger.info("performance data header insert is starting......");
-            performanceHeaderService.savePerformanceHeader(performance_header);
-            logger.info("performance data header insert has finished.");
-            logger.info("performance data detail insert is starting......");
-            performance_informations.forEach(ai -> {
-                ai.setCreateTime(performance_header.getCreateTime());
-                performanceInformationService.savePerformanceInformation(ai);
-            });
-            logger.info("performance data detail insert has finished. " + performance_informations.size() + " records have been inserted.");
-
-            }
-        }
-
-
-
-
-
     }
 }
