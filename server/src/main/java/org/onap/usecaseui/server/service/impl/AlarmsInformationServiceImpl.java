@@ -40,83 +40,87 @@ import org.springframework.stereotype.Service;
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
 public class AlarmsInformationServiceImpl implements AlarmsInformationService {
-    private static final Logger logger = LoggerFactory.getLogger(AlarmsInformationServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(AlarmsInformationServiceImpl.class);
 
-    @Autowired
-    private SessionFactory sessionFactory;
+	@Autowired
+	private SessionFactory sessionFactory;
+
+	private Session getSession() {
+		return sessionFactory.openSession();
+	}
 
 	@Override
 	public String saveAlarmsInformation(AlarmsInformation alarmsInformation) {
-		 try(Session session = sessionFactory.openSession();){
-	            if (null == alarmsInformation) {
-	                logger.error("alarmsInformation saveAlarmsInformation alarmsInformation is null!");
-	            }
-	            logger.info("AlarmsInformationServiceImpl saveAlarmsInformation: alarmsInformation={}", alarmsInformation);
-	            Transaction tx = session.beginTransaction();     
-	            session.save(alarmsInformation);
-	            tx.commit();
-	            session.flush();
-	            return "1";
-	        } catch (Exception e) {
-	            logger.error("exception occurred while performing AlarmsInformationServiceImpl saveAlarmsInformation. Details:" + e.getMessage());
-	            return "0";
-	        }
-	        
+		 try(Session session = getSession()){
+				if (null == alarmsInformation) {
+					logger.error("alarmsInformation saveAlarmsInformation alarmsInformation is null!");
+				}
+				logger.info("AlarmsInformationServiceImpl saveAlarmsInformation: alarmsInformation={}", alarmsInformation);
+				Transaction tx = session.beginTransaction();
+				session.save(alarmsInformation);
+				tx.commit();
+				session.flush();
+				return "1";
+			} catch (Exception e) {
+				logger.error("exception occurred while performing AlarmsInformationServiceImpl saveAlarmsInformation. Details:" + e.getMessage());
+				return "0";
+			}
+			
 	}
 
 	@Override
 	public String updateAlarmsInformation(AlarmsInformation alarmsInformation) {
-		try(Session session = sessionFactory.openSession();){
-            if (null == alarmsInformation) {
-                logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
-            }
-            logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}", alarmsInformation);
-            Transaction tx = session.beginTransaction();     
-            session.update(alarmsInformation);
-            tx.commit();
-            session.flush();
-            return "1";
-        } catch (Exception e) {
-            logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
-            return "0";
-        }
+		try(Session session = getSession()){
+			if (null == alarmsInformation) {
+				logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
+			}
+			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}", alarmsInformation);
+			Transaction tx = session.beginTransaction();
+			session.update(alarmsInformation);
+			tx.commit();
+			session.flush();
+			return "1";
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
+			return "0";
+		}
 	}
 	
 
 	public int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = getSession()){
 			StringBuffer hql = new StringBuffer("select count(*) from AlarmsInformation a where 1=1");
 			if (null == alarmsInformation) {
-                //logger.error("AlarmsInformationServiceImpl getAllCount alarmsInformation is null!");
-            }else {
-            	if(null!=alarmsInformation.getName()) {
-                	String ver=alarmsInformation.getName();
-                	hql.append(" and a.name like '%"+ver+"%'");
-                }
-            	if(null!=alarmsInformation.getValue()) {
-                	String ver=alarmsInformation.getValue();
-                	hql.append(" and a.value like '%"+ver+"%'");
-                }
-            	if(null!=alarmsInformation.getEventId()) {
-                	String ver=alarmsInformation.getEventId();
-                	hql.append(" and a.eventId = '"+ver+"'");
-                }
-            	if(null!=alarmsInformation.getCreateTime()) {
-                	Date ver =alarmsInformation.getCreateTime();
-                	hql.append(" and a.createTime > '%"+ver+"%'");
-                }
-            	if(null!=alarmsInformation.getUpdateTime()) {
-                	Date ver =alarmsInformation.getUpdateTime();
-                	hql.append(" and a.updateTime like '%"+ver+"%'");
-                }
-            } 
-            long q=(long)session.createQuery(hql.toString()).uniqueResult();
-            session.flush();
-            return (int)q;
-        } catch (Exception e) {
-            logger.error("exception occurred while performing AlarmsInformationServiceImpl getAllCount. Details:" + e.getMessage());
-            return 0;
-        }
+				logger.error("AlarmsInformationServiceImpl getAllCount alarmsInformation is null!");
+			}else {
+				if(null!=alarmsInformation.getName()) {
+					String ver=alarmsInformation.getName();
+					hql.append(" and a.name like '%"+ver+"%'");
+				}
+				if(null!=alarmsInformation.getValue()) {
+					String ver=alarmsInformation.getValue();
+					hql.append(" and a.value like '%"+ver+"%'");
+				}
+				if(null!=alarmsInformation.getEventId()) {
+					String ver=alarmsInformation.getEventId();
+					hql.append(" and a.eventId = '"+ver+"'");
+				}
+				if(null!=alarmsInformation.getCreateTime()) {
+					Date ver =alarmsInformation.getCreateTime();
+					hql.append(" and a.createTime > '%"+ver+"%'");
+				}
+				if(null!=alarmsInformation.getUpdateTime()) {
+					Date ver =alarmsInformation.getUpdateTime();
+					hql.append(" and a.updateTime like '%"+ver+"%'");
+				}
+			} 
+			long q=(long)session.createQuery(hql.toString()).uniqueResult();
+			session.flush();
+			return (int)q;
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl getAllCount. Details:" + e.getMessage());
+			return 0;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -127,47 +131,47 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 		int allRow =this.getAllCount(alarmsInformation,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
 		
-		try(Session session = sessionFactory.openSession();){
+		try(Session session = getSession()){
 			StringBuffer hql =new StringBuffer("from AlarmsInformation a where 1=1");
-            if (null == alarmsInformation) {
-                //logger.error("AlarmsInformationServiceImpl queryAlarmsInformation alarmsInformation is null!");
-            }else {
-            	if(null!=alarmsInformation.getName()) {
-                	String ver=alarmsInformation.getName();
-                	hql.append(" and a.name like '%"+ver+"%'");
-                }
-            	if(null!=alarmsInformation.getValue()) {
-                	String ver=alarmsInformation.getValue();
-                	hql.append(" and a.value like '%"+ver+"%'");
-                }
-            	if(null!=alarmsInformation.getEventId()) {
-                	String ver=alarmsInformation.getEventId();
-                	hql.append(" and a.eventId = '"+ver+"'");
-                }
-            	if(null!=alarmsInformation.getCreateTime()) {
-                	Date ver =alarmsInformation.getCreateTime();
-                	hql.append(" and a.createTime > '%"+ver+"%'");
-                }
-            	if(null!=alarmsInformation.getUpdateTime()) {
-                	Date ver =alarmsInformation.getUpdateTime();
-                	hql.append(" and a.updateTime like '%"+ver+"%'");
-                }
-            }
-            logger.info("AlarmsInformationServiceImpl queryAlarmsInformation: alarmsInformation={}", alarmsInformation);
-            Query query = session.createQuery(hql.toString());
-            query.setFirstResult(offset);
-            query.setMaxResults(pageSize);
-            List<AlarmsInformation> list= query.list();
-            page.setPageNo(currentPage);
-            page.setPageSize(pageSize);
-            page.setTotalRecords(allRow);
-            page.setList(list);
-            session.flush();
-            return page;
-        } catch (Exception e) {
-            logger.error("exception occurred while performing AlarmsInformationServiceImpl queryAlarmsInformation. Details:" + e.getMessage());
-            return null;
-        }
+			if (null == alarmsInformation) {
+				//logger.error("AlarmsInformationServiceImpl queryAlarmsInformation alarmsInformation is null!");
+			}else {
+				if(null!=alarmsInformation.getName()) {
+					String ver=alarmsInformation.getName();
+					hql.append(" and a.name like '%"+ver+"%'");
+				}
+				if(null!=alarmsInformation.getValue()) {
+					String ver=alarmsInformation.getValue();
+					hql.append(" and a.value like '%"+ver+"%'");
+				}
+				if(null!=alarmsInformation.getEventId()) {
+					String ver=alarmsInformation.getEventId();
+					hql.append(" and a.eventId = '"+ver+"'");
+				}
+				if(null!=alarmsInformation.getCreateTime()) {
+					Date ver =alarmsInformation.getCreateTime();
+					hql.append(" and a.createTime > '%"+ver+"%'");
+				}
+				if(null!=alarmsInformation.getUpdateTime()) {
+					Date ver =alarmsInformation.getUpdateTime();
+					hql.append(" and a.updateTime like '%"+ver+"%'");
+				}
+			}
+			logger.info("AlarmsInformationServiceImpl queryAlarmsInformation: alarmsInformation={}", alarmsInformation);
+			Query query = session.createQuery(hql.toString());
+			query.setFirstResult(offset);
+			query.setMaxResults(pageSize);
+			List<AlarmsInformation> list= query.list();
+			page.setPageNo(currentPage);
+			page.setPageSize(pageSize);
+			page.setTotalRecords(allRow);
+			page.setList(list);
+			session.flush();
+			return page;
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl queryAlarmsInformation. Details:" + e.getMessage());
+			return null;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -178,7 +182,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 				logger.error("AlarmsInformationServiceImpl queryId is null!");
 			}
 			List<AlarmsInformation> list = new ArrayList<AlarmsInformation>();
-			Session session = sessionFactory.openSession();
+			Session session = getSession();
 			Query query = session.createQuery("from AlarmsInformation a where a.eventId IN (:alist)");
 			list = query.setParameterList("alist", id).list();
 			session.close();
@@ -192,7 +196,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
-		try(Session session = sessionFactory.openSession();) {
+		try(Session session = getSession()) {
 			List<Map<String,String>> mapList = new ArrayList<>();
 			String hql = "select a.createTime,count(*) from AlarmsInformation a where 1=1 ";
 			if (sourceId != null && !"".equals(sourceId)){
