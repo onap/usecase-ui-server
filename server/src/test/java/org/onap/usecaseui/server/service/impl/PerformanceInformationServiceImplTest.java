@@ -20,8 +20,8 @@ import org.junit.Before;
 import org.junit.After;
 import org.junit.runner.RunWith;
 import org.onap.usecaseui.server.UsecaseuiServerApplication;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.service.impl.AlarmsInformationServiceImpl;
+import org.onap.usecaseui.server.bean.PerformanceInformation;
+import org.onap.usecaseui.server.service.impl.PerformanceInformationServiceImpl;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,19 +42,19 @@ import mockit.Mock;
 import mockit.MockUp;
 
 /** 
-* AlarmsInformationServiceImpl Tester. 
+* PerformanceInformationServiceImpl Tester. 
 * 
 * @author <Authors name> 
 * @since <pre>8, 2018</pre>
 * @version 1.0 
 */
-public class AlarmsInformationServiceImplTest {
-	AlarmsInformationServiceImpl alarmsInformationServiceImpl = null;
+public class PerformanceInformationServiceImplTest {
+	PerformanceInformationServiceImpl performanceInformationServiceImpl = null;
 	private static final long serialVersionUID = 1L;
 
 	@Before
 	public void before() throws Exception {
-		alarmsInformationServiceImpl = new AlarmsInformationServiceImpl();
+		performanceInformationServiceImpl = new PerformanceInformationServiceImpl();
 
 		MockUp<Transaction> mockUpTransaction = new MockUp<Transaction>() {
 			@Mock
@@ -93,9 +93,9 @@ public class AlarmsInformationServiceImplTest {
 				return mockUpQuery.getMockInstance();
 			}
 			@Mock
-			public List<AlarmsInformation> list() {
-				AlarmsInformation ai = new AlarmsInformation();
-				return Arrays.asList(ai);
+			public List<PerformanceInformation> list() {
+				PerformanceInformation pi = new PerformanceInformation();
+				return Arrays.asList(pi);
 			}
 			@Mock
 			public Object uniqueResult() {
@@ -132,7 +132,7 @@ public class AlarmsInformationServiceImplTest {
 				return mockedSession.getMockInstance();
 			}
 		};
-		new MockUp<AlarmsInformationServiceImpl>() {
+		new MockUp<PerformanceInformationServiceImpl>() {
 			@Mock
 			private Session getSession() {
 				return mockedSession.getMockInstance();
@@ -145,15 +145,15 @@ public class AlarmsInformationServiceImplTest {
 	}
 
 	@Test
-	public void testSaveAlarmsInformation() throws Exception {
-		AlarmsInformation ai = null;
-		alarmsInformationServiceImpl.saveAlarmsInformation(ai);
+	public void testSavePerformanceInformation() throws Exception {
+		PerformanceInformation pi = null;
+		performanceInformationServiceImpl.savePerformanceInformation(pi);
 	}
 
 	@Test
-	public void testUpdateAlarmsInformation() throws Exception {
-		AlarmsInformation ai = null;
-		alarmsInformationServiceImpl.updateAlarmsInformation(ai);
+	public void testUpdatePerformanceInformation() throws Exception {
+		PerformanceInformation pi = null;
+		performanceInformationServiceImpl.updatePerformanceInformation(pi);
 	}
 
 	@Test
@@ -164,105 +164,123 @@ public class AlarmsInformationServiceImplTest {
 				return "1";
 			}
 		};
-		AlarmsInformation ai = new AlarmsInformation();
-		ai.setName("");
-		ai.setValue("");
-		ai.setEventId("");
-		ai.setCreateTime(DateUtils.now());
-		ai.setUpdateTime(DateUtils.now());
-		alarmsInformationServiceImpl.getAllCount(ai, 1, 1);
+		PerformanceInformation pi = new PerformanceInformation();
+		pi.setName("");
+		pi.setValue("");
+		pi.setEventId("");
+		pi.setCreateTime(DateUtils.now());
+		pi.setUpdateTime(DateUtils.now());
+		performanceInformationServiceImpl.getAllCount(pi, 1, 1);
 	}
 
 	@Test
-	public void testQueryAlarmsInformation() throws Exception {
-		AlarmsInformation ai = new AlarmsInformation();
-		ai.setName("");
-		ai.setValue("");
-		ai.setEventId("");
-		ai.setCreateTime(DateUtils.now());
-		ai.setUpdateTime(DateUtils.now());
-		alarmsInformationServiceImpl.queryAlarmsInformation(ai, 1, 1);
+	public void testQueryPerformanceInformation() throws Exception {
+		PerformanceInformation pi = new PerformanceInformation();
+		pi.setName("");
+		pi.setValue("");
+		pi.setEventId("");
+		pi.setCreateTime(DateUtils.now());
+		pi.setUpdateTime(DateUtils.now());
+		performanceInformationServiceImpl.queryPerformanceInformation(pi, 1, 1);
 	}
 
 	@Test
 	public void testQueryId() throws Exception {
 		String[] id = {"1", "2", "3"};
-		alarmsInformationServiceImpl.queryId(id);
+		performanceInformationServiceImpl.queryId(id);
 	}
 
 	@Test
 	public void testQueryDateBetween() throws Exception {
-		alarmsInformationServiceImpl.queryDateBetween("sourceId", "startTime", "endTime");
+		performanceInformationServiceImpl.queryDateBetween("eventId", DateUtils.now(), DateUtils.now());
+		performanceInformationServiceImpl.queryDateBetween("resourceId", "name", "startTime", "endTime");
+	}
+
+	@Test
+	public void testQueryDataBetweenSum() throws Exception {
+		performanceInformationServiceImpl.queryDataBetweenSum("eventId", "name", DateUtils.now(), DateUtils.now());
 	}
 
 	@Test(expected = Exception.class)
-	public void testSaveAlarmsInformationException() throws Exception {
-		new MockUp<AlarmsInformationServiceImpl>() {
+	public void testSavePerformanceInformationException() throws Exception {
+		new MockUp<PerformanceInformationServiceImpl>() {
 			@Mock
 			private Session getSession() throws Exception {
 				throw new Exception();
 			}
 		};
-		AlarmsInformation ai = new AlarmsInformation();
-		alarmsInformationServiceImpl.saveAlarmsInformation(ai);
+		PerformanceInformation pi = new PerformanceInformation();
+		performanceInformationServiceImpl.savePerformanceInformation(pi);
 	}
 
 	@Test(expected = Exception.class)
-	public void testUpdateAlarmsInformationException() throws Exception {
-		new MockUp<AlarmsInformationServiceImpl>() {
+	public void testUpdatePerformanceInformationException() throws Exception {
+		new MockUp<PerformanceInformationServiceImpl>() {
 			@Mock
 			private Session getSession() throws Exception {
 				throw new Exception();
 			}
 		};
-		AlarmsInformation ai = new AlarmsInformation();
-		alarmsInformationServiceImpl.updateAlarmsInformation(ai);
+		PerformanceInformation pi = new PerformanceInformation();
+		performanceInformationServiceImpl.updatePerformanceInformation(pi);
 	}
 
 	@Test(expected = Exception.class)
 	public void testGetAllCountException() throws Exception {
-		new MockUp<AlarmsInformationServiceImpl>() {
+		new MockUp<PerformanceInformationServiceImpl>() {
 			@Mock
 			private Session getSession() throws Exception {
 				throw new Exception();
 			}
 		};
-		AlarmsInformation ai = new AlarmsInformation();
-		alarmsInformationServiceImpl.getAllCount(ai, 1, 1);
+		PerformanceInformation pi = new PerformanceInformation();
+		performanceInformationServiceImpl.getAllCount(pi, 1, 1);
 	}
 
 	@Test(expected = Exception.class)
-	public void testQueryAlarmsInformationException() throws Exception {
-		new MockUp<AlarmsInformationServiceImpl>() {
+	public void testQueryPerformanceInformationException() throws Exception {
+		new MockUp<PerformanceInformationServiceImpl>() {
 			@Mock
 			private Session getSession() throws Exception {
 				throw new Exception();
 			}
 		};
-		AlarmsInformation ai = new AlarmsInformation();
-		alarmsInformationServiceImpl.queryAlarmsInformation(ai, 1, 1);
+		PerformanceInformation pi = new PerformanceInformation();
+		performanceInformationServiceImpl.queryPerformanceInformation(pi, 1, 1);
 	}
 
 	@Test(expected = Exception.class)
 	public void testQueryIdException() throws Exception {
-		new MockUp<AlarmsInformationServiceImpl>() {
+		new MockUp<PerformanceInformationServiceImpl>() {
 			@Mock
 			private Session getSession() throws Exception {
 				throw new Exception();
 			}
 		};
 		String[] id = {"1", "2", "3"};
-		alarmsInformationServiceImpl.queryId(id);
+		performanceInformationServiceImpl.queryId(id);
 	}
 
 	@Test(expected = Exception.class)
 	public void testQueryDateBetweenException() throws Exception {
-		new MockUp<AlarmsInformationServiceImpl>() {
+		new MockUp<PerformanceInformationServiceImpl>() {
 			@Mock
 			private Session getSession() throws Exception {
 				throw new Exception();
 			}
 		};
-		alarmsInformationServiceImpl.queryDateBetween("sourceId", "startTime", "endTime");
+		performanceInformationServiceImpl.queryDateBetween("eventId", DateUtils.now(), DateUtils.now());
+		performanceInformationServiceImpl.queryDateBetween("resourceId", "name", "startTime", "endTime");
+	}
+
+	@Test(expected = Exception.class)
+	public void testQueryDataBetweenSumException() throws Exception {
+		new MockUp<PerformanceInformationServiceImpl>() {
+			@Mock
+			private Session getSession() throws Exception {
+				throw new Exception();
+			}
+		};
+		performanceInformationServiceImpl.queryDataBetweenSum("eventId", "name", DateUtils.now(), DateUtils.now());
 	}
 }
