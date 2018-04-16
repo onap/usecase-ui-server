@@ -150,47 +150,6 @@ public class AlarmController
         }
     }
 
-    @RequestMapping(value = { "/alarm/genCsv/{eventId}" } , method = RequestMethod.GET , produces = "application/json")
-    public String generateCsvFile(HttpServletResponse response, @PathVariable String[] eventId) throws JsonProcessingException {
-        logger.info("transfer generateCsvFile Apis, " +
-                        "Parameter all follows : [eventId : {}]",eventId);
-        String csvFile = "csvFiles/vnf_alarm_"+new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date())+".csv";
-        List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryId(eventId);
-        List<String[]> csvData = new ArrayList<>();
-        try{
-            alarmsHeaders.forEach(ala ->{
-                List<AlarmsInformation> information = alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(ala.getEventId()),1,100).getList();
-                String names = "";
-                String values = "";
-                if (0 < information.size() && null != information){
-                    for (AlarmsInformation a : information){
-                        names += a.getName()+",";
-                        values += a.getValue()+",";
-                    }
-                    names = names.substring(0,names.lastIndexOf(','));
-                    values = values.substring(0,values.lastIndexOf(','));
-                }
-                csvData.add(new String[]{
-                        ala.getVersion(),ala.getEventName(),ala.getDomain(),ala.getEventId(),ala.getEventType(),
-                        ala.getNfcNamingCode(),ala.getNfNamingCode(),ala.getSourceId(),ala.getSourceName(),
-                        ala.getReportingEntityId(),ala.getReportingEntityName(),ala.getPriority(),ala.getStartEpochMicrosec(),
-                        ala.getLastEpochMicroSec(),ala.getSequence(),ala.getFaultFieldsVersion(),ala.getEventServrity(),
-                        ala.getEventSourceType(),ala.getEventCategory(),ala.getAlarmCondition(),ala.getSpecificProblem(),
-                        ala.getVfStatus(),ala.getAlarmInterfaceA(),ala.getStatus(),DateUtils.dateToString(ala.getCreateTime()),
-                        DateUtils.dateToString(ala.getUpdateTime()),names,values
-                });
-            });
-            CSVUtils.writeCsv(AlarmCSVHeaders,csvData,csvFile);
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }
-        if (ResponseUtil.responseDownload(csvFile,response)){
-            return omAlarm.writeValueAsString("success");
-        }else{
-            return omAlarm.writeValueAsString("failed");
-        }
-    }
-
     @RequestMapping(value = {"/alarm/sourceId"},method = RequestMethod.GET)
     public String getSourceId(){
         List<String> sourceIds = new ArrayList<>();

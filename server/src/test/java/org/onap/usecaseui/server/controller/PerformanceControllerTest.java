@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,78 +15,83 @@
  */
 package org.onap.usecaseui.server.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Date;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.util.CSVUtils;
-import org.onap.usecaseui.server.util.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.onap.usecaseui.server.util.Page;
 
-import javax.annotation.Resource;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import mockit.Mock;
+import mockit.MockUp;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class PerformanceControllerTest {
 
-    @Autowired
-    private PerformanceController performanceController;
+	PerformanceController controller = null;
 
-    @Test
-    public void getPerformanceData() throws JsonProcessingException {
-        System.out.println(performanceController.getPerformanceData(null,1,100,null,null,null,null,null));
-    }
+	@Before
+	public void before() throws Exception {
+		controller = new PerformanceController();
 
-    @Test
-    public void generateCsvFile() throws JsonProcessingException {
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","efw","fre","2017-09-28 10:00:00"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","efw","fre","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","efw","null","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","null","null","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","null","null","null","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"null","null","null","null","null"));
-        System.out.println(performanceController.getPerformanceData(null,1,100,"110","fxc","efw","null","asdasdasda"));
+		new MockUp<PerformanceHeaderService>() {
+			@Mock
+			public Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder, int currentPage, int pageSize) {
+				return new Page<PerformanceHeader>();
+			}
+			@Mock
+			public List<PerformanceHeader> queryId(String[] id) {
+				PerformanceHeader ph = new PerformanceHeader();
+				return Arrays.asList(ph);
+			}
+			@Mock
+			public List<String> queryAllSourceId() {
+				String str = "abc";
+				return Arrays.asList(str);
+			}
+		};
+		new MockUp<PerformanceInformationService>() {
+			@Mock
+			public Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation, int currentPage, int pageSize) {
+				return new Page<PerformanceInformation>();
+			}
+			@Mock
+			public int queryDataBetweenSum(String eventId, String name, Date startDate, Date endDate) {
+				return 1;
+			}
+			@Mock
+			public List<PerformanceInformation> queryDateBetween(String resourceId, String name, String startTime, String endTime) {
+				PerformanceInformation pi = new PerformanceInformation();
+				return Arrays.asList(pi);
+			}
+		};
+	}
 
+	@After
+	public void after() throws Exception {
+	}
 
-    }
+	@Test
+	public void testGenerateDiagram() throws Exception {
+		controller.generateDiagram("hour", "eventId");
+		controller.generateDiagram("day", "eventId");
+		controller.generateDiagram("month", "eventId");
+		controller.generateDiagram("year", "eventId");
+		controller.generateDiagram("sourceId", "startTime", "endTime", "nameParent", "nameChild");
+	}
 
-    @Test
-    public void generateDiaCsvFile() throws JsonProcessingException {
-        Map<String,String> p = new HashMap<>();
-        p.put("eventId","110");
-        p.put("name","110");
-        p.put("value","110");
-        p.put("createTime","110");
-        p.put("updateTime","110");
-        //System.out.println(performanceController.generateDiaCsvFile(null,p));
-    }
+	@Test
+	public void testGetSourceIds() throws Exception {
+		controller.getSourceIds();
+	}
 
-    @Test
-    public void generateDiagram(){
-        try {
-            System.out.println(performanceController.generateDiagram("hour","110"));
-            System.out.println(performanceController.generateDiagram("day","110"));
-            System.out.println(performanceController.generateDiagram("month","110"));
-            System.out.println(performanceController.generateDiagram("year","110"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
-
+	@Test
+	public void testGetNames() throws Exception {
+		controller.getNames("sourceId");
+	}
 }

@@ -15,46 +15,74 @@
  */
 package org.onap.usecaseui.server.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.Before;
+import org.junit.After;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.util.CSVUtils;
-import org.onap.usecaseui.server.util.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.onap.usecaseui.server.util.Page;
 
-import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+import mockit.Mock;
+import mockit.MockUp;
+
 public class AlarmControllerTest {
 
-    @Autowired
-    AlarmController alarmController;
+	AlarmController controller = null;
 
-    @Test
-    public void getDataNotParam() throws JsonProcessingException {
-       System.out.println(alarmController.getAlarmData(null,null,null,null,null,null,1,100));
-    }
+	@Before
+	public void before() throws Exception {
+		controller = new AlarmController();
 
-    @Test
-    public void getDataCarryParam() throws JsonProcessingException {
-        System.out.println(alarmController.getAlarmData("110","a","drop","down","1506331166000","2",1,100));
-    }
+		new MockUp<AlarmsHeaderService>() {
+			@Mock
+			public Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader, int currentPage, int pageSize) {
+				return new Page<AlarmsHeader>();
+			}
+			@Mock
+			public List<AlarmsHeader> queryId(String[] id) {
+				AlarmsHeader ah = new AlarmsHeader();
+				return Arrays.asList(ah);
+			}
+		};
+		new MockUp<AlarmsInformationService>() {
+			@Mock
+			public Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
+				return new Page<AlarmsInformation>();
+			}
+			@Mock
+			public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
+				Map<String,String> map = new HashMap<String,String>();
+				return Arrays.asList(map);
+			}
+		};
+	}
 
-    @Test
-    public void csvFile() throws JsonProcessingException {
-        System.out.println(alarmController.generateCsvFile(null,new String[]{"110"}));
-    }
+	@After
+	public void after() throws Exception {
+	}
 
+	@Test
+	public void testIndex() throws Exception {
+		controller.index();
+	}
 
+	@Test
+	public void testGetAlarmData() throws Exception {
+		controller.getAlarmData("sourceId", "sourceName", "priority", "startTime", "endTime", "vfStatus", 1, 10);
+		controller.getAlarmData(null, null, null, null, null, null, 1, 10);
+	}
+
+	@Test
+	public void testGetSourceId() throws Exception {
+		controller.getSourceId();
+	}
+
+	@Test
+	public void testGenDiagram() throws Exception {
+		controller.genDiagram("sourceId", "startTime", "endTime");
+	}
 }
