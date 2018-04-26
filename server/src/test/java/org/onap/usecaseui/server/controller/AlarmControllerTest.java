@@ -22,6 +22,7 @@ import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
+import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 
 import java.util.*;
@@ -40,7 +41,12 @@ public class AlarmControllerTest {
 		new MockUp<AlarmsHeaderService>() {
 			@Mock
 			public Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader, int currentPage, int pageSize) {
-				return new Page<AlarmsHeader>();
+				AlarmsHeader ah = new AlarmsHeader("sourceId");
+				List<AlarmsHeader> list = new ArrayList<>();
+				list.add(ah);
+				Page<AlarmsHeader> resultPage = new Page<AlarmsHeader>();
+				resultPage.setList(list);
+				return resultPage;
 			}
 			@Mock
 			public List<AlarmsHeader> queryId(String[] id) {
@@ -56,7 +62,10 @@ public class AlarmControllerTest {
 			@Mock
 			public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
 				Map<String,String> map = new HashMap<String,String>();
-				return Arrays.asList(map);
+				map.put("name", "value");
+				List<Map<String,String>> resultList = new ArrayList<>();
+				resultList.add(map);
+				return resultList;
 			}
 		};
 	}

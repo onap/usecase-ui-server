@@ -18,27 +18,8 @@ package org.onap.usecaseui.server.bean.lcm;
 import org.junit.Test; 
 import org.junit.Before; 
 import org.junit.After;
-import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.UsecaseuiServerApplication;
-import org.onap.usecaseui.server.bean.lcm.*;
-import org.onap.usecaseui.server.util.DateUtils;
-import org.onap.usecaseui.server.util.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.io.*;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-
-import mockit.Mock;
-import mockit.MockUp;
 
 public class ServiceTemplateInputTest {
 
@@ -52,7 +33,8 @@ public class ServiceTemplateInputTest {
 
 	@Test
 	public void testGetServiceTemplateInput() throws Exception {
-		ServiceTemplateInput sti = new ServiceTemplateInput("invariantUUID", "uuid", "name", "type", "version", "description", "category", "subcategory", null);
+		List<TemplateInput> inputs = new ArrayList<>();
+		ServiceTemplateInput sti = new ServiceTemplateInput("invariantUUID", "uuid", "name", "type", "version", "description", "category", "subcategory", inputs);
 		sti.getInvariantUUID();
 		sti.getUuid();
 		sti.getName();
@@ -69,10 +51,12 @@ public class ServiceTemplateInputTest {
 
 	@Test
 	public void testSetServiceTemplateInput() throws Exception {
-		ServiceTemplateInput sti = new ServiceTemplateInput("invariantUUID", "uuid", "name", "type", "version", "description", "category", "subcategory", null);
-		sti.addNestedTemplate(null);
-		sti.addInputs(null);
-		sti.addInput(null);
+		List<TemplateInput> tis = new ArrayList<>();
+		TemplateInput ti = new TemplateInput("name", "type", "description", "isRequired", "defaultValue");
+		ServiceTemplateInput sti = new ServiceTemplateInput("invariantUUID", "uuid", "name", "type", "version", "description", "category", "subcategory", tis);
+		sti.addNestedTemplate(sti);
+		sti.addInputs(tis);
+		sti.addInput(ti);
 		sti.setType("type");
 		sti.equals(sti);
 	}

@@ -16,23 +16,12 @@
 package org.onap.usecaseui.server.util;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class DateUtilsTest {
-
-
 	@Test
 	public void stringToDate(){
 		try {
@@ -80,14 +69,8 @@ public class DateUtilsTest {
 			LocalDateTime localDateTime = LocalDateTime.now();
 			System.out.println(localDateTime.withDayOfMonth(0));
 			System.out.println(DateUtils.addDate(new Date(),"day",1));
-			/*System.out.println(DateUtils.addDate(new Date(),"month",1));
-			System.out.println(DateUtils.addDate(new Date(),"year",-1));*/
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}
-
-
-
-
 }

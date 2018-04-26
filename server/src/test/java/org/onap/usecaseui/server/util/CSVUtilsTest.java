@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class CSVUtilsTest {
 
     @Test
@@ -49,6 +47,4 @@ public class CSVUtilsTest {
             e.printStackTrace();
         }
     }
-
-
 }
