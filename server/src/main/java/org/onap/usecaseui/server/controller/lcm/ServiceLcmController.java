@@ -62,4 +62,40 @@ public class ServiceLcmController {
     public DeleteOperationRsp terminateService(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request){
         return serviceLcmService.terminateService(serviceId, request);
     }
+    
+    /**
+     * 
+      * scaleServices
+      * 
+      * @Auther YYY
+      * @Date   2018/04/19 16:12:45
+      * @Title: scaleServices
+      * @Description: Scaling out/in
+      * @param serviceId
+      * @param request
+      * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/services/scaleServices/{serviceId}"}, method = RequestMethod.POST , produces = "application/json")
+    public DeleteOperationRsp scaleServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request){
+        return serviceLcmService.scaleService(serviceId, request);
+    }
+    
+    /**
+     * 
+      * updateServices
+      * 
+      * @Auther YYY
+      * @Date   2018/04/19 16:13:59
+      * @Title: updateServices
+      * @Description: Upgrade
+      * @param serviceId
+      * @param request
+      * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/services/updateService/{serviceId}"}, method = RequestMethod.PUT , produces = "application/json")
+    public DeleteOperationRsp updateServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request){
+        return serviceLcmService.scaleService(serviceId, request);
+    }
 }

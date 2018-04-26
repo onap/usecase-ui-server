@@ -98,4 +98,36 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             throw new SOException("SO Service is not available!", e);
         }
     }
+
+	@Override
+	public DeleteOperationRsp scaleService(String serviceId, HttpServletRequest request) {
+		try {
+			RequestBody requestBody = extractBody(request);
+			Response<DeleteOperationRsp> response = soService.scaleService(serviceId,requestBody).execute();
+			if(response.isSuccessful()){
+				return response.body();
+			}else{
+                logger.info(String.format("Can not terminate service[code=%s, message=%s]", response.code(), response.message()));
+                throw new SOException("SO terminate service failed!");
+			}
+		} catch (IOException e) {
+			 throw new SOException("SO Service is not available!", e);
+		}
+	}
+
+	@Override
+	public DeleteOperationRsp updateService(String serviceId, HttpServletRequest request) {
+		try {
+			RequestBody requestBody = extractBody(request);
+			Response<DeleteOperationRsp> response = soService.updateService(serviceId,requestBody).execute();
+			if(response.isSuccessful()){
+				return response.body();
+			}else{
+                logger.info(String.format("Can not terminate service[code=%s, message=%s]", response.code(), response.message()));
+                throw new SOException("SO terminate service failed!");
+			}
+		} catch (IOException e) {
+			 throw new SOException("SO Service is not available!", e);
+		}
+	}
 }

@@ -45,4 +45,18 @@ public interface SOService {
 //    @DELETE("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}")
     @HTTP(method="DELETE", path="/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}", hasBody = true)
     Call<DeleteOperationRsp> terminateService(@Path("serviceId") String serviceId, @Body RequestBody body);
+    
+    @Headers({
+        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+        "Accept: application/json"
+    })
+	@POST("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}/scale")
+	Call<DeleteOperationRsp> scaleService(@Path("serviceId") String serviceId, @Body RequestBody body);
+    
+    @Headers({
+        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+        "Accept: application/json"
+    })
+	@PUT("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}")
+	Call<DeleteOperationRsp> updateService(@Path("serviceId") String serviceId, @Body RequestBody body);
 }

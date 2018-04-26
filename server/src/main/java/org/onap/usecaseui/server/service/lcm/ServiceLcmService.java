@@ -28,4 +28,8 @@ public interface ServiceLcmService {
     OperationProgressInformation queryOperationProgress(String serviceId, String operationId);
 
     DeleteOperationRsp terminateService(String serviceId, HttpServletRequest request);
+    
+    DeleteOperationRsp scaleService(String serviceId,HttpServletRequest request);
+    
+    DeleteOperationRsp updateService(String serviceId,HttpServletRequest request);
 }
