@@ -62,15 +62,4 @@ public class DateUtilsTest {
 			e.printStackTrace();
 		}
 	}
-
-	@Test
-	public void addDate(){
-		try {
-			LocalDateTime localDateTime = LocalDateTime.now();
-			System.out.println(localDateTime.withDayOfMonth(0));
-			System.out.println(DateUtils.addDate(new Date(),"day",1));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-	}
 }
