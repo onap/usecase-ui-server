@@ -56,6 +56,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		 try(Session session = getSession()){
 			if (null == performanceHeder){
 				logger.error("PerformanceHeaderServiceImpl savePerformanceHeader performanceHeder is null!");
+				return "0";
 			}
 			logger.info("PerformanceHeaderServiceImpl savePerformanceHeader: performanceHeder={}", performanceHeder);
 			Transaction tx = session.beginTransaction();
@@ -74,6 +75,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		try(Session session = getSession()){
 			if (null == performanceHeder){
 				logger.error("PerformanceHeaderServiceImpl updatePerformanceHeader performanceHeder is null!");
+				return "0";
 			}
 			logger.info("PerformanceHeaderServiceImpl updatePerformanceHeader: performanceHeder={}", performanceHeder);
 			Transaction tx = session.beginTransaction();
@@ -92,6 +94,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
 			if (null == performanceHeder) {
 				logger.error("PerformanceHeaderServiceImpl getAllCount performanceHeder is null!");
+				return 0;
 			}else {
 				if(null!=performanceHeder.getVersion()) {
 					String ver=performanceHeder.getVersion();
@@ -188,7 +191,8 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		try(Session session = getSession()){
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
 			if (null == performanceHeder) {
-				//logger.error("PerformanceHeaderServiceImpl queryPerformanceHeader performanceHeder is null!");
+				logger.error("PerformanceHeaderServiceImpl queryPerformanceHeader performanceHeder is null!");
+				return page;
 			}else {
 				if(null!=performanceHeder.getVersion()) {
 					String ver=performanceHeder.getVersion();
@@ -286,10 +290,11 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	@Override
 	public List<PerformanceHeader> queryId(String[] id) {
 		try(Session session = getSession()) {
+			List<PerformanceHeader> list = new ArrayList<PerformanceHeader>();
 			if(id.length==0) {
 				logger.error("PerformanceHeaderServiceImpl queryId is null!");
+				return list;
 			}
-			List<PerformanceHeader> list = new ArrayList<PerformanceHeader>();
 			Query query = session.createQuery("from PerformanceHeader a where a.eventName IN (:alist)");
 			list = query.setParameterList("alist", id).list();
 			return list;

@@ -24,7 +24,6 @@ import org.onap.usecaseui.server.bo.PerformanceBo;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.util.CSVUtils;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.ResponseUtil;
@@ -69,12 +68,9 @@ public class PerformanceController {
                                      @PathVariable int pageSize,@PathVariable(required = false) String sourceId,
                                      @PathVariable(required = false) String sourceName,@PathVariable(required = false) String priority,
                                      @PathVariable(required = false) String startTime,@PathVariable(required = false) String endTime) throws JsonProcessingException {
-        logger.info("transfer getAlarmData Apis, " +
-                        "Parameter all follows : [currentPage : {} , pageSize : {} , sourceId : {} , " +
-                        "sourceName : {} , priority : {} , startTime :{} , endTime : {} ]"
-                ,currentPage,pageSize,sourceId,sourceName,priority,startTime,endTime);
+        logger.info("API Parameter: [currentPage:{}, pageSize:{}, sourceId:{}, sourceName:{}, priority:{}, startTime:{}, endTime:{}]" ,currentPage, pageSize, sourceId, sourceName, priority, startTime, endTime);
         List<Object> list = new ArrayList<>();
-        Page pa = null;
+        Page<PerformanceHeader> pa = new Page<PerformanceHeader>();
         if (null != sourceId || null != sourceName || null != priority || null != startTime || null != endTime){
             PerformanceHeader performanceHeader = new PerformanceHeader();
             performanceHeader.setSourceId(!"null".equals(sourceId)?sourceId:null);
@@ -126,69 +122,6 @@ public class PerformanceController {
             return omPerformance.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             logger.error("JsonProcessingException"+e.getMessage());
-            return omPerformance.writeValueAsString("failed");
-        }
-    }
-
-    @RequestMapping(value = {"/performance/genCsv/{eventId}"}, method = RequestMethod.GET, produces = "application/json")
-    public String generateCsvFile(HttpServletResponse response, @PathVariable String[] eventId) throws JsonProcessingException {
-        String csvFile = "csvFiles/vnf_performance_"+new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date())+".csv";
-        List<PerformanceHeader> performanceHeaders = performanceHeaderService.queryId(eventId);
-        if (null == performanceHeaders || performanceHeaders.size() <= 0)
-            return new ObjectMapper().writeValueAsString("selected eventId don't exist");
-        List<String[]> csvData = new ArrayList<>();
-        performanceHeaders.forEach(s ->{
-            List<PerformanceInformation> information = performanceInformationService.queryPerformanceInformation(new PerformanceInformation(s.getEventId()),1,100).getList();
-            String names = "";
-            String values = "";
-            if (0 < information.size() && null != information){
-                for (PerformanceInformation a : information){
-                    names += a.getName()+",";
-                    values += a.getValue()+",";
-                }
-                names = names.substring(0,names.lastIndexOf(','));
-                values = values.substring(0,values.lastIndexOf(','));
-            }
-            csvData.add(new String[]{
-                s.getVersion(),s.getEventName(),s.getDomain(),s.getEventId(),s.getEventType(),s.getNfcNamingCode(),s.getNfNamingCode(),
-                    s.getSourceId(),s.getSourceName(),s.getReportingEntityId(),s.getReportingEntityName(),s.getPriority(),
-                    s.getStartEpochMicrosec(),s.getLastEpochMicroSec(),s.getSequence(),s.getMeasurementsForVfScalingVersion(),
-                    s.getMeasurementInterval(),DateUtils.dateToString(s.getCreateTime()),DateUtils.dateToString(s.getUpdateTime()),
-                    names,values
-            });
-        });
-        CSVUtils.writeCsv(PerformanceCSVHeaders,csvData,csvFile);
-        if (ResponseUtil.responseDownload(csvFile,response)){
-            return omPerformance.writeValueAsString("success");
-        }else{
-            return omPerformance.writeValueAsString("failed");
-        }
-    }
-
-    @RequestMapping(value = {"/performance/genDiaCsv/{dataJson}"}, method = RequestMethod.GET, produces = "application/json")
-    public String generateDiaCsvFile(HttpServletResponse response,@PathVariable String dataJson) throws IOException {
-        List<Map<String,Object>> dataList = omPerformance.readValue(dataJson,List.class);
-        String csvFileName = "csvFiles/"+dataList.get(0).get("name")+"_"+new SimpleDateFormat("yy-MM-ddHH:mm:ss").format(new Date())+".csv";
-        try{
-            String[] headers = new String[]{"eventId","name","dateUnit","value"};
-            List<String[]> csvDatas = new ArrayList<>();
-            if (null != dataList){
-                dataList.forEach((l)->{
-                    StringBuffer fileData = new StringBuffer();
-                    l.forEach((k,v)->{
-                        logger.info(v.toString());
-                        fileData.append(v.toString()+",");
-                    });
-                    csvDatas.add(fileData.toString().split(","));
-                });
-            }
-            CSVUtils.writeCsv(headers,csvDatas,csvFileName);
-        }catch (Exception pe){
-            logger.error(pe.getMessage());
-        }
-        if (ResponseUtil.responseDownload(csvFileName,response)){
-            return omPerformance.writeValueAsString("success");
-        }else{
             return omPerformance.writeValueAsString("failed");
         }
     }

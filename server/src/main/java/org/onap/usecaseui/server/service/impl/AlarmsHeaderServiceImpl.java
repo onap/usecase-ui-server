@@ -57,6 +57,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		 try(Session session = getSession()){
 			if (null == alarmsHeader) {
 				logger.error("AlarmsHeaderServiceImpl saveAlarmsHeader alarmsHeader is null!");
+				return "0";
 			}
 			logger.info("AlarmsHeaderServiceImpl saveAlarmsHeader: alarmsHeader={}", alarmsHeader);
 			Transaction tx = session.beginTransaction();     
@@ -75,6 +76,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		try(Session session = getSession()){
 			if (null == alarmsHeader){
 				logger.error("AlarmsHeaderServiceImpl updateAlarmsHeader alarmsHeader is null!");
+				return "0";
 			}
 			logger.info("AlarmsHeaderServiceImpl updateAlarmsHeader: alarmsHeader={}", alarmsHeader);
 			Transaction tx = session.beginTransaction();     
@@ -93,6 +95,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			StringBuffer count=new StringBuffer("select count(*) from AlarmsHeader a where 1=1");
 			if (null == alarmsHeader) {
 				logger.error("AlarmsHeaderServiceImpl getAllCount alarmsHeader is null!");
+				return -1;
 			}else {
 				if(null!=alarmsHeader.getVersion()) {
 					String ver=alarmsHeader.getVersion();
@@ -218,7 +221,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		try(Session session = getSession()){
 			StringBuffer hql =new StringBuffer("from AlarmsHeader a where 1=1");
 			if (null == alarmsHeader) {
-				//logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
+				logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
+				return null;
 			}else {
 				if(null!=alarmsHeader.getVersion()) {
 					String ver=alarmsHeader.getVersion();
@@ -345,10 +349,11 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	@Override
 	public List<AlarmsHeader> queryId(String[] id) {
 		try(Session session = getSession()){
+			List<AlarmsHeader> list = new ArrayList<AlarmsHeader>();
 			if(id.length==0) {
 				logger.error("AlarmsHeaderServiceImpl queryId is null!");
+				return list;
 			}
-			List<AlarmsHeader> list = new ArrayList<AlarmsHeader>();
 			Query query = session.createQuery("from AlarmsHeader a where a.eventName IN (:alist)");
 			list = query.setParameterList("alist", id).list();
 			return list;

@@ -26,7 +26,6 @@ import org.onap.usecaseui.server.bo.AlarmBo;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.util.CSVUtils;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.ResponseUtil;

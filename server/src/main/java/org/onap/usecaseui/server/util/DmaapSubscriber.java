@@ -150,11 +150,6 @@ public class DmaapSubscriber implements Runnable {
                 subscribe(performanceTopic);
             }
         } catch (Exception e) {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
             logger.error("subscribe raise error :" + e.getCause());
         }
     }
