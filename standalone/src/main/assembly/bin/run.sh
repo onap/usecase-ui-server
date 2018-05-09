@@ -21,7 +21,7 @@ echo @RUNHOME@ $RUNHOME
 
 echo "Starting mysql"
 service mysql start
-sleep 1
+sleep 10
 
 SCRIPT="/home/uui/resources/bin/initDB.sh"
 chmod 755 "$SCRIPT"
