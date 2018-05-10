@@ -24,8 +24,8 @@ service mysql start
 sleep 10
 
 SCRIPT="/home/uui/resources/bin/initDB.sh"
-chmod 755 "$SCRIPT"
-"$SCRIPT"  root root 3306 127.0.0.1
+chmod 755 $SCRIPT
+$SCRIPT  root root 3306 127.0.0.1
 
 echo @JAVA_HOME@ $JAVA_HOME
 JAVA="$JAVA_HOME/bin/java"
