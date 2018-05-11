@@ -38,9 +38,11 @@ public class ServiceTemplateInput {
     private String category;
 
     private String subcategory;
-
+    
+    private String customizationUuid;
+    
     private List<TemplateInput> inputs;
-
+    
     private List<ServiceTemplateInput> nestedTemplates;
 
     public ServiceTemplateInput(
@@ -52,6 +54,7 @@ public class ServiceTemplateInput {
             String description,
             String category,
             String subcategory,
+            String customizationUuid,
             List<TemplateInput> inputs) {
         this.invariantUUID = invariantUUID;
         this.uuid = uuid;
@@ -61,6 +64,7 @@ public class ServiceTemplateInput {
         this.description = description;
         this.category = category;
         this.subcategory = subcategory;
+        this.customizationUuid = customizationUuid;
         this.inputs = inputs;
         this.nestedTemplates = new ArrayList<>();
     }
@@ -96,8 +100,12 @@ public class ServiceTemplateInput {
     public String getSubcategory() {
         return subcategory;
     }
+    
+    public String getCustomizationUuid() {
+		return customizationUuid;
+	}
 
-    public List<TemplateInput> getInputs() {
+	public List<TemplateInput> getInputs() {
         return inputs;
     }
 
@@ -134,13 +142,14 @@ public class ServiceTemplateInput {
                 Objects.equals(description, that.description) &&
                 Objects.equals(category, that.category) &&
                 Objects.equals(subcategory, that.subcategory) &&
+                Objects.equals(customizationUuid, that.customizationUuid) &&
                 Objects.equals(inputs, that.inputs) &&
                 Objects.equals(nestedTemplates, that.nestedTemplates);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(invariantUUID, uuid, name, type, version, description, category, subcategory, inputs, nestedTemplates);
+        return Objects.hash(invariantUUID, uuid, name, type, version, description, category, subcategory,customizationUuid, inputs, nestedTemplates);
     }
 
     @Override
@@ -154,6 +163,7 @@ public class ServiceTemplateInput {
                 .add("description", description)
                 .add("category", category)
                 .add("subcategory", subcategory)
+                .add("customizationUuid", customizationUuid)
                 .add("inputs", inputs)
                 .add("nestedTemplates", nestedTemplates)
                 .toString();

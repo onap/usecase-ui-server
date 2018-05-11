@@ -123,10 +123,10 @@ public class DefaultServiceTemplateServiceTest {
 
     private ServiceTemplateInput expectedServiceInputs(String uuid, String nodeUUID) {
         ServiceTemplateInput e2eServiceTemplateInput = new ServiceTemplateInput(
-                uuid, uuid, "VoLTE", "service","", "VoLTE", "service", "", Collections.EMPTY_LIST);
+                uuid, uuid, "VoLTE", "service","", "VoLTE", "service", "","", Collections.EMPTY_LIST);
         TemplateInput templateInput = new TemplateInput("field_name","field_type", "field_description", "true", "field_default");
         ServiceTemplateInput nodeTemplateInput = new ServiceTemplateInput(
-                nodeUUID, nodeUUID, "", "", "","", "service", "", Collections.singletonList(templateInput));
+                nodeUUID, nodeUUID, "", "", "","", "service", "","", Collections.singletonList(templateInput));
 //        e2eServiceTemplateInput.addNestedTemplate(nodeTemplateInput);
         return e2eServiceTemplateInput;
     }

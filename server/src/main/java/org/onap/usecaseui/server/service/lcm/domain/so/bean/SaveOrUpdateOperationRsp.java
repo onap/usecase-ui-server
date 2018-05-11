@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
+ * Copyright 2016-2017 CMCC Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service;
+package org.onap.usecaseui.server.service.lcm.domain.so.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-public interface InitializationService
-{
-    void initialize();
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class SaveOrUpdateOperationRsp {
+
+    private String operationId;
+
+    public String getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(String operationId) {
+        this.operationId = operationId;
+    }
 }

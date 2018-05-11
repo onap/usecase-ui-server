@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.controller.lcm;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,7 @@ public class ServiceLcmController {
      */
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/services/scaleServices/{serviceId}"}, method = RequestMethod.POST , produces = "application/json")
-    public DeleteOperationRsp scaleServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request){
+    public SaveOrUpdateOperationRsp scaleServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request){
         return serviceLcmService.scaleService(serviceId, request);
     }
     
@@ -95,7 +96,7 @@ public class ServiceLcmController {
      */
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/services/updateService/{serviceId}"}, method = RequestMethod.PUT , produces = "application/json")
-    public DeleteOperationRsp updateServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request){
-        return serviceLcmService.scaleService(serviceId, request);
+    public SaveOrUpdateOperationRsp updateServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request){
+        return serviceLcmService.updateService(serviceId, request);
     }
 }

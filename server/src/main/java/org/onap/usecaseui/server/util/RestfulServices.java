@@ -15,16 +15,22 @@
  */
 package org.onap.usecaseui.server.util;
 
-import okhttp3.RequestBody;
-import okhttp3.MediaType;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+import java.io.IOException;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class RestfulServices {
+
+	private static final Logger logger = LoggerFactory.getLogger(RestfulServices.class);
 
     public static <T> T create(String baseUrl, Class<T> clazz) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -58,6 +64,7 @@ public class RestfulServices {
             inStream = request.getInputStream();
             byte[] buffer = new byte[len];
             inStream.read(buffer, 0, len);
+            logger.info("The request body content is: "+new String(buffer));
             return RequestBody.create(MediaType.parse("application/json"), buffer);
         }finally {
             if (inStream != null) {

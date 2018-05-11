@@ -289,6 +289,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         String description = tosca.getMetaData().getValue("description");
         String category = tosca.getMetaData().getValue("category");
         String subcategory = tosca.getMetaData().getValue("subcategory");
+        String customizationUuid = tosca.getMetaData().getValue("customizationUuid");
         if(subcategory == null) {
             subcategory = "";
         }
@@ -301,6 +302,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
                 description,
                 category,
                 subcategory,
+                customizationUuid,
                 new ArrayList<>());
     }
 
@@ -316,6 +318,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         String description = nodeTemplate.getMetaData().getValue("description");
         String category = nodeTemplate.getMetaData().getValue("category");
         String subcategory = nodeTemplate.getMetaData().getValue("subcategory");
+        String customizationUuid = nodeTemplate.getMetaData().getValue("customizationUuid");
         if(subcategory == null) {
             subcategory = "";
         }
@@ -328,6 +331,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
                 description,
                 category,
                 subcategory,
+                customizationUuid,
                 new ArrayList<>());
     }
 

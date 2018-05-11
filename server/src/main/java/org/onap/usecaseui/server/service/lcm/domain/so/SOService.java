@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.service.lcm.domain.so;
 import okhttp3.RequestBody;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -51,12 +52,12 @@ public interface SOService {
         "Accept: application/json"
     })
 	@POST("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}/scale")
-	Call<DeleteOperationRsp> scaleService(@Path("serviceId") String serviceId, @Body RequestBody body);
+	Call<SaveOrUpdateOperationRsp> scaleService(@Path("serviceId") String serviceId, @Body RequestBody body);
     
     @Headers({
         "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
         "Accept: application/json"
     })
 	@PUT("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}")
-	Call<DeleteOperationRsp> updateService(@Path("serviceId") String serviceId, @Body RequestBody body);
+	Call<SaveOrUpdateOperationRsp> updateService(@Path("serviceId") String serviceId, @Body RequestBody body);
 }

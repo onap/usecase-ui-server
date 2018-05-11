@@ -25,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 import java.io.IOException;
@@ -63,4 +65,21 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
             throw new AAIException("AAI is not available.", e);
         }
     }
+
+	@Override
+	public String getRelationShipData(String customerId, String serviceType, String serviceId) {
+        try {
+            Response<ResponseBody> response = aaiService.getAAIServiceInstance(customerId, serviceType,serviceId).execute();
+            if (response.isSuccessful()) {
+            	String result=new String(response.body().bytes());
+                return result;
+            } else {
+                logger.info(String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
+                return "";
+            }
+        } catch (IOException e) {
+            logger.error("list services instances occur exception");
+            throw new AAIException("AAI is not available.", e);
+        }
+	}
 }

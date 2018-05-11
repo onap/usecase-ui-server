@@ -15,25 +15,28 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
-import okhttp3.RequestBody;
+import static org.onap.usecaseui.server.util.RestfulServices.create;
+import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+
+import okhttp3.RequestBody;
 import retrofit2.Response;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Collections;
-
-import static org.onap.usecaseui.server.util.RestfulServices.create;
-import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 
 @Service("ServiceLcmService")
 @org.springframework.context.annotation.Configuration
@@ -55,15 +58,17 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public ServiceOperation instantiateService(HttpServletRequest request) {
         try {
-            RequestBody requestBody = extractBody(request);
+        	logger.info("so instantiate is starting");
+        	RequestBody requestBody = extractBody(request);
             Response<ServiceOperation> response = soService.instantiateService(requestBody).execute();
+			logger.info("so instantiate has finished");
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not instantiate service[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not instantiate service[code=%s, message=%s]", response.code(), response.message()));
                 throw new SOException("SO instantiate service failed!");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SOException("SO Service is not available!", e);
         }
     }
@@ -75,7 +80,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not query operation process[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not query operation process[code=%s, message=%s]", response.code(), response.message()));
                 throw new SOException("SO query operation process failed!");
             }
         } catch (IOException e) {
@@ -86,12 +91,14 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public DeleteOperationRsp terminateService(String serviceId, HttpServletRequest request) {
         try {
+        	logger.info("so terminate is starting");
             RequestBody requestBody = extractBody(request);
             Response<DeleteOperationRsp> response = soService.terminateService(serviceId, requestBody).execute();
+			logger.info("so terminate has finished");
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not terminate service[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not terminate service[code=%s, message=%s]", response.code(), response.message()));
                 throw new SOException("SO terminate service failed!");
             }
         } catch (IOException e) {
@@ -100,14 +107,16 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     }
 
 	@Override
-	public DeleteOperationRsp scaleService(String serviceId, HttpServletRequest request) {
+	public SaveOrUpdateOperationRsp scaleService(String serviceId, HttpServletRequest request) {
 		try {
+			logger.info("so scale is finished");
 			RequestBody requestBody = extractBody(request);
-			Response<DeleteOperationRsp> response = soService.scaleService(serviceId,requestBody).execute();
+			Response<SaveOrUpdateOperationRsp> response = soService.scaleService(serviceId,requestBody).execute();
+			logger.info("so scale has finished");
 			if(response.isSuccessful()){
 				return response.body();
 			}else{
-                logger.info(String.format("Can not terminate service[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not scaleService service[code=%s, message=%s]", response.code(), response.message()));
                 throw new SOException("SO terminate service failed!");
 			}
 		} catch (IOException e) {
@@ -116,14 +125,16 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 	}
 
 	@Override
-	public DeleteOperationRsp updateService(String serviceId, HttpServletRequest request) {
+	public SaveOrUpdateOperationRsp updateService(String serviceId, HttpServletRequest request) {
 		try {
+			logger.info("so update is starting");
 			RequestBody requestBody = extractBody(request);
-			Response<DeleteOperationRsp> response = soService.updateService(serviceId,requestBody).execute();
+			Response<SaveOrUpdateOperationRsp> response = soService.updateService(serviceId,requestBody).execute();
+			logger.info("so update has finished");
 			if(response.isSuccessful()){
 				return response.body();
 			}else{
-                logger.info(String.format("Can not terminate service[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not updateService service[code=%s, message=%s]", response.code(), response.message()));
                 throw new SOException("SO terminate service failed!");
 			}
 		} catch (IOException e) {

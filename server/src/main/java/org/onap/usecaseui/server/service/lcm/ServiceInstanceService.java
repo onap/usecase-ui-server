@@ -22,4 +22,6 @@ import java.util.List;
 public interface ServiceInstanceService {
 
     List<ServiceInstance> listServiceInstances(String customerId, String serviceType);
+    
+    String getRelationShipData(String customerId, String serviceType,String serviceId );
 }

@@ -34,7 +34,7 @@ public class ServiceTemplateInputTest {
 	@Test
 	public void testGetServiceTemplateInput() throws Exception {
 		List<TemplateInput> inputs = new ArrayList<>();
-		ServiceTemplateInput sti = new ServiceTemplateInput("invariantUUID", "uuid", "name", "type", "version", "description", "category", "subcategory", inputs);
+		ServiceTemplateInput sti = new ServiceTemplateInput("invariantUUID", "uuid", "name", "type", "version", "description", "category", "subcategory","", inputs);
 		sti.getInvariantUUID();
 		sti.getUuid();
 		sti.getName();
@@ -53,7 +53,7 @@ public class ServiceTemplateInputTest {
 	public void testSetServiceTemplateInput() throws Exception {
 		List<TemplateInput> tis = new ArrayList<>();
 		TemplateInput ti = new TemplateInput("name", "type", "description", "isRequired", "defaultValue");
-		ServiceTemplateInput sti = new ServiceTemplateInput("invariantUUID", "uuid", "name", "type", "version", "description", "category", "subcategory", tis);
+		ServiceTemplateInput sti = new ServiceTemplateInput("invariantUUID", "uuid", "name", "type", "version", "description", "category", "subcategory","", tis);
 		sti.addNestedTemplate(sti);
 		sti.addInputs(tis);
 		sti.addInput(ti);

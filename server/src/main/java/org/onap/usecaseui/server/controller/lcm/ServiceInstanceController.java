@@ -15,19 +15,25 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @Controller
 @org.springframework.context.annotation.Configuration
@@ -52,7 +58,43 @@ public class ServiceInstanceController {
                 "list service instances with [customerId=%s, serviceType=%s]",
                 customerId,
                 serviceType));
-
         return serviceInstanceService.listServiceInstances(customerId, serviceType);
+    }
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/getServiceInstanceById"}, method = RequestMethod.GET , produces = "application/json")
+    public String getServiceInstanceById(HttpServletRequest request){
+        String customerId = request.getParameter("customerId");
+        String serviceType = request.getParameter("serviceType");
+        String serviceId = request.getParameter("serviceId");
+        JSONArray result = new JSONArray();
+        String servicesString=serviceInstanceService.getRelationShipData(customerId, serviceType, serviceId);
+        if(!UuiCommonUtil.isNotNullOrEmpty(servicesString)){
+        	return result.toString();
+        }
+        JSONObject services = JSONObject.parseObject(servicesString);
+        JSONArray relations =JSONObject.parseArray(JSONObject.parseObject(services.getString("relationship-list")).getString("relationship"));
+        for (int i = 0; i < relations.size(); i++) {
+        	JSONObject relation = JSONObject.parseObject(relations.getString(i));
+        	JSONArray relationShipData = JSONObject.parseArray(relation.getString("relationship-data"));
+        	for (int j = 0; j < relationShipData.size(); j++) {
+        		JSONObject res = new JSONObject();
+        		JSONObject data = JSONObject.parseObject(relationShipData.getString(j));
+        		String relationshipKey=data.getString("relationship-key");
+        		String netWorkServiceId=data.getString("relationship-value");
+        		if("service-instance.service-instance-id".equals(relationshipKey)){
+        			JSONObject netWorkSerSring=JSONObject.parseObject(serviceInstanceService.getRelationShipData(customerId, serviceType, netWorkServiceId));
+        			if("NetworkService".equals(netWorkSerSring.get("service-type"))){
+        				res.put("netWorkServiceId", netWorkSerSring.get("service-instance-id"));
+        				res.put("netWorkServiceName", netWorkSerSring.get("service-instance-name"));
+        				res.put("scaleType","");
+        				res.put("aspectId","");
+        				res.put("numberOfSteps","");
+        				res.put("scalingDirection","");
+        				result.add(res);
+        			}
+        		}
+        	}
+		}
+        return result.toString() ;
     }
 }
