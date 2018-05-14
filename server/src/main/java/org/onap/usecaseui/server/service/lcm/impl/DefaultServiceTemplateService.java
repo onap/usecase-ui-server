@@ -91,7 +91,6 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
 
     private ServiceTemplateInput fetchServiceTemplate(String uuid, String toscaModelPath, boolean isVF) {
     	String toPath = String.format("/home/uui/%s.csar", uuid);
-//        String toPath = String.format("D:\\volte/%s.csar", uuid);
         try {
             downloadFile(toscaModelPath, toPath);
             return extractTemplate(toPath, isVF);
@@ -116,6 +115,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
 
     public ServiceTemplateInput extractTemplate(String toPath, boolean isVF) throws JToscaException, IOException {
         ToscaTemplate tosca = translateToToscaTemplate(toPath);
+        logger.info("csar analysis result :" + tosca);
         ServiceTemplateInput serviceTemplateInput = newServiceTemplateInput(tosca);
         Map<String, Input> inputsMap = getInputsMap(tosca);
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
