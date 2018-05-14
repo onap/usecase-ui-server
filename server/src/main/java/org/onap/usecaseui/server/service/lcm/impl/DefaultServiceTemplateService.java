@@ -90,7 +90,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     private ServiceTemplateInput fetchServiceTemplate(String uuid, String toscaModelPath, boolean isVF) {
-        String toPath = String.format("/home/uui/%s.csar", uuid);
+    	String toPath = String.format("/home/uui/%s.csar", uuid);
 //        String toPath = String.format("D:\\volte/%s.csar", uuid);
         try {
             downloadFile(toscaModelPath, toPath);
@@ -119,17 +119,8 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         ServiceTemplateInput serviceTemplateInput = newServiceTemplateInput(tosca);
         Map<String, Input> inputsMap = getInputsMap(tosca);
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
-            String nodeType = nodeTemplate.getMetaData().getValue("type");
-            if ("VF".equals(nodeType)) {
-                ServiceTemplateInput nodeService = fetchVFNodeTemplateInput(nodeTemplate);
-                if (nodeService == null) {
-                    continue;
-                }
-                serviceTemplateInput.addNestedTemplate(nodeService);
-            } else {
                 ServiceTemplateInput nodeService = fetchVLServiceTemplateInput(nodeTemplate, inputsMap);
                 serviceTemplateInput.addNestedTemplate(nodeService);
-            }
         }
         List<TemplateInput> serviceInputs = getServiceInputs(inputsMap.values());
         serviceTemplateInput.addInputs(serviceInputs);
