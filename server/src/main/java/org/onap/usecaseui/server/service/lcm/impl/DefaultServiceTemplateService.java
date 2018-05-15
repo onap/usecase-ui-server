@@ -137,21 +137,10 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             serviceTemplateInput.setType("VF");
             appendLocationParameters(serviceTemplateInput, tosca);
             appendSdnControllerParameter(serviceTemplateInput);
-            appendTest2Input(serviceTemplateInput);
-        }else{
-        	appendTest1Input(serviceTemplateInput);
         }
         return serviceTemplateInput;
     }
     
-    private void appendTest1Input(ServiceTemplateInput serviceTemplateInput){
-        serviceTemplateInput.addInput( new TemplateInput("ns1_name1", "testType", "test1","true","" ) );
-        serviceTemplateInput.addInput( new TemplateInput("ns1_name2", "testType", "test2","true","" ) );
-    }
-    private void appendTest2Input(ServiceTemplateInput serviceTemplateInput){
-    	serviceTemplateInput.addInput( new TemplateInput("ns1_vnf_name1", "testType", "test1","true","" ) );
-    	serviceTemplateInput.addInput( new TemplateInput("ns1_vnf_name2", "testType", "test2","true","" ) );
-    }
     private void appendLocationParameters(ServiceTemplateInput serviceTemplateInput, ToscaTemplate tosca) {
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
             String type = nodeTemplate.getMetaData().getValue("type");
