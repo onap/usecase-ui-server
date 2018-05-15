@@ -90,9 +90,10 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     private ServiceTemplateInput fetchServiceTemplate(String uuid, String toscaModelPath, boolean isVF) {
-    	String toPath = String.format("/home/uui/%s.csar", uuid);
+        String toPath = String.format("/home/uui/%s.csar", uuid);
+        //String toPath = String.format("D:\\work/%s.csar", uuid);
         try {
-            downloadFile(toscaModelPath, toPath);
+        	downloadFile(toscaModelPath, toPath);
             return extractTemplate(toPath, isVF);
         }  catch (IOException e) {
             throw new SDCCatalogException("download csar file failed!", e);
@@ -115,12 +116,20 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
 
     public ServiceTemplateInput extractTemplate(String toPath, boolean isVF) throws JToscaException, IOException {
         ToscaTemplate tosca = translateToToscaTemplate(toPath);
-        logger.info("csar analysis result :" + tosca);
         ServiceTemplateInput serviceTemplateInput = newServiceTemplateInput(tosca);
         Map<String, Input> inputsMap = getInputsMap(tosca);
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
+            String nodeType = nodeTemplate.getMetaData().getValue("type");
+            if ("VF".equals(nodeType)) {
+                ServiceTemplateInput nodeService = fetchVFNodeTemplateInput(nodeTemplate);
+                if (nodeService == null) {
+                    continue;
+                }
+                serviceTemplateInput.addNestedTemplate(nodeService);
+            } else {
                 ServiceTemplateInput nodeService = fetchVLServiceTemplateInput(nodeTemplate, inputsMap);
                 serviceTemplateInput.addNestedTemplate(nodeService);
+            }
         }
         List<TemplateInput> serviceInputs = getServiceInputs(inputsMap.values());
         serviceTemplateInput.addInputs(serviceInputs);
@@ -128,10 +137,21 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             serviceTemplateInput.setType("VF");
             appendLocationParameters(serviceTemplateInput, tosca);
             appendSdnControllerParameter(serviceTemplateInput);
+            appendTest2Input(serviceTemplateInput);
+        }else{
+        	appendTest1Input(serviceTemplateInput);
         }
         return serviceTemplateInput;
     }
-
+    
+    private void appendTest1Input(ServiceTemplateInput serviceTemplateInput){
+        serviceTemplateInput.addInput( new TemplateInput("ns1_name1", "testType", "test1","true","" ) );
+        serviceTemplateInput.addInput( new TemplateInput("ns1_name2", "testType", "test2","true","" ) );
+    }
+    private void appendTest2Input(ServiceTemplateInput serviceTemplateInput){
+    	serviceTemplateInput.addInput( new TemplateInput("ns1_vnf_name1", "testType", "test1","true","" ) );
+    	serviceTemplateInput.addInput( new TemplateInput("ns1_vnf_name2", "testType", "test2","true","" ) );
+    }
     private void appendLocationParameters(ServiceTemplateInput serviceTemplateInput, ToscaTemplate tosca) {
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
             String type = nodeTemplate.getMetaData().getValue("type");
@@ -166,8 +186,8 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
 
     private ServiceTemplateInput fetchVLServiceTemplateInput(NodeTemplate nodeTemplate, Map<String, Input> inputsMap) {
         ServiceTemplateInput nodeService = newServiceTemplateInput(nodeTemplate);
-        String prefix = getPrefix(nodeTemplate.getName());
-        List<TemplateInput> templateInputs = collectInputs(prefix, inputsMap);
+        //String prefix = getPrefix(nodeTemplate.getName());
+        List<TemplateInput> templateInputs = getServiceInputs(inputsMap.values());
         nodeService.addInputs(templateInputs);
         return nodeService;
     }
@@ -182,6 +202,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         if (toscaModelURL == null) {
             return null;
         }
+        //return fetchServiceTemplate("f809cda7-7ce3-4a9b-a2a0-9af84051bfb5", "", true);
         return fetchServiceTemplate(nodeUUID, toscaModelURL, true);
     }
 
@@ -213,32 +234,32 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         return null;
     }
 
-    private List<TemplateInput> collectInputs(String prefix, Map<String, Input> inputsMap) {
-        List<TemplateInput> result = new ArrayList<>();
-        List<String> removeItems = new ArrayList<>();
-        for (Map.Entry<String, Input> entry : inputsMap.entrySet()) {
-            String name = entry.getKey();
-            if (name.startsWith(prefix)) {
-                //remove resource name prefix which sdc added.
-                name = name.substring(prefix.length() + 1);
-                Input in = entry.getValue();
-                result.add(
-                        new TemplateInput(
-                                name,
-                                in.getType(),
-                                in.getDescription(),
-                                String.valueOf(in.isRequired()),
-                                String.valueOf(in.getDefault())
-                        )
-                );
-                removeItems.add(entry.getKey());
-            }
-        }
-        for (String key : removeItems) {
-            inputsMap.remove(key);
-        }
-        return result;
-    }
+//    private List<TemplateInput> collectInputs(String prefix, Map<String, Input> inputsMap) {
+//        List<TemplateInput> result = new ArrayList<>();
+//        List<String> removeItems = new ArrayList<>();
+//        for (Map.Entry<String, Input> entry : inputsMap.entrySet()) {
+//            String name = entry.getKey();
+//            if (name.startsWith(prefix)) {
+//                //remove resource name prefix which sdc added.
+//                name = name.substring(prefix.length() + 1);
+//                Input in = entry.getValue();
+//                result.add(
+//                        new TemplateInput(
+//                                name,
+//                                in.getType(),
+//                                in.getDescription(),
+//                                String.valueOf(in.isRequired()),
+//                                String.valueOf(in.getDefault())
+//                        )
+//                );
+//                removeItems.add(entry.getKey());
+//            }
+//        }
+//        for (String key : removeItems) {
+//            inputsMap.remove(key);
+//        }
+//        return result;
+//    }
 
     private Map<String, Input> getInputsMap(ToscaTemplate tosca) {
         Map<String, Input> result = new HashMap<>();
@@ -248,9 +269,9 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         return result;
     }
 
-    private String getPrefix(String name) {
-        return name.replaceAll(" +", "").toLowerCase();
-    }
+//    private String getPrefix(String name) {
+//        return name.replaceAll(" +", "").toLowerCase();
+//    }
 
     protected String getToscaUrl(String nodeUUID) throws IOException {
         Response<SDCServiceTemplate> response = sdcCatalog.getService(nodeUUID).execute();
