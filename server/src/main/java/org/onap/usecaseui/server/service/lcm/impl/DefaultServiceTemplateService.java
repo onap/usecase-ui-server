@@ -19,6 +19,7 @@ import com.google.common.io.Files;
 import okhttp3.ResponseBody;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
+import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
@@ -216,6 +217,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         for (Map.Entry<String, Property> entry : properties.entrySet()) {
             String key = entry.getKey();
             if (key.endsWith("providing_service_uuid")) {
+            	Constant.netWorkMap.put(String.valueOf(entry.getValue().getValue()), newServiceTemplateInput(nodeTemplate));
                 return String.valueOf(entry.getValue().getValue());
             }
         }
@@ -279,32 +281,36 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     private static ServiceTemplateInput newServiceTemplateInput(ToscaTemplate tosca) {
-        String invariantUUID = tosca.getMetaData().getValue("invariantUUID");
-        String uuid = tosca.getMetaData().getValue("UUID");
-        String name = tosca.getMetaData().getValue("name");
-        String type = tosca.getMetaData().getValue("type");
-        String version = tosca.getMetaData().getValue("version");
-        if (version == null) {
-            version = "";
-        }
-        String description = tosca.getMetaData().getValue("description");
-        String category = tosca.getMetaData().getValue("category");
-        String subcategory = tosca.getMetaData().getValue("subcategory");
-        String customizationUuid = tosca.getMetaData().getValue("customizationUUID");
-        if(subcategory == null) {
-            subcategory = "";
-        }
-        return new ServiceTemplateInput(
-                invariantUUID,
-                uuid,
-                name,
-                type,
-                version,
-                description,
-                category,
-                subcategory,
-                customizationUuid,
-                new ArrayList<>());
+    	if(Constant.netWorkMap.containsKey(tosca.getMetaData().getValue("UUID"))){
+    		return Constant.netWorkMap.get(tosca.getMetaData().getValue("UUID"));
+    	}else{
+            String invariantUUID = tosca.getMetaData().getValue("invariantUUID");
+            String uuid = tosca.getMetaData().getValue("UUID");
+            String name = tosca.getMetaData().getValue("name");
+            String type = tosca.getMetaData().getValue("type");
+            String version = tosca.getMetaData().getValue("version");
+            if (version == null) {
+                version = "";
+            }
+            String description = tosca.getMetaData().getValue("description");
+            String category = tosca.getMetaData().getValue("category");
+            String subcategory = tosca.getMetaData().getValue("subcategory");
+            String customizationUuid = tosca.getMetaData().getValue("customizationUUID");
+            if(subcategory == null) {
+                subcategory = "";
+            }
+            return new ServiceTemplateInput(
+                    invariantUUID,
+                    uuid,
+                    name,
+                    type,
+                    version,
+                    description,
+                    category,
+                    subcategory,
+                    customizationUuid,
+                    new ArrayList<>());
+    	}
     }
 
     private static ServiceTemplateInput newServiceTemplateInput(NodeTemplate nodeTemplate) {
