@@ -59,7 +59,11 @@ public class AlarmController
 
     @Resource(name = "AlarmsInformationService")
     private AlarmsInformationService alarmsInformationService;
-
+    
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    
+    private String formatDate = "yyyy-MM-dd";
+    
     private  String[] AlarmCSVHeaders = new String[]{"version",
             "eventName","domain","eventId","eventType","nfcNamingCode",
             "nfNamingCode","sourceId","sourceName","reportingEntityId",
@@ -99,8 +103,8 @@ public class AlarmController
             alarm.setSourceName(!"null".equals(sourceName)?sourceName:null);
             alarm.setStatus(!"null".equals(vfStatus)?vfStatus:null);
             try {
-                alarm.setCreateTime(!"null".equals(startTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(startTime):null);
-                alarm.setUpdateTime(!"null".equals(endTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(endTime):null);
+                alarm.setStartEpochMicrosec(!"null".equals(startTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(startTime).getTime()+"":null);
+                alarm.setLastEpochMicroSec(!"null".equals(endTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(endTime).getTime()+"":null);
             } catch (ParseException e) {
                 logger.error("Parse date error :"+e.getMessage());
             }
@@ -151,27 +155,90 @@ public class AlarmController
     }
 
     @RequestMapping(value = {"/alarm/sourceId"},method = RequestMethod.GET)
-    public String getSourceId(){
+    public String getSourceId() throws JsonProcessingException{
         List<String> sourceIds = new ArrayList<>();
-        alarmsHeaderService.queryAlarmsHeader(null,1,Integer.MAX_VALUE).getList().forEach( al ->{
-            sourceIds.add(al.getSourceId());
-        } );
-        try {
-            return omAlarm.writeValueAsString(sourceIds);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
+       Page page  = alarmsHeaderService.queryAlarmsHeader(new AlarmsHeader(), 1, Integer.MAX_VALUE);
+        AlarmsHeader alarmsHeader;
+        if(page==null){
+            page = new Page();
+            List list = new ArrayList();
+            alarmsHeader = new AlarmsHeader();
+            list.add(alarmsHeader);
+            page.setList(list);
 
-    @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.POST)
-    public String genDiagram(@RequestParam String sourceId,@RequestParam String startTime,@RequestParam String endTime){
-        try {
-            return omAlarm.writeValueAsString(alarmsInformationService.queryDateBetween(sourceId,startTime,endTime));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "";
         }
+        for(int a=0;a<page.getList().size();a++){
+
+            alarmsHeader  = (AlarmsHeader)page.getList().get(a);
+            String sourceid = alarmsHeader.getSourceId();
+            if (!sourceIds.contains(sourceid)) {
+                sourceIds.add(sourceid);
+            }
+        }
+        return omAlarm.writeValueAsString(sourceIds);
+    }
+    @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.POST,produces = "application/json")
+    public String diagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String format) {
+        long timeInterval = 0;
+    	try {
+        	if("month".equals(format)){
+        		formatDate="yyyy-MM";
+        		int maxDay= DateUtils.MonthOfDay(startTime, formatDate);
+        		timeInterval =86400000L*maxDay;
+        	}else if("hour".equals(format)){
+        		formatDate="yyyy-MM-dd HH";
+        		timeInterval = 3600000;
+        	}else{
+        		formatDate="yyyy-MM-dd";
+        		timeInterval =86400000;
+        	}
+        	sdf = new SimpleDateFormat(formatDate);
+            long startTimel = sdf.parse(startTime).getTime();
+            long endTimel = sdf.parse(endTime).getTime();
+            return getDiagram(sourceId, startTimel, endTimel+timeInterval, timeInterval, 1, 1,format);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    private  String getDiagram(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format) throws JsonProcessingException{
+    	Map<String,List> result = new HashMap<String,List>();
+    	
+    	Map<String,List> allMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, keyVal, keyValIteraVal,format,"");
+    	Map<String,List> criticalMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"CRITICAL");
+    	Map<String,List> majorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MAJOR");
+    	Map<String,List> minorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MINOR");
+    	Map<String,List> warningMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"WARNING");
+    	Map<String,List> normalMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"NORMAL");
+    	result.put("dateList", allMaps.get("dateTime"));
+    	result.put("allList", allMaps.get("dataList"));
+    	result.put("criticalList",criticalMaps.get("dataList"));
+    	result.put("majorList",majorMaps.get("dataList"));
+    	result.put("minorList",minorMaps.get("dataList"));
+    	result.put("warningList",warningMaps.get("dataList"));
+    	result.put("normalList",normalMaps.get("dataList"));
+    	return omAlarm.writeValueAsString(result);
+    }
+    private Map<String,List> dateProcess(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format,String level) {
+    	Map<String,List> result = new HashMap<String,List>();
+        List<String> dateList = new ArrayList<String>();
+        List<Integer> numList = new ArrayList<Integer>();
+        long tmpEndTimeL = startTimeL + timeIteraPlusVal;
+        while (endTimeL >= tmpEndTimeL) {
+            int num = alarmsInformationService.queryDateBetween(sourceId,startTimeL+"",tmpEndTimeL+"",level);
+            dateList.add(DateUtils.getResultDate(startTimeL, format));
+            int maxDay2 = DateUtils.MonthOfDay(sdf.format(new Date(tmpEndTimeL)), formatDate);
+            int maxDay = DateUtils.MonthOfDay(sdf.format(new Date(startTimeL)), formatDate);
+            numList.add(num);
+            startTimeL += 86400000L*maxDay;
+            tmpEndTimeL += 86400000L*maxDay2;
+            keyVal += keyValIteraVal;
+        }
+        result.put("dateTime", dateList);
+        result.put("dataList", numList);
+        return result;
     }
     
     @RequestMapping(value = "/alarm/statusCount", method = RequestMethod.GET, produces = "application/json")

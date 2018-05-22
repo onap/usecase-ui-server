@@ -113,4 +113,14 @@ public class UuiCommonUtil {
 		}
 		return wholeStr;
 	}
+	
+	public static boolean checkNumber(String num,String format){
+		boolean result = false;
+		if(isNotNullOrEmpty(num)){
+			if(num.matches(format)){
+				result = true;
+			}
+		}
+		return result;
+	}
 }

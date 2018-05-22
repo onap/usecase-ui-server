@@ -22,10 +22,14 @@ echo @RUNHOME@ $RUNHOME
 echo "Starting mysql"
 service mysql start
 sleep 10
+echo "run.sh 1"
 
 SCRIPT="/home/uui/resources/bin/initDB.sh"
+echo "run.sh 2"
 chmod 755 $SCRIPT
+echo "run.sh 3"
 $SCRIPT  root root 3306 127.0.0.1
+echo "run.sh 4"
 
 echo @JAVA_HOME@ $JAVA_HOME
 JAVA="$JAVA_HOME/bin/java"

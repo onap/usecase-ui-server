@@ -168,8 +168,8 @@ public class AlarmsInformationServiceImplTest {
 			ai.setName("");
 			ai.setValue("");
 			ai.setSourceId("");
-			ai.setCreateTime(DateUtils.now());
-			ai.setUpdateTime(DateUtils.now());
+			ai.setStartEpochMicroSec("");;
+			ai.setLastEpochMicroSec("");;
 			alarmsInformationServiceImpl.getAllCount(ai, 1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -183,8 +183,8 @@ public class AlarmsInformationServiceImplTest {
 			ai.setName("");
 			ai.setValue("");
 			ai.setSourceId("");
-			ai.setCreateTime(DateUtils.now());
-			ai.setUpdateTime(DateUtils.now());
+			ai.setStartEpochMicroSec("");;
+			ai.setLastEpochMicroSec("");;
 			alarmsInformationServiceImpl.queryAlarmsInformation(ai, 1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -204,7 +204,7 @@ public class AlarmsInformationServiceImplTest {
 	@Test
 	public void testQueryDateBetween() throws Exception {
 		try {
-			alarmsInformationServiceImpl.queryDateBetween("sourceId", "startTime", "endTime");
+			alarmsInformationServiceImpl.queryDateBetween("sourceId", "startTime", "endTime", "level");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

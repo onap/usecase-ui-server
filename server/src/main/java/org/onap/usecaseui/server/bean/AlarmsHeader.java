@@ -111,14 +111,6 @@ public class AlarmsHeader implements Serializable{
 	
 	@Column(name = "status")
 	private String status;
-	
-	@Column(name = "createTime")
-	private Date createTime;
-	
-	@Column(name = "updateTime")
-	private Date updateTime;
-
-
 
 	public AlarmsHeader() {
 	}
@@ -156,8 +148,6 @@ public class AlarmsHeader implements Serializable{
 		this.vfStatus = vfStatus;
 		this.alarmInterfaceA = alarmInterfaceA;
 		this.status = status;
-		this.createTime = createTime;
-		this.updateTime = updateTime;
 	}
 
 	public String getVersion() {
@@ -366,22 +356,6 @@ public class AlarmsHeader implements Serializable{
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
 	}
 
 	public String getId() {

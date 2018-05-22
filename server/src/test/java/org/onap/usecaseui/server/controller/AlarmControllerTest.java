@@ -101,7 +101,7 @@ public class AlarmControllerTest {
 	@Test
 	public void testGenDiagram() throws Exception {
 		try {
-			controller.genDiagram("sourceId", "startTime", "endTime");
+			controller.diagram("sourceId", "startTime", "endTime","format");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

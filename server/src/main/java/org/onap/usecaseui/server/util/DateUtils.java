@@ -25,6 +25,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DateUtils {
 
@@ -179,5 +180,143 @@ public class DateUtils {
     public static Date now() throws ParseException {
         return new SimpleDateFormat(Constant.DATE_FORMAT).parse(dateToString(new Date()));
     }
+    
+    public static String getYearMonthDayHourMinuteSecond(long timeMillis) {
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+        calendar.setTimeInMillis(timeMillis);
+        int year=calendar.get(Calendar.YEAR);
 
+        int month=calendar.get(Calendar.MONTH) + 1;
+        String mToMonth=null;
+        if (String.valueOf(month).length()==1) {
+            mToMonth="0"+month;
+        } else {
+            mToMonth=String.valueOf(month);
+        }
+
+        int day=calendar.get(Calendar.DAY_OF_MONTH);
+        String dToDay=null;
+        if (String.valueOf(day).length()==1) {
+            dToDay="0"+day;
+        } else {
+            dToDay=String.valueOf(day);
+        }
+
+        int hour=calendar.get(Calendar.HOUR_OF_DAY);
+        String hToHour=null;
+        if (String.valueOf(hour).length()==1) {
+            hToHour="0"+hour;
+        } else {
+            hToHour=String.valueOf(hour);
+        }
+
+        int minute=calendar.get(Calendar.MINUTE);
+        String mToMinute=null;
+        if (String.valueOf(minute).length()==1) {
+            mToMinute="0"+minute;
+        } else {
+            mToMinute=String.valueOf(minute);
+        }
+
+        int second=calendar.get(Calendar.SECOND);
+        String sToSecond=null;
+        if (String.valueOf(second).length()==1) {
+            sToSecond="0"+second;
+        } else {
+            sToSecond=String.valueOf(second);
+        }
+        return  year+ "-" +mToMonth+ "-" +dToDay+ " "+hToHour+ ":" +mToMinute+ ":" +sToSecond;
+    }
+    
+    
+    /**
+     * 
+      * getResultDate
+      * 
+      * @Auther YYY
+      * @Date   2018/5/19/ 11:56:07
+      * @Title: getResultDate
+      * @Description: 
+      * @param timeMillis
+      * @param format
+      * @return
+     */
+    public static String getResultDate(long timeMillis,String format){
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+        calendar.setTimeInMillis(timeMillis);
+        int year=calendar.get(Calendar.YEAR);
+
+        int month=calendar.get(Calendar.MONTH) + 1;
+        String mToMonth=null;
+        if (String.valueOf(month).length()==1) {
+            mToMonth="0"+month;
+        } else {
+            mToMonth=String.valueOf(month);
+        }
+
+        int day=calendar.get(Calendar.DAY_OF_MONTH);
+        String dToDay=null;
+        if (String.valueOf(day).length()==1) {
+            dToDay="0"+day;
+        } else {
+            dToDay=String.valueOf(day);
+        }
+
+        int hour=calendar.get(Calendar.HOUR_OF_DAY);
+        String hToHour=null;
+        if (String.valueOf(hour).length()==1) {
+            hToHour="0"+hour;
+        } else {
+            hToHour=String.valueOf(hour);
+        }
+
+        int minute=calendar.get(Calendar.MINUTE);
+        String mToMinute=null;
+        if (String.valueOf(minute).length()==1) {
+            mToMinute="0"+minute;
+        } else {
+            mToMinute=String.valueOf(minute);
+        }
+
+        int second=calendar.get(Calendar.SECOND);
+        String sToSecond=null;
+        if (String.valueOf(second).length()==1) {
+            sToSecond="0"+second;
+        } else {
+            sToSecond=String.valueOf(second);
+        }
+        if("month".equals(format)){
+        	 return  year+ "-" +mToMonth;
+        }else if("day".equals(format)){
+        	 return  year+ "-" +mToMonth+ "-" +dToDay;
+        }else if("minute".equals(format)){
+        	 return  year+ "-" +mToMonth+ "-" +dToDay+ " "+hToHour+":"+mToMinute+":00";
+        }else{
+        	 return  year+ "-" +mToMonth+ "-" +dToDay+ " "+hToHour+":00:00";
+        }
+    }
+   
+    /**
+     * 
+      * MonthOfDay
+      * 
+      * @Auther YYY
+      * @Date   2018/5/22 2:36:29
+      * @Title: MonthOfDay
+      * @Description: 
+      * @param date
+      * @param format
+      * @return
+      * @throws ParseException
+     */
+    public static int MonthOfDay(String date,String format){
+    	Calendar cal = Calendar.getInstance();
+    	SimpleDateFormat sdf = new SimpleDateFormat(format);
+    	try {
+			cal.setTime(sdf.parse(date));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
 }

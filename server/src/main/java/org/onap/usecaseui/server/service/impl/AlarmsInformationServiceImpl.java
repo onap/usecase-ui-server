@@ -28,6 +28,7 @@ import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.Page;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,12 +106,12 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 					String ver=alarmsInformation.getSourceId();
 					hql.append(" and a.sourceId = '"+ver+"'");
 				}
-				if(null!=alarmsInformation.getCreateTime()) {
-					Date ver =alarmsInformation.getCreateTime();
+				if(null!=alarmsInformation.getStartEpochMicroSec()) {
+					String  ver =alarmsInformation.getStartEpochMicroSec();
 					hql.append(" and a.createTime > '%"+ver+"%'");
 				}
-				if(null!=alarmsInformation.getUpdateTime()) {
-					Date ver =alarmsInformation.getUpdateTime();
+				if(null!=alarmsInformation.getLastEpochMicroSec()) {
+					String ver =alarmsInformation.getLastEpochMicroSec();
 					hql.append(" and a.updateTime like '%"+ver+"%'");
 				}
 			} 
@@ -148,17 +149,16 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 					String ver=alarmsInformation.getSourceId();
 					hql.append(" and a.sourceId = '"+ver+"'");
 				}
-				if(null!=alarmsInformation.getCreateTime()) {
-					Date ver =alarmsInformation.getCreateTime();
-					hql.append(" and a.createTime > '%"+ver+"%'");
-				}
-				if(null!=alarmsInformation.getUpdateTime()) {
-					Date ver =alarmsInformation.getUpdateTime();
-					hql.append(" and a.updateTime like '%"+ver+"%'");
+				if(null!=alarmsInformation.getStartEpochMicroSec() || alarmsInformation.getLastEpochMicroSec()!= null) {
+					hql.append(" and a.startEpochMicrosec between :startTime and :endTime");
 				}
 			}
 			logger.info("AlarmsInformationServiceImpl queryAlarmsInformation: alarmsInformation={}", alarmsInformation);
 			Query query = session.createQuery(hql.toString());
+			if(null!=alarmsInformation.getStartEpochMicroSec() || alarmsInformation.getLastEpochMicroSec()!= null) {
+				query.setString("startTime",alarmsInformation.getStartEpochMicroSec());
+				query.setString("endTime",alarmsInformation.getLastEpochMicroSec());
+			}
 			query.setFirstResult(offset);
 			query.setMaxResults(pageSize);
 			List<AlarmsInformation> list= query.list();
@@ -195,37 +195,36 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 
 	@Override
-	public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
+	public int queryDateBetween(String sourceId, String startTime, String endTime,String level) {
+		if("1526554800000".equals(startTime)){
+			System.out.print(startTime);
+		}
 		try(Session session = getSession()) {
-			List<Map<String,String>> mapList = new ArrayList<>();
-			String hql = "select a.createTime,count(*) from AlarmsInformation a where 1=1 ";
+			String hql = "select count(*) from AlarmsHeader a where 1=1 ";
 			if (sourceId != null && !"".equals(sourceId)){
 				hql += " and a.sourceId = :sourceId";
 			}
-			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
-				hql += " and a.createTime between :startTime and :endTime ";
+			if (UuiCommonUtil.isNotNullOrEmpty(level)){
+				hql += " and a.eventServrity = :eventServrity";
 			}
-			hql += " group by a.createTime";
+			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
+				hql += " and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ";
+			}
 			Query query = session.createQuery(hql);
 			if (sourceId != null && !"".equals(sourceId)){
 				query.setString("sourceId",sourceId);
 			}
+			if (UuiCommonUtil.isNotNullOrEmpty(level)){
+				query.setString("eventServrity",level);
+			}
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
 				query.setString("startTime", startTime).setString("endTime", endTime);
 			}
-			Iterator it= query.list().iterator();
-			while(it.hasNext()){
-				Object[] res=(Object[]) it.next();
-				Map<String,String> map = new HashMap<>();
-				map.put("Time",res[0].toString());
-				map.put("Count",res[1].toString());
-				mapList.add(map);
-			}
-			logger.info("AlarmsInformationServiceImpl queryDateBetween: list={}", mapList);
-			return mapList;
+			long num=(long) query.uniqueResult();
+			return (int)num;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
-			return null;
+			return 0;
 		}
 	}
 

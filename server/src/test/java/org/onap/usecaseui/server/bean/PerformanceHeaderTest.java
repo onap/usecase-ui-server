@@ -73,8 +73,6 @@ public class PerformanceHeaderTest implements Serializable {
 		ph.getSequence();
 		ph.getMeasurementsForVfScalingVersion();
 		ph.getMeasurementInterval();
-		ph.getCreateTime();
-		ph.getUpdateTime();
 	}
 
 	@Test
@@ -97,7 +95,5 @@ public class PerformanceHeaderTest implements Serializable {
 		ph.setSequence("");
 		ph.setMeasurementsForVfScalingVersion("");
 		ph.setMeasurementInterval("");
-		ph.setCreateTime(DateUtils.now());
-		ph.setUpdateTime(DateUtils.now());
 	}
 }

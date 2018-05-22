@@ -41,4 +41,6 @@ public interface PerformanceInformationService {
     List<PerformanceInformation> queryDateBetween(String resourceId, String name, String startTime, String endTime);
     
     List<PerformanceInformation> getAllPerformanceInformationByHeaderId(String headerId);
+    
+    String queryMaxValueByBetweenDate(String sourceId, String nameParent, String startTimeL, String endTimeL);
 }

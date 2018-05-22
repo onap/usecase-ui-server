@@ -182,8 +182,8 @@ public class PerformanceHeaderServiceImplTest {
 			ph.setMeasurementsForVfScalingVersion("");
 			ph.setMeasurementInterval("");
 			ph.setEventType("");
-			ph.setCreateTime(DateUtils.now());
-			ph.setUpdateTime(DateUtils.now());
+			ph.setStartEpochMicrosec("");;
+			ph.setLastEpochMicroSec("");;
 			performanceHeaderServiceImpl.getAllCount(ph, 1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -211,8 +211,8 @@ public class PerformanceHeaderServiceImplTest {
 			ph.setMeasurementsForVfScalingVersion("");
 			ph.setMeasurementInterval("");
 			ph.setEventType("");
-			ph.setCreateTime(DateUtils.now());
-			ph.setUpdateTime(DateUtils.now());
+			ph.setStartEpochMicrosec("");;
+			ph.setLastEpochMicroSec("");;
 			performanceHeaderServiceImpl.queryPerformanceHeader(ph, 1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();

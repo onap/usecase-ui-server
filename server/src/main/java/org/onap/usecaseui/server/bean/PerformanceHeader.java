@@ -84,12 +84,6 @@ public class PerformanceHeader implements Serializable {
 	@Column(name = "measurementInterval")
 	private String measurementInterval;
 	
-	@Column(name = "createTime")
-	private Date createTime;
-	
-	@Column(name = "updateTime")
-	private Date updateTime;
-	
 	public PerformanceHeader() {
 	}
 
@@ -115,8 +109,6 @@ public class PerformanceHeader implements Serializable {
 		this.sequence = sequence;
 		this.measurementsForVfScalingVersion = measurementsForVfScalingVersion;
 		this.measurementInterval = measurementInterval;
-		this.createTime = createTime;
-		this.updateTime = updateTime;
 	}
 
 	public String getVersion() {
@@ -253,22 +245,6 @@ public class PerformanceHeader implements Serializable {
 
 	public void setMeasurementInterval(String measurementInterval) {
 		this.measurementInterval = measurementInterval;
-	}
-
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
 	}
 
 	public String getId() {

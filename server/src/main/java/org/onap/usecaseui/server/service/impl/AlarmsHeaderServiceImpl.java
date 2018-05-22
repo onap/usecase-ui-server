@@ -194,14 +194,14 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 					String ver =alarmsHeader.getStatus();
 					count.append(" and a.status = '"+ver+"'");
 				}
-				if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
-					count.append(" and a.createTime between :startTime and :endTime");
+				if(null!=alarmsHeader.getStartEpochMicrosec() || alarmsHeader.getLastEpochMicroSec()!= null) {
+					count.append(" and a.startEpochMicrosec between :startTime and :endTime");
 				}
 			}
 			Query query = session.createQuery(count.toString());
-			if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
-				query.setDate("startTime",alarmsHeader.getCreateTime());
-				query.setDate("endTime",alarmsHeader.getUpdateTime());
+			if(null!=alarmsHeader.getStartEpochMicrosec() || alarmsHeader.getLastEpochMicroSec()!= null) {
+				query.setString("startTime",alarmsHeader.getStartEpochMicrosec());
+				query.setString("endTime",alarmsHeader.getLastEpochMicroSec());
 			}
 			long q=(long)query.uniqueResult();
 			session.flush();
@@ -321,15 +321,15 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 					String ver =alarmsHeader.getStatus();
 					hql.append(" and a.status = '"+ver+"'");
 				}
-				if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
-					hql.append(" and a.createTime between :startTime and :endTime");
+				if(null!=alarmsHeader.getStartEpochMicrosec() || alarmsHeader.getLastEpochMicroSec()!= null) {
+					hql.append(" and a.startEpochMicrosec between :startTime and :endTime");
 				}
 			}
 			logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
 			Query query = session.createQuery(hql.toString());
-			if(null!=alarmsHeader.getCreateTime() || alarmsHeader.getUpdateTime()!= null) {
-				query.setDate("startTime",alarmsHeader.getCreateTime());
-				query.setDate("endTime",alarmsHeader.getUpdateTime());
+			if(null!=alarmsHeader.getStartEpochMicrosec() || alarmsHeader.getLastEpochMicroSec()!= null) {
+				query.setString("startTime",alarmsHeader.getStartEpochMicrosec());
+				query.setString("endTime",alarmsHeader.getLastEpochMicroSec());
 			}
 			query.setFirstResult(offset);
 			query.setMaxResults(pageSize);
@@ -372,7 +372,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			session.beginTransaction();
 
 			//Query q=session.createQuery("update AlarmsHeader set status='"+status+"', updateTime='"+date+"' , startEpochMicrosecCleared='"+startEpochMicrosecCleared+"'  ,lastEpochMicroSecCleared='"+lastEpochMicroSecCleared+"'    where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"'");
-            Query q=session.createQuery("update AlarmsHeader set status=:status, updateTime=:date, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
+            Query q=session.createQuery("update AlarmsHeader set status=:status, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
 
             q.setString("status",status);
             q.setDate("date",date);

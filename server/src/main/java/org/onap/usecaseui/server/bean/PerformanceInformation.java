@@ -41,11 +41,11 @@ public class PerformanceInformation implements Serializable {
 	@Column(name = "sourceId")
 	private String sourceId;
 	
-	@Column(name = "createTime")
-	private Date  createTime;
+	@Column(name = "startEpochMicrosec")
+	private String  startEpochMicrosec;
 	
-	@Column(name = "updateTime")
-	private Date updateTime;
+	@Column(name = "lastEpochMicroSec")
+	private String lastEpochMicroSec;
 	
 	@Column(name="headerId")
 	private String headerId;
@@ -57,12 +57,12 @@ public class PerformanceInformation implements Serializable {
 		this.sourceId = sourceId;
 	}
 
-	public PerformanceInformation(String name, String value, String sourceId, Date createTime, Date updateTime,String headerId) {
+	public PerformanceInformation(String name, String value, String sourceId, String startEpochMicrosec, String lastEpochMicroSec,String headerId) {
 		this.name = name;
 		this.value = value;
 		this.sourceId = sourceId;
-		this.createTime = createTime;
-		this.updateTime = updateTime;
+		this.startEpochMicrosec = startEpochMicrosec;
+		this.lastEpochMicroSec = lastEpochMicroSec;
 		this.headerId = headerId;
 	}
 
@@ -90,20 +90,20 @@ public class PerformanceInformation implements Serializable {
 		this.sourceId = sourceId;
 	}
 
-	public Date getCreateTime() {
-		return createTime;
+	public String getStartEpochMicrosec() {
+		return startEpochMicrosec;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setStartEpochMicrosec(String startEpochMicrosec) {
+		this.startEpochMicrosec = startEpochMicrosec;
 	}
 
-	public Date getUpdateTime() {
-		return updateTime;
+	public String getLastEpochMicroSec() {
+		return lastEpochMicroSec;
 	}
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
+	public void setLastEpochMicroSec(String lastEpochMicroSec) {
+		this.lastEpochMicroSec = lastEpochMicroSec;
 	}
 
 	public int getId() {

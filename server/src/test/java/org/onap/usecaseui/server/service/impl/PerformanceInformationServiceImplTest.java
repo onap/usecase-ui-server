@@ -168,8 +168,8 @@ public class PerformanceInformationServiceImplTest {
 			pi.setName("");
 			pi.setValue("");
 			pi.setSourceId("");
-			pi.setCreateTime(DateUtils.now());
-			pi.setUpdateTime(DateUtils.now());
+			pi.setStartEpochMicrosec("");;
+			pi.setLastEpochMicroSec("");;
 			performanceInformationServiceImpl.getAllCount(pi, 1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -183,8 +183,8 @@ public class PerformanceInformationServiceImplTest {
 			pi.setName("");
 			pi.setValue("");
 			pi.setSourceId("");
-			pi.setCreateTime(DateUtils.now());
-			pi.setUpdateTime(DateUtils.now());
+			pi.setStartEpochMicrosec("");;
+			pi.setLastEpochMicroSec("");;
 			performanceInformationServiceImpl.queryPerformanceInformation(pi, 1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();

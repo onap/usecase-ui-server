@@ -77,8 +77,8 @@ public class DmaapSubscriber implements Runnable {
 	public void subscribe(String topic) {
         try {
             List<String> respList = getDMaaPData(topic);
-            if (respList.size() <= 0 || respList == null) {
-            	logger.info("response content is :"+respList);
+            logger.info("response content is :"+respList);
+            if (!UuiCommonUtil.isNotNullOrEmpty(respList)) {
                 return;
             }
             ObjectMapper objMapper = new ObjectMapper();
@@ -118,6 +118,7 @@ public class DmaapSubscriber implements Runnable {
         try {
             p.load(inputStream);
             this.url = p.getProperty("dmaap.url") + System.getenv("MR_ADDR");
+            //this.url = p.getProperty("dmaap.url");
             this.alarmTopic = p.getProperty("dmaap.alarmTopic");
             this.performanceTopic = p.getProperty("dmaap.performanceTopic");
             this.consumerGroup = p.getProperty("dmaap.consumerGroup");
@@ -172,9 +173,9 @@ public class DmaapSubscriber implements Runnable {
                     if (k2.equals("priority"))
                         alarm_header.setPriority(v2.toString());
                     if (k2.equals("startEpochMicrosec"))
-                        alarm_header.setStartEpochMicrosec(v2.toString());
+                        alarm_header.setStartEpochMicrosec(v2.toString().substring(0, 13));
                     if (k2.equals("lastEpochMicrosec"))
-                        alarm_header.setLastEpochMicroSec(v2.toString());
+                        alarm_header.setLastEpochMicroSec(v2.toString().substring(0, 13));
                     if (k2.equals("sequence"))
                         alarm_header.setSequence(v2.toString());
                 });
@@ -200,7 +201,7 @@ public class DmaapSubscriber implements Runnable {
                         try {
                             List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
                             m.forEach(i -> {
-                                alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(), new Date(), null,alarm_header.getId()));
+                                alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(),alarm_header.getStartEpochMicrosec(),alarm_header.getLastEpochMicroSec(),alarm_header.getId()));
                             });
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -211,10 +212,6 @@ public class DmaapSubscriber implements Runnable {
             }
         });
         if (alarm_header.getEventName() != null){
-        alarm_informations.forEach(ai -> {
-            ai.setCreateTime(alarm_header.getCreateTime());
-            ai.setUpdateTime(new Date());
-        });
         Long l = System.currentTimeMillis();
 
         Timestamp date_get = new Timestamp(l);
@@ -225,7 +222,6 @@ public class DmaapSubscriber implements Runnable {
                 alarmsInformationService.saveAlarmsInformation(information));
 
         } else {
-            alarm_header.setCreateTime(new Date());
             alarm_header.setStatus("active");
             alarmsHeaderService.saveAlarmsHeader(alarm_header);
             if(alarm_informations.size() > 0) {
@@ -268,9 +264,9 @@ public class DmaapSubscriber implements Runnable {
                             if (k2.equals("priority"))
                                 performance_header.setPriority(v2.toString());
                             if (k2.equals("startEpochMicrosec"))
-                                performance_header.setStartEpochMicrosec(v2.toString());
+                                performance_header.setStartEpochMicrosec(v2.toString().substring(0, 13));
                             if (k2.equals("lastEpochMicrosec"))
-                                performance_header.setLastEpochMicroSec(v2.toString());
+                                performance_header.setLastEpochMicroSec(v2.toString().substring(0, 13));
                             if (k2.equals("sequence"))
                                 performance_header.setSequence(v2.toString());
                         });
@@ -288,23 +284,7 @@ public class DmaapSubscriber implements Runnable {
                                             if (k.equals("arrayOfFields")){
                                                 List<Map<String,String>> arrayOfFields = (List<Map<String, String>>) v;
                                                 arrayOfFields.forEach( fields -> {
-                                                    if (fields.get("name").equals("StartTime")){
-
-                                                        try {
-                                                            String type = performance_header.getEventType();
-                                                            performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), null, DateUtils.now(),performance_header.getId()));
-                                                            performance_header.setCreateTime(DateUtils.stringToDate(fields.get("value").replaceAll(Constant.RegEX_DATE_FORMAT, " ")));
-                                                            performance_header.setUpdateTime(DateUtils.now());
-                                                        } catch (ParseException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }else{
-                                                        try {
-                                                            performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), null, DateUtils.now(), performance_header.getId()));
-                                                        } catch (ParseException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
+														performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), performance_header.getStartEpochMicrosec(),performance_header.getLastEpochMicroSec(),performance_header.getId()));
                                                 } );
                                             }
                                         });
@@ -317,7 +297,6 @@ public class DmaapSubscriber implements Runnable {
                         });
                         performanceHeaderService.savePerformanceHeader(performance_header);
                         performance_informations.forEach(ai -> {
-                            ai.setCreateTime(performance_header.getCreateTime());
                             performanceInformationService.savePerformanceInformation(ai);
                         });
                     }

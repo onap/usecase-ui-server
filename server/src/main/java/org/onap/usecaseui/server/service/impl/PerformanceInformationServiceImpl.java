@@ -18,7 +18,10 @@ package org.onap.usecaseui.server.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -29,6 +32,7 @@ import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
 import org.onap.usecaseui.server.util.Page;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,16 +109,16 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 					String ver=performanceInformation.getSourceId();
 					hql.append(" and a.sourceId = '"+ver+"'");
 				}
-				if(null!=performanceInformation.getCreateTime()) {
-					Date ver =performanceInformation.getCreateTime();
-					hql.append(" and a.createTime > '%"+ver+"%'");
-				}
-				if(null!=performanceInformation.getUpdateTime()) {
-					Date ver =performanceInformation.getUpdateTime();
-					hql.append(" and a.updateTime like '%"+ver+"%'");
+				if(null!=performanceInformation.getStartEpochMicrosec() || performanceInformation.getLastEpochMicroSec()!= null) {
+					hql.append(" and a.startEpochMicrosec between :startTime and :endTime");
 				}
 			}
-			long q=(long)session.createQuery(hql.toString()).uniqueResult();
+			Query query = session.createQuery(hql.toString());
+			if(null!=performanceInformation.getStartEpochMicrosec() || performanceInformation.getLastEpochMicroSec()!= null) {
+				query.setString("startTime",performanceInformation.getStartEpochMicrosec());
+				query.setString("endTime",performanceInformation.getLastEpochMicroSec());
+			}
+			long q=(long) query.uniqueResult();
 			session.flush();
 			return (int)q;
 		} catch (Exception e) {
@@ -148,17 +152,16 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 					String ver=performanceInformation.getSourceId();
 					hql.append(" and a.sourceId = '"+ver+"'");
 				}
-				if(null!=performanceInformation.getCreateTime()) {
-					Date ver =performanceInformation.getCreateTime();
-					hql.append(" and a.createTime > '%"+ver+"%'");
-				}
-				if(null!=performanceInformation.getUpdateTime()) {
-					Date ver =performanceInformation.getUpdateTime();
-					hql.append(" and a.updateTime like '%"+ver+"%'");
+				if(null!=performanceInformation.getStartEpochMicrosec() || performanceInformation.getLastEpochMicroSec()!= null) {
+					hql.append(" and a.startEpochMicrosec between :startTime and :endTime");
 				}
 			}
 			logger.info("PerformanceInformationServiceImpl queryPerformanceInformation: performanceInformation={}", performanceInformation);
 			Query query = session.createQuery(hql.toString());
+			if(null!=performanceInformation.getStartEpochMicrosec() || performanceInformation.getLastEpochMicroSec()!= null) {
+				query.setString("startTime",performanceInformation.getStartEpochMicrosec());
+				query.setString("endTime",performanceInformation.getLastEpochMicroSec());
+			}
 			query.setFirstResult(offset);
 			query.setMaxResults(pageSize);
 			List<PerformanceInformation> list= query.list();
@@ -269,4 +272,36 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 			return null;
 		}
 	}
+	
+    @Override
+    public String queryMaxValueByBetweenDate(String sourceId, String name, String startTime, String endTime) {
+        try(Session session = getSession()) {
+            String hql = "select max(a.value) from PerformanceInformation a where 1=1 ";
+            if (sourceId != null && !"".equals(sourceId)){
+                hql += " and a.sourceId = :resourceId";
+            }
+            if (name != null && !"".equals(name)){
+                hql += " and a.name = :name ";
+            }
+            if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
+                hql += " and a.startEpochMicrosec between :startTime and :endTime ";
+            }
+            Query query = session.createQuery(hql);
+            if (sourceId != null && !"".equals(sourceId)){
+                query.setString("resourceId",sourceId);
+            }
+            if (name != null && !"".equals(name)){
+                query.setString("name",name);
+            }
+            if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
+                query.setString("startTime", startTime).setString("endTime", endTime);
+            }
+            String num=(String) query.uniqueResult();
+            return UuiCommonUtil.isNotNullOrEmpty(num)?num:0+"";
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("exception occurred while performing PerformanceInformationServiceImpl queryMaxValueByBetweenDate. Details:" + e.getMessage());
+            return 0+"";
+        }
+    }
 }

@@ -16,7 +16,6 @@
 package org.onap.usecaseui.server.bean;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,11 +44,11 @@ public class AlarmsInformation implements Serializable {
 	@Column(name = "sourceId")
 	private String sourceId;
 	
-	@Column(name = "createTime")
-	private Date  createTime;
+	@Column(name = "startEpochMicroSec")
+	private String  startEpochMicroSec;
 	
-	@Column(name = "updateTime")
-	private Date updateTime;
+	@Column(name = "lastEpochMicroSec")
+	private String lastEpochMicroSec;
 	
 	@Column(name = "headerId")
 	private String headerId;
@@ -61,8 +60,8 @@ public class AlarmsInformation implements Serializable {
 				", name='" + name + '\'' +
 				", value='" + value + '\'' +
 				", sourceId='" + sourceId + '\'' +
-				", createTime=" + createTime +
-				", updateTime=" + updateTime +
+				", createTime=" + startEpochMicroSec +
+				", updateTime=" + lastEpochMicroSec +
 				", headerId=" + headerId +
 				'}';
 	}
@@ -74,12 +73,12 @@ public class AlarmsInformation implements Serializable {
 		this.sourceId = sourceId;
 	}
 
-	public AlarmsInformation(String name, String value, String sourceId, Date createTime, Date updateTime,String headerId) {
+	public AlarmsInformation(String name, String value, String sourceId, String startEpochMicroSec, String lastEpochMicroSec,String headerId) {
 		this.name = name;
 		this.value = value;
 		this.sourceId = sourceId;
-		this.createTime = createTime;
-		this.updateTime = updateTime;
+		this.startEpochMicroSec = startEpochMicroSec;
+		this.lastEpochMicroSec = lastEpochMicroSec;
 		this.headerId = headerId;
 	}
 
@@ -107,20 +106,20 @@ public class AlarmsInformation implements Serializable {
 		this.sourceId = sourceId;
 	}
 
-	public Date getCreateTime() {
-		return createTime;
+	public String getStartEpochMicroSec() {
+		return startEpochMicroSec;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setStartEpochMicroSec(String startEpochMicroSec) {
+		this.startEpochMicroSec = startEpochMicroSec;
 	}
 
-	public Date getUpdateTime() {
-		return updateTime;
+	public String getLastEpochMicroSec() {
+		return lastEpochMicroSec;
 	}
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
+	public void setLastEpochMicroSec(String lastEpochMicroSec) {
+		this.lastEpochMicroSec = lastEpochMicroSec;
 	}
 
 	public int getId() {

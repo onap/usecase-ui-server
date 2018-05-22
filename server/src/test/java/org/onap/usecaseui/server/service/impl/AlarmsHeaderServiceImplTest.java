@@ -187,8 +187,6 @@ public class AlarmsHeaderServiceImplTest {
 			ah.setSpecificProblem("especially");
 			ah.setAlarmInterfaceA("cs");
 			ah.setStatus("1");
-			ah.setCreateTime(DateUtils.now());
-			ah.setUpdateTime(DateUtils.now());
 			ah.setVfStatus("1");
 			ah.setEventSourceType("q");
 			alarmsHeaderServiceImpl.getAllCount(ah, 1, 1);
@@ -223,8 +221,6 @@ public class AlarmsHeaderServiceImplTest {
 			ah.setSpecificProblem("especially");
 			ah.setAlarmInterfaceA("cs");
 			ah.setStatus("1");
-			ah.setCreateTime(DateUtils.now());
-			ah.setUpdateTime(DateUtils.now());
 			ah.setVfStatus("1");
 			ah.setEventSourceType("q");
 			alarmsHeaderServiceImpl.queryAlarmsHeader(ah, 1, 1);

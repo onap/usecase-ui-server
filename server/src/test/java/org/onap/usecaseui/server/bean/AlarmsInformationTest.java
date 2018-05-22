@@ -52,12 +52,12 @@ public class AlarmsInformationTest implements Serializable {
 
 	@Test
 	public void testGetAlarmsInformation() throws Exception {
-		AlarmsInformation ai = new AlarmsInformation("name", "value", "eventId", DateUtils.now(), DateUtils.now(),"headerId");
+		AlarmsInformation ai = new AlarmsInformation("name", "value", "eventId","","","headerId");
 		ai.getName();
 		ai.getValue();
 		ai.getSourceId();
-		ai.getCreateTime();
-		ai.getUpdateTime();
+		ai.getStartEpochMicroSec();
+		ai.getLastEpochMicroSec();
 		ai.getId();
 		ai.toString();
 	}
@@ -68,8 +68,8 @@ public class AlarmsInformationTest implements Serializable {
 		ai.setName("");
 		ai.setValue("");
 		ai.setSourceId("");
-		ai.setCreateTime(DateUtils.now());
-		ai.setUpdateTime(DateUtils.now());
+		ai.setStartEpochMicroSec("");;
+		ai.setLastEpochMicroSec("");;
 		ai.setId(1);
 	}
 }

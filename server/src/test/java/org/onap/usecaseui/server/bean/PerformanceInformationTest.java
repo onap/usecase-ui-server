@@ -52,12 +52,12 @@ public class PerformanceInformationTest implements Serializable {
 
 	@Test
 	public void testGetPerformanceInformation() throws Exception {
-		PerformanceInformation pi = new PerformanceInformation("name", "value", "eventId", DateUtils.now(), DateUtils.now(),"headerId");
+		PerformanceInformation pi = new PerformanceInformation("name", "value", "eventId","","","headerId");
 		pi.getName();
 		pi.getValue();
 		pi.getSourceId();
-		pi.getCreateTime();
-		pi.getUpdateTime();
+		pi.getStartEpochMicrosec();
+		pi.getLastEpochMicroSec();
 		pi.getId();
 	}
 
@@ -67,8 +67,8 @@ public class PerformanceInformationTest implements Serializable {
 		pi.setName("");
 		pi.setValue("");
 		pi.setSourceId("");
-		pi.setCreateTime(DateUtils.now());
-		pi.setUpdateTime(DateUtils.now());
+		pi.setStartEpochMicrosec("");;
+		pi.setLastEpochMicroSec("");;
 		pi.setId(1);
 	}
 }

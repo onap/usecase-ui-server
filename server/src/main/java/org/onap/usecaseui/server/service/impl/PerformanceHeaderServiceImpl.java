@@ -163,13 +163,13 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 					String ver =performanceHeder.getEventType();
 					hql.append(" and a.eventType like '%"+ver+"%'");
 				}
-				if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
-					hql.append(" and a.createTime between :startTime and :endTime ");
+				if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
+					hql.append(" and a.startEpochMicrosec between :startTime and :endTime ");
 				}
 			}
 			Query query = session.createQuery(hql.toString());
-			if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
-				query.setDate("startTime",performanceHeder.getCreateTime()).setDate("endTime",performanceHeder.getUpdateTime());
+			if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
+				query.setString("startTime",performanceHeder.getStartEpochMicrosec()).setString("endTime",performanceHeder.getLastEpochMicroSec());
 			}
 			long q=(long)query.uniqueResult();
 			session.flush();
@@ -261,14 +261,14 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 					String ver =performanceHeder.getEventType();
 					hql.append(" and a.eventType like '%"+ver+"%'");
 				}
-				if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
-					hql.append(" and a.createTime between :startTime and :endTime ");
+				if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
+					hql.append(" and a.startEpochMicrosec between :startTime and :endTime ");
 				}
 			}
 			logger.info("PerformanceHeaderServiceImpl queryPerformanceHeader: performanceHeder={}", performanceHeder);
 			Query query = session.createQuery(hql.toString());
-			if(null!=performanceHeder.getCreateTime() && null!=performanceHeder.getUpdateTime()) {
-				query.setDate("startTime",performanceHeder.getCreateTime()).setDate("endTime",performanceHeder.getUpdateTime());
+			if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
+				query.setString("startTime",performanceHeder.getStartEpochMicrosec()).setString("endTime",performanceHeder.getLastEpochMicroSec());
 			}
 			query.setFirstResult(offset);
 			query.setMaxResults(pageSize);
@@ -306,7 +306,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	@Override
 	public List<String> queryAllSourceId() {
 		try(Session session = getSession()) {
-			Query query = session.createQuery("select a.sourceId from PerformanceHeader a");
+			Query query = session.createQuery("select distinct a.sourceId from PerformanceHeader a");
 			return query.list();
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceHeaderServiceImpl queryAllSourceId. Details:" + e.getMessage());
