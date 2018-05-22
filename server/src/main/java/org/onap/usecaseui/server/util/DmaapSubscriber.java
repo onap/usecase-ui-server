@@ -15,7 +15,23 @@
  */
 package org.onap.usecaseui.server.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.annotation.Resource;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+
 import org.glassfish.jersey.client.ClientConfig;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
@@ -28,20 +44,11 @@ import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
+@Component
 public class DmaapSubscriber implements Runnable {
 
     private Logger logger = LoggerFactory.getLogger(DmaapSubscriber.class);
@@ -67,63 +74,42 @@ public class DmaapSubscriber implements Runnable {
     @Resource(name = "PerformanceInformationService")
     private PerformanceInformationService performanceInformationService;
 
-    public void subscribe(String topic) {
-        String response;
+	public void subscribe(String topic) {
         try {
-            response = getDMaaPData(topic);
-            logger.info(response);
-            if (response == null && "".equals(response)) {
-                logger.info("response is null");
+            List<String> respList = getDMaaPData(topic);
+            if (respList.size() <= 0 || respList == null) {
+            	logger.info("response content is :"+respList);
                 return;
-            } else {
-                ObjectMapper objMapper = new ObjectMapper();
-                objMapper.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
-                if (response.contains("}}\""))
-                    response = response.replaceAll("}}\"","}}");
-                if (response.contains("\"{\"VESversion\""))
-                    response = response.replaceAll("\"\\{\"VESversion\"","{\"VESversion\"");
-                if (response.contains("]\""))
-                    response = response.replaceAll("]\"","]");
-                if (response.contains("\"["))
-                    response = response.replaceAll("\"\\[","[");
-                if (response.contains("Remark:\""))
-                    response = response.replaceAll("Remark:\"",":");
-                if (response.contains("\";"))
-                    response = response.replaceAll("\";",";");
-
-                if (response.indexOf("[") == 0) {
-                    List<Object> eventList = objMapper.readValue(response, List.class);
-
-                    eventList.forEach(el -> {
-                        Map<String, Object> eventMaps = (Map<String, Object>) ((Map<String, Object>) el).get("event");
-                        if (eventMaps.containsKey("measurementsForVfScalingFields")) {
-                            performanceProcess(eventMaps);
-                        } else if (eventMaps.containsKey("faultFields")) {
-                            alarmProcess(eventMaps);
-                        }
-                    });
-                } else if (response.indexOf("{") == 0) {
-                    Map<String, Object> eventMaps = (Map<String, Object>) objMapper.readValue(response, Map.class).get("event");
-
+            }
+            ObjectMapper objMapper = new ObjectMapper();
+            objMapper.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
+            respList.forEach(rl -> {
+                try {
+                    Map<String, Object> eventMaps = (Map<String, Object>) objMapper.readValue(rl, Map.class).get("event");
                     if (eventMaps.containsKey("measurementsForVfScalingFields")) {
                         performanceProcess(eventMaps);
                     } else if (eventMaps.containsKey("faultFields")) {
                         alarmProcess(eventMaps);
                     }
-                } else {
-                    logger.error("unknown json type!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    logger.error(rl);
+                    logger.error("exception occurred while performing DmaapSubcriber performanceProcess or alarmProcess. Details:"+ e.getMessage());
+                    
                 }
-            }
+            });
+
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("getDMaaP Information failed :" + e.getMessage());
         }
     }
 
-    private String getDMaaPData(String topic) {
+    private List<String> getDMaaPData(String topic) {
         Client client = ClientBuilder.newClient(new ClientConfig());
         WebTarget webTarget = client.target(url + "/" + topic + "/" + consumerGroup + "/" + consumer);
         Response response = webTarget.queryParam("timeout", timeout).request().get();
-        return response.readEntity(String.class);
+        return response.readEntity(List.class);
     }
 
     private void initConfig() {
@@ -156,6 +142,7 @@ public class DmaapSubscriber implements Runnable {
 
     private void alarmProcess(Map<String, Object> eventMap) {
         AlarmsHeader alarm_header = new AlarmsHeader();
+        alarm_header.setId(UuiCommonUtil.getUUID());
         List<AlarmsInformation> alarm_informations = new ArrayList<>();
         eventMap.forEach((ek1, ev1) -> {
             if (ek1.equals("commonEventHeader")) {
@@ -213,40 +200,7 @@ public class DmaapSubscriber implements Runnable {
                         try {
                             List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
                             m.forEach(i -> {
-                                if (i.get("name").toString().equals("eventTime"))
-                                    try {
-                                        alarm_header.setCreateTime(DateUtils.stringToDate(i.get("value").toString()));
-                                        alarm_header.setUpdateTime(DateUtils.stringToDate(i.get("value").toString()));
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                if (i.get("value").toString().contains(";")) {
-                                    alarm_informations.add(new AlarmsInformation(i.get("name").toString(), "", alarm_header.getSourceId(), null, null));
-                                    char[] valStr = i.get("value").toString().toCharArray();
-                                    String name = "";
-                                    String value = "";
-                                    boolean nameFlag = true;
-                                    boolean valueFlag = false;
-                                    for (int j = 0; j < valStr.length; j++) {
-                                        if (valStr[j] == ':') {
-                                            nameFlag = false;
-                                            valueFlag = true;
-                                            continue;
-                                        }
-                                        if (valStr[j] == ';') {
-                                            nameFlag = true;
-                                            valueFlag = false;
-                                            alarm_informations.add(new AlarmsInformation(name, value, i.get("name").toString(), null, null));
-                                            continue;
-                                        }
-                                        if (nameFlag)
-                                            name += valStr[j];
-                                        if (valueFlag)
-                                            value += valStr[j];
-                                    }
-                                } else {
-                                    alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(), null, null));
-                                }
+                                alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(), new Date(), null,alarm_header.getId()));
                             });
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -254,41 +208,39 @@ public class DmaapSubscriber implements Runnable {
                         }
                     }
                 });
-                alarm_informations.forEach(ai -> {
-                    ai.setCreateTime(alarm_header.getCreateTime());
-                    ai.setUpdateTime(new Date());
-                });
-                if (alarm_header.getEventName().contains("Cleared")) {
-                    alarm_header.setStatus("3");
-                    alarmsHeaderService.saveAlarmsHeader(alarm_header);
-                    alarm_informations.forEach(information ->
-                            alarmsInformationService.saveAlarmsInformation(information));
-                    AlarmsHeader header1 = new AlarmsHeader();
-                    header1.setEventName(alarm_header.getEventName().substring(0, alarm_header.getEventName().indexOf("Cleared")));
-                    List<AlarmsHeader> alarmsHeaders = alarmsHeaderService.queryAlarmsHeader(header1, 1, 10).getList();
-                    alarmsHeaders.forEach(alarms -> {
-                        alarms.setStatus("2");
-                        alarms.setUpdateTime(new Date());
-                        alarmsHeaderService.updateAlarmsHeader(alarms);
-                    });
-                } else {
-                    alarm_header.setUpdateTime(new Date());
-                    alarm_header.setStatus("1");
-                    alarmsHeaderService.saveAlarmsHeader(alarm_header);
-                    alarm_informations.forEach(information ->
-                            alarmsInformationService.saveAlarmsInformation(information));
-                }
             }
         });
+        if (alarm_header.getEventName() != null){
+        alarm_informations.forEach(ai -> {
+            ai.setCreateTime(alarm_header.getCreateTime());
+            ai.setUpdateTime(new Date());
+        });
+        Long l = System.currentTimeMillis();
+
+        Timestamp date_get = new Timestamp(l);
+        if (alarm_header.getEventName().contains("Cleared")) {
+            alarm_header.setStatus("close");
+            alarmsHeaderService.updateAlarmsHeader2018("close", date_get, alarm_header.getStartEpochMicrosec(), alarm_header.getLastEpochMicroSec(), alarm_header.getEventName().replace("Cleared", ""), alarm_header.getReportingEntityName(), alarm_header.getSpecificProblem());
+            alarm_informations.forEach(information ->
+                alarmsInformationService.saveAlarmsInformation(information));
+
+        } else {
+            alarm_header.setCreateTime(new Date());
+            alarm_header.setStatus("active");
+            alarmsHeaderService.saveAlarmsHeader(alarm_header);
+            if(alarm_informations.size() > 0) {
+            alarm_informations.forEach(information ->
+                    alarmsInformationService.saveAlarmsInformation(information));
+            }
+        }
+    }
     }
 
     private void performanceProcess(Map<String, Object> maps) {
         PerformanceHeader performance_header = new PerformanceHeader();
+        performance_header.setId(UuiCommonUtil.getUUID());
         List<PerformanceInformation> performance_informations = new ArrayList<>();
-        maps.forEach((k, v) -> {
-            if (k.equals("event")) {
-                Map<String, Object> eventMap = (Map<String, Object>) v;
-                eventMap.forEach((ek1, ev1) -> {
+        maps.forEach((ek1, ev1) -> {
                     if (ek1.equals("commonEventHeader")) {
                         ((Map<String, Object>) ev1).forEach((k2, v2) -> {
                             if (k2.equals("version"))
@@ -332,43 +284,31 @@ public class DmaapSubscriber implements Runnable {
                                 try {
                                     List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
                                     m.forEach(i -> {
-                                        if (i.get("name").toString().equals("eventTime"))
-                                            try {
-                                                performance_header.setCreateTime(DateUtils.stringToDate(i.get("value").toString()));
-                                                performance_header.setUpdateTime(DateUtils.stringToDate(i.get("value").toString()));
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                            }
-                                        if (i.get("value").toString().contains(";")) {
-                                            performance_informations.add(new PerformanceInformation(i.get("name").toString(), "", performance_header.getSourceId(), null, null));
+                                        i.forEach( (k,v) -> {
+                                            if (k.equals("arrayOfFields")){
+                                                List<Map<String,String>> arrayOfFields = (List<Map<String, String>>) v;
+                                                arrayOfFields.forEach( fields -> {
+                                                    if (fields.get("name").equals("StartTime")){
 
-                                            char[] valStr = i.get("value").toString().replace("=", ":").toCharArray();
-                                            String name = "";
-                                            String value = "";
-                                            boolean nameFlag = true;
-                                            boolean valueFlag = false;
-                                            for (int j = 0; j < valStr.length; j++) {
-                                                if (valStr[j] == ':') {
-                                                    nameFlag = false;
-                                                    valueFlag = true;
-                                                    continue;
-                                                }
-                                                if (valStr[j] == ';') {
-                                                    nameFlag = true;
-                                                    valueFlag = false;
-                                                    performance_informations.add(new PerformanceInformation(name, value, i.get("name").toString(), null, null));
-                                                    continue;
-                                                }
-                                                if (nameFlag)
-                                                    name += valStr[j];
-                                                if (valueFlag)
-                                                    value += valStr[j];
+                                                        try {
+                                                            String type = performance_header.getEventType();
+                                                            performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), null, DateUtils.now(),performance_header.getId()));
+                                                            performance_header.setCreateTime(DateUtils.stringToDate(fields.get("value").replaceAll(Constant.RegEX_DATE_FORMAT, " ")));
+                                                            performance_header.setUpdateTime(DateUtils.now());
+                                                        } catch (ParseException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }else{
+                                                        try {
+                                                            performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), null, DateUtils.now(), performance_header.getId()));
+                                                        } catch (ParseException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                } );
                                             }
-                                        } else {
-                                            performance_informations.add(new PerformanceInformation(i.get("name").toString(), i.get("value").toString(), performance_header.getSourceId(), null, null));
-                                        }
+                                        });
                                     });
-
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     logger.error("convert performanceAdditionalInformation error：" + e.getMessage());
@@ -378,12 +318,9 @@ public class DmaapSubscriber implements Runnable {
                         performanceHeaderService.savePerformanceHeader(performance_header);
                         performance_informations.forEach(ai -> {
                             ai.setCreateTime(performance_header.getCreateTime());
-                            ai.setUpdateTime(new Date());
                             performanceInformationService.savePerformanceInformation(ai);
                         });
                     }
                 });
-            }
-        });
     }
 }

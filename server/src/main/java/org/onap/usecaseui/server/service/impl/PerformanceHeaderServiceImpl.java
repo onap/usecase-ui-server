@@ -17,7 +17,6 @@ package org.onap.usecaseui.server.service.impl;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -311,6 +310,23 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 			return query.list();
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceHeaderServiceImpl queryAllSourceId. Details:" + e.getMessage());
+			return null;
+		}
+	}
+	
+	@Override
+	public PerformanceHeader getPerformanceHeaderById(String id) {
+		try(Session session = sessionFactory.openSession()) {
+
+			String string = "from PerformanceHeader a where 1=1 and a.id=:id";
+			Query q = session.createQuery(string);
+			q.setString("id",id);
+			PerformanceHeader performanceHeader =(PerformanceHeader)q.uniqueResult();
+			session.flush();
+			return performanceHeader;
+
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceHeaderServiceImpl getPerformanceHeaderById."+e.getMessage());
 			return null;
 		}
 	}

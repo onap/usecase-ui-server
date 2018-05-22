@@ -16,18 +16,18 @@
 package org.onap.usecaseui.server.service.impl;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Id;
 import javax.transaction.Transactional;
 
-import org.hibernate.*;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,9 +101,9 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 					String ver=performanceInformation.getValue();
 					hql.append(" and a.value like '%"+ver+"%'");
 				}
-				if(null!=performanceInformation.getEventId()) {
-					String ver=performanceInformation.getEventId();
-					hql.append(" and a.eventId = '"+ver+"'");
+				if(null!=performanceInformation.getSourceId()) {
+					String ver=performanceInformation.getSourceId();
+					hql.append(" and a.sourceId = '"+ver+"'");
 				}
 				if(null!=performanceInformation.getCreateTime()) {
 					Date ver =performanceInformation.getCreateTime();
@@ -144,9 +144,9 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 					String ver=performanceInformation.getValue();
 					hql.append(" and a.value like '%"+ver+"%'");
 				}
-				if(null!=performanceInformation.getEventId()) {
-					String ver=performanceInformation.getEventId();
-					hql.append(" and a.eventId = '"+ver+"'");
+				if(null!=performanceInformation.getSourceId()) {
+					String ver=performanceInformation.getSourceId();
+					hql.append(" and a.sourceId = '"+ver+"'");
 				}
 				if(null!=performanceInformation.getCreateTime()) {
 					Date ver =performanceInformation.getCreateTime();
@@ -183,7 +183,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 				logger.error("PerformanceInformationServiceImpl queryId is null!");
 			}
 			List<PerformanceInformation> list = new ArrayList<>();
-			Query query = session.createQuery("from PerformanceInformation a where a.eventId IN (:alist)");
+			Query query = session.createQuery("from PerformanceInformation a where a.sourceId IN (:alist)");
 			list = query.setParameterList("alist", id).list();
 			return list;
 		} catch (Exception e) {
@@ -195,11 +195,11 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PerformanceInformation> queryDateBetween(String eventId, Date startDate, Date endDate) {
+	public List<PerformanceInformation> queryDateBetween(String sourceId, Date startDate, Date endDate) {
 		try(Session session = getSession()) {
 			List<PerformanceInformation> list = new ArrayList<>();
-			Query query = session.createQuery("from PerformanceInformation a where a.eventId = :eventId and a.createTime BETWEEN :startDate and :endDate");
-			list = query.setParameter("eventId",eventId).setParameter("startDate", startDate).setParameter("endDate",endDate).list();
+			Query query = session.createQuery("from PerformanceInformation a where a.sourceId = :sourceId and a.createTime BETWEEN :startDate and :endDate");
+			list = query.setParameter("sourceId",sourceId).setParameter("startDate", startDate).setParameter("endDate",endDate).list();
 			logger.info("PerformanceInformationServiceImpl queryDateBetween: list={}", list);
 			return list;
 		} catch (Exception e) {
@@ -210,11 +210,11 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public int queryDataBetweenSum(String eventId, String name, Date startDate, Date endDate){
+	public int queryDataBetweenSum(String sourceId, String name, Date startDate, Date endDate){
 		try(Session session = getSession()) {
 			int sum = 0;
-			Query query = session.createQuery("select sum(a.value) from PerformanceInformation a where a.eventId = :eventId and a.name = :name and a.createTime BETWEEN :startDate and :endDate");
-			sum = Integer.parseInt(query.setParameter("eventId",eventId).setParameter("name",name).setParameter("startDate", startDate).setParameter("endDate",endDate).uniqueResult().toString());
+			Query query = session.createQuery("select sum(a.value) from PerformanceInformation a where a.sourceId = :sourceId and a.name = :name and a.createTime BETWEEN :startDate and :endDate");
+			sum = Integer.parseInt(query.setParameter("sourceId",sourceId).setParameter("name",name).setParameter("startDate", startDate).setParameter("endDate",endDate).uniqueResult().toString());
 			logger.info("PerformanceInformationServiceImpl queryDataBetweenSum: sum={}", sum);
 			return sum;
 		} catch (Exception e) {
@@ -228,7 +228,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 		try(Session session = getSession()) {
 			String hql = "from PerformanceInformation a where 1=1 ";
 			if (resourceId != null && !"".equals(resourceId)){
-				hql += " and a.eventId = :resourceId";
+				hql += " and a.sourceId = :resourceId";
 			}
 			if (name != null && !"".equals(name)){
 				hql += " and a.name = :name ";
@@ -250,6 +250,22 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 			return query.list();
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
+			return null;
+		}
+	}
+	
+	@Override
+	public List<PerformanceInformation> getAllPerformanceInformationByHeaderId(String headerId) {
+		try (Session session = getSession()){
+			String string = "from PerformanceInformation a where 1=1 and a.headerId=:headerId";
+			Query query = session.createQuery(string);
+			query.setString("headerId",headerId);
+			List<PerformanceInformation> list = query.list();
+			session.flush();
+			return list;
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. LIST:" + e.getMessage());
+
 			return null;
 		}
 	}

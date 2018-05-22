@@ -52,10 +52,10 @@ public class PerformanceInformationTest implements Serializable {
 
 	@Test
 	public void testGetPerformanceInformation() throws Exception {
-		PerformanceInformation pi = new PerformanceInformation("name", "value", "eventId", DateUtils.now(), DateUtils.now());
+		PerformanceInformation pi = new PerformanceInformation("name", "value", "eventId", DateUtils.now(), DateUtils.now(),"headerId");
 		pi.getName();
 		pi.getValue();
-		pi.getEventId();
+		pi.getSourceId();
 		pi.getCreateTime();
 		pi.getUpdateTime();
 		pi.getId();
@@ -66,7 +66,7 @@ public class PerformanceInformationTest implements Serializable {
 		PerformanceInformation pi = new PerformanceInformation("eventId");
 		pi.setName("");
 		pi.setValue("");
-		pi.setEventId("");
+		pi.setSourceId("");
 		pi.setCreateTime(DateUtils.now());
 		pi.setUpdateTime(DateUtils.now());
 		pi.setId(1);

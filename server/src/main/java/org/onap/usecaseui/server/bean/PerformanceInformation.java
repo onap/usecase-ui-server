@@ -38,28 +38,32 @@ public class PerformanceInformation implements Serializable {
 	@Column(name = "value")
 	private String value;
 	
-	@Column(name = "eventId")
-	private String eventId;
+	@Column(name = "sourceId")
+	private String sourceId;
 	
 	@Column(name = "createTime")
 	private Date  createTime;
 	
 	@Column(name = "updateTime")
 	private Date updateTime;
-
+	
+	@Column(name="headerId")
+	private String headerId;
+	
 	public PerformanceInformation() {
 	}
 
-	public PerformanceInformation(String eventId) {
-		this.eventId = eventId;
+	public PerformanceInformation(String sourceId) {
+		this.sourceId = sourceId;
 	}
 
-	public PerformanceInformation(String name, String value, String eventId, Date createTime, Date updateTime) {
+	public PerformanceInformation(String name, String value, String sourceId, Date createTime, Date updateTime,String headerId) {
 		this.name = name;
 		this.value = value;
-		this.eventId = eventId;
+		this.sourceId = sourceId;
 		this.createTime = createTime;
 		this.updateTime = updateTime;
+		this.headerId = headerId;
 	}
 
 	public String getName() {
@@ -78,12 +82,12 @@ public class PerformanceInformation implements Serializable {
 		this.value = value;
 	}
 
-	public String getEventId() {
-		return eventId;
+	public String getSourceId() {
+		return sourceId;
 	}
 
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
 	}
 
 	public Date getCreateTime() {
@@ -109,6 +113,13 @@ public class PerformanceInformation implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
+	public String getHeaderId() {
+		return headerId;
+	}
+
+	public void setHeaderId(String headerId) {
+		this.headerId = headerId;
+	}
 	
 }

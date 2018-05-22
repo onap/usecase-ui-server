@@ -42,40 +42,45 @@ public class AlarmsInformation implements Serializable {
 	@Column(name = "value")
 	private String value;
 	
-	@Column(name = "eventId")
-	private String eventId;
+	@Column(name = "sourceId")
+	private String sourceId;
 	
 	@Column(name = "createTime")
 	private Date  createTime;
 	
 	@Column(name = "updateTime")
 	private Date updateTime;
-
+	
+	@Column(name = "headerId")
+	private String headerId;
+	
 	@Override
 	public String toString() {
 		return "AlarmsInformation{" +
 				"id=" + id +
 				", name='" + name + '\'' +
 				", value='" + value + '\'' +
-				", eventId='" + eventId + '\'' +
+				", sourceId='" + sourceId + '\'' +
 				", createTime=" + createTime +
 				", updateTime=" + updateTime +
+				", headerId=" + headerId +
 				'}';
 	}
 
 	public AlarmsInformation() {
 	}
 
-	public AlarmsInformation(String eventId) {
-		this.eventId = eventId;
+	public AlarmsInformation(String sourceId) {
+		this.sourceId = sourceId;
 	}
 
-	public AlarmsInformation(String name, String value, String eventId, Date createTime, Date updateTime) {
+	public AlarmsInformation(String name, String value, String sourceId, Date createTime, Date updateTime,String headerId) {
 		this.name = name;
 		this.value = value;
-		this.eventId = eventId;
+		this.sourceId = sourceId;
 		this.createTime = createTime;
 		this.updateTime = updateTime;
+		this.headerId = headerId;
 	}
 
 	public String getName() {
@@ -94,12 +99,12 @@ public class AlarmsInformation implements Serializable {
 		this.value = value;
 	}
 
-	public String getEventId() {
-		return eventId;
+	public String getSourceId() {
+		return sourceId;
 	}
 
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
 	}
 
 	public Date getCreateTime() {
@@ -125,6 +130,13 @@ public class AlarmsInformation implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
+	public String getHeaderId() {
+		return headerId;
+	}
+
+	public void setHeaderId(String headerId) {
+		this.headerId = headerId;
+	}
 	
 }

@@ -29,6 +29,7 @@ import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.ResponseUtil;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -111,7 +112,7 @@ public class AlarmController
                     AlarmBo abo = new AlarmBo();
                     abo.setAlarmsHeader(a);
                     AlarmsInformation information = new AlarmsInformation();
-                    information.setEventId(a.getSourceId());
+                    information.setSourceId(a.getSourceId());
                     List<AlarmsInformation> informationList = alarmsInformationService.queryAlarmsInformation(information,1,100).getList();
                     informationList.forEach( il -> {
                         if (il.getValue().equals("")){
@@ -172,5 +173,31 @@ public class AlarmController
             return "";
         }
     }
+    
+    @RequestMapping(value = "/alarm/statusCount", method = RequestMethod.GET, produces = "application/json")
+    public String getStatusCount() throws JsonProcessingException {
+        List<String> statusCount = new ArrayList<>();
 
+            statusCount.add(alarmsHeaderService.queryStatusCount("0"));
+            statusCount.add(alarmsHeaderService.queryStatusCount("active"));
+            statusCount.add(alarmsHeaderService.queryStatusCount("close"));
+            return omAlarm.writeValueAsString(statusCount);
+    }
+    
+    @RequestMapping("/alarm/getAlarmsHeaderDetail/{id}")
+    public String getAlarmsHeaderDetail(@PathVariable String id) throws JsonProcessingException {
+        AlarmsHeader alarmsHeader= alarmsHeaderService.getAlarmsHeaderById(id);
+        List<AlarmsInformation> list =new ArrayList<>();
+        if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader)){
+        	String headerId = alarmsHeader.getId();
+        	list = alarmsInformationService.getAllAlarmsInformationByHeaderId(headerId);
+        }
+
+        Map map = new HashMap();
+        map.put("alarmsHeader",alarmsHeader);
+        map.put("list",list);
+
+        String string =omAlarm.writeValueAsString(map);
+        return string;
+    }
 }

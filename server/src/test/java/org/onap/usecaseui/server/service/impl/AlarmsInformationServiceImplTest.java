@@ -167,7 +167,7 @@ public class AlarmsInformationServiceImplTest {
 			AlarmsInformation ai = new AlarmsInformation();
 			ai.setName("");
 			ai.setValue("");
-			ai.setEventId("");
+			ai.setSourceId("");
 			ai.setCreateTime(DateUtils.now());
 			ai.setUpdateTime(DateUtils.now());
 			alarmsInformationServiceImpl.getAllCount(ai, 1, 1);
@@ -182,7 +182,7 @@ public class AlarmsInformationServiceImplTest {
 			AlarmsInformation ai = new AlarmsInformation();
 			ai.setName("");
 			ai.setValue("");
-			ai.setEventId("");
+			ai.setSourceId("");
 			ai.setCreateTime(DateUtils.now());
 			ai.setUpdateTime(DateUtils.now());
 			alarmsInformationServiceImpl.queryAlarmsInformation(ai, 1, 1);

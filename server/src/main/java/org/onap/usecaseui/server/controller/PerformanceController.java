@@ -16,8 +16,17 @@
 package org.onap.usecaseui.server.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.bo.PerformanceBo;
@@ -26,19 +35,20 @@ import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
-import org.onap.usecaseui.server.util.ResponseUtil;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RestController
@@ -89,7 +99,7 @@ public class PerformanceController {
             performanceHeaders.forEach( per ->{
                 PerformanceBo pbo = new PerformanceBo();
                 PerformanceInformation pe = new PerformanceInformation();
-                pe.setEventId(per.getSourceId());
+                pe.setSourceId(per.getSourceId());
                 List<PerformanceInformation> performanceInformations = performanceInformationService.queryPerformanceInformation(pe,1,100).getList();
                 pbo.setPerformanceHeader(per);
                 performanceInformations.forEach( pi ->{
@@ -197,7 +207,7 @@ public class PerformanceController {
 
     @RequestMapping(value = {"/performance/diagram"}, method = RequestMethod.POST, produces = "application/json")
     public String generateDiagram(@RequestParam String sourceId,@RequestParam String startTime,@RequestParam String endTime,@RequestParam String nameParent,@RequestParam(required = false) String nameChild)  {
-        List<Integer> diagramSource = new ArrayList<>();
+        List<String> diagramSource = new ArrayList<>();
         try {
             logger.info(sourceId+":"+startTime+":"+endTime+":"+nameParent+":"+nameChild);
             if (performanceHeaderService.queryPerformanceHeader(new PerformanceHeader(sourceId),1,10).getList() != null){
@@ -207,7 +217,7 @@ public class PerformanceController {
                 }
                 performanceInformationService.queryDateBetween(sourceId,nameParent,startTime,endTime)
                         .forEach( per -> {
-                            diagramSource.add(Integer.parseInt(per.getValue()));
+                            diagramSource.add(per.getValue());
                         });
             }
         } catch (Exception e) {
@@ -244,6 +254,23 @@ public class PerformanceController {
             logger.error(e.getMessage());
             return "";
         }
+    }
+    
+    @RequestMapping("/performance/getPerformanceHeaderDetail/{id}")
+    public String getPerformanceHeaderDetail(@PathVariable String id) throws JsonProcessingException {
+        PerformanceHeader performanceHeader= performanceHeaderService.getPerformanceHeaderById(id);
+        List<PerformanceInformation> list =new ArrayList<>();
+        if(UuiCommonUtil.isNotNullOrEmpty(performanceHeader)){
+        	String headerId = performanceHeader.getId();
+        	list = performanceInformationService.getAllPerformanceInformationByHeaderId(headerId);
+        }
+
+        Map map = new HashMap();
+        map.put("performanceHeader",performanceHeader);
+        map.put("list",list);
+
+        String string =omPerformance.writeValueAsString(map);
+        return string;
     }
 
 

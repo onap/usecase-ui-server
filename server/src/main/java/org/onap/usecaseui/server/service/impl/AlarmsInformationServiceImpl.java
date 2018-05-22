@@ -101,9 +101,9 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 					String ver=alarmsInformation.getValue();
 					hql.append(" and a.value like '%"+ver+"%'");
 				}
-				if(null!=alarmsInformation.getEventId()) {
-					String ver=alarmsInformation.getEventId();
-					hql.append(" and a.eventId = '"+ver+"'");
+				if(null!=alarmsInformation.getSourceId()) {
+					String ver=alarmsInformation.getSourceId();
+					hql.append(" and a.sourceId = '"+ver+"'");
 				}
 				if(null!=alarmsInformation.getCreateTime()) {
 					Date ver =alarmsInformation.getCreateTime();
@@ -144,9 +144,9 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 					String ver=alarmsInformation.getValue();
 					hql.append(" and a.value like '%"+ver+"%'");
 				}
-				if(null!=alarmsInformation.getEventId()) {
-					String ver=alarmsInformation.getEventId();
-					hql.append(" and a.eventId = '"+ver+"'");
+				if(null!=alarmsInformation.getSourceId()) {
+					String ver=alarmsInformation.getSourceId();
+					hql.append(" and a.sourceId = '"+ver+"'");
 				}
 				if(null!=alarmsInformation.getCreateTime()) {
 					Date ver =alarmsInformation.getCreateTime();
@@ -183,7 +183,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			}
 			List<AlarmsInformation> list = new ArrayList<AlarmsInformation>();
 			Session session = getSession();
-			Query query = session.createQuery("from AlarmsInformation a where a.eventId IN (:alist)");
+			Query query = session.createQuery("from AlarmsInformation a where a.sourceId IN (:alist)");
 			list = query.setParameterList("alist", id).list();
 			session.close();
 			return list;
@@ -200,7 +200,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			List<Map<String,String>> mapList = new ArrayList<>();
 			String hql = "select a.createTime,count(*) from AlarmsInformation a where 1=1 ";
 			if (sourceId != null && !"".equals(sourceId)){
-				hql += " and a.eventId = :sourceId";
+				hql += " and a.sourceId = :sourceId";
 			}
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
 				hql += " and a.createTime between :startTime and :endTime ";
@@ -225,6 +225,22 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			return mapList;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	public List<AlarmsInformation> getAllAlarmsInformationByHeaderId(String headerId) {
+		try (Session session = getSession()){
+			String string = "from AlarmsInformation a where 1=1 and a.headerId=:headerId";
+			Query query = session.createQuery(string);
+			query.setString("headerId",headerId);
+			List<AlarmsInformation> list = query.list();
+			session.flush();
+			return list;
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. LIST:" + e.getMessage());
+
 			return null;
 		}
 	}

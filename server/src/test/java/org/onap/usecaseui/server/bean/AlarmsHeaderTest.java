@@ -54,7 +54,7 @@ public class AlarmsHeaderTest {
 	public void testGetAlarmsHeader() throws Exception {
 		AlarmsHeader ah = new AlarmsHeader("version", "eventName", "domain", "eventId", "eventType", "nfcNamingCode",
 										"nfNamingCode", "sourceId", "sourceName", "reportingEntityId", "reportingEntityName",
-										"priority", "startEpochMicrosec", "lastEpochMicroSec", "sequence", "faultFieldsVersion",
+										"priority", "startEpochMicrosec", "lastEpochMicroSec","startEpochMicrosecCleared", "lastEpochMicroSecCleared", "sequence", "faultFieldsVersion",
 										"eventServrity", "eventSourceType", "eventCategory", "alarmCondition", "specificProblem",
 										"vfStatus", "alarmInterfaceA", "status", DateUtils.now(), DateUtils.now());
 		ah.getVersion();

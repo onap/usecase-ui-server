@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,11 +27,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name="performance_commoneventheader")
 public class PerformanceHeader implements Serializable {
-	
+
+	@Id
+	@Column(name = "id")
+	private String id;
+
 	@Column(name = "version")
 	private String version;
 	
-	@Id
 	@Column(name = "eventName")
 	private String eventName;
 	
@@ -86,7 +89,7 @@ public class PerformanceHeader implements Serializable {
 	
 	@Column(name = "updateTime")
 	private Date updateTime;
-
+	
 	public PerformanceHeader() {
 	}
 
@@ -268,7 +271,12 @@ public class PerformanceHeader implements Serializable {
 		this.updateTime = updateTime;
 	}
 
-	
-	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 	
 }

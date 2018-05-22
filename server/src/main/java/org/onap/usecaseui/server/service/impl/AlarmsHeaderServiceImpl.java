@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service.impl;
 
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -359,6 +360,69 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			return list;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryId. Details:" + e.getMessage());
+			return null;
+		}
+	}
+	
+	@Override
+	public String updateAlarmsHeader2018(String status, Timestamp date, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String eventName, String reportingEntityName, String specificProblem) {
+
+		try(Session session = getSession()){
+			//try(Session session = sessionFactory.getCurrentSession();){
+			session.beginTransaction();
+
+			//Query q=session.createQuery("update AlarmsHeader set status='"+status+"', updateTime='"+date+"' , startEpochMicrosecCleared='"+startEpochMicrosecCleared+"'  ,lastEpochMicroSecCleared='"+lastEpochMicroSecCleared+"'    where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"'");
+            Query q=session.createQuery("update AlarmsHeader set status=:status, updateTime=:date, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
+
+            q.setString("status",status);
+            q.setDate("date",date);
+
+            q.setString("startEpochMicrosecCleared",startEpochMicrosecCleared);
+            q.setString("lastEpochMicroSecCleared",lastEpochMicroSecCleared);
+            q.setString("eventName",eventName);
+            q.setString("reportingEntityName",reportingEntityName);
+            q.setString("specificProblem",specificProblem);
+
+
+            q.executeUpdate();
+			session.getTransaction().commit();
+			session.flush();
+			return "1";
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl updateAlarmsInformation. Details:" + e.getMessage());
+			return "0";
+		}
+	}
+
+    @Override
+    public String queryStatusCount(String status) {
+        try(Session session = sessionFactory.openSession()){
+            String hql = "select count(status) from AlarmsHeader a";
+            if (!status.equals("0"))
+                hql+=" where a.status = :status";
+            Query query = session.createQuery(hql);
+            if (!status.equals("0"))
+                query.setString("status",status);
+            return query.uniqueResult().toString();
+        } catch (Exception e) {
+            logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryStatusCount. Details:" + e.getMessage());
+            return null;
+        }
+    }
+    
+	@Override
+	public AlarmsHeader getAlarmsHeaderById(String id) {
+		try(Session session = sessionFactory.openSession()) {
+
+			String string = "from AlarmsHeader a where 1=1 and a.id=:id";
+			Query q = session.createQuery(string);
+			q.setString("id",id);
+			AlarmsHeader alarmsHeader =(AlarmsHeader)q.uniqueResult();
+			session.flush();
+			return alarmsHeader;
+
+		}catch (Exception e){
+			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAlarmsHeaderDetail."+e.getMessage());
 			return null;
 		}
 	}

@@ -52,10 +52,10 @@ public class AlarmsInformationTest implements Serializable {
 
 	@Test
 	public void testGetAlarmsInformation() throws Exception {
-		AlarmsInformation ai = new AlarmsInformation("name", "value", "eventId", DateUtils.now(), DateUtils.now());
+		AlarmsInformation ai = new AlarmsInformation("name", "value", "eventId", DateUtils.now(), DateUtils.now(),"headerId");
 		ai.getName();
 		ai.getValue();
-		ai.getEventId();
+		ai.getSourceId();
 		ai.getCreateTime();
 		ai.getUpdateTime();
 		ai.getId();
@@ -67,7 +67,7 @@ public class AlarmsInformationTest implements Serializable {
 		AlarmsInformation ai = new AlarmsInformation("eventId");
 		ai.setName("");
 		ai.setValue("");
-		ai.setEventId("");
+		ai.setSourceId("");
 		ai.setCreateTime(DateUtils.now());
 		ai.setUpdateTime(DateUtils.now());
 		ai.setId(1);

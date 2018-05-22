@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server;
 
 import org.onap.usecaseui.server.util.DmaapSubscriber;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,14 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 @ComponentScan(basePackages = "org.onap.usecaseui.server")
 public class UsecaseuiServerApplication {
+	
+    public static DmaapSubscriber dmaapSubscriber;
 
+    @Autowired
+    public void setDatastore(DmaapSubscriber dmaapSubscriber) {
+        UsecaseuiServerApplication.dmaapSubscriber = dmaapSubscriber;
+    }
+    
     @Bean
     public RestTemplate getRestTemplate(){
         return new RestTemplate();
@@ -33,7 +41,6 @@ public class UsecaseuiServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(UsecaseuiServerApplication.class, args);
-        DmaapSubscriber dmaapSubscriber = new DmaapSubscriber();
         dmaapSubscriber.run();
     }
 }

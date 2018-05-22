@@ -167,7 +167,7 @@ public class PerformanceInformationServiceImplTest {
 			PerformanceInformation pi = new PerformanceInformation();
 			pi.setName("");
 			pi.setValue("");
-			pi.setEventId("");
+			pi.setSourceId("");
 			pi.setCreateTime(DateUtils.now());
 			pi.setUpdateTime(DateUtils.now());
 			performanceInformationServiceImpl.getAllCount(pi, 1, 1);
@@ -182,7 +182,7 @@ public class PerformanceInformationServiceImplTest {
 			PerformanceInformation pi = new PerformanceInformation();
 			pi.setName("");
 			pi.setValue("");
-			pi.setEventId("");
+			pi.setSourceId("");
 			pi.setCreateTime(DateUtils.now());
 			pi.setUpdateTime(DateUtils.now());
 			performanceInformationServiceImpl.queryPerformanceInformation(pi, 1, 1);
