@@ -375,7 +375,6 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
             Query q=session.createQuery("update AlarmsHeader set status=:status, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
 
             q.setString("status",status);
-            q.setDate("date",date);
 
             q.setString("startEpochMicrosecCleared",startEpochMicrosecCleared);
             q.setString("lastEpochMicroSecCleared",lastEpochMicroSecCleared);

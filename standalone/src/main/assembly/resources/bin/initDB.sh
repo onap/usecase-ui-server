@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 #
 # Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
 #
@@ -15,21 +15,15 @@
 # limitations under the License.
 #
 
-echo "initDB.sh 1"
 DIRNAME=`dirname $0`
-echo "initDB.sh 2"
 HOME=`cd $DIRNAME/; pwd`
-echo "initDB.sh 3"
 user=$1
 password=$2
 port=$3
 host=$4
-echo "initDB.sh 4"
 echo "start create usecase-ui db"
 sql_path=$HOME/../
-echo "initDB.sh 5"
 mysql -u$user -p$password -P$port -h$host <$sql_path/dbscripts/mysql/usecase-ui-createdb.sql
-echo "initDB.sh 6"
 sql_result=$?
 if [ $sql_result != 0 ] ; then
     echo "failed to create usecase-ui database"

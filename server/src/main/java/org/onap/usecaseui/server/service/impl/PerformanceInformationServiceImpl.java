@@ -59,9 +59,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	public String savePerformanceInformation(PerformanceInformation performanceInformation) {
 	try(Session session = getSession()) {
 			if (null == performanceInformation) {
-				logger.error("performanceInformation savePerformanceInformation performanceInformation is null!");
 			}
-			logger.info("PerformanceInformationServiceImpl savePerformanceInformation: performanceInformation={}", performanceInformation);
 			Transaction tx = session.beginTransaction();
 			session.save(performanceInformation);
 			tx.commit();
@@ -77,7 +75,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	public String updatePerformanceInformation(PerformanceInformation performanceInformation) {
 		try(Session session = getSession()) {
 			if (null == performanceInformation) {
-				logger.error("performanceInformation updatePerformanceInformation performanceInformation is null!");
 			}
 			logger.info("PerformanceInformationServiceImpl updatePerformanceInformation: performanceInformation={}", performanceInformation);
 			Transaction tx = session.beginTransaction();
@@ -95,7 +92,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 		try(Session session = getSession()){
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceInformation a where 1=1");
 			if (null == performanceInformation) {
-				logger.error("AlarmsInformationServiceImpl getAllCount performanceInformation is null!");
 			}else {
 				if(null!=performanceInformation.getName()) {
 					String ver=performanceInformation.getName();
@@ -138,7 +134,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 		try(Session session = getSession()){
 			StringBuffer hql =new StringBuffer("from PerformanceInformation a where 1=1 ");
 			if (null == performanceInformation) {
-				logger.error("AlarmsInformationServiceImpl queryPerformanceInformation performanceInformation is null!");
 			}else {
 				if(null!=performanceInformation.getName()) {
 					String ver=performanceInformation.getName();
@@ -156,7 +151,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 					hql.append(" and a.startEpochMicrosec between :startTime and :endTime");
 				}
 			}
-			logger.info("PerformanceInformationServiceImpl queryPerformanceInformation: performanceInformation={}", performanceInformation);
 			Query query = session.createQuery(hql.toString());
 			if(null!=performanceInformation.getStartEpochMicrosec() || performanceInformation.getLastEpochMicroSec()!= null) {
 				query.setString("startTime",performanceInformation.getStartEpochMicrosec());
@@ -183,7 +177,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	public List<PerformanceInformation> queryId(String[] id) {
 		try(Session session = getSession()) {
 			if(id.length==0) {
-				logger.error("PerformanceInformationServiceImpl queryId is null!");
 			}
 			List<PerformanceInformation> list = new ArrayList<>();
 			Query query = session.createQuery("from PerformanceInformation a where a.sourceId IN (:alist)");
@@ -203,7 +196,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 			List<PerformanceInformation> list = new ArrayList<>();
 			Query query = session.createQuery("from PerformanceInformation a where a.sourceId = :sourceId and a.createTime BETWEEN :startDate and :endDate");
 			list = query.setParameter("sourceId",sourceId).setParameter("startDate", startDate).setParameter("endDate",endDate).list();
-			logger.info("PerformanceInformationServiceImpl queryDateBetween: list={}", list);
 			return list;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
@@ -218,7 +210,6 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 			int sum = 0;
 			Query query = session.createQuery("select sum(a.value) from PerformanceInformation a where a.sourceId = :sourceId and a.name = :name and a.createTime BETWEEN :startDate and :endDate");
 			sum = Integer.parseInt(query.setParameter("sourceId",sourceId).setParameter("name",name).setParameter("startDate", startDate).setParameter("endDate",endDate).uniqueResult().toString());
-			logger.info("PerformanceInformationServiceImpl queryDataBetweenSum: sum={}", sum);
 			return sum;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDataBetweenSum. Details:" + e.getMessage());
@@ -284,7 +275,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
                 hql += " and a.name = :name ";
             }
             if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
-                hql += " and a.startEpochMicrosec between :startTime and :endTime ";
+            	hql += " and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ";
             }
             Query query = session.createQuery(hql);
             if (sourceId != null && !"".equals(sourceId)){

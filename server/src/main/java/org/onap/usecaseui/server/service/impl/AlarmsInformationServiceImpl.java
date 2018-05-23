@@ -56,7 +56,6 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 				if (null == alarmsInformation) {
 					logger.error("alarmsInformation saveAlarmsInformation alarmsInformation is null!");
 				}
-				logger.info("AlarmsInformationServiceImpl saveAlarmsInformation: alarmsInformation={}", alarmsInformation);
 				Transaction tx = session.beginTransaction();
 				session.save(alarmsInformation);
 				tx.commit();
@@ -75,7 +74,6 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			if (null == alarmsInformation) {
 				logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
 			}
-			logger.info("AlarmsInformationServiceImpl updateAlarmsInformation: alarmsInformation={}", alarmsInformation);
 			Transaction tx = session.beginTransaction();
 			session.update(alarmsInformation);
 			tx.commit();
@@ -92,7 +90,6 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 		try(Session session = getSession()){
 			StringBuffer hql = new StringBuffer("select count(*) from AlarmsInformation a where 1=1");
 			if (null == alarmsInformation) {
-				logger.error("AlarmsInformationServiceImpl getAllCount alarmsInformation is null!");
 			}else {
 				if(null!=alarmsInformation.getName()) {
 					String ver=alarmsInformation.getName();
@@ -153,7 +150,6 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 					hql.append(" and a.startEpochMicrosec between :startTime and :endTime");
 				}
 			}
-			logger.info("AlarmsInformationServiceImpl queryAlarmsInformation: alarmsInformation={}", alarmsInformation);
 			Query query = session.createQuery(hql.toString());
 			if(null!=alarmsInformation.getStartEpochMicroSec() || alarmsInformation.getLastEpochMicroSec()!= null) {
 				query.setString("startTime",alarmsInformation.getStartEpochMicroSec());
@@ -179,7 +175,6 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	public List<AlarmsInformation> queryId(String[] id) {
 		try {
 			if(id.length==0) {
-				logger.error("AlarmsInformationServiceImpl queryId is null!");
 			}
 			List<AlarmsInformation> list = new ArrayList<AlarmsInformation>();
 			Session session = getSession();

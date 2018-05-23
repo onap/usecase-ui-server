@@ -57,7 +57,6 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 				logger.error("PerformanceHeaderServiceImpl savePerformanceHeader performanceHeder is null!");
 				return "0";
 			}
-			logger.info("PerformanceHeaderServiceImpl savePerformanceHeader: performanceHeder={}", performanceHeder);
 			Transaction tx = session.beginTransaction();
 			session.save(performanceHeder);
 			tx.commit();
@@ -76,7 +75,6 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 				logger.error("PerformanceHeaderServiceImpl updatePerformanceHeader performanceHeder is null!");
 				return "0";
 			}
-			logger.info("PerformanceHeaderServiceImpl updatePerformanceHeader: performanceHeder={}", performanceHeder);
 			Transaction tx = session.beginTransaction();
 			session.update(performanceHeder);
 			tx.commit();
@@ -92,7 +90,6 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		try(Session session = getSession()){
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
 			if (null == performanceHeder) {
-				logger.error("PerformanceHeaderServiceImpl getAllCount performanceHeder is null!");
 				return 0;
 			}else {
 				if(null!=performanceHeder.getVersion()) {
@@ -190,7 +187,6 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		try(Session session = getSession()){
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
 			if (null == performanceHeder) {
-				logger.error("PerformanceHeaderServiceImpl queryPerformanceHeader performanceHeder is null!");
 				return page;
 			}else {
 				if(null!=performanceHeder.getVersion()) {
@@ -265,7 +261,6 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 					hql.append(" and a.startEpochMicrosec between :startTime and :endTime ");
 				}
 			}
-			logger.info("PerformanceHeaderServiceImpl queryPerformanceHeader: performanceHeder={}", performanceHeder);
 			Query query = session.createQuery(hql.toString());
 			if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
 				query.setString("startTime",performanceHeder.getStartEpochMicrosec()).setString("endTime",performanceHeder.getLastEpochMicroSec());
@@ -291,7 +286,6 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		try(Session session = getSession()) {
 			List<PerformanceHeader> list = new ArrayList<PerformanceHeader>();
 			if(id.length==0) {
-				logger.error("PerformanceHeaderServiceImpl queryId is null!");
 				return list;
 			}
 			Query query = session.createQuery("from PerformanceHeader a where a.eventName IN (:alist)");

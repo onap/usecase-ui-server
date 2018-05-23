@@ -173,9 +173,9 @@ public class DmaapSubscriber implements Runnable {
                     if (k2.equals("priority"))
                         alarm_header.setPriority(v2.toString());
                     if (k2.equals("startEpochMicrosec"))
-                        alarm_header.setStartEpochMicrosec(v2.toString().substring(0, 13));
+                        alarm_header.setStartEpochMicrosec(this.getTime(v2.toString()));
                     if (k2.equals("lastEpochMicrosec"))
-                        alarm_header.setLastEpochMicroSec(v2.toString().substring(0, 13));
+                        alarm_header.setLastEpochMicroSec(this.getTime(v2.toString()));
                     if (k2.equals("sequence"))
                         alarm_header.setSequence(v2.toString());
                 });
@@ -211,7 +211,7 @@ public class DmaapSubscriber implements Runnable {
                 });
             }
         });
-        if (alarm_header.getEventName() != null){
+        if (alarm_header.getEventName() != null&&(alarm_header.getStartEpochMicrosec().length()>=13||alarm_header.getLastEpochMicroSec().length()>=13)){
         Long l = System.currentTimeMillis();
 
         Timestamp date_get = new Timestamp(l);
@@ -264,9 +264,9 @@ public class DmaapSubscriber implements Runnable {
                             if (k2.equals("priority"))
                                 performance_header.setPriority(v2.toString());
                             if (k2.equals("startEpochMicrosec"))
-                                performance_header.setStartEpochMicrosec(v2.toString().substring(0, 13));
+                                performance_header.setStartEpochMicrosec(this.getTime(v2.toString()));
                             if (k2.equals("lastEpochMicrosec"))
-                                performance_header.setLastEpochMicroSec(v2.toString().substring(0, 13));
+                                performance_header.setLastEpochMicroSec(this.getTime(v2.toString()));
                             if (k2.equals("sequence"))
                                 performance_header.setSequence(v2.toString());
                         });
@@ -295,11 +295,21 @@ public class DmaapSubscriber implements Runnable {
                                 }
                             }
                         });
-                        performanceHeaderService.savePerformanceHeader(performance_header);
-                        performance_informations.forEach(ai -> {
-                            performanceInformationService.savePerformanceInformation(ai);
-                        });
+                        if ((performance_header.getStartEpochMicrosec().length()>=13||performance_header.getLastEpochMicroSec().length()>=13)){//时间有效才会进行存储
+                        	performanceHeaderService.savePerformanceHeader(performance_header);
+                        	performance_informations.forEach(ai -> {
+                        		performanceInformationService.savePerformanceInformation(ai);
+                        	});
+                        }
                     }
                 });
+    }
+    
+    private String getTime(String time){
+    	String result=time;
+    	if(time.length()>=13){
+    		result=time.substring(0, 13);
+    	}
+    	return result;
     }
 }
