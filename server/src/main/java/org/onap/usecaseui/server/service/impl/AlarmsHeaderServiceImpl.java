@@ -395,7 +395,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 
     @Override
     public String queryStatusCount(String status) {
-        try(Session session = sessionFactory.openSession()){
+        try(Session session = getSession()){
             String hql = "select count(status) from AlarmsHeader a";
             if (!status.equals("0"))
                 hql+=" where a.status = :status";
@@ -411,7 +411,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
     
 	@Override
 	public AlarmsHeader getAlarmsHeaderById(String id) {
-		try(Session session = sessionFactory.openSession()) {
+		try(Session session = getSession()) {
 
 			String string = "from AlarmsHeader a where 1=1 and a.id=:id";
 			Query q = session.createQuery(string);

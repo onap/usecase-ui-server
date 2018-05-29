@@ -15,19 +15,20 @@
  */
 package org.onap.usecaseui.server.service.impl;
 
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.service.impl.AlarmsHeaderServiceImpl;
-import org.onap.usecaseui.server.util.DateUtils;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
-import java.util.*;
-import java.io.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.onap.usecaseui.server.bean.AlarmsHeader;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -140,6 +141,7 @@ public class AlarmsHeaderServiceImplTest {
 		try {
 			AlarmsHeader ah = null;
 			alarmsHeaderServiceImpl.saveAlarmsHeader(ah);
+			alarmsHeaderServiceImpl.saveAlarmsHeader(new AlarmsHeader());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -150,6 +152,7 @@ public class AlarmsHeaderServiceImplTest {
 		try {
 			AlarmsHeader ah = null;
 			alarmsHeaderServiceImpl.updateAlarmsHeader(ah);
+			alarmsHeaderServiceImpl.updateAlarmsHeader(new AlarmsHeader());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -234,6 +237,39 @@ public class AlarmsHeaderServiceImplTest {
 		try {
 			String[] id = {"1", "2", "3"};
 			alarmsHeaderServiceImpl.queryId(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetAlarmsHeaderById() throws Exception {
+		try {
+			alarmsHeaderServiceImpl.getAlarmsHeaderById(null);
+			alarmsHeaderServiceImpl.getAlarmsHeaderById("1e578e892ebf4bcdbdd3e71fbad2a202");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testQueryStatusCount() throws Exception {
+		try {
+			alarmsHeaderServiceImpl.queryStatusCount(null);
+			alarmsHeaderServiceImpl.queryStatusCount("active");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testUpdateAlarmsHeader2018() throws Exception {
+		try {
+	        Long l = System.currentTimeMillis();
+
+	        Timestamp date_get = new Timestamp(l);
+			alarmsHeaderServiceImpl.updateAlarmsHeader2018(null, null, null, null, null, null, null);
+			alarmsHeaderServiceImpl.updateAlarmsHeader2018("close",date_get,"1527145109000", "1527145109000", "eventName","reportingEntityName","specificProblem");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -15,19 +15,19 @@
  */
 package org.onap.usecaseui.server.service.impl;
 
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.service.impl.AlarmsInformationServiceImpl;
-import org.onap.usecaseui.server.util.DateUtils;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
-import java.util.*;
-import java.io.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.onap.usecaseui.server.bean.AlarmsInformation;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -205,6 +205,16 @@ public class AlarmsInformationServiceImplTest {
 	public void testQueryDateBetween() throws Exception {
 		try {
 			alarmsInformationServiceImpl.queryDateBetween("sourceId", "startTime", "endTime", "level");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetAllAlarmsInformationByHeaderId() throws Exception {
+		try {
+			alarmsInformationServiceImpl.getAllAlarmsInformationByHeaderId(null);
+			alarmsInformationServiceImpl.getAllAlarmsInformationByHeaderId("headerId");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

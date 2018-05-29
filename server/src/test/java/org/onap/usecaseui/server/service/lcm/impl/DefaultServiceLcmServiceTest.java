@@ -22,6 +22,7 @@ import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.Operation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 
@@ -180,5 +181,81 @@ public class DefaultServiceLcmServiceTest {
         ServiceLcmService service = new DefaultServiceLcmService(soService);
 
         service.queryOperationProgress(serviceId, operationId);
+    }
+    
+    @Test(expected = SOException.class)
+    public void scaleServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
+        SOService soService = mock(SOService.class);
+        String serviceId = "1";
+        when(soService.scaleService(eq(serviceId), anyObject())).thenReturn(failedCall("SO is not available!"));
+        HttpServletRequest request = mockRequest();
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        service.scaleService(serviceId, request);
+    }
+
+    @Test(expected = SOException.class)
+    public void scaleServiceWillThrowExceptionWhenSOResponseError() throws IOException {
+        SOService soService = mock(SOService.class);
+        String serviceId = "1";
+        when(soService.scaleService(eq(serviceId), anyObject())).thenReturn(emptyBodyCall());
+        HttpServletRequest request = mockRequest();
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        service.scaleService(serviceId, request);
+    }
+    
+    @Test
+    public void itCanScaleService() throws IOException {
+        SOService soService = mock(SOService.class);
+        String serviceId = "1";
+        SaveOrUpdateOperationRsp rsp = new SaveOrUpdateOperationRsp();
+        rsp.setOperationId("1");
+        when(soService.scaleService(eq(serviceId), anyObject())).thenReturn(successfulCall(rsp));
+        HttpServletRequest request = mockRequest();
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        Assert.assertSame(rsp, service.scaleService(serviceId, request));
+    }
+    
+    @Test(expected = SOException.class)
+    public void updateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
+        SOService soService = mock(SOService.class);
+        String serviceId = "1";
+        when(soService.updateService(eq(serviceId), anyObject())).thenReturn(failedCall("SO is not available!"));
+        HttpServletRequest request = mockRequest();
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        service.updateService(serviceId, request);
+    }
+
+    @Test(expected = SOException.class)
+    public void updateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
+        SOService soService = mock(SOService.class);
+        String serviceId = "1";
+        when(soService.updateService(eq(serviceId), anyObject())).thenReturn(emptyBodyCall());
+        HttpServletRequest request = mockRequest();
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        service.updateService(serviceId, request);
+    }
+    
+    @Test
+    public void itCanUpdateService() throws IOException {
+        SOService soService = mock(SOService.class);
+        String serviceId = "1";
+        SaveOrUpdateOperationRsp rsp = new SaveOrUpdateOperationRsp();
+        rsp.setOperationId("1");
+        when(soService.updateService(eq(serviceId), anyObject())).thenReturn(successfulCall(rsp));
+        HttpServletRequest request = mockRequest();
+
+        ServiceLcmService service = new DefaultServiceLcmService(soService);
+
+        Assert.assertSame(rsp, service.updateService(serviceId, request));
     }
 }

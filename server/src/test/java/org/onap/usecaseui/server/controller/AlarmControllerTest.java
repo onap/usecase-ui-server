@@ -15,59 +15,37 @@
  */
 package org.onap.usecaseui.server.controller;
 
-import org.junit.Test;
-import org.junit.Before;
+import static org.mockito.Mockito.mock;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
-
-import java.util.*;
-
-import mockit.Mock;
-import mockit.MockUp;
 
 public class AlarmControllerTest {
 
 	AlarmController controller = null;
+    AlarmsHeaderService service;
+    AlarmsInformationService alService;
 
 	@Before
 	public void before() throws Exception {
 		controller = new AlarmController();
+	    service = mock(AlarmsHeaderService.class);
+	    alService = mock(AlarmsInformationService.class);
+	    controller.setAlarmsHeaderService(service);
+	    controller.setAlarmsInformationService(alService);
 
-		new MockUp<AlarmsHeaderService>() {
-			@Mock
-			public Page<AlarmsHeader> queryAlarmsHeader(AlarmsHeader alarmsHeader, int currentPage, int pageSize) {
-				AlarmsHeader ah = new AlarmsHeader("sourceId");
-				List<AlarmsHeader> list = new ArrayList<>();
-				list.add(ah);
-				Page<AlarmsHeader> resultPage = new Page<AlarmsHeader>();
-				resultPage.setList(list);
-				return resultPage;
-			}
-			@Mock
-			public List<AlarmsHeader> queryId(String[] id) {
-				AlarmsHeader ah = new AlarmsHeader();
-				return Arrays.asList(ah);
-			}
-		};
-		new MockUp<AlarmsInformationService>() {
-			@Mock
-			public Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
-				return new Page<AlarmsInformation>();
-			}
-			@Mock
-			public List<Map<String,String>> queryDateBetween(String sourceId, String startTime, String endTime) {
-				Map<String,String> map = new HashMap<String,String>();
-				map.put("name", "value");
-				List<Map<String,String>> resultList = new ArrayList<>();
-				resultList.add(map);
-				return resultList;
-			}
-		};
 	}
 
 	@After
@@ -101,9 +79,28 @@ public class AlarmControllerTest {
 	@Test
 	public void testGenDiagram() throws Exception {
 		try {
-			controller.diagram("sourceId", "startTime", "endTime","format");
+			controller.diagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29", "day");
+			controller.diagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29", "hour");
+			controller.diagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29","month");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	@Test
+	public void testStatusCount() throws Exception {
+		try {
+			controller.getStatusCount();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void testGetAlarmsHeaderDetail() throws Exception {
+		try {
+			controller.getAlarmsHeaderDetail("33a8353381bb4e8fabbc739f9f7e02bf");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

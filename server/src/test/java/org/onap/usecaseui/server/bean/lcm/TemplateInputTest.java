@@ -65,6 +65,7 @@ public class TemplateInputTest {
 	@Test
 	public void testSetTemplateInput() throws Exception {
 		TemplateInput ti = new TemplateInput("name", "type", "description", "isRequired", "defaultValue");
-		ti.equals(ti);
+		TemplateInput ti2 = new TemplateInput("names", "types", "descriptions", "isRequireds", "defaultValues");
+		System.out.println(ti.equals(ti2));
 	}
 }

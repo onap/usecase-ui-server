@@ -114,6 +114,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 			Response<SaveOrUpdateOperationRsp> response = soService.scaleService(serviceId,requestBody).execute();
 			logger.info("so scale has finished");
 			if(response.isSuccessful()){
+				logger.info("scaleService response content is :"+response.body().toString());
 				return response.body();
 			}else{
                 logger.error(String.format("Can not scaleService service[code=%s, message=%s]", response.code(), response.message()));

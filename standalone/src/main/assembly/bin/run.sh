@@ -21,8 +21,10 @@ echo @RUNHOME@ $RUNHOME
 
 echo "Starting mysql"
 service mysql start
-sleep 100
+sleep 10
 
+echo "grep initDB status"
+ps -fe | grep initDB.sh
 SCRIPT="/home/uui/resources/bin/initDB.sh"
 chmod 755 $SCRIPT
 $SCRIPT root root 3306 127.0.0.1

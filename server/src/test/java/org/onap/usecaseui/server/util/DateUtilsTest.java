@@ -62,4 +62,30 @@ public class DateUtilsTest {
 			e.printStackTrace();
 		}
 	}
+	@Test
+	public void TestGetYearMonthDayHourMinuteSecond(){
+		System.out.println(DateUtils.getYearMonthDayHourMinuteSecond(1527145109000L));
+		System.out.println(DateUtils.getYearMonthDayHourMinuteSecond(1514736000000L));
+	}
+	@Test
+	public void TestGetResultDate(){
+		System.out.println(DateUtils.getResultDate(1514736000000L,"yyyy-MM-dd"));
+		System.out.println(DateUtils.getResultDate(1527145109000L,"month"));
+		System.out.println(DateUtils.getResultDate(1527145109000L,"day"));
+		System.out.println(DateUtils.getResultDate(1527145109000L,"minute"));
+		System.out.println(DateUtils.getResultDate(1527145109000L,"hour"));
+	}
+	@Test
+	public void TestMonthOfDay(){
+		System.out.println(DateUtils.MonthOfDay("2018-02-12","yyyy-MM-dd"));
+		System.out.println(DateUtils.MonthOfDay("dateTime","yyyy-MM-dd"));
+	}
+	
+	@Test
+	public void TestAddDate() throws ParseException{
+		DateUtils.addDate(new Date(), "year", 1);
+		DateUtils.addDate(new Date(), "day", 1);
+		DateUtils.addDate(new Date(), "hour", 1);
+		DateUtils.addDate(new Date(), "minute", 1);
+	}
 }

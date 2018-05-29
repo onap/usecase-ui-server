@@ -139,7 +139,9 @@ public class PerformanceHeaderServiceImplTest {
 	public void testSavePerformanceHeader() throws Exception {
 		try {
 			PerformanceHeader ph = null;
+			PerformanceHeader phNew = new PerformanceHeader();
 			performanceHeaderServiceImpl.savePerformanceHeader(ph);
+			performanceHeaderServiceImpl.savePerformanceHeader(phNew);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -149,7 +151,9 @@ public class PerformanceHeaderServiceImplTest {
 	public void testUpdatePerformanceHeader() throws Exception {
 		try {
 			PerformanceHeader ph = null;
+			PerformanceHeader phNew = new PerformanceHeader();
 			performanceHeaderServiceImpl.updatePerformanceHeader(ph);
+			performanceHeaderServiceImpl.updatePerformanceHeader(phNew);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -185,6 +189,10 @@ public class PerformanceHeaderServiceImplTest {
 			ph.setStartEpochMicrosec("");;
 			ph.setLastEpochMicroSec("");;
 			performanceHeaderServiceImpl.getAllCount(ph, 1, 1);
+			
+			PerformanceHeader phNew = new PerformanceHeader();
+			performanceHeaderServiceImpl.getAllCount(phNew, 1, 1);
+			performanceHeaderServiceImpl.getAllCount(null, 1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -213,7 +221,11 @@ public class PerformanceHeaderServiceImplTest {
 			ph.setEventType("");
 			ph.setStartEpochMicrosec("");;
 			ph.setLastEpochMicroSec("");;
-			performanceHeaderServiceImpl.queryPerformanceHeader(ph, 1, 1);
+			performanceHeaderServiceImpl.queryPerformanceHeader(ph, 1, 10);
+			
+			PerformanceHeader phNew = new PerformanceHeader();
+			performanceHeaderServiceImpl.queryPerformanceHeader(phNew, 1, 1);
+			performanceHeaderServiceImpl.queryPerformanceHeader(null, 1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -233,6 +245,15 @@ public class PerformanceHeaderServiceImplTest {
 	public void testQueryAllSourceId() throws Exception {
 		try {
 			performanceHeaderServiceImpl.queryAllSourceId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetPerformanceHeaderById() throws Exception {
+		try {
+			performanceHeaderServiceImpl.getPerformanceHeaderById("0a573f09d50f46adaae0c10e741fea4d");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

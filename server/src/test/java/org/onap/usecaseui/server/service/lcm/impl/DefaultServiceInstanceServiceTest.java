@@ -72,4 +72,30 @@ public class DefaultServiceInstanceServiceTest {
 
         Assert.assertTrue("service instances should be empty.", serviceInstances.isEmpty());
     }
+
+    @Test(expected = AAIException.class)
+    public void getRelationShipDataWillThrowExceptionWhenAAIIsNotAvailable() {
+        AAIService aaiService = mock(AAIService.class);
+        String customerId = "1";
+        String serviceType = "service";
+        String result="result";
+        when(aaiService.getAAIServiceInstance(customerId, serviceType,result)).thenReturn(failedCall("AAI is not available!"));
+
+        ServiceInstanceService service = new DefaultServiceInstanceService(aaiService);
+        service.getRelationShipData(customerId, serviceType,result);
+    }
+
+    @Test
+    public void getRelationShipDataWillThrowExceptionWhenNoServiceInstancesInAAI() {
+        AAIService aaiService = mock(AAIService.class);
+        String customerId = "1";
+        String serviceType = "service";
+        String result="result";
+        when(aaiService.getAAIServiceInstance(customerId, serviceType,result)).thenReturn(emptyBodyCall());
+
+        ServiceInstanceService service = new DefaultServiceInstanceService(aaiService);
+        String aa = service.getRelationShipData(customerId, serviceType,result);
+
+        Assert.assertTrue("service instances should be empty.", aa.isEmpty());
+    }
 }

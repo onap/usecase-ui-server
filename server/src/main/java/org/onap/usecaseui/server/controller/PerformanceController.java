@@ -65,7 +65,16 @@ public class PerformanceController {
     private PerformanceInformationService performanceInformationService;
 
     private Logger logger = LoggerFactory.getLogger(PerformanceController.class);
+    
+    public void setPerformanceHeaderService(PerformanceHeaderService performanceHeaderService) {
+        this.performanceHeaderService = performanceHeaderService;
+    }
 
+
+    public void setPerformanceInformationService(PerformanceInformationService performanceInformationService) {
+        this.performanceInformationService = performanceInformationService;
+    }
+    
     private final String[] PerformanceCSVHeaders = {"version",
             "eventName","domain","eventId","eventType","nfcNamingCode",
             "nfNamingCode","sourceId","sourceName","reportingEntityId",
@@ -140,75 +149,6 @@ public class PerformanceController {
             logger.error("JsonProcessingException"+e.getMessage());
             return omPerformance.writeValueAsString("failed");
         }
-    }
-
-    @ResponseBody
-    @RequestMapping(value = {"/performance/diagram/{unit}/{eventId}"}, method = RequestMethod.GET, produces = "application/json")
-    public String generateDiagram(@PathVariable String unit,@PathVariable String eventId) throws ParseException, JsonProcessingException {
-        Map<String,List<Integer>> diagramSource = new HashMap<>();
-        String[] names = {"cpu","network","disk","memory"};
-        switch (unit){
-            case "hour":
-                for(int i = 0 ; i < 4 ; i++){
-                    Date startDateHour = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,1,1,-1,0,0));
-                    Date endDateHour = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,1,1,-1,0,0));
-                    endDateHour = DateUtils.stringToDate(DateUtils.addDate(endDateHour,"minute",15));
-                    List<Integer> values = new ArrayList<>();
-                    for (int j = 0 ; j < 4 ; j++){
-                        logger.info(DateUtils.dateToString(startDateHour));
-                        logger.info(DateUtils.dateToString(endDateHour));
-                        values.add(performanceInformationService.queryDataBetweenSum(eventId,names[i],startDateHour,endDateHour));
-                        startDateHour = DateUtils.stringToDate(DateUtils.addDate(startDateHour,"minute",15));
-                        endDateHour = DateUtils.stringToDate(DateUtils.addDate(endDateHour,"minute",15));
-                    }
-                    diagramSource.put(names[i],values);
-                }
-                break;
-            case "day":
-                for(int i = 0 ; i < 4 ; i++){
-                    Date startDateDay = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,1,-1,0,0,0));
-                    Date endDateDay = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,1,-1,0,0,0));
-                    endDateDay = DateUtils.stringToDate(DateUtils.addDate(endDateDay,"hour",1));
-                    List<Integer> values = new ArrayList<>();
-                    for (int j = 0 ; j < 24 ; j++){
-                        values.add(performanceInformationService.queryDataBetweenSum(eventId,names[i],startDateDay,endDateDay));
-                        startDateDay = DateUtils.stringToDate(DateUtils.addDate(startDateDay,"hour",1));
-                        endDateDay = DateUtils.stringToDate(DateUtils.addDate(endDateDay,"hour",1));
-                    }
-                    diagramSource.put(names[i],values);
-                }
-                break;
-            case "month":
-               for(int i = 0 ; i < 4 ; i++){
-                   Date startDateMonth = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,-1,0,0,0,0));
-                   Date endDateMonth = DateUtils.stringToDate(DateUtils.initDate(new Date(),1,-1,0,0,0,0));
-                   endDateMonth = DateUtils.stringToDate(DateUtils.addDate(endDateMonth,"day",1));
-                   List<Integer> values = new ArrayList<>();
-                    for (int j = 0 ; j < 31 ; j++){
-                        values.add(performanceInformationService.queryDataBetweenSum(eventId,names[i],startDateMonth,endDateMonth));
-                        startDateMonth = DateUtils.stringToDate(DateUtils.addDate(startDateMonth,"day",1));
-                        endDateMonth = DateUtils.stringToDate(DateUtils.addDate(endDateMonth,"day",1));
-                    }
-                    diagramSource.put(names[i],values);
-                }
-                break;
-            case "year":
-                for(int i = 0 ; i < 4 ; i++){
-                    Date startDateYear = DateUtils.stringToDate(DateUtils.initDate(new Date(),-1,0,0,0,0,0));
-                    Date endDateYear = DateUtils.stringToDate(DateUtils.initDate(new Date(),-1,0,0,0,0,0));
-                    endDateYear = DateUtils.stringToDate(DateUtils.addDate(endDateYear,"month",1));
-                    List<Integer> values = new ArrayList<>();
-                    for (int j = 0 ; j < 12 ; j++){
-                        values.add(performanceInformationService.queryDataBetweenSum(eventId,names[i],startDateYear,endDateYear));
-                        startDateYear = DateUtils.stringToDate(DateUtils.addDate(startDateYear,"month",1));
-                        endDateYear = DateUtils.stringToDate(DateUtils.addDate(endDateYear,"month",1));
-                    }
-                    diagramSource.put(names[i],values);
-                }
-                break;
-        }
-        omPerformance.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
-        return omPerformance.writeValueAsString(diagramSource);
     }
 
     @RequestMapping(value = {"/performance/diagram"}, method = RequestMethod.POST, produces = "application/json")

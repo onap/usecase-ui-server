@@ -81,6 +81,7 @@ public class AlarmsHeaderTest {
 		ah.getVfStatus();
 		ah.getAlarmInterfaceA();
 		ah.getStatus();
+		ah.getId();
 	}
 
 	@Test
@@ -112,5 +113,6 @@ public class AlarmsHeaderTest {
 		ah.setStatus("");
 		ah.setStartEpochMicrosec(DateUtils.now().getTime()+"");
 		ah.setLastEpochMicroSec(DateUtils.now().getTime()+"");
+		ah.setId("");
 	}
 }

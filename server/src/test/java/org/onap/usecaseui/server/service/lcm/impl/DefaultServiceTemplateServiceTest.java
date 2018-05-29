@@ -16,9 +16,11 @@
 package org.onap.usecaseui.server.service.lcm.impl;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
+import org.onap.usecaseui.server.service.impl.AlarmsInformationServiceImpl;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
@@ -49,7 +51,12 @@ import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class DefaultServiceTemplateServiceTest {
-
+	
+	DefaultServiceTemplateService dsts = null;
+	@Before
+	public void before() throws Exception {
+		dsts = new DefaultServiceTemplateService();
+	}
     @Test
     public void itCanListDistributedServiceTemplate() {
         List<SDCServiceTemplate> templates = Collections.singletonList(new SDCServiceTemplate("uuid", "uuid", "name", "V1","url", "category"));
@@ -285,5 +292,10 @@ public class DefaultServiceTemplateServiceTest {
 
         ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiService);
         service.listSDNCControllers();
+    }
+    
+    @Test(expected = AAIException.class)
+    public void testDownloadFile() throws IOException {
+    	dsts.downloadFile("toscaModelPath", "toPath");
     }
 }

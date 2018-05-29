@@ -15,6 +15,15 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
+import static org.onap.usecaseui.server.util.CallStub.failedCall;
+import static org.onap.usecaseui.server.util.CallStub.successfulCall;
+
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
@@ -24,16 +33,8 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
+
 import retrofit2.Call;
-
-import java.util.List;
-
-import static java.util.Collections.singletonList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
-import static org.onap.usecaseui.server.util.CallStub.failedCall;
-import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class DefaultCustomerServiceTest {
 
@@ -99,6 +100,7 @@ public class DefaultCustomerServiceTest {
 
     @Test
     public void itWillRetrieveEmptyListWhenNoServiceSubscriptionsInAAI() {
+    	DefaultCustomerService dc = new DefaultCustomerService();
         AAIService aaiService = mock(AAIService.class);
         Call<ServiceSubscriptionRsp> call = emptyBodyCall();
         when(aaiService.listServiceSubscriptions("1")).thenReturn(call);

@@ -15,61 +15,33 @@
  */
 package org.onap.usecaseui.server.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Date;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
-import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.util.Page;
 
-import mockit.Mock;
-import mockit.MockUp;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class PerformanceControllerTest {
 
-	PerformanceController controller = null;
-
+	PerformanceController  controller;
+	PerformanceHeaderService phs;
+	PerformanceInformationService pihs;
 	@Before
 	public void before() throws Exception {
 		controller = new PerformanceController();
-
-		new MockUp<PerformanceHeaderService>() {
-			@Mock
-			public Page<PerformanceHeader> queryPerformanceHeader(PerformanceHeader performanceHeder, int currentPage, int pageSize) {
-				return new Page<PerformanceHeader>();
-			}
-			@Mock
-			public List<PerformanceHeader> queryId(String[] id) {
-				PerformanceHeader ph = new PerformanceHeader();
-				return Arrays.asList(ph);
-			}
-			@Mock
-			public List<String> queryAllSourceId() {
-				String str = "abc";
-				return Arrays.asList(str);
-			}
-		};
-		new MockUp<PerformanceInformationService>() {
-			@Mock
-			public Page<PerformanceInformation> queryPerformanceInformation(PerformanceInformation performanceInformation, int currentPage, int pageSize) {
-				return new Page<PerformanceInformation>();
-			}
-			@Mock
-			public int queryDataBetweenSum(String eventId, String name, Date startDate, Date endDate) {
-				return 1;
-			}
-			@Mock
-			public List<PerformanceInformation> queryDateBetween(String resourceId, String name, String startTime, String endTime) {
-				PerformanceInformation pi = new PerformanceInformation();
-				return Arrays.asList(pi);
-			}
-		};
+		phs=mock(PerformanceHeaderService.class);
+		pihs =mock(PerformanceInformationService.class);
+		controller.setPerformanceHeaderService(phs);
+		controller.setPerformanceInformationService(pihs);
 	}
 
 	@After
@@ -79,11 +51,9 @@ public class PerformanceControllerTest {
 	@Test
 	public void testGenerateDiagram() {
 		try {
-			controller.generateDiagram("hour", "eventId");
-			controller.generateDiagram("day", "eventId");
-			controller.generateDiagram("month", "eventId");
-			controller.generateDiagram("year", "eventId");
-			controller.generateDiagram("sourceId", "startTime", "endTime", "nameParent", "nameChild");
+			controller.generateDiagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29", "nameParent", "day");
+			controller.generateDiagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29", "nameParent", "hour");
+			controller.generateDiagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29", "nameParent", "minute");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -93,15 +63,45 @@ public class PerformanceControllerTest {
 	public void testGetSourceIds() {
 		try {
 			controller.getSourceIds();
+			verify(phs,times(1)).queryAllSourceId();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	@Test
+	public void testGetPerformanceData() throws JsonProcessingException {
+	    HttpServletResponse response = mock(HttpServletResponse.class);
+	    int currentPage = 1;
+	    int pageSize=12;
+	    String sourceId="uui_test_vm5";
+	    String  sourceName="2b8957a6-46d4-4e91-8d50-17c29e8583ac";
+	    String  priority="Normal";
+	    String  startTime="1521678529000";
+	    String  endTime="1521680329000";
+	    PerformanceHeader header = new PerformanceHeader();
+
+
+	    controller.getPerformanceData(response,currentPage,pageSize,sourceId,sourceName,priority,startTime,endTime);
+	    controller.getPerformanceData(response,currentPage,pageSize,null,null,null,null,null);
+	    verify(phs,times(1)).queryPerformanceHeader(header,currentPage,pageSize);
+
+}
 
 	@Test
 	public void testGetNames() {
 		try {
-			controller.getNames("sourceId");
+			controller.getNames("vnf_test_3");
+			verify(pihs,times(1)).queryDateBetween("vnf_test_3",null,null,null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void testGetPerformanceHeaderDetail() {
+		try {
+			controller.getPerformanceHeaderDetail("0a573f09d50f46adaae0c10e741fea4d");
+			verify(phs,times(1)).getPerformanceHeaderById("0a573f09d50f46adaae0c10e741fea4d");
+			verify(pihs,times(1)).getAllPerformanceInformationByHeaderId("0a573f09d50f46adaae0c10e741fea4d");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

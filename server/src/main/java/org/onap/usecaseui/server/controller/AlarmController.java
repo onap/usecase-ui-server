@@ -15,11 +15,16 @@
  */
 package org.onap.usecaseui.server.controller;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.annotation.Resource;
+
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bo.AlarmBo;
@@ -28,21 +33,19 @@ import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
-import org.onap.usecaseui.server.util.ResponseUtil;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RestController
@@ -51,7 +54,6 @@ import java.util.*;
 public class AlarmController
 {
 
-
     private final Logger logger = LoggerFactory.getLogger(AlarmController.class);
 
     @Resource(name = "AlarmsHeaderService")
@@ -59,6 +61,15 @@ public class AlarmController
 
     @Resource(name = "AlarmsInformationService")
     private AlarmsInformationService alarmsInformationService;
+    
+    public void setAlarmsHeaderService(AlarmsHeaderService alarmsHeaderService) {
+        this.alarmsHeaderService = alarmsHeaderService;
+    }
+
+
+    public void setAlarmsInformationService(AlarmsInformationService alarmsInformationService) {
+        this.alarmsInformationService = alarmsInformationService;
+    }
     
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     

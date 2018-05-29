@@ -29,4 +29,9 @@ public class SaveOrUpdateOperationRsp {
     public void setOperationId(String operationId) {
         this.operationId = operationId;
     }
+
+	@Override
+	public String toString() {
+		return "SaveOrUpdateOperationRsp [operationId=" + operationId + "]";
+	}
 }

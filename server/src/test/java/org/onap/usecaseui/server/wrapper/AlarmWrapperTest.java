@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.bean;
-
-import java.io.Serializable;
+package org.onap.usecaseui.server.wrapper;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.onap.usecaseui.server.bean.AlarmsHeader;
+import org.onap.usecaseui.server.bean.AlarmsInformation;
 
-public class AlarmsInformationTest implements Serializable {
+public class AlarmWrapperTest {
 
 	@Before
 	public void before() throws Exception {
@@ -30,29 +29,20 @@ public class AlarmsInformationTest implements Serializable {
 	@After
 	public void after() throws Exception {
 	}
-
-	@Test
-	public void testGetAlarmsInformation() throws Exception {
-		AlarmsInformation ai = new AlarmsInformation("name", "value", "eventId","","","headerId");
-		ai.getName();
-		ai.getValue();
-		ai.getSourceId();
-		ai.getStartEpochMicroSec();
-		ai.getLastEpochMicroSec();
-		ai.getId();
-		ai.setHeaderId("");
-		ai.toString();
+	
+	public void testGetAlarmWrapper(){
+		AlarmWrapper aw = new AlarmWrapper();
+		aw.getAlarmsHeader();
+		aw.getAlarmsInformation();
+		aw.getCurrentPage();
+		aw.getPageSize();
 	}
-
-	@Test
-	public void testSetAlarmsInformation() throws Exception {
-		AlarmsInformation ai = new AlarmsInformation("eventId");
-		ai.setName("");
-		ai.setValue("");
-		ai.setSourceId("");
-		ai.setStartEpochMicroSec("");;
-		ai.setLastEpochMicroSec("");;
-		ai.setId(1);
-		ai.setHeaderId("");
+	
+	public void testSetAlarmWrapper(){
+		AlarmWrapper aw = new AlarmWrapper();
+		aw.setAlarmsHeader(new AlarmsHeader());;
+		aw.setAlarmsInformation(new AlarmsInformation());
+		aw.setCurrentPage(1);
+		aw.setPageSize(10);
 	}
 }

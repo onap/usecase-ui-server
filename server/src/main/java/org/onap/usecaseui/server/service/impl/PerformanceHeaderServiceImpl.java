@@ -310,7 +310,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	
 	@Override
 	public PerformanceHeader getPerformanceHeaderById(String id) {
-		try(Session session = sessionFactory.openSession()) {
+		try(Session session = getSession()) {
 
 			String string = "from PerformanceHeader a where 1=1 and a.id=:id";
 			Query q = session.createQuery(string);

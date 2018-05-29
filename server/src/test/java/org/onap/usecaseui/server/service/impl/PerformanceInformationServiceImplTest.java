@@ -219,4 +219,23 @@ public class PerformanceInformationServiceImplTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testQueryMaxValueByBetweenDate() throws Exception {
+		try {
+			performanceInformationServiceImpl.queryMaxValueByBetweenDate("", "","","");
+			performanceInformationServiceImpl.queryMaxValueByBetweenDate("eventId", "name","1527151520000","1527151620000");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetAllPerformanceInformationByHeaderId() throws Exception {
+		try {
+			performanceInformationServiceImpl.getAllPerformanceInformationByHeaderId("0a573f09d50f46adaae0c10e741fea4d");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

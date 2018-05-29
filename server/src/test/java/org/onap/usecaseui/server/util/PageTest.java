@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,33 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.bean.lcm;
+package org.onap.usecaseui.server.util;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.onap.usecaseui.server.bean.AlarmsHeader;
 
-public class VfNsPackageInfoTest {
-
-	@Before
-	public void before() throws Exception {
-	}
-
-	@After
-	public void after() throws Exception {
-	}
-
+public class PageTest {
+	
 	@Test
-	public void testGetVfNsPackageInfo() throws Exception {
-		VfNsPackageInfo vpi = new VfNsPackageInfo(null, null);
-		vpi.getNsPackage();
-		vpi.getVnfPackages();
-		vpi.hashCode();
-	}
-
-	@Test
-	public void testSetVfNsPackageInfo() throws Exception {
-		VfNsPackageInfo vpi = new VfNsPackageInfo(null, null);
-		vpi.equals(vpi);
+	public void testPageGet(){
+		Page<AlarmsHeader> resultPage = new Page<AlarmsHeader>();
+		resultPage.setTotalRecords(20);
+		resultPage.setPageSize(5);
+		resultPage.setPageNo(5);
+		
+		resultPage.getList();
+		resultPage.getTotalRecords();
+		resultPage.getPageSize();
+		resultPage.getPageNo();
+		resultPage.getTotalPages();
+		int topPage=resultPage.getTopageNo();
+		resultPage.getPreviousPageNo();
+		resultPage.getBottomPageNo();
+		resultPage.getNextPageNo();
 	}
 }

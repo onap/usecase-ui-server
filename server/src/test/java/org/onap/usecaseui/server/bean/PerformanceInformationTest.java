@@ -15,30 +15,11 @@
  */
 package org.onap.usecaseui.server.bean;
 
-import org.junit.Test; 
-import org.junit.Before; 
+import java.io.Serializable;
+
 import org.junit.After;
-import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.UsecaseuiServerApplication;
-import org.onap.usecaseui.server.bean.PerformanceInformation;
-import org.onap.usecaseui.server.util.DateUtils;
-import org.onap.usecaseui.server.util.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.io.*;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-
-import mockit.Mock;
-import mockit.MockUp;
+import org.junit.Before;
+import org.junit.Test;
 
 public class PerformanceInformationTest implements Serializable {
 
@@ -59,6 +40,7 @@ public class PerformanceInformationTest implements Serializable {
 		pi.getStartEpochMicrosec();
 		pi.getLastEpochMicroSec();
 		pi.getId();
+		pi.getHeaderId();
 	}
 
 	@Test
@@ -70,6 +52,7 @@ public class PerformanceInformationTest implements Serializable {
 		pi.setStartEpochMicrosec("");;
 		pi.setLastEpochMicroSec("");;
 		pi.setId(1);
+		pi.setHeaderId("");
 	}
 }
 
