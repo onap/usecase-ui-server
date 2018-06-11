@@ -18,10 +18,8 @@ package org.onap.usecaseui.server.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -77,7 +75,6 @@ public class DmaapSubscriber implements Runnable {
 	public void subscribe(String topic) {
         try {
             List<String> respList = getDMaaPData(topic);
-            logger.info("response content is :"+respList);
             if (!UuiCommonUtil.isNotNullOrEmpty(respList)) {
                 return;
             }
@@ -93,9 +90,9 @@ public class DmaapSubscriber implements Runnable {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    logger.error(rl);
                     logger.error("exception occurred while performing DmaapSubcriber performanceProcess or alarmProcess. Details:"+ e.getMessage());
-                    
+                    logger.error("exception from content:"+rl);
+                    logger.error("response content is :"+respList);
                 }
             });
 
