@@ -92,7 +92,10 @@ public class AlarmController
         return new ModelAndView("index");
     }
 
-
+		
+	/**
+	 * test commit
+	 */
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
             method = RequestMethod.GET , produces = "application/json")
