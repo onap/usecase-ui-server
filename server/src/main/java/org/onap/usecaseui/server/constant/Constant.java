@@ -28,4 +28,8 @@ public final class Constant
     public static final String RegEX_DATE_FORMAT = "[^0-9-:]";
     
     public static Map<String,ServiceTemplateInput> netWorkMap  = new HashMap<String,ServiceTemplateInput>();
+    
+    public static final String CONSTANT_SUCCESS="SUCCESS";
+    
+    public static final String CONSTANT_FAILED="FAILED";
 }

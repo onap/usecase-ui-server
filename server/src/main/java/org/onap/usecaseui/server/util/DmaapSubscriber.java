@@ -132,7 +132,7 @@ public class DmaapSubscriber implements Runnable {
             while (isActive) {
                 subscribe(alarmTopic);
                 subscribe(performanceTopic);
-            }
+			  }
         } catch (Exception e) {
             logger.error("subscribe raise error :" + e.getCause());
         }
