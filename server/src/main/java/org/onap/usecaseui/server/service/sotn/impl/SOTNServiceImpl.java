@@ -59,21 +59,22 @@ public class SOTNServiceImpl implements SOTNService{
 
 	@Override
 	public String getNetWorkResources() {
+		String result="";
         try {
         	logger.info("aai getNetWorkResources is starting!");
             Response<ResponseBody> response = this.aaiService.listNetWorkResources().execute();
             logger.info("aai getNetWorkResources has finished!");
             if (response.isSuccessful()) {
-            	String result=new String(response.body().bytes());
-                return result;
+            	result=new String(response.body().bytes());
             } else {
                 logger.info(String.format("Can not get getNetWorkResources[code=%s, message=%s]", response.code(), response.message()));
-                return "";
+                result = Constant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
             logger.error("getNetWorkResources occur exception:"+e);
-            throw new AAIException("AAI is not available.", e);
+            result = Constant.CONSTANT_FAILED;;
         }
+        return result;
 	}
 
 	@Override
@@ -96,23 +97,87 @@ public class SOTNServiceImpl implements SOTNService{
 
 	@Override
 	public String getLogicalLinks() {
+		String result="";
         try {
         	logger.info("aai getLogicalLinks is starting!");
             Response<ResponseBody> response = this.aaiService.getLogicalLinks().execute();
             logger.info("aai getLogicalLinks has finished!");
             if (response.isSuccessful()) {
-            	String result=new String(response.body().bytes());
-                return result;
+            	result=new String(response.body().bytes());
             } else {
                 logger.info(String.format("Can not get getLogicalLinks[code=%s, message=%s]", response.code(), response.message()));
-                return "";
+                result=Constant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
             logger.error("getLogicalLinks occur exception:"+e);
-            throw new AAIException("AAI is not available.", e);
+            result=Constant.CONSTANT_FAILED;;
         }
+        return result;
 	}
-
+	
+	@Override
+	public String getSpecificLogicalLink(String linkName) {
+		String result="";
+        try {
+        	logger.info("aai getSpecificLogicalLink is starting!");
+            Response<ResponseBody> response = this.aaiService.getSpecificLogicalLink(linkName).execute();
+            logger.info("aai getSpecificLogicalLink has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getSpecificLogicalLink[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getSpecificLogicalLink occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;
+        }
+        return result;
+	}
+	
+	@Override
+	public String getHostUrl(String aaiId) {
+		String result="";
+        try {
+        	logger.info("aai getHostUrl is starting!");
+            Response<ResponseBody> response = this.aaiService.getHostUrl(aaiId).execute();
+            logger.info("aai getHostUrl has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getHostUrl[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getHostUrl occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;;
+        }
+        return result;
+	}
+	
+	@Override
+	public String createHostUrl(HttpServletRequest request,String aaiId) {
+		String result = "";
+        try {
+        	logger.info("aai createHostUrl is starting");
+        	RequestBody requestBody = extractBody(request);
+            Response<ResponseBody> response = aaiService.createHostUrl(requestBody,aaiId).execute();
+			logger.info("aai createHostUrl has finished");
+            if (response.isSuccessful()) {
+            	result=Constant.CONSTANT_SUCCESS;
+            } else {
+            	result=Constant.CONSTANT_FAILED;
+                logger.error(String.format("Can not createHostUrl[code=%s, message=%s]", response.code(), response.message()));
+                throw new SOException("aai createHostUrl failed!");
+            }
+        } catch (Exception e) {
+        	result=Constant.CONSTANT_FAILED;
+        	logger.error("createHostUrl occur exception:"+e);
+            throw new SOException("aai createHostUrl is not available!", e);
+        }
+        return result;
+	}
+	
 	@Override
 	public String createTopoNetwork(HttpServletRequest request,String networkId) {
 		String result = "";
@@ -228,21 +293,22 @@ public class SOTNServiceImpl implements SOTNService{
 
 	@Override
 	public String getServiceInstances(String customerId, String serviceType) {
+		String result="";
         try {
         	logger.info("aai getServiceInstances is starting");
             Response<ResponseBody> response = aaiService.getServiceInstances(customerId, serviceType).execute();
 			logger.info("aai getServiceInstances has finished");
             if (response.isSuccessful()) {
-            	String result=new String(response.body().bytes());
-                return result;
+            	result=new String(response.body().bytes());
             } else {
                 logger.error(String.format("Can not getServiceInstances[code=%s, message=%s]", response.code(), response.message()));
-                throw new SOException("aai getServiceInstances failed!");
+                result= Constant.CONSTANT_FAILED;
             }
         } catch (Exception e) {
         	logger.error("getServiceInstances occur exception:"+e);
-            throw new SOException("aai getServiceInstances is not available!", e);
+        	 result= Constant.CONSTANT_FAILED;
         }
+        return result;
 	}
 
 	@Override

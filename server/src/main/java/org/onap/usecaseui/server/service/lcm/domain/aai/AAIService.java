@@ -121,6 +121,15 @@ public interface AAIService {
 	Call<ResponseBody> getLogicalLinks();
     
     @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
+    @GET("/aai/v14/network/logical-links")
+    Call<ResponseBody> getSpecificLogicalLink(@Query("link-name") String linkName);
+    
+    @Headers({
         "X-TransactionId: 7777",
         "X-FromAppId: uui",
         "Authorization: Basic QUFJOkFBSQ==",
@@ -128,6 +137,24 @@ public interface AAIService {
     })
     @PUT("/api/aai-business/v13/network/network-resources/network-resource/{networkId}")
     Call<ResponseBody> createTopoNetwork(@Body RequestBody body,@Path("networkId") String networkId);
+    
+    @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
+    @PUT("/api/aai-business/v13/network/ext-aai-networks/ext-aai-network/{aai-id}")
+    Call<ResponseBody> createHostUrl(@Body RequestBody body,@Path("aai-id") String aaiId);
+    
+    @Headers({
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+    })
+	@GET("/api/aai-business/v13/network/ext-aai-networks/ext-aai-network/{aai-id}/esr-system-info")
+	Call<ResponseBody> getHostUrl(@Path("aai-id") String aaiId);
     
     @Headers({
         "X-TransactionId: 7777",

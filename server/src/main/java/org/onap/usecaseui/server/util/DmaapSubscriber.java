@@ -129,10 +129,10 @@ public class DmaapSubscriber implements Runnable {
     public void run() {
         try {
             initConfig();
-            while (isActive) {
+            while (isActive) {/*
                 subscribe(alarmTopic);
                 subscribe(performanceTopic);
-            }
+            */}
         } catch (Exception e) {
             logger.error("subscribe raise error :" + e.getCause());
         }

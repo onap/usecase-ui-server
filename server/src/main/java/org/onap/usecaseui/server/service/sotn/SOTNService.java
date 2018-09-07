@@ -29,6 +29,12 @@ public interface SOTNService {
 	
 	public String getLogicalLinks();
 	
+	public String getSpecificLogicalLink(String linkName);
+	
+	public String getHostUrl(String aaiId);
+	
+	public String createHostUrl(HttpServletRequest request,String aaiId);
+	
 	public String createTopoNetwork(HttpServletRequest request,String networkId);
 	
 	public String createTerminationPoint(HttpServletRequest request,String pnfName,String tpId);

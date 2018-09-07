@@ -55,6 +55,9 @@ public class SotnController {
 	public List<NetWorkResource> getNetWorkResources(){
     	List<NetWorkResource> result = new ArrayList<NetWorkResource>();
     	String json  = sotnService.getNetWorkResources();
+    	if("FAILED".equals(json)){
+    		return result;
+    	}
     	createJson(json,result);
     	for(NetWorkResource networks:result){
     		List<Pinterface> pinterfaces = new ArrayList<Pinterface>();
@@ -78,6 +81,24 @@ public class SotnController {
     @RequestMapping(value = {"/getLogicalLinks"}, method = RequestMethod.GET , produces = "application/json")
     public String getLogicalLinks(){
     	return sotnService.getLogicalLinks();
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = {"/getSpecificLogicalLink/{linkName}"}, method = RequestMethod.GET , produces = "application/json")
+    public String getSpecificLogicalLink(@PathVariable(value="linkName") String linkName){
+    	return sotnService.getSpecificLogicalLink(linkName);
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = {"/getHostUrl/{aaiId}"}, method = RequestMethod.GET , produces = "application/json")
+    public String getHostUrl(@PathVariable(value="aaiId") String aaiId){
+    	return sotnService.getHostUrl(aaiId);
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = {"/createHostUrl/{aaiId}"}, method = RequestMethod.PUT , produces = "application/json")
+    public String createHostUrl(HttpServletRequest request,@PathVariable(value="aaiId") String aaiId){
+    	return sotnService.createTopoNetwork(request,aaiId);
     }
     
     @ResponseBody
