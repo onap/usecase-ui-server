@@ -99,7 +99,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-business/v13/network/network-resources")
+	@GET("/api/aai-network/v13/network/network-resources")
 	Call<ResponseBody> listNetWorkResources();
     
     @Headers({
@@ -108,7 +108,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-business/v13/network/pnfs/pnf/{pnfName}/p-interfaces")
+	@GET("/api/aai-network/v13/network/pnfs/pnf/{pnfName}/p-interfaces")
 	Call<PinterfaceRsp> getPinterfaceByPnfName(@Path("pnfName") String pnfName);
     
     @Headers({
@@ -117,7 +117,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-business/v13/network/logical-links")
+	@GET("/api/aai-network/v13/network/logical-links")
 	Call<ResponseBody> getLogicalLinks();
     
     @Headers({
@@ -126,7 +126,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/aai/v14/network/logical-links")
+    @GET("/api/aai-network/network/logical-links")
     Call<ResponseBody> getSpecificLogicalLink(@Query("link-name") String linkName);
     
     @Headers({
@@ -135,7 +135,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @PUT("/api/aai-business/v13/network/network-resources/network-resource/{networkId}")
+    @PUT("/api/aai-network/v13/network/network-resources/network-resource/{networkId}")
     Call<ResponseBody> createTopoNetwork(@Body RequestBody body,@Path("networkId") String networkId);
     
     @Headers({
@@ -144,7 +144,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @PUT("/api/aai-business/v13/network/ext-aai-networks/ext-aai-network/{aai-id}")
+    @PUT("/api/aai-network/v13/network/ext-aai-networks/ext-aai-network/{aai-id}")
     Call<ResponseBody> createHostUrl(@Body RequestBody body,@Path("aai-id") String aaiId);
     
     @Headers({
@@ -153,7 +153,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-business/v13/network/ext-aai-networks/ext-aai-network/{aai-id}/esr-system-info")
+	@GET("/api/aai-network/v13/network/ext-aai-networks/ext-aai-network/{aai-id}/esr-system-info")
 	Call<ResponseBody> getHostUrl(@Path("aai-id") String aaiId);
     
     @Headers({
@@ -162,7 +162,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @PUT("/api/aai-business/v13/network/pnfs/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}")
+    @PUT("/api/aai-network/v13/network/pnfs/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}")
     Call<ResponseBody> createTerminationPoint(@Body RequestBody body,@Path("pnfName") String pnfName,@Path("tp-id") String tpId);
     
     @Headers({
@@ -171,7 +171,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @PUT("/api/aai-business/v13/network/pnfs/pnf/{pnfname}")
+    @PUT("/api/aai-network/v13/network/pnfs/pnf/{pnfname}")
     Call<ResponseBody> createPnf(@Body RequestBody body,@Path("pnfname") String pnfname);
     
     @Headers({
@@ -180,7 +180,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @PUT("/api/aai-business/v13/network/logical-links/logical-link/{linkName}")
+    @PUT("/api/aai-network/v13/network/logical-links/logical-link/{linkName}")
     Call<ResponseBody> createLink(@Body RequestBody body,@Path("linkName") String linkName);
     
     @Headers({
@@ -189,7 +189,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @DELETE("/api/aai-business/v13/network/logical-links/logical-link/{linkName}")
+    @DELETE("/api/aai-network/v13/network/logical-links/logical-link/{linkName}")
     Call<ResponseBody> deleteLink(@Path("linkName") String linkName);
     
     @Headers({
