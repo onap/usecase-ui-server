@@ -160,19 +160,21 @@ public class SotnController {
 				List<Pnf> pnfs = new ArrayList<Pnf>();
 				String networkId=netNode.get(i).get("network-id").toString();
 				netResource.setNetworkId(networkId);
-				String relationJson = netNode.get(i).get("relationship-list").toString();
-				JsonNode relationNode = mapper.readTree(relationJson);
-				
-				JsonNode shipNode = relationNode.get("relationship");
-				for(int j=0;j<shipNode.size();j++){
-					Pnf pnf = new Pnf();
-					JsonNode shipDataNode = shipNode.get(j).get("relationship-data");
-					String shipDataValue = shipDataNode.get(0).get("relationship-value").toString();
-					pnf.setPnfName(shipDataValue);
-					pnfs.add(pnf);
+				if(UuiCommonUtil.isNotNullOrEmpty(netNode.get(i).get("relationship-list"))){
+					String relationJson = netNode.get(i).get("relationship-list").toString();
+					JsonNode relationNode = mapper.readTree(relationJson);
+					
+					JsonNode shipNode = relationNode.get("relationship");
+					for(int j=0;j<shipNode.size();j++){
+						Pnf pnf = new Pnf();
+						JsonNode shipDataNode = shipNode.get(j).get("relationship-data");
+						String shipDataValue = shipDataNode.get(0).get("relationship-value").toString();
+						pnf.setPnfName(shipDataValue);
+						pnfs.add(pnf);
+					}
+					netResource.setPnfs(pnfs);
+					list.add(netResource);
 				}
-				netResource.setPnfs(pnfs);
-				list.add(netResource);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
