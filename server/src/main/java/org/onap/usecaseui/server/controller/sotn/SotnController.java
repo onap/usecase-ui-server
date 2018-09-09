@@ -26,6 +26,7 @@ import org.onap.usecaseui.server.bean.sotn.NetWorkResource;
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.Pnf;
 import org.onap.usecaseui.server.service.sotn.SOTNService;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
