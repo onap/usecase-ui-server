@@ -82,6 +82,7 @@ public class SOTNServiceImpl implements SOTNService{
         try {
         	logger.info("aai getPinterfaceByPnfName is starting!");
             Response<PinterfaceRsp> response = this.aaiService.getPinterfaceByPnfName(pnfName).execute();
+            logger.info(String.format("excute aai interface:/api/aai-network/v13/pnfs/pnf/%s/p-interfaces",pnfName));
             logger.info("aai getPinterfaceByPnfName has finished!");
             if (response.isSuccessful()) {
                 return response.body().getPinterfaces();
