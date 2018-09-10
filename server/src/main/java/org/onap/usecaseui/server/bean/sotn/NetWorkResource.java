@@ -27,11 +27,14 @@ public class NetWorkResource {
 	private List<Pnf> pnfs;
 	
 	private List<Pinterface> tps;
+	
+	private String aaiId;
 
-	public NetWorkResource(String networkId, List<Pnf> pnfs, List<Pinterface> tps) {
+	public NetWorkResource(String networkId, List<Pnf> pnfs, List<Pinterface> tps,String aaiId) {
 		this.networkId = networkId;
 		this.pnfs = pnfs;
 		this.tps = tps;
+		this.aaiId = aaiId;
 	}
 
 	public NetWorkResource() {
@@ -59,6 +62,14 @@ public class NetWorkResource {
 
 	public void setTps(List<Pinterface> tps) {
 		this.tps = tps;
+	}
+
+	public String getAaiId() {
+		return aaiId;
+	}
+
+	public void setAaiId(String aaiId) {
+		this.aaiId = aaiId;
 	}
 	
 }

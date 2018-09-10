@@ -126,8 +126,8 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/api/aai-network/logical-links")
-    Call<ResponseBody> getSpecificLogicalLink(@Query("link-name") String linkName);
+    @GET("/api/aai-network/logical-links/logical-link/{link-name}")
+    Call<ResponseBody> getSpecificLogicalLink(@Path("link-name") String linkName);
     
     @Headers({
         "X-TransactionId: 7777",
@@ -198,7 +198,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
+    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> getServiceInstances(@Path("global-customer-id}") String customerId,@Path("service-type}") String serviceType);
     
     @Headers({
