@@ -99,7 +99,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("api/aai-network/v13/network-resources")
+	@GET("/api/aai-network/v13/network-resources")
 	Call<ResponseBody> listNetWorkResources();
     
     @Headers({

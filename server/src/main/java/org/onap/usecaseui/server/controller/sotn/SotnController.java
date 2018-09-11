@@ -160,6 +160,9 @@ public class SotnController {
 				NetWorkResource netResource = new NetWorkResource();
 				List<Pnf> pnfs = new ArrayList<Pnf>();
 				String networkId=netNode.get(i).get("network-id").toString();
+				if(networkId.indexOf("\"")!=-1){
+					networkId = networkId.substring(1, networkId.length()-1);
+				}
 				netResource.setNetworkId(networkId);
 				if(UuiCommonUtil.isNotNullOrEmpty(netNode.get(i).get("relationship-list"))){
 					String relationJson = netNode.get(i).get("relationship-list").toString();
@@ -170,7 +173,13 @@ public class SotnController {
 						Pnf pnf = new Pnf();
 						JsonNode shipDataNode = shipNode.get(j).get("relationship-data");
 						String shipDataValue = shipDataNode.get(0).get("relationship-value").toString();
+						if(shipDataValue.indexOf("\"")!=-1){
+							shipDataValue = shipDataValue.substring(1, shipDataValue.length()-1);
+						}
 						String shipDataKey = shipDataNode.get(0).get("relationship-key").toString();
+						if(shipDataKey.indexOf("\"")!=-1){
+							shipDataKey = shipDataKey.substring(1, shipDataKey.length()-1);
+						}
 						if("ext-aai-network.aai-id".equals(shipDataKey)){
 							netResource.setAaiId(shipDataKey);
 						}
