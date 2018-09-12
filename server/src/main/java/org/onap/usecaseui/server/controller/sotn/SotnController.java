@@ -173,15 +173,16 @@ public class SotnController {
 						Pnf pnf = new Pnf();
 						JsonNode shipDataNode = shipNode.get(j).get("relationship-data");
 						String shipDataValue = shipDataNode.get(0).get("relationship-value").toString();
-						if(shipDataValue.indexOf("\"")!=-1){
-							shipDataValue = shipDataValue.substring(1, shipDataValue.length()-1);
-						}
 						String shipDataKey = shipDataNode.get(0).get("relationship-key").toString();
 						if(shipDataKey.indexOf("\"")!=-1){
 							shipDataKey = shipDataKey.substring(1, shipDataKey.length()-1);
 						}
 						if("ext-aai-network.aai-id".equals(shipDataKey)){
 							netResource.setAaiId(shipDataKey);
+							continue;
+						}
+						if(shipDataValue.indexOf("\"")!=-1){
+							shipDataValue = shipDataValue.substring(1, shipDataValue.length()-1);
 						}
 						pnf.setPnfName(shipDataValue);
 						pnfs.add(pnf);
