@@ -127,9 +127,9 @@ public class SotnController {
     }
     
     @ResponseBody
-    @RequestMapping(value = {"/deleteLink/{linkName}"}, method = RequestMethod.DELETE , produces = "application/json")
-    public String deleteLink(@PathVariable(value="linkName") String linkName){
-    	return sotnService.deleteLink(linkName);
+    @RequestMapping(value = {"/deleteLink/{linkName}/{resourceVersion}"}, method = RequestMethod.DELETE , produces = "application/json")
+    public String deleteLink(@PathVariable(value="linkName") String linkName,@PathVariable(value="resourceVersion") String resourceVersion){
+    	return sotnService.deleteLink(linkName,resourceVersion);
     }
     
     @ResponseBody

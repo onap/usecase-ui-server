@@ -43,7 +43,7 @@ public interface SOTNService {
 	
 	public String createPnf(HttpServletRequest request,String pnfName);
 	
-	public String deleteLink(String linkName);
+	public String deleteLink(String linkName,String resourceVersion);
 	
 	public String getServiceInstances(String customerId,String serviceType);
 	

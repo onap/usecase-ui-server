@@ -190,7 +190,7 @@ public interface AAIService {
         "Accept: application/json"
     })
     @DELETE("/api/aai-network/v13/logical-links/logical-link/{linkName}")
-    Call<ResponseBody> deleteLink(@Path("linkName") String linkName);
+    Call<ResponseBody> deleteLink(@Path("linkName") String linkName,@Query("resource-version") String resourceVersion);
     
     @Headers({
         "X-TransactionId: 7777",

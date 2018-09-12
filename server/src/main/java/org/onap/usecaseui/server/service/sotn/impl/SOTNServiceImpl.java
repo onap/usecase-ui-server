@@ -271,11 +271,11 @@ public class SOTNServiceImpl implements SOTNService{
 	}
 	
 	@Override
-	public String deleteLink(String linkName) {
+	public String deleteLink(String linkName,String resourceVersion) {
 		String result = "";
         try {
         	logger.info("aai deleteLink is starting");
-            Response<ResponseBody> response = aaiService.deleteLink(linkName).execute();
+            Response<ResponseBody> response = aaiService.deleteLink(linkName,resourceVersion).execute();
 			logger.info("aai deleteLink has finished");
             if (response.isSuccessful()) {
             	result=Constant.CONSTANT_SUCCESS;
