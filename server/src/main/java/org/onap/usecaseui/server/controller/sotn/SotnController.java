@@ -26,6 +26,7 @@ import org.onap.usecaseui.server.bean.sotn.NetWorkResource;
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.Pnf;
 import org.onap.usecaseui.server.service.sotn.SOTNService;
+import org.onap.usecaseui.server.util.HttpUtil;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -149,6 +150,11 @@ public class SotnController {
     	return sotnService.getServiceInstances(customerId, serviceType);
     }
     
+    @RequestMapping(value = {"/getOssInvenory"}, method = RequestMethod.GET , produces = "application/json")
+    public String getData(){
+		String result = HttpUtil.sendGet("http://172.19.44.221:8099/oss/inventory", "");
+		return result;
+    }
     private void createJson(String json,List<NetWorkResource> list){
 
     	ObjectMapper mapper = new ObjectMapper();
