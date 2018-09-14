@@ -94,7 +94,7 @@ public class AlarmController
 
 		
 	/**
-	 * test commit
+	 * test commit 20180914
 	 */
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
