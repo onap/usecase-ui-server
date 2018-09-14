@@ -169,12 +169,10 @@ public class SOTNServiceImpl implements SOTNService{
             } else {
             	result=Constant.CONSTANT_FAILED;
                 logger.error(String.format("Can not createHostUrl[code=%s, message=%s]", response.code(), response.message()));
-                throw new SOException("aai createHostUrl failed!");
             }
         } catch (Exception e) {
         	result=Constant.CONSTANT_FAILED;
         	logger.error("createHostUrl occur exception:"+e);
-            throw new SOException("aai createHostUrl is not available!", e);
         }
         return result;
 	}
@@ -192,12 +190,10 @@ public class SOTNServiceImpl implements SOTNService{
             } else {
             	result=Constant.CONSTANT_FAILED;
                 logger.error(String.format("Can not createTopoNetwork[code=%s, message=%s]", response.code(), response.message()));
-                throw new SOException("aai createTopoNetwork failed!");
             }
         } catch (Exception e) {
         	result=Constant.CONSTANT_FAILED;
         	logger.error("createTopoNetwork occur exception:"+e);
-            throw new SOException("aai createTopoNetwork is not available!", e);
         }
         return result;
 	}
@@ -215,12 +211,10 @@ public class SOTNServiceImpl implements SOTNService{
             } else {
             	result=Constant.CONSTANT_FAILED;
                 logger.error(String.format("Can not createTerminationPoint[code=%s, message=%s]", response.code(), response.message()));
-                throw new SOException("aai createTerminationPoint failed!");
             }
         } catch (Exception e) {
         	result=Constant.CONSTANT_FAILED;
         	logger.error("createTerminationPoint occur exception:"+e);
-            throw new SOException("aai createTerminationPoint is not available!", e);
         }
         return result;
 	}
@@ -238,12 +232,10 @@ public class SOTNServiceImpl implements SOTNService{
             } else {
             	result=Constant.CONSTANT_FAILED;
                 logger.error(String.format("Can not createLink[code=%s, message=%s]", response.code(), response.message()));
-                throw new SOException("aai createLink failed!");
             }
         } catch (Exception e) {
         	result="FAILED";
         	logger.error("createLink occur exception:"+e);
-            throw new SOException("aai createLink is not available!", e);
         }
         return result;
 	}
@@ -261,7 +253,6 @@ public class SOTNServiceImpl implements SOTNService{
             } else {
             	result=Constant.CONSTANT_FAILED;
                 logger.error(String.format("Can not createPnf[code=%s, message=%s]", response.code(), response.message()));
-                throw new SOException("aai createPnf failed!");
             }
         } catch (Exception e) {
         	result=Constant.CONSTANT_FAILED;
@@ -282,12 +273,10 @@ public class SOTNServiceImpl implements SOTNService{
             } else {
             	result=Constant.CONSTANT_FAILED;
                 logger.error(String.format("Can not deleteLink[code=%s, message=%s]", response.code(), response.message()));
-                throw new SOException("aai deleteLink failed!");
             }
         } catch (Exception e) {
         	result=Constant.CONSTANT_FAILED;
         	logger.error("deleteLink occur exception:"+e);
-            throw new SOException("aai deleteLink is not available!", e);
         }
         return result;
 	}
