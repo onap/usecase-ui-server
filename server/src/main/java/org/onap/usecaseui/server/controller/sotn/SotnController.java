@@ -25,18 +25,20 @@ import javax.servlet.http.HttpServletRequest;
 import org.onap.usecaseui.server.bean.sotn.NetWorkResource;
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.Pnf;
+import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.sotn.SOTNService;
+import org.onap.usecaseui.server.util.HttpUtil;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Controller
+@RestController
 @RequestMapping("/uui-sotn")
 public class SotnController {
 	
@@ -51,8 +53,7 @@ public class SotnController {
 		this.sotnService = sotnService;
 	}
 	
-    @ResponseBody
-    @RequestMapping(value = {"/getNetWorkResources"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/getNetWorkResources"}, method = RequestMethod.GET)
 	public List<NetWorkResource> getNetWorkResources(){
     	List<NetWorkResource> result = new ArrayList<NetWorkResource>();
     	String json  = sotnService.getNetWorkResources();
@@ -72,68 +73,57 @@ public class SotnController {
 		return result;
 	}
     
-    @ResponseBody
-    @RequestMapping(value = {"/getPinterfaceByPnfName/{pnfName}"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/getPinterfaceByPnfName/{pnfName}"}, method = RequestMethod.GET)
     public List<Pinterface>  getPinterfaceByPnfName(@PathVariable(value="pnfName") String pnfName){
     	return sotnService.getPinterfaceByPnfName(pnfName);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/getLogicalLinks"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/getLogicalLinks"}, method = RequestMethod.GET)
     public String getLogicalLinks(){
     	return sotnService.getLogicalLinks();
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/getSpecificLogicalLink/{linkName}"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/getSpecificLogicalLink/{linkName}"}, method = RequestMethod.GET)
     public String getSpecificLogicalLink(@PathVariable(value="linkName") String linkName){
     	return sotnService.getSpecificLogicalLink(linkName);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/getHostUrl/{aaiId}"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/getHostUrl/{aaiId}"}, method = RequestMethod.GET)
     public String getHostUrl(@PathVariable(value="aaiId") String aaiId){
     	return sotnService.getHostUrl(aaiId);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/createHostUrl/{aaiId}"}, method = RequestMethod.PUT , produces = "application/json")
+    @RequestMapping(value = {"/createHostUrl/{aaiId}"}, method = RequestMethod.PUT)
     public String createHostUrl(HttpServletRequest request,@PathVariable(value="aaiId") String aaiId){
     	return sotnService.createTopoNetwork(request,aaiId);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/createTopoNetwork/{networkId}"}, method = RequestMethod.PUT , produces = "application/json")
+    @RequestMapping(value = {"/createTopoNetwork/{networkId}"}, method = RequestMethod.PUT)
     public String createTopoNetwork(HttpServletRequest request,@PathVariable(value="networkId") String networkId){
     	return sotnService.createTopoNetwork(request,networkId);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}/createTerminationPoint"}, method = RequestMethod.PUT , produces = "application/json")
+    @RequestMapping(value = {"/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}/createTerminationPoint"}, method = RequestMethod.PUT)
     public String createTerminationPoint(HttpServletRequest request,@PathVariable(value="pnfName") String pnfName,@PathVariable(value="tp-id") String tpId){
     	return sotnService.createTerminationPoint(request,pnfName,tpId);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/createLink/{linkName}"}, method = RequestMethod.PUT , produces = "application/json")
+    @RequestMapping(value = {"/createLink/{linkName}"}, method = RequestMethod.PUT)
     public String createLink(HttpServletRequest request,@PathVariable(value="linkName") String linkName){
     	return sotnService.createLink(request, linkName);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/createPnf/{pnfName}"}, method = RequestMethod.PUT , produces = "application/json")
+    @RequestMapping(value = {"/createPnf/{pnfName}"}, method = RequestMethod.PUT)
     public String createPnf(HttpServletRequest request,@PathVariable(value="pnfName") String pnfName){
     	return sotnService.createPnf(request, pnfName);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/deleteLink/{linkName}/{resourceVersion}"}, method = RequestMethod.DELETE , produces = "application/json")
+    @RequestMapping(value = {"/deleteLink/{linkName}/{resourceVersion}"}, method = RequestMethod.DELETE)
     public String deleteLink(@PathVariable(value="linkName") String linkName,@PathVariable(value="resourceVersion") String resourceVersion){
     	return sotnService.deleteLink(linkName,resourceVersion);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/getServiceInstanceInfo"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/getServiceInstanceInfo"}, method = RequestMethod.GET)
     public String getServiceInstanceInfo(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
@@ -141,14 +131,18 @@ public class SotnController {
     	return sotnService.serviceInstanceInfo(customerId, serviceType, serviceId);
     }
     
-    @ResponseBody
-    @RequestMapping(value = {"/getServiceInstanceList"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/getServiceInstanceList"}, method = RequestMethod.GET)
     public String getServiceInstanceList(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
     	return sotnService.getServiceInstances(customerId, serviceType);
     }
     
+    @RequestMapping(value = {"/getOssInvenory"}, method = RequestMethod.GET)
+    public String getData(){
+		String result = HttpUtil.sendGet("http://10.73.242.244:8082/uui-sotn/getLogicalLinks", "");
+		return result;
+    }
     private void createJson(String json,List<NetWorkResource> list){
 
     	ObjectMapper mapper = new ObjectMapper();

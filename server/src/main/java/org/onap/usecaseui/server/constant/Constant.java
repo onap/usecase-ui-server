@@ -29,7 +29,7 @@ public final class Constant
     
     public static Map<String,ServiceTemplateInput> netWorkMap  = new HashMap<String,ServiceTemplateInput>();
     
-    public static final String CONSTANT_SUCCESS="SUCCESS";
+    public static final String CONSTANT_SUCCESS="{\"status\":\"SUCCESS\"}";
     
-    public static final String CONSTANT_FAILED="FAILED";
+    public static final String CONSTANT_FAILED="{\"status\":\"FAILED\"}";
 }
