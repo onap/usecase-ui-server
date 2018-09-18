@@ -163,7 +163,7 @@ public class SotnController {
     
     @RequestMapping(value = {"/getOssInvenory"}, method = RequestMethod.GET)
     public String getData(){
-		String result = HttpUtil.sendGet("http://10.73.242.244:8082/uui-sotn/getLogicalLinks", "");
+		String result = HttpUtil.sendGet("http://172.19.44.221:8099/oss/inventory", "");
 		return result;
     }
     private void createJson(String json,List<NetWorkResource> list){
