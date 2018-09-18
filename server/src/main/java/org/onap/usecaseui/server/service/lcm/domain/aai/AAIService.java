@@ -243,6 +243,6 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @PUT("/api/aai-network/v13/vpn-bindings")
+    @GET("/api/aai-network/v13/vpn-bindings")
     Call<ResponseBody> getPinterfaceByVpnId(@Query("vpn-id") String vpnId);
 }
