@@ -319,4 +319,84 @@ public class SOTNServiceImpl implements SOTNService{
             throw new SOException("aai serviceInstanceInfo is not available!", e);
         }
 	}
+
+	@Override
+	public String getPnfInfo(String pnfName) {
+		String result="";
+        try {
+        	logger.info("aai getPnfInfo is starting!");
+            Response<ResponseBody> response = this.aaiService.getPnfInfo(pnfName).execute();
+            logger.info("aai getPnfInfo has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getPnfInfo[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getPnfInfo occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;;
+        }
+        return result;
+	}
+
+	@Override
+	public String getAllottedResources(String customerId, String serviceType, String serviceId) {
+		String result="";
+        try {
+        	logger.info("aai getAllottedResources is starting!");
+            Response<ResponseBody> response = this.aaiService.getAllottedResources(customerId, serviceType, serviceId).execute();
+            logger.info("aai getAllottedResources has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getAllottedResources[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getAllottedResources occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;;
+        }
+        return result;
+	}
+
+	@Override
+	public String getConnectivityInfo(String connectivityId) {
+		String result="";
+        try {
+        	logger.info("aai getConnectivityInfo is starting!");
+            Response<ResponseBody> response = this.aaiService.getConnectivityInfo(connectivityId).execute();
+            logger.info("aai getConnectivityInfo has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getConnectivityInfo[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getConnectivityInfo occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;;
+        }
+        return result;
+	}
+
+	@Override
+	public String getPinterfaceByVpnId(String vpnId) {
+		String result="";
+        try {
+        	logger.info("aai getPinterfaceByVpnId is starting!");
+            Response<ResponseBody> response = this.aaiService.getPinterfaceByVpnId(vpnId).execute();
+            logger.info("aai getPinterfaceByVpnId has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getPinterfaceByVpnId[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getPinterfaceByVpnId occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;;
+        }
+        return result;
+	}
 }

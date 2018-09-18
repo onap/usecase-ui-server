@@ -48,4 +48,12 @@ public interface SOTNService {
 	public String getServiceInstances(String customerId,String serviceType);
 	
 	public String serviceInstanceInfo(String customerId,String serviceType,String serviceInstanceId);
+	
+	public String getPnfInfo(String pnfName);
+	
+	public String getAllottedResources(String customerId,String serviceType,String serviceId);
+	
+	public String getConnectivityInfo(String connectivityId);
+	
+	public String getPinterfaceByVpnId(String vpnId);
 }

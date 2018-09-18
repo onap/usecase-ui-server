@@ -131,6 +131,29 @@ public class SotnController {
     	return sotnService.serviceInstanceInfo(customerId, serviceType, serviceId);
     }
     
+    @RequestMapping(value = {"/getPnfInfo/{pnfName}"}, method = RequestMethod.GET)
+    public String getPnfInfo(@PathVariable(value="pnfName") String pnfName){
+    	return sotnService.getPnfInfo(pnfName);
+    }
+    
+    @RequestMapping(value = {"/getAllottedResources"}, method = RequestMethod.GET)
+    public String getAllottedResources(HttpServletRequest request){
+        String customerId = request.getParameter("customerId");
+        String serviceType = request.getParameter("serviceType");
+        String serviceId = request.getParameter("serviceId");
+    	return sotnService.getAllottedResources(customerId, serviceType,serviceId);
+    }
+    
+    @RequestMapping(value = {"/getConnectivityInfo/{connectivityId}"}, method = RequestMethod.GET)
+    public String getConnectivityInfo(@PathVariable(value="connectivityId") String connectivityId){
+    	return sotnService.getConnectivityInfo(connectivityId);
+    }
+    
+    @RequestMapping(value = {"/getPinterfaceByVpnId/{vpnId}"}, method = RequestMethod.GET)
+    public String getPinterfaceByVpnId(@PathVariable(value="vpnId") String vpnId){
+    	return sotnService.getPinterfaceByVpnId(vpnId);
+    }
+    
     @RequestMapping(value = {"/getServiceInstanceList"}, method = RequestMethod.GET)
     public String getServiceInstanceList(HttpServletRequest request){
         String customerId = request.getParameter("customerId");

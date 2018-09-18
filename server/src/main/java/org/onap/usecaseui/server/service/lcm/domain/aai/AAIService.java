@@ -209,4 +209,40 @@ public interface AAIService {
     })
     @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> serviceInstaneInfo(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Query("service-instance-id") String serviceInstanceId);
+    
+    @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
+    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources")
+    Call<ResponseBody> getAllottedResources(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
+    
+    @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
+    @GET("/api/aai-network/v13/pnfs/pnf/{pnfName}")
+    Call<ResponseBody> getPnfInfo(@Path("pnfName") String pnfName);
+    
+    @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
+    @GET("/api/aai-network/v13/connectivities")
+    Call<ResponseBody> getConnectivityInfo(@Query("connectivity-id") String connectivityId);
+    
+    @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
+    @PUT("/api/aai-network/v13/vpn-bindings")
+    Call<ResponseBody> getPinterfaceByVpnId(@Query("vpn-id") String vpnId);
 }
