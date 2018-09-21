@@ -57,7 +57,7 @@ public class SotnController {
 	public List<NetWorkResource> getNetWorkResources(){
     	List<NetWorkResource> result = new ArrayList<NetWorkResource>();
     	String json  = sotnService.getNetWorkResources();
-    	if("FAILED".equals(json)){
+    	if(json.indexOf("FAILED")==-1){
     		return result;
     	}
     	createJson(json,result);
@@ -73,7 +73,7 @@ public class SotnController {
 		return result;
 	}
     
-    @RequestMapping(value = {"/getPinterfaceByPnfName/{pnfName}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/getPinterfaceByPnfName/{pnfName:.+}"}, method = RequestMethod.GET)
     public List<Pinterface>  getPinterfaceByPnfName(@PathVariable(value="pnfName") String pnfName){
     	return sotnService.getPinterfaceByPnfName(pnfName);
     }
@@ -83,42 +83,42 @@ public class SotnController {
     	return sotnService.getLogicalLinks();
     }
     
-    @RequestMapping(value = {"/getSpecificLogicalLink/{linkName}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/getSpecificLogicalLink/{linkName:.+}"}, method = RequestMethod.GET)
     public String getSpecificLogicalLink(@PathVariable(value="linkName") String linkName){
     	return sotnService.getSpecificLogicalLink(linkName);
     }
     
-    @RequestMapping(value = {"/getHostUrl/{aaiId}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/getHostUrl/{aaiId:.+}"}, method = RequestMethod.GET)
     public String getHostUrl(@PathVariable(value="aaiId") String aaiId){
     	return sotnService.getHostUrl(aaiId);
     }
     
-    @RequestMapping(value = {"/createHostUrl/{aaiId}"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/createHostUrl/{aaiId:.+}"}, method = RequestMethod.PUT)
     public String createHostUrl(HttpServletRequest request,@PathVariable(value="aaiId") String aaiId){
     	return sotnService.createTopoNetwork(request,aaiId);
     }
     
-    @RequestMapping(value = {"/createTopoNetwork/{networkId}"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/createTopoNetwork/{networkId:.+}"}, method = RequestMethod.PUT)
     public String createTopoNetwork(HttpServletRequest request,@PathVariable(value="networkId") String networkId){
     	return sotnService.createTopoNetwork(request,networkId);
     }
     
-    @RequestMapping(value = {"/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}/createTerminationPoint"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/pnf/{pnfName:.+}/p-interfaces/p-interface/{tp-id:.+}/createTerminationPoint"}, method = RequestMethod.PUT)
     public String createTerminationPoint(HttpServletRequest request,@PathVariable(value="pnfName") String pnfName,@PathVariable(value="tp-id") String tpId){
     	return sotnService.createTerminationPoint(request,pnfName,tpId);
     }
     
-    @RequestMapping(value = {"/createLink/{linkName}"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/createLink/{linkName:.+}"}, method = RequestMethod.PUT)
     public String createLink(HttpServletRequest request,@PathVariable(value="linkName") String linkName){
     	return sotnService.createLink(request, linkName);
     }
     
-    @RequestMapping(value = {"/createPnf/{pnfName}"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/createPnf/{pnfName:.+}"}, method = RequestMethod.PUT)
     public String createPnf(HttpServletRequest request,@PathVariable(value="pnfName") String pnfName){
     	return sotnService.createPnf(request, pnfName);
     }
     
-    @RequestMapping(value = {"/deleteLink/{linkName}/{resourceVersion}"}, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"/deleteLink/{linkName:.+}/{resourceVersion:.+}"}, method = RequestMethod.DELETE)
     public String deleteLink(@PathVariable(value="linkName") String linkName,@PathVariable(value="resourceVersion") String resourceVersion){
     	return sotnService.deleteLink(linkName,resourceVersion);
     }
@@ -131,7 +131,7 @@ public class SotnController {
     	return sotnService.serviceInstanceInfo(customerId, serviceType, serviceId);
     }
     
-    @RequestMapping(value = {"/getPnfInfo/{pnfName}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/getPnfInfo/{pnfName:.+}"}, method = RequestMethod.GET)
     public String getPnfInfo(@PathVariable(value="pnfName") String pnfName){
     	return sotnService.getPnfInfo(pnfName);
     }
@@ -144,12 +144,12 @@ public class SotnController {
     	return sotnService.getAllottedResources(customerId, serviceType,serviceId);
     }
     
-    @RequestMapping(value = {"/getConnectivityInfo/{connectivityId}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/getConnectivityInfo/{connectivityId:.+}"}, method = RequestMethod.GET)
     public String getConnectivityInfo(@PathVariable(value="connectivityId") String connectivityId){
     	return sotnService.getConnectivityInfo(connectivityId);
     }
     
-    @RequestMapping(value = {"/getPinterfaceByVpnId/{vpnId}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/getPinterfaceByVpnId/{vpnId:.+}"}, method = RequestMethod.GET)
     public String getPinterfaceByVpnId(@PathVariable(value="vpnId") String vpnId){
     	return sotnService.getPinterfaceByVpnId(vpnId);
     }
