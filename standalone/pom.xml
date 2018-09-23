@@ -30,7 +30,7 @@
         <packagename>usecase-ui-server</packagename>
         <linux64id>linux64</linux64id>
         <win64id>win64</win64id>
-        <linux64outputdir>target/assembly</linux64outputdir>
+        <linux64outputdir>target/assembly/${linux64id}</linux64outputdir>
         <win64outputdir>target/assembly/${win64id}</win64outputdir>
         <version.output>target/version</version.output>
         <usecaseui.version>1.1.1</usecaseui.version>
@@ -41,9 +41,9 @@
         <finalName>usecse-ui-server</finalName>
         <plugins>
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId> 
-              <artifactId>maven-resources-plugin</artifactId>
-              <version>2.4.3</version>
+                <groupId>org.apache.maven.plugins</groupId> 
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4.3</version>
                 <executions>
                     <execution>
                         <id>copy-resources-${linux64id}</id>
@@ -118,6 +118,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>copy-jar-${linux64id}</id>
