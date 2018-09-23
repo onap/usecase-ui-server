@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Copyright 2016-2017 ZTE Corporation.
 
@@ -22,12 +22,9 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.onap.usecase-ui.server</groupId>
     <artifactId>standalone</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
-    <name>usecase-ui-server/standalone</name>
     <packaging>pom</packaging>
-    <description>project for usecase-ui server assembly</description>
+    <name>usecase-ui-server/standalone</name>
 
     <properties>
         <packagename>usecase-ui-server</packagename>
@@ -41,6 +38,7 @@
     </properties>
 
     <build>
+        <finalName>usecse-ui-server</finalName>
         <plugins>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId> 
@@ -102,7 +100,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/version</outputDirectory>
+                            <outputDirectory>${version.output}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/assembly/</directory>
@@ -130,8 +128,9 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                  <groupId>org.onap.usecase-ui.server</groupId>
-                                  <artifactId>usecase-ui-server</artifactId>
+                                    <groupId>org.onap.usecase-ui.server</groupId>
+                                    <artifactId>usecase-ui-server</artifactId>
+                                    <version>${project.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${linux64outputdir}</outputDirectory>
@@ -149,8 +148,9 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                  <groupId>org.onap.usecase-ui.server</groupId>
-                                  <artifactId>usecase-ui-server</artifactId>
+                                    <groupId>org.onap.usecase-ui.server</groupId>
+                                    <artifactId>usecase-ui-server</artifactId>
+                                    <version>${project.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${win64outputdir}</outputDirectory>
@@ -207,10 +207,10 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>onap/usecase-ui/usecase-ui-server</name>
+                                    <name>onap/usecase-ui-server</name>
                                     <build>
                                         <cleanup>try</cleanup>
-                                        <dockerFileDir>${basedir}/target/version/</dockerFileDir>
+                                        <dockerFileDir>${basedir}/${version.output}</dockerFileDir>
                                         <dockerFile>${basedir}/target/version/Dockerfile</dockerFile>
                                         <tags>
                                             <tag>${usecaseui.version}-SNAPSHOT-latest</tag>
