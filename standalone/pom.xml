@@ -30,7 +30,7 @@
         <packagename>usecase-ui-server</packagename>
         <linux64id>linux64</linux64id>
         <win64id>win64</win64id>
-        <linux64outputdir>target/assembly</linux64outputdir>
+        <linux64outputdir>target/assembly/${linux64}</linux64outputdir>
         <win64outputdir>target/assembly/${win64id}</win64outputdir>
         <version.output>target/version</version.output>
         <usecaseui.version>1.1.1</usecaseui.version>
@@ -130,7 +130,7 @@
                                 <artifactItem>
                                     <groupId>org.onap.usecase-ui.server</groupId>
                                     <artifactId>usecase-ui-server</artifactId>
-                                    <version>${project.version}</version>
+                                    <version>1.1.0-SNAPSHOT</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${linux64outputdir}</outputDirectory>
@@ -150,7 +150,7 @@
                                 <artifactItem>
                                     <groupId>org.onap.usecase-ui.server</groupId>
                                     <artifactId>usecase-ui-server</artifactId>
-                                    <version>${project.version}</version>
+                                    <version>1.1.0-SNAPSHOT</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${win64outputdir}</outputDirectory>
