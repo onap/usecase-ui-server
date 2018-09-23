@@ -57,7 +57,7 @@ public class SotnController {
 	public List<NetWorkResource> getNetWorkResources(){
     	List<NetWorkResource> result = new ArrayList<NetWorkResource>();
     	String json  = sotnService.getNetWorkResources();
-    	if(json.indexOf("FAILED")==-1){
+    	if(json.indexOf("FAILED")!=-1){
     		return result;
     	}
     	createJson(json,result);
@@ -163,7 +163,7 @@ public class SotnController {
     
     @RequestMapping(value = {"/getOssInvenory"}, method = RequestMethod.GET)
     public String getData(){
-		String result = HttpUtil.sendGet("http://172.19.44.221:8099/oss/inventory", "");
+		String result = HttpUtil.sendGet("http://172.60.3.45:8099/oss/inventory", "");
 		return result;
     }
     private void createJson(String json,List<NetWorkResource> list){
