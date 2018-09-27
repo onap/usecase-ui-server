@@ -23,16 +23,17 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>standalone</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>usecase-ui-server/standalone</name>
+    <name>usecase-ui-server-standalone</name>
 
     <properties>
         <packagename>usecase-ui-server</packagename>
         <linux64id>linux64</linux64id>
         <win64id>win64</win64id>
-        <linux64outputdir>target/assembly/${linux64}</linux64outputdir>
-        <win64outputdir>target/assembly/${win64id}</win64outputdir>
-        <version.output>target/version</version.output>
+        <linux64outputdir>target/assembly/${linux64}/</linux64outputdir>
+        <win64outputdir>target/assembly/${win64id}/</win64outputdir>
+        <version.output>target/version/</version.output>
         <usecaseui.version>1.2.0</usecaseui.version>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
     </properties>
@@ -43,7 +44,6 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId> 
               <artifactId>maven-resources-plugin</artifactId>
-              <version>2.4.3</version>
                 <executions>
                     <execution>
                         <id>copy-resources-${linux64id}</id>
@@ -52,7 +52,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${linux64outputdir}</outputDirectory>
+                            <outputDirectory>${basedir}/${linux64outputdir}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/assembly/</directory>
@@ -76,7 +76,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${win64outputdir}</outputDirectory>
+                            <outputDirectory>${basedir}/${win64outputdir}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/assembly/</directory>
@@ -171,21 +171,57 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <target name="distribution">
+                            <tasks name="${project.artifactId}">
                                 <tar destfile="${version.output}/${packagename}-${project.version}-linux64.tar.gz" longfile="posix" compression="gzip">
-                                    <tarfileset dir="target/assembly/linux64" filemode="0644" dirmode="0755">
+                                    <tarfileset dir="${linux64outputdir}" filemode="0644" dirmode="0755">
                                         <exclude name="**/*.sh"/>
                                     </tarfileset>
-                                    <tarfileset dir="target/assembly/linux64" filemode="0755" dirmode="0755">
+                                    <tarfileset dir="${linux64outputdir}" filemode="0755" dirmode="0755">
                                         <include name="**/*.sh"/>
                                     </tarfileset>
                                 </tar>
-                                <attachartifact file="${version.output}/${packagename}-${project.version}-linux64.tar.gz" classifier="linux64" type="tar.gz"/>
+                                <!--attachartifact file="${version.output}/${packagename}-${project.version}-linux64.tar.gz" classifier="linux64" type="tar.gz"/-->
                                 <zip destfile="${version.output}/${packagename}-${project.version}-win64.zip" update="true">
-                                    <zipfileset dir="target/assembly/win64" includes="**"/>
+                                    <zipfileset dir="${win64outputdir}" includes="**"/>
                                 </zip>
-                                <attachartifact file="${version.output}/${packagename}-${project.version}-win64.zip" classifier="win64" type="zip"/>
-                            </target>
+                                <!--attachartifact file="${version.output}/${packagename}-${project.version}-win64.zip" classifier="win64" type="zip"/-->
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts-linux64</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${version.output}/${packagename}-${project.version}-linux64.tar.gz</file>
+                                    <type>tar.gz</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>attach-artifacts-win64</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${version.output}/${packagename}-${project.version}-win64.zip</file>
+                                    <type>zip</type>
+                                </artifact>
+                            </artifacts>
                         </configuration>
                     </execution>
                 </executions>
@@ -210,7 +246,7 @@
                                     <build>
                                         <cleanup>try</cleanup>
                                         <dockerFileDir>${basedir}/${version.output}</dockerFileDir>
-                                        <dockerFile>${basedir}/target/version/Dockerfile</dockerFile>
+                                        <dockerFile>${basedir}/${version.output}/Dockerfile</dockerFile>
                                         <tags>
                                             <tag>${usecaseui.version}-SNAPSHOT-latest</tag>
                                             <tag>${usecaseui.version}-STAGING-latest</tag>
@@ -244,11 +280,17 @@
         </profile>
     </profiles>
 
-    <dependencies>
-        <dependency>
-          <groupId>org.onap.usecase-ui.server</groupId>
-          <artifactId>usecase-ui-server</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>ant-contrib</groupId>
+                <artifactId>ant-contrib</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.onap.usecase-ui.server</groupId>
+                <artifactId>usecase-ui-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
