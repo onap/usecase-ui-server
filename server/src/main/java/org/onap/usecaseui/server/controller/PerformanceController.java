@@ -19,7 +19,6 @@ package org.onap.usecaseui.server.controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +45,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -155,7 +153,7 @@ public class PerformanceController {
     public String generateDiagram(@RequestParam String sourceId,@RequestParam String startTime,@RequestParam String endTime,@RequestParam String nameParent,@RequestParam String format)  {
         long timeInterval = 0;
     	try {
-        	if("minute".equals(format)){
+        	if("minute".equals(format)){//performance 时间级别  hour day month
         		formatDate="yyyy-MM-dd HH:mm";
         		timeInterval =5*60000;
         	}else if("hour".equals(format)){

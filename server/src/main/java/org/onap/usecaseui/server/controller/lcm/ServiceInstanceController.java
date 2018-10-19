@@ -20,7 +20,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
+import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
@@ -44,21 +46,34 @@ public class ServiceInstanceController {
 
     @Resource(name="ServiceInstanceService")
     private ServiceInstanceService serviceInstanceService;
+    
+    @Resource(name="ServiceLcmService")
+    private ServiceLcmService serviceLcmService;
 
     public void setServiceInstanceService(ServiceInstanceService serviceInstanceService) {
         this.serviceInstanceService = serviceInstanceService;
     }
 
-    @ResponseBody
+	public void setServiceLcmService(ServiceLcmService serviceLcmService) {
+		this.serviceLcmService = serviceLcmService;
+	}
+
+	@ResponseBody
     @RequestMapping(value = {"/uui-lcm/service-instances"}, method = RequestMethod.GET , produces = "application/json")
     public List<ServiceInstance> listServiceInstances(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
-        logger.info(String.format(
-                "list service instances with [customerId=%s, serviceType=%s]",
-                customerId,
-                serviceType));
-        return serviceInstanceService.listServiceInstances(customerId, serviceType);
+        List<ServiceInstance> list =serviceInstanceService.listServiceInstances(customerId, serviceType);
+        if(list.size()>0){
+        	for(ServiceInstance serviceInstance:list){
+        		ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstance.getServiceInstanceId());
+        		if(UuiCommonUtil.isNotNullOrEmpty(serviceBean)){
+        			serviceInstance.setServiceDomain(serviceBean.getServiceDomain());
+        		}
+        	}
+        }
+        System.out.println(list);
+        return list;
     }
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/getServiceInstanceById"}, method = RequestMethod.GET , produces = "application/json")

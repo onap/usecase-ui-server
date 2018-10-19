@@ -15,6 +15,9 @@
  */
 package org.onap.usecaseui.server.service.lcm;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.http.HttpRequest;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
@@ -34,4 +37,46 @@ public interface PackageDistributionService {
     DistributionResult deleteNsPackage(String csarId);
 
     Job deleteVfPackage(String csarId);
+    
+    String getVnfPackages();
+    
+    String getNetworkServicePackages();
+    
+    String getPnfPackages();
+    
+    String createNetworkServiceData(HttpServletRequest request);
+    
+    String createVnfData(HttpServletRequest request);
+    
+    String createPnfData(HttpServletRequest request);
+    
+    String getNsdInfo(String nsdInfoId);
+    
+    String getVnfInfo(String vnfPkgId);
+    
+    String getPnfInfo(String pnfdInfoId);
+    
+    String downLoadNsPackage(String nsdInfoId);
+    
+    String downLoadPnfPackage(String pnfdInfoId);
+    
+    String downLoadVnfPackage(String vnfPkgId);
+    
+    String deleteNsdPackage(String nsdInfoId);
+    
+    String deleteVnfPackage(String vnfPkgId);
+    
+    String deletePnfPackage(String pnfdInfoId);
+    
+    String getNetworkServiceInfo();
+    
+    String createNetworkServiceInstance(HttpServletRequest request);
+    
+    String deleteNetworkServiceInstance(String nsInstanceId);
+    
+    String terminateNetworkServiceInstance(HttpServletRequest request,String networkServiceInstanceId);
+    
+    String healNetworkServiceInstance(HttpServletRequest request,String networkServiceInstanceId);
+    
+    String scaleNetworkServiceInstance(HttpServletRequest request,String networkServiceInstanceId);
 }

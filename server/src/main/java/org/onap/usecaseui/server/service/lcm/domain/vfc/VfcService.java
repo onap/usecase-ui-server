@@ -19,6 +19,9 @@ import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -38,4 +41,70 @@ public interface VfcService {
 
     @DELETE("/api/catalog/v1/vnfpackages/{csarId}")
     Call<Job> deleteVnfPackage(@Path("csarId") String csarId);
+    
+    //NS生命周期管理功能 start
+    @GET("/api/nslcm/v1/ns")
+    Call<ResponseBody> getNetworkServiceInfo();
+    
+    @POST("/api/nslcm/v1/ns")
+    Call<ResponseBody> createNetworkServiceInstance(@Body RequestBody body);
+    
+    @DELETE("/api/nslcm/v1/ns/{ns_instance_id}")
+    Call<ResponseBody> deleteNetworkServiceInstance(@Path("ns_instance_id") String nsInstanceId);
+    
+    @POST("/api/nslcm/v1/ns/{ns_instance_id}/terminate")
+    Call<ResponseBody> terminateNetworkServiceInstance(@Path("ns_instance_id") String nsInstanceId,@Body RequestBody body);
+    
+    @POST("/api/nslcm/v1/ns/{ns_instance_id}/heal")
+    Call<ResponseBody> healNetworkServiceInstance(@Path("ns_instance_id") String nsInstanceId,@Body RequestBody body);
+    
+    @POST("/api/nslcm/v1/ns/{ns_instance_id}/scale")
+    Call<ResponseBody> scaleNetworkServiceInstance(@Path("ns_instance_id") String nsInstanceId,@Body RequestBody body);
+    //NS生命周期管理功能 end
+    
+    //NS包管理功能 start
+    @GET("/api/nsd/v1/ns_descriptors")
+    Call<ResponseBody> getNetworkServicePackages();
+    
+    @GET("/api/vnfpkgm/v1/vnf_packages")
+    Call<ResponseBody> getVnfPackages();
+    
+    @GET("/api/nsd/v1/pnf_descriptors")
+    Call<ResponseBody> getPnfPackages();
+    
+    @POST("/api/nsd/v1/ns_descriptors")
+    Call<ResponseBody> createNetworkServiceData(@Body RequestBody body);
+    
+    @POST("/api/vnfpkgm/v1/vnf_packages")
+    Call<ResponseBody> createVnfData(@Body RequestBody body);
+    
+    @POST("/api/nsd/v1/pnf_descriptors")
+    Call<ResponseBody> createPnfData(@Body RequestBody body);
+    
+    @GET("/api/nsd/v1/ns_descriptors/{nsdInfoId}/nsd_content")
+    Call<ResponseBody> downLoadNsPackage(@Path("nsdInfoId") String nsdInfoId);
+    
+    @GET("/api/nsd/v1/ns_descriptors/{nsdInfoId}")
+    Call<ResponseBody> getNsdInfo(@Path("nsdInfoId") String nsdInfoId);
+    
+    @GET("/api/vnfpkgm/v1/vnf_packages/{vnfPkgId}")
+    Call<ResponseBody> getVnfInfo(@Path("vnfPkgId") String vnfPkgId);
+    
+    @GET("/api/nsd/v1/pnf_descriptors/{pnfdInfoId}")
+    Call<ResponseBody> getPnfInfo(@Path("pnfdInfoId") String pnfdInfoId);
+    
+    @GET("/api/nsd/v1/pnf_descriptors/{pnfdInfoId}/pnfd_content")
+    Call<ResponseBody> downLoadPnfPackage(@Path("pnfdInfoId") String pnfdInfoId);
+    
+    @GET("/api/vnfpkgm/v1/vnf_packages/{vnfPkgId}/package_content")
+    Call<ResponseBody> downLoadVnfPackage(@Path("vnfPkgId") String vnfPkgId);
+    
+    @DELETE("/api/nsd/v1/ns_descriptors/{nsdInfoId}")
+    Call<ResponseBody> deleteNsdPackage(@Path("nsdInfoId") String nsdInfoId);
+    
+    @DELETE("/api/vnfpkgm/v1/vnf_packages/{vnfPkgId}")
+    Call<ResponseBody> deleteVnfdPackage(@Path("vnfPkgId") String vnfPkgId);
+    
+    @DELETE("/api/nsd/v1/pnf_descriptors/{pnfdInfoId}")
+    Call<ResponseBody> deletePnfdPackage(@Path("pnfdInfoId") String pnfdInfoId);
 }
