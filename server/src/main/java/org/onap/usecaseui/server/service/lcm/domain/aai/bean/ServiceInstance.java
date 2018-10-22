@@ -35,6 +35,8 @@ public class ServiceInstance {
     private String serviceInstanceName;
 
     private String serviceInstanceLocationId;
+    
+    private String serviceDomain;
 
     @JsonCreator
     public ServiceInstance(
@@ -88,4 +90,13 @@ public class ServiceInstance {
     public String getServiceInstanceLocationId() {
         return serviceInstanceLocationId;
     }
+
+	public String getServiceDomain() {
+		return serviceDomain;
+	}
+
+	public void setServiceDomain(String serviceDomain) {
+		this.serviceDomain = serviceDomain;
+	}
+    
 }

@@ -15,11 +15,13 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -49,13 +51,24 @@ public class ServiceLcmController {
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/services"}, method = RequestMethod.POST , produces = "application/json")
     public ServiceOperation instantiateService(HttpServletRequest request){
-        return serviceLcmService.instantiateService(request);
+    	String customerId = request.getParameter("customerId");
+    	String serviceType = request.getParameter("serviceType");
+    	String serviceDomain = request.getParameter("serviceDomain");
+    	String parentServiceInstanceId = request.getParameter("parentServiceInstanceId");
+    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),null,customerId,serviceType,serviceDomain,null,parentServiceInstanceId,null);
+    	ServiceOperation serviceOperation = serviceLcmService.instantiateService(request);
+    	serviceBean.setServiceInstanceId(serviceOperation.getService().getServiceId());
+    	serviceBean.setOperationId(serviceOperation.getService().getOperationId());
+    	serviceLcmService.saveOrUpdateServiceBean(serviceBean);
+        return serviceOperation;
     }
 
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/services/{serviceId}/operations/{operationId}"}, method = RequestMethod.GET , produces = "application/json")
     public OperationProgressInformation queryOperationProgress(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId){
-        return serviceLcmService.queryOperationProgress(serviceId, operationId);
+    	OperationProgressInformation operationProgressInformation =serviceLcmService.queryOperationProgress(serviceId, operationId);
+    	serviceLcmService.updateServiceInstanceStatusById(operationProgressInformation.getOperationStatus().getResult(), serviceId);
+    	return operationProgressInformation;
     }
 
     @ResponseBody
