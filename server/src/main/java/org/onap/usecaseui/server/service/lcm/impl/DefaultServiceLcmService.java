@@ -19,9 +19,16 @@ import static org.onap.usecaseui.server.util.RestfulServices.create;
 import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.onap.usecaseui.server.bean.AlarmsHeader;
+import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
@@ -32,6 +39,7 @@ import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +52,14 @@ import retrofit2.Response;
 public class DefaultServiceLcmService implements ServiceLcmService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultServiceLcmService.class);
+    
+	@Autowired
+	private SessionFactory sessionFactory;
 
+	private Session getSession() {
+		return sessionFactory.openSession();
+	}
+	
     private SOService soService;
 
     public DefaultServiceLcmService() {
@@ -141,5 +156,57 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 		} catch (IOException e) {
 			 throw new SOException("SO Service is not available!", e);
 		}
+	}
+
+	@Override
+	public void saveOrUpdateServiceBean(ServiceBean serviceBean) {
+		try(Session session = getSession()){
+			if (null == serviceBean) {
+				logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceBean is null!");
+			}
+			Transaction tx = session.beginTransaction();
+			session.update(serviceBean);
+			tx.commit();
+			session.flush();
+		} catch (Exception e) {
+			logger.error("exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceBean. Details:" + e.getMessage());
+		}
+	}
+
+	@Override
+	public void updateServiceInstanceStatusById(String status, String serviceInstanceId) {
+		try(Session session = getSession()) {
+
+			String string = "update ServiceBean set status=:status where 1=1 and serviceInstanceId=:serviceInstanceId";
+			Query q = session.createQuery(string);
+			q.setString("status",status);
+			q.setString("serviceInstanceId",serviceInstanceId);
+            q.executeUpdate();
+			session.flush();
+
+		}catch (Exception e){
+			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."+e.getMessage());
+		}
+	}
+
+	@Override
+	public ServiceBean getServiceBeanByServiceInStanceId(String serviceInstanceId) {
+		ServiceBean serviceBean = null;
+		try(Session session = getSession()) {
+
+			String string = "from ServiceBean  where 1=1 and serviceInstanceId=:serviceInstanceId";
+			Query q = session.createQuery(string);
+			q.setString("serviceInstanceId",serviceInstanceId);
+			List<ServiceBean> list = q.list();
+			session.flush();
+			if(list.size()>0){
+				serviceBean = list.get(0);
+			}
+		}catch (Exception e){
+			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."+e.getMessage());
+			serviceBean = new ServiceBean();;
+		}
+		return serviceBean;
+	
 	}
 }

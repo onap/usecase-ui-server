@@ -20,8 +20,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -97,23 +99,13 @@ public class AlarmController
 	 * test commit
 	 */
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
-            "/alarm/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
+            "/alarm/{currentPage}/{pageSize}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
             method = RequestMethod.GET , produces = "application/json")
-    public String getAlarmData(@PathVariable(required = false) String sourceId,@PathVariable(required = false) String sourceName,
+    public String getAlarmData(@PathVariable(required = false) String sourceName,
                                @PathVariable(required = false) String priority,@PathVariable(required = false) String startTime,
                                @PathVariable(required = false) String endTime,@PathVariable(required = false) String vfStatus,
                                @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException {
-        logger.info("transfer getAlarmData Apis, " +
-                "Parameter all follows : [currentPage : {} , pageSize : {} , sourceId : {} , " +
-                "sourceName : {} , priority : {} , startTime :{} , endTime : {}  , vfStatus : {}]"
-                ,currentPage,pageSize,sourceId,sourceName,priority,startTime,endTime,vfStatus);
-        List<AlarmsHeader> alarmsHeaders = null;
-        List<AlarmBo> list = new ArrayList<>();
-        Page pa = null;
-        if (null != sourceId || null != sourceName || null != priority || null != startTime || null != endTime
-                || null != vfStatus  ){
             AlarmsHeader alarm = new AlarmsHeader();
-            alarm.setSourceId(!"null".equals(sourceId)?sourceId:null);
             alarm.setSourceName(!"null".equals(sourceName)?sourceName:null);
             alarm.setStatus(!"null".equals(vfStatus)?vfStatus:null);
             try {
@@ -122,43 +114,10 @@ public class AlarmController
             } catch (ParseException e) {
                 logger.error("Parse date error :"+e.getMessage());
             }
-            pa = alarmsHeaderService.queryAlarmsHeader(alarm,currentPage,pageSize);
-
-            alarmsHeaders = pa.getList();
-            if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
-                alarmsHeaders.forEach(a ->{
-                    AlarmBo abo = new AlarmBo();
-                    abo.setAlarmsHeader(a);
-                    AlarmsInformation information = new AlarmsInformation();
-                    information.setSourceId(a.getSourceId());
-                    List<AlarmsInformation> informationList = alarmsInformationService.queryAlarmsInformation(information,1,100).getList();
-                    informationList.forEach( il -> {
-                        if (il.getValue().equals("")){
-                            StringBuffer value1 = new StringBuffer();
-                            alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(il.getName()),1,100).getList()
-                                    .forEach( val -> value1.append(val.getValue()) );
-                            il.setValue(value1.toString());
-                        }
-                    } );
-                    abo.setAlarmsInformation(informationList);
-                    list.add(abo);
-                });
-            }
-        }else {
-            pa = alarmsHeaderService.queryAlarmsHeader(null, currentPage, pageSize);
-            alarmsHeaders = pa.getList();
-            if (null != alarmsHeaders && alarmsHeaders.size() > 0) {
-                alarmsHeaders.forEach(a -> {
-                    AlarmBo abo = new AlarmBo();
-                    abo.setAlarmsHeader(a);
-                    abo.setAlarmsInformation(alarmsInformationService.queryAlarmsInformation(new AlarmsInformation(a.getEventId()),currentPage,pageSize).getList());
-                    list.add(abo);
-                });
-            }
-        }
+            Page  pa = alarmsHeaderService.queryAlarmsHeader(alarm,currentPage,pageSize);
         try {
             Map<String,Object> map = new HashMap<>();
-            map.put("alarms",list);
+            map.put("alarms",pa.getList());
             map.put("totalRecords",pa.getTotalRecords());
             omAlarm.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
             return omAlarm.writeValueAsString(map);
@@ -191,11 +150,33 @@ public class AlarmController
         }
         return omAlarm.writeValueAsString(sourceIds);
     }
+    
+    @RequestMapping(value = {"/alarm/getSourceNames"},method = RequestMethod.GET,produces = "application/json")
+    public String getSourceNames() throws JsonProcessingException{
+       Set<String> sourceNames = new HashSet<>();
+       Page<AlarmsHeader> page  = alarmsHeaderService.queryAlarmsHeader(new AlarmsHeader(), 1, Integer.MAX_VALUE);
+        AlarmsHeader alarmsHeader;
+        if(UuiCommonUtil.isNotNullOrEmpty(page)){
+            page = new Page<>();
+            List<AlarmsHeader> list = new ArrayList<>();
+            alarmsHeader = new AlarmsHeader();
+            list.add(alarmsHeader);
+            page.setList(list);
+
+        }
+        for(int a=0;a<page.getList().size();a++){
+            alarmsHeader  = (AlarmsHeader)page.getList().get(a);
+            String sourceName = alarmsHeader.getSourceId();
+            sourceNames.add(sourceName);
+        }
+        return omAlarm.writeValueAsString(sourceNames);
+    }
+    
     @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.POST,produces = "application/json")
     public String diagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String format) {
         long timeInterval = 0;
     	try {
-        	if("month".equals(format)){
+        	if("month".equals(format)){//alarm   day month year
         		formatDate="yyyy-MM";
         		int maxDay= DateUtils.MonthOfDay(startTime, formatDate);
         		timeInterval =86400000L*maxDay;
@@ -259,7 +240,6 @@ public class AlarmController
     public String getStatusCount() throws JsonProcessingException {
         List<String> statusCount = new ArrayList<>();
 
-            statusCount.add(alarmsHeaderService.queryStatusCount("0"));
             statusCount.add(alarmsHeaderService.queryStatusCount("active"));
             statusCount.add(alarmsHeaderService.queryStatusCount("close"));
             return omAlarm.writeValueAsString(statusCount);
