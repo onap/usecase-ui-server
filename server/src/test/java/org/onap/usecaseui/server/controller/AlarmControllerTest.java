@@ -60,8 +60,8 @@ public class AlarmControllerTest {
 	@Test
 	public void testGetAlarmData() throws Exception {
 		try {
-			controller.getAlarmData("sourceId", "sourceName", "priority", "startTime", "endTime", "vfStatus", 1, 10);
-			controller.getAlarmData(null, null, null, null, null, null, 1, 10);
+			controller.getAlarmData("sourceName", "priority", "startTime", "endTime", "vfStatus", 1, 10);
+			controller.getAlarmData(null, null, null, null, null, 1, 10);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
