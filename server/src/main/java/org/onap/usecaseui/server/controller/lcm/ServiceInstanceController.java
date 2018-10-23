@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,20 +24,19 @@ import javax.servlet.http.HttpServletRequest;
 import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -68,7 +66,16 @@ public class ServiceInstanceController {
 		List<String> result = new ArrayList<String>();
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
+        String currentPage = request.getParameter("currentPage");
+        String pageSize = request.getParameter("pageSize");
         List<String> serviceInstances =serviceInstanceService.listServiceInstances(customerId, serviceType);
+        if(serviceInstances.size()>0){
+        	try {
+				result = this.parseServiceInstance(serviceInstances,currentPage,pageSize,customerId,serviceType);
+			} catch (JsonProcessingException e) {
+				logger.error("exception occurred while performing ServiceInstanceController listServiceInstances. Details:" + e.getMessage());
+			}
+        }
         return result;
     }
     @ResponseBody
@@ -109,15 +116,29 @@ public class ServiceInstanceController {
         return result.toString() ;
     }
     
-    private void parseServiceInstance(List<String> list){
+    @SuppressWarnings("unchecked")
+	private List<String> parseServiceInstance(List<String> list,String currentPage,String pageSize,String customerId,String serviceType) throws JsonProcessingException{
     	ObjectMapper mapper = new ObjectMapper();
+    	List<String> result = new ArrayList<>();
     	for(String serviceInstance:list){
-    		try {
-				JsonNode node = mapper.readTree(serviceInstance);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    			JSONObject object =  JSON.parseObject(serviceInstance);
+    			String serviceInstanceId=object.get("service-instance-id").toString();
+    			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
+    			String serviceDomain = serviceBean.getServiceDomain();
+				object.put("serviceDomain",serviceDomain);
+				if("SOTN".equals(serviceDomain)||"CCVPN".equals(serviceDomain)||"E2E Service".equals(serviceDomain)||"Network Service".equals(serviceDomain)){
+					List<String> parentIds = serviceLcmService.getServiceInstanceIdByParentId(serviceInstanceId);
+					List<String> parentServiceInstances = new ArrayList<>();
+					if(parentIds.size()>0){
+						for(String id:parentIds){
+							String parentServiceInstance=serviceInstanceService.getRelationShipData(customerId, serviceType, id);
+							parentServiceInstances.add(parentServiceInstance);
+						}
+					}
+					object.put("childServiceInstances",mapper.writeValueAsString(parentServiceInstances));
+					result.add(mapper.writeValueAsString(object));
+				}
     	}
+    	return UuiCommonUtil.getPageList(result, Integer.parseInt(currentPage), Integer.parseInt(pageSize));
     }
 }

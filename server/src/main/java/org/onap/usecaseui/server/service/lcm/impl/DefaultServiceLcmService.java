@@ -19,6 +19,7 @@ import static org.onap.usecaseui.server.util.RestfulServices.create;
 import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -207,6 +208,24 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 			serviceBean = new ServiceBean();;
 		}
 		return serviceBean;
+	
+	}
+
+	@Override
+	public List<String> getServiceInstanceIdByParentId(String parentServiceInstanceId) {
+		List<String> list = new ArrayList<>();
+		try(Session session = getSession()) {
+
+			String string = "from ServiceBean  where 1=1 and parentServiceInstanceId=:parentServiceInstanceId";
+			Query q = session.createQuery(string);
+			q.setString("serviceInstanceId",parentServiceInstanceId);
+			list = q.list();
+			session.flush();
+		}catch (Exception e){
+			list = new ArrayList<>();
+			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."+e.getMessage());
+		}
+		return list;
 	
 	}
 }

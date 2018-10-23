@@ -21,6 +21,8 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInf
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 public interface ServiceLcmService {
@@ -40,4 +42,6 @@ public interface ServiceLcmService {
     void updateServiceInstanceStatusById(String status,String serviceInstanceId);
     
     ServiceBean getServiceBeanByServiceInStanceId(String serviceInstanceId);
+    
+    List<String> getServiceInstanceIdByParentId(String serviceInstanceId);
 }
