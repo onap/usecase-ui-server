@@ -21,15 +21,15 @@ import java.util.List;
 
 public class ServiceInstanceRsp {
 
-    private List<ServiceInstance> serviceInstances;
+    private List<String> serviceInstances;
 
     @JsonProperty("service-instance")
-    public List<ServiceInstance> getServiceInstances() {
+    public List<String> getServiceInstances() {
         return serviceInstances;
     }
 
     @JsonProperty("service-instance")
-    public void setServiceInstances(List<ServiceInstance> serviceInstances) {
+    public void setServiceInstances(List<String> serviceInstances) {
         this.serviceInstances = serviceInstances;
     }
 }

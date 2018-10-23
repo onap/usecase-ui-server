@@ -81,6 +81,16 @@ public class PackageDistributionController {
         return packageDistributionService.deleteVfPackage(casrId);
     }
     
+    @RequestMapping(value = {"/uui-lcm/fetchNsTemplateData}"}, method = RequestMethod.GET , produces = "application/json")
+    public String fetchNsTemplateData(HttpServletRequest request){
+        return packageDistributionService.fetchNsTemplateData(request);
+    }
+    
+    @RequestMapping(value = {"/uui-lcm/listNsTemplates}"}, method = RequestMethod.GET , produces = "application/json")
+    public String listNsTemplates(){
+        return packageDistributionService.listNsTemplates();
+    }
+    
     @RequestMapping(value = {"/uui-lcm/ns-packages}"}, method = RequestMethod.GET , produces = "application/json")
     public String getNsPackages(){
         return packageDistributionService.getNetworkServicePackages();

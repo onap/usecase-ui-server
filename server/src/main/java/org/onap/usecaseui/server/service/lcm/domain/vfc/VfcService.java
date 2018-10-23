@@ -42,6 +42,12 @@ public interface VfcService {
     @DELETE("/api/catalog/v1/vnfpackages/{csarId}")
     Call<Job> deleteVnfPackage(@Path("csarId") String csarId);
     
+    @GET("/api/catalog/v1/nspackages")
+    Call<ResponseBody> listNsTemplates();
+    
+    @GET("/api/catalog/v1/parsernsd")
+    Call<ResponseBody> fetchNsTemplateData(@Body RequestBody body);
+    
     @GET("/api/nslcm/v1/ns")
     Call<ResponseBody> getNetworkServiceInfo();
     

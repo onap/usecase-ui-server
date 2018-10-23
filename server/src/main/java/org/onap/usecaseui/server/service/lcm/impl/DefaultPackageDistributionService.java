@@ -625,4 +625,47 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         return result;
 	
 	}
+
+	@Override
+	public String listNsTemplates() {
+
+		String result="";
+        try {
+        	logger.info("vfc listNsTemplates is starting!");
+            Response<ResponseBody> response = this.vfcService.listNsTemplates().execute();
+            logger.info("vfc listNsTemplates has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get listNsTemplates[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;;
+            }
+        } catch (IOException e) {
+            logger.error("listNsTemplates occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;;
+        }
+        return result;
+	
+	}
+
+	@Override
+	public String fetchNsTemplateData(HttpServletRequest request) {
+		String result = "";
+        try {
+        	logger.info("aai fetchNsTemplateData is starting");
+        	RequestBody requestBody = extractBody(request);
+            Response<ResponseBody> response = vfcService.fetchNsTemplateData(requestBody).execute();
+			logger.info("aai fetchNsTemplateData has finished");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+            	result=Constant.CONSTANT_FAILED;
+                logger.error(String.format("Can not fetchNsTemplateData[code=%s, message=%s]", response.code(), response.message()));
+            }
+        } catch (Exception e) {
+        	result=Constant.CONSTANT_FAILED;
+        	logger.error("fetchNsTemplateData occur exception:"+e);
+        }
+        return result;
+	}
 }

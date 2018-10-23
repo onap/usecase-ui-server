@@ -15,6 +15,8 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -36,6 +38,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @org.springframework.context.annotation.Configuration
@@ -60,20 +64,12 @@ public class ServiceInstanceController {
 
 	@ResponseBody
     @RequestMapping(value = {"/uui-lcm/service-instances"}, method = RequestMethod.GET , produces = "application/json")
-    public List<ServiceInstance> listServiceInstances(HttpServletRequest request){
+    public List<String> listServiceInstances(HttpServletRequest request){
+		List<String> result = new ArrayList<String>();
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
-        List<ServiceInstance> list =serviceInstanceService.listServiceInstances(customerId, serviceType);
-        if(list.size()>0){
-        	for(ServiceInstance serviceInstance:list){
-        		ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstance.getServiceInstanceId());
-        		if(UuiCommonUtil.isNotNullOrEmpty(serviceBean)){
-        			serviceInstance.setServiceDomain(serviceBean.getServiceDomain());
-        		}
-        	}
-        }
-        System.out.println(list);
-        return list;
+        List<String> serviceInstances =serviceInstanceService.listServiceInstances(customerId, serviceType);
+        return result;
     }
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/getServiceInstanceById"}, method = RequestMethod.GET , produces = "application/json")
@@ -111,5 +107,17 @@ public class ServiceInstanceController {
         	}
 		}
         return result.toString() ;
+    }
+    
+    private void parseServiceInstance(List<String> list){
+    	ObjectMapper mapper = new ObjectMapper();
+    	for(String serviceInstance:list){
+    		try {
+				JsonNode node = mapper.readTree(serviceInstance);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
     }
 }

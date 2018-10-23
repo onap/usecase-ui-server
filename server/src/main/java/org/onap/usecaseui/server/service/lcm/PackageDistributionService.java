@@ -38,6 +38,10 @@ public interface PackageDistributionService {
 
     Job deleteVfPackage(String csarId);
     
+    String listNsTemplates();
+    
+    String fetchNsTemplateData(HttpServletRequest request);
+    
     String getVnfPackages();
     
     String getNetworkServicePackages();

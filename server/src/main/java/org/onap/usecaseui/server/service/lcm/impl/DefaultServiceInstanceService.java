@@ -51,7 +51,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     }
 
     @Override
-    public List<ServiceInstance> listServiceInstances(String customerId, String serviceType) {
+    public List<String> listServiceInstances(String customerId, String serviceType) {
         try {
             Response<ServiceInstanceRsp> response = aaiService.listServiceInstances(customerId, serviceType).execute();
             if (response.isSuccessful()) {
