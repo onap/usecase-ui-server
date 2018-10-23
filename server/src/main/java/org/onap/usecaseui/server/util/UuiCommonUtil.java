@@ -18,7 +18,9 @@ package org.onap.usecaseui.server.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -122,5 +124,16 @@ public class UuiCommonUtil {
 			}
 		}
 		return result;
+	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List getPageList(List list,int currentPage,int pageSize){
+        
+		List listPages = new ArrayList();
+        int currIdx = (currentPage > 1 ? (currentPage -1) * pageSize : 0);
+        for (int i = 0; i < pageSize && i < listPages.size() - currIdx; i++) {
+            Object  listPage= listPages.get(currIdx + i);
+            listPages.add(listPage);
+        }
+		return listPages;
 	}
 }

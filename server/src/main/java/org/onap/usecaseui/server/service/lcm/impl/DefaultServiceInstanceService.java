@@ -15,9 +15,12 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.util.RestfulServices;
@@ -28,10 +31,6 @@ import org.springframework.stereotype.Service;
 
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 @Service("ServiceInstanceService")
 @org.springframework.context.annotation.Configuration
