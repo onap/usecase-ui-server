@@ -15,10 +15,14 @@
  */
 package org.onap.usecaseui.server.service.lcm;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpRequest;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
@@ -27,6 +31,10 @@ import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
 public interface PackageDistributionService {
 
     VfNsPackageInfo retrievePackageInfo();
+    
+    List<SDCServiceTemplate> sdcNsPackageInfo();
+    
+    List<Vnf> sdcVfPackageInfo();
 
     DistributionResult postNsPackage(Csar csar);
 
@@ -75,6 +83,8 @@ public interface PackageDistributionService {
     String getNetworkServiceInfo();
     
     String createNetworkServiceInstance(HttpServletRequest request);
+    
+    String instantiateNetworkServiceInstance(HttpServletRequest request ,String serviceInstanceId);
     
     String deleteNetworkServiceInstance(String nsInstanceId);
     

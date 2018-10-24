@@ -17,6 +17,8 @@ package org.onap.usecaseui.server.controller.lcm;
 
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
@@ -26,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +53,19 @@ public class PackageDistributionController {
     public VfNsPackageInfo retrievePackageInfo(){
         return packageDistributionService.retrievePackageInfo();
     }
-
+    
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/sdc-ns-packages"}, method = RequestMethod.GET , produces = "application/json")
+    public List<SDCServiceTemplate> sdcNsPackageInfo(){
+        return packageDistributionService.sdcNsPackageInfo();
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/sdc-vf-packages"}, method = RequestMethod.GET , produces = "application/json")
+    public List<Vnf> sdcVfPackageInfo(){
+        return packageDistributionService.sdcVfPackageInfo();
+    }
+    
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/ns-packages"}, method = RequestMethod.POST , produces = "application/json")
     public DistributionResult distributeNsPackage(@RequestBody Csar csar){
@@ -179,6 +195,11 @@ public class PackageDistributionController {
     @RequestMapping(value = {"/uui-lcm/getNetworkServiceInfo}"}, method = RequestMethod.DELETE , produces = "application/json")
     public String deleteNetworkServiceInstance(@RequestParam String ns_instance_id){
         return packageDistributionService.deleteNetworkServiceInstance(ns_instance_id);
+    }
+    
+    @RequestMapping(value = {"/uui-lcm/instantiateNetworkServiceInstance}"}, method = RequestMethod.POST , produces = "application/json")
+    public String instantiateNetworkServiceInstance(HttpServletRequest request,@RequestParam String ns_instance_id){
+        return packageDistributionService.terminateNetworkServiceInstance(request,ns_instance_id);
     }
     
     @RequestMapping(value = {"/uui-lcm/terminateNetworkServiceInstance}"}, method = RequestMethod.POST , produces = "application/json")

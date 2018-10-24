@@ -69,35 +69,43 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
     @Override
     public VfNsPackageInfo retrievePackageInfo() {
-        try {
-            List<SDCServiceTemplate> nsTemplate = getNsTemplate();
-            List<Vnf> vnf = getVFResource();
+            List<SDCServiceTemplate> nsTemplate = sdcNsPackageInfo();
+            List<Vnf> vnf = sdcVfPackageInfo();
             return new VfNsPackageInfo(nsTemplate, vnf);
-        } catch (IOException e) {
-            throw new SDCCatalogException("SDC Service is not available!", e);
-        }
     }
-
-    private List<Vnf> getVFResource() throws IOException {
-        Response<List<Vnf>> response = sdcCatalogService.listResources(RESOURCETYPE_VF).execute();
-        if (response.isSuccessful()) {
-            return response.body();
-        } else {
-            logger.info(String.format("Can not get VF resources[code=%s, message=%s]", response.code(), response.message()));
-            return Collections.emptyList();
-        }
+    
+    @Override
+    public List<Vnf> sdcVfPackageInfo() {
+		try {
+			Response<List<Vnf>> response = sdcCatalogService.listResources(RESOURCETYPE_VF).execute();
+	        if (response.isSuccessful()) {
+	            return response.body();
+	        } else {
+	            logger.info(String.format("Can not get VF resources[code=%s, message=%s]", response.code(), response.message()));
+	            return Collections.emptyList();
+	        }
+		} catch (IOException e) {
+			logger.error("sdcVfPackageInfo occur exception.Details:"+e.getMessage());
+		}
+		return null;
     }
-
-    private List<SDCServiceTemplate> getNsTemplate() throws IOException {
-        Response<List<SDCServiceTemplate>> response = sdcCatalogService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED).execute();
-        if (response.isSuccessful()) {
-            return response.body();
-        } else {
-            logger.info(String.format("Can not get NS services[code=%s, message=%s]", response.code(), response.message()));
-            return Collections.emptyList();
-        }
+    
+    @Override
+    public List<SDCServiceTemplate> sdcNsPackageInfo() {
+		try {
+			Response<List<SDCServiceTemplate>> response = sdcCatalogService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED).execute();
+	        if (response.isSuccessful()) {
+	            return response.body();
+	        } else {
+	            logger.info(String.format("Can not get NS services[code=%s, message=%s]", response.code(), response.message()));
+	            return Collections.emptyList();
+	        }
+		} catch (IOException e) {
+			logger.error("sdcNsPackageInfo occur exception.Details:"+e.getMessage());
+		}
+		return null;
     }
-
+	
     @Override
     public DistributionResult postNsPackage(Csar csar) {
         try {
@@ -668,4 +676,26 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         }
         return result;
 	}
+
+	@Override
+	public String instantiateNetworkServiceInstance(HttpServletRequest request, String serviceInstanceId) {
+		String result = "";
+        try {
+        	logger.info("aai instantiateNetworkServiceInstance is starting");
+        	RequestBody requestBody = extractBody(request);
+            Response<ResponseBody> response = vfcService.instantiateNetworkServiceInstance(requestBody,serviceInstanceId).execute();
+			logger.info("aai instantiateNetworkServiceInstance has finished");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+            	result=Constant.CONSTANT_FAILED;
+                logger.error(String.format("Can not instantiateNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+            }
+        } catch (Exception e) {
+        	result=Constant.CONSTANT_FAILED;
+        	logger.error("instantiateNetworkServiceInstance occur exception:"+e);
+        }
+        return result;
+	}
+
 }

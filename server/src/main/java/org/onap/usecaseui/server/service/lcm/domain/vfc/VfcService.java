@@ -54,6 +54,9 @@ public interface VfcService {
     @POST("/api/nslcm/v1/ns")
     Call<ResponseBody> createNetworkServiceInstance(@Body RequestBody body);
     
+    @POST("/api/nslcm/v1/ns/{ns_instance_id}/instantiate")
+    Call<ResponseBody> instantiateNetworkServiceInstance(@Body RequestBody body,@Path("ns_instance_id") String nsInstanceId);
+    
     @DELETE("/api/nslcm/v1/ns/{ns_instance_id}")
     Call<ResponseBody> deleteNetworkServiceInstance(@Path("ns_instance_id") String nsInstanceId);
     
