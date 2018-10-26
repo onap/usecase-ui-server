@@ -19,6 +19,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.text.ParseException;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.After;
@@ -49,27 +51,7 @@ public class PerformanceControllerTest {
 	}
 
 	@Test
-	public void testGenerateDiagram() {
-		try {
-			controller.generateDiagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29", "nameParent", "day");
-			controller.generateDiagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29", "nameParent", "hour");
-			controller.generateDiagram("sourceId", "2018-5-24 14:58:29", "2018-5-25 14:58:29", "nameParent", "minute");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
-	public void testGetSourceIds() {
-		try {
-			controller.getSourceIds();
-			verify(phs,times(1)).queryAllSourceId();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	@Test
-	public void testGetPerformanceData() throws JsonProcessingException {
+	public void testGetPerformanceData() throws JsonProcessingException, ParseException {
 	    HttpServletResponse response = mock(HttpServletResponse.class);
 	    int currentPage = 1;
 	    int pageSize=12;
@@ -81,21 +63,12 @@ public class PerformanceControllerTest {
 	    PerformanceHeader header = new PerformanceHeader();
 
 
-	    controller.getPerformanceData(response,currentPage,pageSize,sourceId,sourceName,priority,startTime,endTime);
-	    controller.getPerformanceData(response,currentPage,pageSize,null,null,null,null,null);
+	    controller.getPerformanceData(currentPage,pageSize,sourceName,startTime,endTime);
+	    controller.getPerformanceData(currentPage,pageSize,null,null,null);
 	    verify(phs,times(1)).queryPerformanceHeader(header,currentPage,pageSize);
 
 }
 
-	@Test
-	public void testGetNames() {
-		try {
-			controller.getNames("vnf_test_3");
-			verify(pihs,times(1)).queryDateBetween("vnf_test_3",null,null,null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	@Test
 	public void testGetPerformanceHeaderDetail() {
 		try {

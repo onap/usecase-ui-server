@@ -17,9 +17,7 @@ package org.onap.usecaseui.server.service.impl;
 
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -30,7 +28,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
-import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,97 +222,13 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 				logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
 				return null;
 			}else {
-				if(null!=alarmsHeader.getVersion()) {
-					String ver=alarmsHeader.getVersion();
-					hql.append(" and a.version like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventName()) {
-					String ver=alarmsHeader.getEventName();
-					hql.append(" and a.eventName = '"+ver+"'");
-				}
-				if(null!=alarmsHeader.getAlarmCondition()) {
-					String ver=alarmsHeader.getAlarmCondition();
-					hql.append(" and a.alarmCondition like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getDomain()) {
-					String ver=alarmsHeader.getDomain();
-					hql.append(" and a.domain like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventId()) {
-					String ver=alarmsHeader.getEventId();
-					hql.append(" and a.eventId = '"+ver+"'");
-				}
-				if(null!=alarmsHeader.getNfcNamingCode()) {
-					String ver=alarmsHeader.getNfcNamingCode();
-					hql.append(" and a.nfcNamingCode like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getNfNamingCode()) {
-					String ver=alarmsHeader.getNfNamingCode();
-					hql.append(" and a.nfNamingCode like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getSourceId()) {
-					String ver =alarmsHeader.getSourceId();
-					hql.append(" and a.sourceId like '%"+ver+"%'");
-				}
 				if(null!=alarmsHeader.getSourceName()) {
 					String ver =alarmsHeader.getSourceName();
 					hql.append(" and a.sourceName like '%"+ver+"%'");
 				}
-				if(null!=alarmsHeader.getReportingEntityId()) {
-					String ver =alarmsHeader.getReportingEntityId();
-					hql.append(" and a.reportingEntityId like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getReportingEntityName()) {
-					String ver =alarmsHeader.getReportingEntityName();
-					hql.append(" and a.reportingEntityName like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getPriority()) {
-					String ver =alarmsHeader.getPriority();
-					hql.append(" and a.priority like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getStartEpochMicrosec()) {
-					String ver =alarmsHeader.getStartEpochMicrosec();
-					hql.append(" and a.startEpochMicrosec like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getLastEpochMicroSec()) {
-					String ver =alarmsHeader.getLastEpochMicroSec();
-					hql.append(" and a.lastEpochMicroSec like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getSequence()) {
-					String ver =alarmsHeader.getSequence();
-					hql.append(" and a.sequence like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getFaultFieldsVersion()) {
-					String ver =alarmsHeader.getFaultFieldsVersion();
-					hql.append(" and a.faultFieldsVersion like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventServrity()) {
-					String ver =alarmsHeader.getEventServrity();
-					hql.append(" and a.eventServrity like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventType()) {
-					String ver =alarmsHeader.getEventType();
-					hql.append(" and a.eventSourceType like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventCategory()) {
-					String ver =alarmsHeader.getEventCategory();
-					hql.append(" and a.eventCategory like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getAlarmCondition()) {
-					String ver =alarmsHeader.getAlarmCondition();
-					hql.append(" and a.alarmCondition like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getSpecificProblem()) {
-					String ver =alarmsHeader.getSpecificProblem();
-					hql.append(" and a.specificProblem like '%"+ver+"%'");
-				}
 				if(null!=alarmsHeader.getVfStatus()) {
 					String ver =alarmsHeader.getVfStatus();
 					hql.append(" and a.vfStatus = '"+ver+"'");
-				}
-				if(null!=alarmsHeader.getAlarmInterfaceA()) {
-					String ver =alarmsHeader.getAlarmInterfaceA();
-					hql.append(" and a.alarmInterfaceA like '%"+ver+"%'");
 				}
 				if(null!=alarmsHeader.getStatus()) {
 					String ver =alarmsHeader.getStatus();

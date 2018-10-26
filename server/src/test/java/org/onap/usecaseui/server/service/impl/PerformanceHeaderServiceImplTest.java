@@ -242,9 +242,9 @@ public class PerformanceHeaderServiceImplTest {
 	}
 
 	@Test
-	public void testQueryAllSourceId() throws Exception {
+	public void queryAllSourceNames() throws Exception {
 		try {
-			performanceHeaderServiceImpl.queryAllSourceId();
+			performanceHeaderServiceImpl.queryAllSourceNames();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

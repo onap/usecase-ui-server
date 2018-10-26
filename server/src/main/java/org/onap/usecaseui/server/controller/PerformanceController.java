@@ -26,11 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
-import org.onap.usecaseui.server.bo.PerformanceBo;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
@@ -44,7 +42,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -72,74 +69,23 @@ public class PerformanceController {
     public void setPerformanceInformationService(PerformanceInformationService performanceInformationService) {
         this.performanceInformationService = performanceInformationService;
     }
-    
-    private final String[] PerformanceCSVHeaders = {"version",
-            "eventName","domain","eventId","eventType","nfcNamingCode",
-            "nfNamingCode","sourceId","sourceName","reportingEntityId",
-            "reportingEntityName","priority","startEpochMicrosec","lastEpochMicroSec",
-            "sequence","measurementsForVfScalingVersion","measurementInterval",
-            "createTime","updateTime","value","name"};
 
     private ObjectMapper omPerformance = new ObjectMapper();
     
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    
-    private String formatDate = "yyyy-MM-dd";
-    
-    @RequestMapping(value = {"/performance/{currentPage}/{pageSize}","/performance/{currentPage}/{pageSize}/{sourceId}/{sourceName}/{priority}/{startTime}/{endTime}"},method = RequestMethod.GET, produces = "application/json")
-    public String getPerformanceData(HttpServletResponse response,@PathVariable int currentPage,
-                                     @PathVariable int pageSize,@PathVariable(required = false) String sourceId,
-                                     @PathVariable(required = false) String sourceName,@PathVariable(required = false) String priority,
-                                     @PathVariable(required = false) String startTime,@PathVariable(required = false) String endTime) throws JsonProcessingException {
-        logger.info("API Parameter: [currentPage:{}, pageSize:{}, sourceId:{}, sourceName:{}, priority:{}, startTime:{}, endTime:{}]" ,currentPage, pageSize, sourceId, sourceName, priority, startTime, endTime);
-        List<Object> list = new ArrayList<>();
+    @RequestMapping(value = {"/performance/{currentPage}/{pageSize}","/performance/{currentPage}/{pageSize}/{sourceName}/{startTime}/{endTime}"},method = RequestMethod.GET, produces = "application/json")
+    public String getPerformanceData(@PathVariable int currentPage,
+                                     @PathVariable int pageSize,
+                                     @PathVariable(required = false) String sourceName,
+                                     @PathVariable(required = false) String startTime,@PathVariable(required = false) String endTime) throws JsonProcessingException, ParseException {
         Page<PerformanceHeader> pa = new Page<PerformanceHeader>();
-        if (null != sourceId || null != sourceName || null != priority || null != startTime || null != endTime){
             PerformanceHeader performanceHeader = new PerformanceHeader();
-            performanceHeader.setSourceId(!"null".equals(sourceId)?sourceId:null);
-            performanceHeader.setSourceName(!"null".equals(sourceName)?sourceName:null);
-            try {
-                performanceHeader.setStartEpochMicrosec(!"null".equals(startTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(startTime).getTime()+"":null);
-                performanceHeader.setLastEpochMicroSec(!"null".equals(endTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(endTime).getTime()+"":null);
-            } catch (ParseException e) {
-                 if (null != response)
-                    response.setStatus(400);
-                logger.error("ParseException["+startTime+"]:"+e.getMessage());
-                return "{'result':'error'}";
-            }
+            performanceHeader.setSourceName(sourceName);
+            performanceHeader.setStartEpochMicrosec(UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
+            performanceHeader.setLastEpochMicroSec(UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
             pa = performanceHeaderService.queryPerformanceHeader(performanceHeader,currentPage,pageSize);
-            List<PerformanceHeader> performanceHeaders = pa.getList();
-            performanceHeaders.forEach( per ->{
-                PerformanceBo pbo = new PerformanceBo();
-                PerformanceInformation pe = new PerformanceInformation();
-                pe.setSourceId(per.getSourceId());
-                List<PerformanceInformation> performanceInformations = performanceInformationService.queryPerformanceInformation(pe,1,100).getList();
-                pbo.setPerformanceHeader(per);
-                performanceInformations.forEach( pi ->{
-                    if (pi.getValue().equals("")){
-                        StringBuffer value1 = new StringBuffer();
-                        performanceInformationService.queryPerformanceInformation(new PerformanceInformation(pi.getName()),1,100).getList()
-                                .forEach( val -> value1.append(val.getValue()));
-                        pi.setValue(value1.toString());
-                    }
-                } );
-                pbo.setPerformanceInformation(performanceInformations);
-                list.add(pbo);
-            });
-        }else{
-            pa = performanceHeaderService.queryPerformanceHeader(null,currentPage,pageSize);
-            List<PerformanceHeader> p = pa!=null?pa.getList():null;
-            if (null != p && p.size() > 0)
-                p.forEach( per ->{
-                    PerformanceBo pbo = new PerformanceBo();
-                    pbo.setPerformanceHeader(per);
-                    pbo.setPerformanceInformation(performanceInformationService.queryPerformanceInformation(new PerformanceInformation(per.getEventId()),1,100).getList());
-                    list.add(pbo);
-                });
-        }
         try {
             Map<String,Object> map = new HashMap<>();
-            map.put("performances",list);
+            map.put("performances",pa.getList());
             map.put("totalRecords",pa.getTotalRecords());
             omPerformance.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
             return omPerformance.writeValueAsString(map);
@@ -148,82 +94,12 @@ public class PerformanceController {
             return omPerformance.writeValueAsString("failed");
         }
     }
-
-    @RequestMapping(value = {"/performance/diagram"}, method = RequestMethod.POST, produces = "application/json")
-    public String generateDiagram(@RequestParam String sourceId,@RequestParam String startTime,@RequestParam String endTime,@RequestParam String nameParent,@RequestParam String format)  {
-        long timeInterval = 0;
-    	try {
-        	if("minute".equals(format)){//performance   hour day month
-        		formatDate="yyyy-MM-dd HH:mm";
-        		timeInterval =5*60000;
-        	}else if("hour".equals(format)){
-        		formatDate="yyyy-MM-dd HH";
-        		timeInterval = 3600000;
-        	}else{
-        		formatDate="yyyy-MM-dd";
-        		timeInterval =86400000;
-        	}
-        	sdf = new SimpleDateFormat(formatDate);
-            long startTimel = sdf.parse(startTime).getTime();
-            long endTimel = sdf.parse(endTime).getTime();
-            return getDiagram(sourceId, startTimel, endTimel+timeInterval, timeInterval,format,nameParent);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
-    }
     
-    private  String getDiagram(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal,String format,String nameParent) throws JsonProcessingException{
-    	Map<String,List> result = new HashMap<String,List>();
-    	
-    	Map<String,List> allMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal,format,nameParent);
-    	result.put("dateList", allMaps.get("dateTime"));
-    	result.put("valueList", allMaps.get("dataList"));
-    	return omPerformance.writeValueAsString(result);
-    }
-    private Map<String,List> dateProcess(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal,String format,String nameParent) {
-    	Map<String,List> result = new HashMap<String,List>();
-        List<String> dateList = new ArrayList<String>();
-        List<String> numList = new ArrayList<String>();
-        long tmpEndTimeL = startTimeL + timeIteraPlusVal;
-        while (endTimeL >= tmpEndTimeL) {
-           String num = performanceInformationService.queryMaxValueByBetweenDate(sourceId, nameParent, startTimeL+"", tmpEndTimeL+"");
-            dateList.add(DateUtils.getResultDate(startTimeL, format));
-            numList.add(num);
-            startTimeL += timeIteraPlusVal;
-            tmpEndTimeL += timeIteraPlusVal;
-        }
-        result.put("dateTime", dateList);
-        result.put("dataList", numList);
-        return result;
-    }
-    
-    @RequestMapping(value = {"/performance/resourceIds"},method = RequestMethod.GET)
+    @RequestMapping(value = {"/performance/queryAllSourceNames"},method = RequestMethod.GET)
     public String getSourceIds(){
         try {
-            return omPerformance.writeValueAsString(performanceHeaderService.queryAllSourceId());
+            return omPerformance.writeValueAsString(performanceHeaderService.queryAllSourceNames());
         } catch (JsonProcessingException e) {
-            logger.error(e.getMessage());
-            return "";
-        }
-    }
-
-    @RequestMapping(value = {"/performance/names"},method = RequestMethod.POST)
-    public String getNames(@RequestParam Object sourceId){
-        try {
-            Set<String> names = new HashSet<>();
-            List<PerformanceInformation> list =performanceInformationService.queryDateBetween(sourceId.toString(), null, null, null);
-            PerformanceInformation per;
-            for(int a=0;a<list.size();a++) {
-                per = (PerformanceInformation)list.get(a);
-                if (UuiCommonUtil.checkNumber(per.getValue(),"^(-?\\d+)(\\.\\d+)?$"))
-                    if (Double.parseDouble(per.getValue()) > 0)
-                        names.add(per.getName());
-
-            }
-            return omPerformance.writeValueAsString(names);
-        } catch (Exception e) {
             logger.error(e.getMessage());
             return "";
         }
@@ -245,6 +121,31 @@ public class PerformanceController {
         String string =omPerformance.writeValueAsString(map);
         return string;
     }
+    
+    @RequestMapping(value = {"/performanceSsourceNames/{currentPage}/{pageSize}/{sourceName}"},method = RequestMethod.GET, produces = "application/json")
+    public String getPerformanceSourceNames(@PathVariable int currentPage,@PathVariable int pageSize,
+            @PathVariable(required = false) String sourceName) throws JsonProcessingException{
+        PerformanceHeader performanceHeader = new PerformanceHeader();
+        Page<PerformanceHeader> page = new Page<PerformanceHeader>();
+        Set<String> names = new HashSet<String>();
+        performanceHeader.setSourceName(sourceName);
+        page = performanceHeaderService.queryPerformanceHeader(performanceHeader,1,Integer.MAX_VALUE);
+        if(!UuiCommonUtil.isNotNullOrEmpty(page)){
+            page = new Page<>();
+            List<PerformanceHeader> list = new ArrayList<>();
+            performanceHeader = new PerformanceHeader();
+            list.add(performanceHeader);
+            page.setList(list);
 
-
+        }
+        for(int a=0;a<page.getList().size();a++){
+        	performanceHeader  = (PerformanceHeader)page.getList().get(a);
+            String name = performanceHeader.getSourceName();
+            names.add(name);
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("names",names);
+        map.put("totalRecords",UuiCommonUtil.getPageList(new ArrayList(names), currentPage, pageSize));
+    	return omPerformance.writeValueAsString(names);
+    }
 }

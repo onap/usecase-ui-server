@@ -97,6 +97,7 @@ public class AlarmController
 		
 	/**
 	 * test commit
+	 * @throws ParseException 
 	 */
     @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
             "/alarm/{currentPage}/{pageSize}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
@@ -104,16 +105,12 @@ public class AlarmController
     public String getAlarmData(@PathVariable(required = false) String sourceName,
                                @PathVariable(required = false) String priority,@PathVariable(required = false) String startTime,
                                @PathVariable(required = false) String endTime,@PathVariable(required = false) String vfStatus,
-                               @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException {
+                               @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException, ParseException {
             AlarmsHeader alarm = new AlarmsHeader();
-            alarm.setSourceName(!"null".equals(sourceName)?sourceName:null);
-            alarm.setStatus(!"null".equals(vfStatus)?vfStatus:null);
-            try {
-                alarm.setStartEpochMicrosec(!"null".equals(startTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(startTime).getTime()+"":null);
-                alarm.setLastEpochMicroSec(!"null".equals(endTime)?new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(endTime).getTime()+"":null);
-            } catch (ParseException e) {
-                logger.error("Parse date error :"+e.getMessage());
-            }
+            alarm.setSourceName(sourceName);
+            alarm.setStatus(vfStatus);
+            alarm.setStartEpochMicrosec(UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
+            alarm.setLastEpochMicroSec(UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
             Page  pa = alarmsHeaderService.queryAlarmsHeader(alarm,currentPage,pageSize);
         try {
             Map<String,Object> map = new HashMap<>();
@@ -156,7 +153,7 @@ public class AlarmController
        Set<String> sourceNames = new HashSet<>();
        Page<AlarmsHeader> page  = alarmsHeaderService.queryAlarmsHeader(new AlarmsHeader(), 1, Integer.MAX_VALUE);
         AlarmsHeader alarmsHeader;
-        if(UuiCommonUtil.isNotNullOrEmpty(page)){
+        if(!UuiCommonUtil.isNotNullOrEmpty(page)){
             page = new Page<>();
             List<AlarmsHeader> list = new ArrayList<>();
             alarmsHeader = new AlarmsHeader();
@@ -166,7 +163,7 @@ public class AlarmController
         }
         for(int a=0;a<page.getList().size();a++){
             alarmsHeader  = (AlarmsHeader)page.getList().get(a);
-            String sourceName = alarmsHeader.getSourceId();
+            String sourceName = alarmsHeader.getSourceName();
             sourceNames.add(sourceName);
         }
         return omAlarm.writeValueAsString(sourceNames);
@@ -180,9 +177,6 @@ public class AlarmController
         		formatDate="yyyy-MM";
         		int maxDay= DateUtils.MonthOfDay(startTime, formatDate);
         		timeInterval =86400000L*maxDay;
-        	}else if("hour".equals(format)){
-        		formatDate="yyyy-MM-dd HH";
-        		timeInterval = 3600000;
         	}else{
         		formatDate="yyyy-MM-dd";
         		timeInterval =86400000;

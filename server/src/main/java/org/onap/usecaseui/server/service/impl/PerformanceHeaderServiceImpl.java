@@ -28,6 +28,7 @@ import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.util.Page;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,81 +187,13 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 		try(Session session = getSession()){
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
-			if (null == performanceHeder) {
-				return page;
-			}else {
-				if(null!=performanceHeder.getVersion()) {
-					String ver=performanceHeder.getVersion();
-					hql.append(" and a.version like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getEventName()) {
-					String ver=performanceHeder.getEventName();
-					hql.append(" and a.eventName like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getDomain()) {
-					String ver=performanceHeder.getDomain();
-					hql.append(" and a.domain like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getEventId()) {
-					String ver=performanceHeder.getEventId();
-					hql.append(" and a.eventId = '"+ver+"'");
-				}
-				if(null!=performanceHeder.getNfcNamingCode()) {
-					String ver=performanceHeder.getNfcNamingCode();
-					hql.append(" and a.nfcNamingCode like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getNfNamingCode()) {
-					String ver=performanceHeder.getNfNamingCode();
-					hql.append(" and a.nfNamingCode like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getSourceId()) {
-					String ver =performanceHeder.getSourceId();
-					hql.append(" and a.sourceId = '"+ver+"'");
-				}
 				if(null!=performanceHeder.getSourceName()) {
 					String ver =performanceHeder.getSourceName();
 					hql.append(" and a.sourceName like '%"+ver+"%'");
 				}
-				if(null!=performanceHeder.getReportingEntityId()) {
-					String ver =performanceHeder.getReportingEntityId();
-					hql.append(" and a.reportingEntityId like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getReportingEntityName()) {
-					String ver =performanceHeder.getReportingEntityName();
-					hql.append(" and a.reportingEntityName like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getPriority()) {
-					String ver =performanceHeder.getPriority();
-					hql.append(" and a.priority like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getStartEpochMicrosec()) {
-					String ver =performanceHeder.getStartEpochMicrosec();
-					hql.append(" and a.startEpochMicrosec like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getLastEpochMicroSec()) {
-					String ver =performanceHeder.getLastEpochMicroSec();
-					hql.append(" and a.lastEpochMicroSec like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getSequence()) {
-					String ver =performanceHeder.getSequence();
-					hql.append(" and a.sequence like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getMeasurementsForVfScalingVersion()) {
-					String ver =performanceHeder.getMeasurementsForVfScalingVersion();
-					hql.append(" and a.measurementsForVfScalingVersion like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getMeasurementInterval()) {
-					String ver =performanceHeder.getMeasurementInterval();
-					hql.append(" and a.measurementInterval like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getEventType()) {
-					String ver =performanceHeder.getEventType();
-					hql.append(" and a.eventType like '%"+ver+"%'");
-				}
 				if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
 					hql.append(" and a.startEpochMicrosec between :startTime and :endTime ");
 				}
-			}
 			Query query = session.createQuery(hql.toString());
 			if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
 				query.setString("startTime",performanceHeder.getStartEpochMicrosec()).setString("endTime",performanceHeder.getLastEpochMicroSec());
@@ -298,9 +231,9 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	}
 
 	@Override
-	public List<String> queryAllSourceId() {
+	public List<String> queryAllSourceNames() {
 		try(Session session = getSession()) {
-			Query query = session.createQuery("select distinct a.sourceId from PerformanceHeader a");
+			Query query = session.createQuery("select distinct a.sourceName from PerformanceHeader a");
 			return query.list();
 		} catch (Exception e) {
 			logger.error("exception occurred while performing PerformanceHeaderServiceImpl queryAllSourceId. Details:" + e.getMessage());

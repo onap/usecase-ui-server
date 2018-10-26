@@ -33,7 +33,7 @@ public interface PerformanceHeaderService {
     
     List<PerformanceHeader> queryId(String[] id);
 
-    List<String> queryAllSourceId();
+    List<String> queryAllSourceNames();
     
     PerformanceHeader getPerformanceHeaderById(String id);
 }

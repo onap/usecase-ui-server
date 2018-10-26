@@ -15,6 +15,11 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
@@ -26,13 +31,13 @@ import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @org.springframework.context.annotation.Configuration
@@ -187,12 +192,12 @@ public class PackageDistributionController {
         return packageDistributionService.getNetworkServiceInfo();
     }
     
-    @RequestMapping(value = {"/uui-lcm/getNetworkServiceInfo}"}, method = RequestMethod.POST , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/createNetworkServiceInstance}"}, method = RequestMethod.POST , produces = "application/json")
     public String createNetworkServiceInstance(HttpServletRequest request){
         return packageDistributionService.createNetworkServiceInstance(request);
     }
     
-    @RequestMapping(value = {"/uui-lcm/getNetworkServiceInfo}"}, method = RequestMethod.DELETE , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/deleteNetworkServiceInstance}"}, method = RequestMethod.DELETE , produces = "application/json")
     public String deleteNetworkServiceInstance(@RequestParam String ns_instance_id){
         return packageDistributionService.deleteNetworkServiceInstance(ns_instance_id);
     }

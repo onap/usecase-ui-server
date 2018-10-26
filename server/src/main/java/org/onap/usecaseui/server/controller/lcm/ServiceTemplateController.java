@@ -52,8 +52,9 @@ public class ServiceTemplateController {
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/service-templates/{uuid}"}, method = RequestMethod.GET , produces = "application/json")
     public ServiceTemplateInput getServiceTemplateInput(@PathVariable("uuid") String uuid, @RequestParam("toscaModelPath") String toscaModelPath){
-        logger.info("returned template content :"+serviceTemplateService.fetchServiceTemplateInput(uuid, toscaModelPath));
-        return serviceTemplateService.fetchServiceTemplateInput(uuid, toscaModelPath);
+    	ServiceTemplateInput serviceTemplateInput = serviceTemplateService.fetchServiceTemplateInput(uuid, toscaModelPath);
+    	logger.info("returned template content :"+serviceTemplateInput);
+        return serviceTemplateInput;
     }
 
     @ResponseBody
