@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.vfc;
 
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.nsServiceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
@@ -35,6 +36,9 @@ public interface VfcService {
 
     @GET("/api/catalog/v1/jobs/{jobId}")
     Call<JobStatus> getJobStatus(@Path("jobId") String jobId, @Query("responseId") String responseId);
+    
+    @GET("/api/nslcm/v1/jobs/{job_id}")
+    Call<JobStatus> getNsLcmJobStatus(@Path("jobId") String jobId, @Query("responseId") String responseId);
 
     @DELETE("/api/catalog/v1/nspackages/{csarId}")
     Call<DistributionResult> deleteNsPackage(@Path("csarId") String csarId);
@@ -49,7 +53,7 @@ public interface VfcService {
     Call<ResponseBody> fetchNsTemplateData(@Body RequestBody body);
     
     @GET("/api/nslcm/v1/ns")
-    Call<ResponseBody> getNetworkServiceInfo();
+    Call<nsServiceRsp> getNetworkServiceInfo();
     
     @POST("/api/nslcm/v1/ns")
     Call<ResponseBody> createNetworkServiceInstance(@Body RequestBody body);

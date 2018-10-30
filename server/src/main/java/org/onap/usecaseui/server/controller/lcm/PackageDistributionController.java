@@ -15,19 +15,23 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
+import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -38,6 +42,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 @RestController
 @org.springframework.context.annotation.Configuration
@@ -52,7 +59,14 @@ public class PackageDistributionController {
     public void setPackageDistributionService(PackageDistributionService packageDistributionService) {
         this.packageDistributionService = packageDistributionService;
     }
+    
+    @Resource(name="ServiceLcmService")
+    private ServiceLcmService serviceLcmService;
 
+    public void setServiceLcmService(ServiceLcmService serviceLcmService) {
+        this.serviceLcmService = serviceLcmService;
+    }
+    
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/vf-ns-packages"}, method = RequestMethod.GET , produces = "application/json")
     public VfNsPackageInfo retrievePackageInfo(){
@@ -95,7 +109,14 @@ public class PackageDistributionController {
     public DistributionResult deleteNsPackage(@PathVariable("casrId") String casrId){
         return packageDistributionService.deleteNsPackage(casrId);
     }
-
+    
+    @ResponseBody
+    @RequestMapping(value = {"/uui-lcm/jobs/getNsLcmJobStatus/{jobId}"}, method = RequestMethod.GET , produces = "application/json")
+    public JobStatus getNsLcmJobStatus(@PathVariable(value="jobId") String jobId, HttpServletRequest request){
+        String responseId = request.getParameter("responseId");
+        return packageDistributionService.getNsLcmJobStatus(jobId, responseId);
+    }
+    
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/vf-packages/{casrId}"}, method = RequestMethod.DELETE , produces = "application/json")
     public Job deleteVfPackage(@PathVariable("casrId") String casrId){
@@ -188,7 +209,7 @@ public class PackageDistributionController {
     }
     
     @RequestMapping(value = {"/uui-lcm/getNetworkServiceInfo}"}, method = RequestMethod.GET , produces = "application/json")
-    public String getNetworkServiceInfo(){
+    public List<String> getNetworkServiceInfo(){
         return packageDistributionService.getNetworkServiceInfo();
     }
     
@@ -203,8 +224,14 @@ public class PackageDistributionController {
     }
     
     @RequestMapping(value = {"/uui-lcm/instantiateNetworkServiceInstance}"}, method = RequestMethod.POST , produces = "application/json")
-    public String instantiateNetworkServiceInstance(HttpServletRequest request,@RequestParam String ns_instance_id){
-        return packageDistributionService.terminateNetworkServiceInstance(request,ns_instance_id);
+    public String instantiateNetworkServiceInstance(HttpServletRequest request){
+    	String customerId = request.getParameter("customerId");
+    	String serviceType = request.getParameter("serviceType");
+    	String serviceDomain = request.getParameter("serviceDomain");
+    	String ns_instance_id = request.getParameter("ns_instance_id");
+    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,null,null,null);
+    	serviceLcmService.saveOrUpdateServiceBean(serviceBean);
+        return packageDistributionService.instantiateNetworkServiceInstance(request,ns_instance_id);
     }
     
     @RequestMapping(value = {"/uui-lcm/terminateNetworkServiceInstance}"}, method = RequestMethod.POST , produces = "application/json")
