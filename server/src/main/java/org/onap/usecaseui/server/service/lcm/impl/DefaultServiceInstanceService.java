@@ -18,7 +18,9 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -138,20 +140,31 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
         }
 	}
 	
-	public String serviceNumByCustomer(){
+	@Override
+	public String serviceNumByCustomer() throws JsonProcessingException{
+		Map<String,Object> result = new HashMap();
+		ObjectMapper omAlarm = new ObjectMapper();
 		List<AAICustomer> customers = customerService.listCustomer();
 		int total =0;
+		List<Map<String,Object>> list = new ArrayList<>();
 		if(customers.size()>0){
 			for(AAICustomer customer : customers){
+				Map<String,Object> customerMap = new HashMap<String,Object>();
+				int customerNum = 0;
 				List<AAIServiceSubscription> serviceSubscriptions = customerService.listServiceSubscriptions(customer.getGlobalCustomerId());
 				if(serviceSubscriptions.size()>0){
 					for(AAIServiceSubscription serviceSubscription:serviceSubscriptions){
 						List<String> serviceInstances =this.listServiceInstances(customer.getGlobalCustomerId(), serviceSubscription.getServiceType());
 						total+=serviceInstances.size();
+						customerNum+=serviceInstances.size();
 					}
 				}
+				customerMap.put(customer.getSubscriberName(), customerNum);
+				list.add(customerMap);
 			}
 		}
-		return null;
+		result.put("serviceTotalNum", total);
+		result.put("customerServiceList", list);
+		return omAlarm.writeValueAsString(result);
 	}
 }

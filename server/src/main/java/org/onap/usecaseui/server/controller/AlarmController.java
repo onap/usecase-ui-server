@@ -105,13 +105,13 @@ public class AlarmController
     public String getAlarmData(@PathVariable(required = false) String sourceName,
                                @PathVariable(required = false) String priority,@PathVariable(required = false) String startTime,
                                @PathVariable(required = false) String endTime,@PathVariable(required = false) String vfStatus,
-                               @PathVariable int currentPage, @PathVariable int pageSize) throws JsonProcessingException, ParseException {
+                               @PathVariable String currentPage, @PathVariable String pageSize) throws JsonProcessingException, ParseException {
             AlarmsHeader alarm = new AlarmsHeader();
             alarm.setSourceName(sourceName);
             alarm.setStatus(vfStatus);
-            alarm.setStartEpochMicrosec(UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
-            alarm.setLastEpochMicroSec(UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
-            Page  pa = alarmsHeaderService.queryAlarmsHeader(alarm,currentPage,pageSize);
+            alarm.setStartEpochMicrosec(!UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
+            alarm.setLastEpochMicroSec(!UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
+            Page  pa = alarmsHeaderService.queryAlarmsHeader(alarm,Integer.parseInt(currentPage),Integer.parseInt(pageSize));
         try {
             Map<String,Object> map = new HashMap<>();
             map.put("alarms",pa.getList());

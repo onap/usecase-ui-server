@@ -73,16 +73,16 @@ public class PerformanceController {
     private ObjectMapper omPerformance = new ObjectMapper();
     
     @RequestMapping(value = {"/performance/{currentPage}/{pageSize}","/performance/{currentPage}/{pageSize}/{sourceName}/{startTime}/{endTime}"},method = RequestMethod.GET, produces = "application/json")
-    public String getPerformanceData(@PathVariable int currentPage,
-                                     @PathVariable int pageSize,
+    public String getPerformanceData(@PathVariable String currentPage,
+                                     @PathVariable String pageSize,
                                      @PathVariable(required = false) String sourceName,
                                      @PathVariable(required = false) String startTime,@PathVariable(required = false) String endTime) throws JsonProcessingException, ParseException {
         Page<PerformanceHeader> pa = new Page<PerformanceHeader>();
             PerformanceHeader performanceHeader = new PerformanceHeader();
             performanceHeader.setSourceName(sourceName);
-            performanceHeader.setStartEpochMicrosec(UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
-            performanceHeader.setLastEpochMicroSec(UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
-            pa = performanceHeaderService.queryPerformanceHeader(performanceHeader,currentPage,pageSize);
+            performanceHeader.setStartEpochMicrosec(!UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
+            performanceHeader.setLastEpochMicroSec(!UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
+            pa = performanceHeaderService.queryPerformanceHeader(performanceHeader,Integer.parseInt(currentPage),Integer.parseInt(pageSize));
         try {
             Map<String,Object> map = new HashMap<>();
             map.put("performances",pa.getList());
