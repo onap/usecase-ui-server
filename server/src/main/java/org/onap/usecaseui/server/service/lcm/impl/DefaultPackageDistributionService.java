@@ -15,13 +15,29 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.CATEGORY_NS;
+import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.DISTRIBUTION_STATUS_DISTRIBUTED;
+import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.RESOURCETYPE_VF;
+import static org.onap.usecaseui.server.util.RestfulServices.create;
+import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
+import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.nsServiceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcService;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
@@ -33,19 +49,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.*;
-import static org.onap.usecaseui.server.util.RestfulServices.create;
-import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 
 @Service("PackageDistributionService")
 @org.springframework.context.annotation.Configuration
@@ -57,6 +66,9 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     private SDCCatalogService sdcCatalogService;
 
     private VfcService vfcService;
+    
+    @Resource(name="ServiceLcmService")
+    private ServiceLcmService serviceLcmService;
 
     public DefaultPackageDistributionService() {
         this(create(SDCCatalogService.class), create(VfcService.class));
@@ -67,6 +79,10 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         this.vfcService = vfcService;
     }
 
+	public void setServiceLcmService(ServiceLcmService serviceLcmService) {
+		this.serviceLcmService = serviceLcmService;
+	}
+	
     @Override
     public VfNsPackageInfo retrievePackageInfo() {
             List<SDCServiceTemplate> nsTemplate = sdcNsPackageInfo();
@@ -150,7 +166,22 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             throw new VfcException("VFC service is not available!", e);
         }
     }
-
+    
+    @Override
+    public JobStatus getNsLcmJobStatus(String jobId, String responseId) {
+        try {
+            Response<JobStatus> response = vfcService.getNsLcmJobStatus(jobId, responseId).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
+                throw new VfcException("VFC service getNsLcmJobStatus is not available!");
+            }
+        } catch (IOException e) {
+            throw new VfcException("VFC service getNsLcmJobStatus is not available!", e);
+        }
+    }
+    
     @Override
     public DistributionResult deleteNsPackage(String csarId) {
         try {
@@ -378,24 +409,33 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 	}
 
 	@Override
-	public String getNetworkServiceInfo() {
-
-		String result="";
+	public List<String> getNetworkServiceInfo() {
+		List<String> result = new ArrayList<>();
         try {
         	logger.info("vfc getNetworkServiceInfo is starting!");
-            Response<ResponseBody> response = this.vfcService.getNetworkServiceInfo().execute();
+            Response<nsServiceRsp> response = this.vfcService.getNetworkServiceInfo().execute();
             logger.info("vfc getNetworkServiceInfo has finished!");
             if (response.isSuccessful()) {
-            	result=new String(response.body().bytes());
+            	List<String> nsServices = response.body().nsServices;
+            	if(nsServices.size()>0){
+            		for(String nsService:nsServices){
+            			JSONObject object =  JSON.parseObject(nsService);
+            			String serviceInstanceId=object.get("nsInstanceId").toString();
+            			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
+            			object.put("serviceDomain",serviceBean.getServiceDomain());
+            			object.put("childServiceInstances","[]");
+            			result.add(object.toString());
+            		}
+            	}
+            	return result;
             } else {
                 logger.info(String.format("Can not get getNetworkServiceInfo[code=%s, message=%s]", response.code(), response.message()));
-                result=Constant.CONSTANT_FAILED;;
+                return Collections.emptyList();
             }
         } catch (IOException e) {
             logger.error("getNetworkServiceInfo occur exception:"+e);
-            result=Constant.CONSTANT_FAILED;;
+            return Collections.emptyList();
         }
-        return result;
 	
 	}
 
@@ -697,5 +737,4 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         }
         return result;
 	}
-
 }

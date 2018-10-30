@@ -16,18 +16,30 @@
 package org.onap.usecaseui.server.service.lcm.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.onap.usecaseui.server.bean.ServiceBean;
+import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
+import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -40,6 +52,20 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     private static final Logger logger = LoggerFactory.getLogger(DefaultServiceInstanceService.class);
 
     private AAIService aaiService;
+    
+    @Resource(name="ServiceLcmService")
+    private ServiceLcmService serviceLcmService;
+    
+    @Resource(name="CustomerService")
+    private CustomerService customerService;
+
+    public void setCustomerService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+    
+	public void setServiceLcmService(ServiceLcmService serviceLcmService) {
+		this.serviceLcmService = serviceLcmService;
+	}
 
     public DefaultServiceInstanceService() {
         this(RestfulServices.create(AAIService.class));
@@ -51,20 +77,50 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 
     @Override
     public List<String> listServiceInstances(String customerId, String serviceType) {
+    	List<String> result = new ArrayList<>();
         try {
             Response<ServiceInstanceRsp> response = aaiService.listServiceInstances(customerId, serviceType).execute();
             if (response.isSuccessful()) {
-                return response.body().getServiceInstances();
+            	List<String> serviceInstances = response.body().getServiceInstances();
+            	if(serviceInstances.size()>0){
+            		result=this.parseServiceInstance(serviceInstances, customerId, serviceType);
+            	}
+                return result;
             } else {
                 logger.info(String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("list services instances occur exception");
-            throw new AAIException("AAI is not available.", e);
+            logger.error("list services instances occur exception"+e.getMessage());
+            return Collections.emptyList();
         }
     }
-
+    
+	private List<String> parseServiceInstance(List<String> list,String customerId,String serviceType) throws JsonProcessingException{
+    	ObjectMapper mapper = new ObjectMapper();
+    	List<String> result = new ArrayList<>();
+    	for(String serviceInstance:list){
+    			JSONObject object =  JSON.parseObject(serviceInstance);
+    			String serviceInstanceId=object.get("service-instance-id").toString();
+    			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
+    			String serviceDomain = serviceBean.getServiceDomain();
+				object.put("serviceDomain",serviceDomain);
+				if("SOTN".equals(serviceDomain)||"CCVPN".equals(serviceDomain)||"E2E Service".equals(serviceDomain)||"Network Service".equals(serviceDomain)){
+					List<String> parentIds = serviceLcmService.getServiceInstanceIdByParentId(serviceInstanceId);
+					List<String> parentServiceInstances = new ArrayList<>();
+					if(parentIds.size()>0){
+						for(String id:parentIds){
+							String parentServiceInstance=this.getRelationShipData(customerId, serviceType, id);
+							parentServiceInstances.add(parentServiceInstance);
+						}
+					}
+					object.put("childServiceInstances",mapper.writeValueAsString(parentServiceInstances));
+					result.add(object.toString());
+				}
+    	}
+    	return result;
+    }
+	
 	@Override
 	public String getRelationShipData(String customerId, String serviceType, String serviceId) {
         try {
@@ -77,8 +133,25 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
                 return "";
             }
         } catch (IOException e) {
-            logger.error("list services instances occur exception");
-            throw new AAIException("AAI is not available.", e);
+            logger.error("list services instances occur exception:"+e.getMessage());
+            return "";
         }
+	}
+	
+	public String serviceNumByCustomer(){
+		List<AAICustomer> customers = customerService.listCustomer();
+		int total =0;
+		if(customers.size()>0){
+			for(AAICustomer customer : customers){
+				List<AAIServiceSubscription> serviceSubscriptions = customerService.listServiceSubscriptions(customer.getGlobalCustomerId());
+				if(serviceSubscriptions.size()>0){
+					for(AAIServiceSubscription serviceSubscription:serviceSubscriptions){
+						List<String> serviceInstances =this.listServiceInstances(customer.getGlobalCustomerId(), serviceSubscription.getServiceType());
+						total+=serviceInstances.size();
+					}
+				}
+			}
+		}
+		return null;
 	}
 }

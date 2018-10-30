@@ -16,12 +16,15 @@
 package org.onap.usecaseui.server.controller.lcm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
+import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -49,35 +52,51 @@ public class ServiceInstanceController {
     @Resource(name="ServiceInstanceService")
     private ServiceInstanceService serviceInstanceService;
     
-    @Resource(name="ServiceLcmService")
-    private ServiceLcmService serviceLcmService;
+    @Resource(name="PackageDistributionService")
+    private PackageDistributionService packageDistributionService;
+
+    public void setPackageDistributionService(PackageDistributionService packageDistributionService) {
+        this.packageDistributionService = packageDistributionService;
+    }
 
     public void setServiceInstanceService(ServiceInstanceService serviceInstanceService) {
         this.serviceInstanceService = serviceInstanceService;
     }
 
-	public void setServiceLcmService(ServiceLcmService serviceLcmService) {
-		this.serviceLcmService = serviceLcmService;
-	}
-
 	@ResponseBody
     @RequestMapping(value = {"/uui-lcm/service-instances"}, method = RequestMethod.GET , produces = "application/json")
-    public List<String> listServiceInstances(HttpServletRequest request){
-		List<String> result = new ArrayList<String>();
+    public String listServiceInstances(HttpServletRequest request) throws JsonProcessingException{
+		ObjectMapper mapper = new ObjectMapper();
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
         String currentPage = request.getParameter("currentPage");
         String pageSize = request.getParameter("pageSize");
         List<String> serviceInstances =serviceInstanceService.listServiceInstances(customerId, serviceType);
-        if(serviceInstances.size()>0){
-        	try {
-				result = this.parseServiceInstance(serviceInstances,currentPage,pageSize,customerId,serviceType);
-			} catch (JsonProcessingException e) {
-				logger.error("exception occurred while performing ServiceInstanceController listServiceInstances. Details:" + e.getMessage());
-			}
-        }
-        return result;
+        Map<String,Object> map = new HashMap<>();
+        map.put("total", serviceInstances.size());
+        map.put("tableList", UuiCommonUtil.getPageList(serviceInstances, Integer.parseInt(currentPage), Integer.parseInt(pageSize)));
+        return mapper.writeValueAsString(map);
     }
+	
+	@ResponseBody
+    @RequestMapping(value = {"/uui-lcm/service-ns-instances"}, method = RequestMethod.GET , produces = "application/json")
+    public String listNsOrServiceInstances(HttpServletRequest request) throws JsonProcessingException{
+		ObjectMapper mapper = new ObjectMapper();
+        String customerId = request.getParameter("customerId");
+        String serviceType = request.getParameter("serviceType");
+        String currentPage = request.getParameter("currentPage");
+        String pageSize = request.getParameter("pageSize");
+        List<String> serviceInstances =serviceInstanceService.listServiceInstances(customerId, serviceType);
+        List<String> nsServiceInstances = packageDistributionService.getNetworkServiceInfo();
+        List<String> result = new ArrayList<>();
+        result.addAll(serviceInstances);
+        result.addAll(nsServiceInstances);
+        Map<String,Object> map = new HashMap<>();
+        map.put("total", result.size());
+        map.put("tableList", UuiCommonUtil.getPageList(result, Integer.parseInt(currentPage), Integer.parseInt(pageSize)));
+        return mapper.writeValueAsString(map);
+    }
+	
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/getServiceInstanceById"}, method = RequestMethod.GET , produces = "application/json")
     public String getServiceInstanceById(HttpServletRequest request){
@@ -114,31 +133,5 @@ public class ServiceInstanceController {
         	}
 		}
         return result.toString() ;
-    }
-    
-    @SuppressWarnings("unchecked")
-	private List<String> parseServiceInstance(List<String> list,String currentPage,String pageSize,String customerId,String serviceType) throws JsonProcessingException{
-    	ObjectMapper mapper = new ObjectMapper();
-    	List<String> result = new ArrayList<>();
-    	for(String serviceInstance:list){
-    			JSONObject object =  JSON.parseObject(serviceInstance);
-    			String serviceInstanceId=object.get("service-instance-id").toString();
-    			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
-    			String serviceDomain = serviceBean.getServiceDomain();
-				object.put("serviceDomain",serviceDomain);
-				if("SOTN".equals(serviceDomain)||"CCVPN".equals(serviceDomain)||"E2E Service".equals(serviceDomain)||"Network Service".equals(serviceDomain)){
-					List<String> parentIds = serviceLcmService.getServiceInstanceIdByParentId(serviceInstanceId);
-					List<String> parentServiceInstances = new ArrayList<>();
-					if(parentIds.size()>0){
-						for(String id:parentIds){
-							String parentServiceInstance=serviceInstanceService.getRelationShipData(customerId, serviceType, id);
-							parentServiceInstances.add(parentServiceInstance);
-						}
-					}
-					object.put("childServiceInstances",mapper.writeValueAsString(parentServiceInstances));
-					result.add(mapper.writeValueAsString(object));
-				}
-    	}
-    	return UuiCommonUtil.getPageList(result, Integer.parseInt(currentPage), Integer.parseInt(pageSize));
     }
 }
