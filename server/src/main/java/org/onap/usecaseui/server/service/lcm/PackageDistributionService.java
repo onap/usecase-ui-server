@@ -41,6 +41,8 @@ public interface PackageDistributionService {
     Job postVfPackage(Csar csar);
 
     JobStatus getJobStatus(String jobId, String responseId);
+    
+    JobStatus getNsLcmJobStatus(String jobId, String responseId);
 
     DistributionResult deleteNsPackage(String csarId);
 
@@ -80,7 +82,7 @@ public interface PackageDistributionService {
     
     String deletePnfPackage(String pnfdInfoId);
     
-    String getNetworkServiceInfo();
+    List<String> getNetworkServiceInfo();
     
     String createNetworkServiceInstance(HttpServletRequest request);
     
