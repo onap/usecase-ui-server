@@ -17,9 +17,13 @@ package org.onap.usecaseui.server.service.lcm;
 
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 public interface ServiceInstanceService {
 
     List<String> listServiceInstances(String customerId, String serviceType);
     
     String getRelationShipData(String customerId, String serviceType,String serviceId );
+    
+    String serviceNumByCustomer() throws JsonProcessingException;
 }

@@ -97,6 +97,11 @@ public class ServiceInstanceController {
         return mapper.writeValueAsString(map);
     }
 	
+	@ResponseBody
+    @RequestMapping(value = {"/uui-lcm/serviceNumByCustomer"}, method = RequestMethod.GET , produces = "application/json")
+    public String serviceNumByCustomer(HttpServletRequest request) throws JsonProcessingException{
+		return serviceInstanceService.serviceNumByCustomer();
+	}
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/getServiceInstanceById"}, method = RequestMethod.GET , produces = "application/json")
     public String getServiceInstanceById(HttpServletRequest request){
