@@ -63,8 +63,8 @@ public class PerformanceControllerTest {
 	    PerformanceHeader header = new PerformanceHeader();
 
 
-	    controller.getPerformanceData(currentPage,pageSize,sourceName,startTime,endTime);
-	    controller.getPerformanceData(currentPage,pageSize,null,null,null);
+	    controller.getPerformanceData(currentPage+"",pageSize+"",sourceName,startTime,endTime);
+	    controller.getPerformanceData(currentPage+"",pageSize+"",null,null,null);
 	    verify(phs,times(1)).queryPerformanceHeader(header,currentPage,pageSize);
 
 }
