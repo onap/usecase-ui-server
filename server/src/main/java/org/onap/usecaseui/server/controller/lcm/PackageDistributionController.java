@@ -248,4 +248,9 @@ public class PackageDistributionController {
     public String scaleNetworkServiceInstance(HttpServletRequest request,@RequestParam String ns_instance_id){
         return packageDistributionService.scaleNetworkServiceInstance(request,ns_instance_id);
     }
+    
+    @RequestMapping(value = {"/uui-lcm/VnfInfo/{vnfinstid}"}, method = RequestMethod.POST , produces = "application/json")
+    public String getVnfInfoById(@PathVariable String vnfinstid){
+        return packageDistributionService.getVnfInfoById(vnfinstid);
+    }
 }

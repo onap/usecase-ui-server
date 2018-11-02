@@ -737,4 +737,26 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         }
         return result;
 	}
+
+	@Override
+	public String getVnfInfoById(String vnfinstid) {
+
+		String result="";
+        try {
+        	logger.info("vfc getVnfInfoById is starting!");
+            Response<ResponseBody> response = this.vfcService.getVnfInfoById(vnfinstid).execute();
+            logger.info("vfc getVnfInfoById has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getVnfInfoById[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;;
+            }
+        } catch (IOException e) {
+            logger.error("getVnfInfoById occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;;
+        }
+        return result;
+	
+	}
 }

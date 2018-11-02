@@ -117,4 +117,7 @@ public interface VfcService {
     
     @DELETE("/api/nsd/v1/pnf_descriptors/{pnfdInfoId}")
     Call<ResponseBody> deletePnfdPackage(@Path("pnfdInfoId") String pnfdInfoId);
+    
+    @GET("/api/nslcm/v1/ns/vnfs/{vnfinstid}")
+    Call<ResponseBody> getVnfInfoById(@Path("vnfinstid") String vnfinstid);
 }

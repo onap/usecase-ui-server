@@ -95,4 +95,6 @@ public interface PackageDistributionService {
     String healNetworkServiceInstance(HttpServletRequest request,String networkServiceInstanceId);
     
     String scaleNetworkServiceInstance(HttpServletRequest request,String networkServiceInstanceId);
+    
+    String getVnfInfoById(String vnfinstid);
 }
