@@ -16,8 +16,8 @@
 package org.onap.usecaseui.server.service.impl;
 
 
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -26,6 +26,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.bean.maxAndMinTimeBean;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -190,7 +191,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 
 	@Override
-	public int queryDateBetween(String sourceId, String startTime, String endTime,String level) {
+	public int queryDateBetween(String sourceId, String startTime, String endTime,String status) {
 		if("1526554800000".equals(startTime)){
 			System.out.print(startTime);
 		}
@@ -199,8 +200,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			if (sourceId != null && !"".equals(sourceId)){
 				hql += " and a.sourceId = :sourceId";
 			}
-			if (UuiCommonUtil.isNotNullOrEmpty(level)){
-				hql += " and a.eventServrity = :eventServrity";
+			if (UuiCommonUtil.isNotNullOrEmpty(status)){
+				hql += " and a.status = :status";
 			}
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
 				hql += " and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ";
@@ -209,8 +210,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			if (sourceId != null && !"".equals(sourceId)){
 				query.setString("sourceId",sourceId);
 			}
-			if (UuiCommonUtil.isNotNullOrEmpty(level)){
-				query.setString("eventServrity",level);
+			if (UuiCommonUtil.isNotNullOrEmpty(status)){
+				query.setString("status",status);
 			}
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
 				query.setString("startTime", startTime).setString("endTime", endTime);
@@ -221,6 +222,23 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. Details:" + e.getMessage());
 			return 0;
 		}
+	}
+	
+	@Override
+	public List<maxAndMinTimeBean> queryMaxAndMinTime(){
+		List<maxAndMinTimeBean> list = new ArrayList<>();
+		try (Session session = getSession()){
+			String sql = "select MAX(startEpochMicrosec),MIN(startEpochMicrosec) FROM alarms_commoneventheader";
+			Query query = session.createSQLQuery(sql);
+			list = query.list();
+			session.flush();
+		}catch (Exception e){
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryDateBetween. LIST:" + e.getMessage());
+
+			 list = new ArrayList<>();
+		}
+	
+		return list;
 	}
 
 	@Override

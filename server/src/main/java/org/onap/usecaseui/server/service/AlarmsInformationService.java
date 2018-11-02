@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.bean.maxAndMinTimeBean;
 import org.onap.usecaseui.server.util.Page;
 
 
@@ -49,4 +50,6 @@ public interface AlarmsInformationService {
       * @return
      */
     List<AlarmsInformation> getAllAlarmsInformationByHeaderId(String id);
+    
+    List<maxAndMinTimeBean> queryMaxAndMinTime();
 }

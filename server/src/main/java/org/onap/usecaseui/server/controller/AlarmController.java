@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.bean.maxAndMinTimeBean;
 import org.onap.usecaseui.server.bo.AlarmBo;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
@@ -181,33 +182,41 @@ public class AlarmController
         		formatDate="yyyy-MM-dd";
         		timeInterval =86400000;
         	}
+        	List<maxAndMinTimeBean> list = alarmsInformationService.queryMaxAndMinTime();
+        	if(!UuiCommonUtil.isNotNullOrEmpty(startTime)&&list.size()>0){
+        		startTime=list.get(0).getMinTime();
+        	}
+        	if(!UuiCommonUtil.isNotNullOrEmpty(endTime)&&list.size()>0){
+        		endTime=list.get(0).getMaxTime();
+        	}
         	sdf = new SimpleDateFormat(formatDate);
             long startTimel = sdf.parse(startTime).getTime();
             long endTimel = sdf.parse(endTime).getTime();
             return getDiagram(sourceId, startTimel, endTimel+timeInterval, timeInterval, 1, 1,format);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+        	logger.error("alarmController diagram occured exception:"+e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
     
+    @SuppressWarnings("rawtypes")
     private  String getDiagram(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format) throws JsonProcessingException{
-    	Map<String,List> result = new HashMap<String,List>();
+		Map<String,List> result = new HashMap<String,List>();
     	
     	Map<String,List> allMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, keyVal, keyValIteraVal,format,"");
-    	Map<String,List> criticalMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"CRITICAL");
-    	Map<String,List> majorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MAJOR");
-    	Map<String,List> minorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MINOR");
-    	Map<String,List> warningMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"WARNING");
-    	Map<String,List> normalMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"NORMAL");
+    	//Map<String,List> criticalMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"CRITICAL");
+    	//Map<String,List> majorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MAJOR");
+    	//Map<String,List> minorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MINOR");
+    	Map<String,List> closedMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"closed");
+    	Map<String,List> activeMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"active");
     	result.put("dateList", allMaps.get("dateTime"));
     	result.put("allList", allMaps.get("dataList"));
-    	result.put("criticalList",criticalMaps.get("dataList"));
-    	result.put("majorList",majorMaps.get("dataList"));
-    	result.put("minorList",minorMaps.get("dataList"));
-    	result.put("warningList",warningMaps.get("dataList"));
-    	result.put("normalList",normalMaps.get("dataList"));
+    	//result.put("criticalList",criticalMaps.get("dataList"));
+    	//result.put("majorList",majorMaps.get("dataList"));
+    	//result.put("minorList",minorMaps.get("dataList"));
+    	result.put("closedList",closedMaps.get("dataList"));
+    	result.put("ActiveList",activeMaps.get("dataList"));
     	return omAlarm.writeValueAsString(result);
     }
     private Map<String,List> dateProcess(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format,String level) {
