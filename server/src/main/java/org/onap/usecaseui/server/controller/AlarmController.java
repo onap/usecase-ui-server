@@ -205,16 +205,10 @@ public class AlarmController
 		Map<String,List> result = new HashMap<String,List>();
     	
     	Map<String,List> allMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, keyVal, keyValIteraVal,format,"");
-    	//Map<String,List> criticalMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"CRITICAL");
-    	//Map<String,List> majorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MAJOR");
-    	//Map<String,List> minorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MINOR");
     	Map<String,List> closedMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"closed");
     	Map<String,List> activeMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"active");
     	result.put("dateList", allMaps.get("dateTime"));
     	result.put("allList", allMaps.get("dataList"));
-    	//result.put("criticalList",criticalMaps.get("dataList"));
-    	//result.put("majorList",majorMaps.get("dataList"));
-    	//result.put("minorList",minorMaps.get("dataList"));
     	result.put("closedList",closedMaps.get("dataList"));
     	result.put("ActiveList",activeMaps.get("dataList"));
     	return omAlarm.writeValueAsString(result);
@@ -243,6 +237,7 @@ public class AlarmController
     public String getStatusCount() throws JsonProcessingException {
         List<String> statusCount = new ArrayList<>();
 
+        	statusCount.add(alarmsHeaderService.queryStatusCount("0"));
             statusCount.add(alarmsHeaderService.queryStatusCount("active"));
             statusCount.add(alarmsHeaderService.queryStatusCount("close"));
             return omAlarm.writeValueAsString(statusCount);
