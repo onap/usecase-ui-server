@@ -159,7 +159,8 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 						customerNum+=serviceInstances.size();
 					}
 				}
-				customerMap.put(customer.getSubscriberName(), customerNum);
+				customerMap.put("name",customer.getSubscriberName());
+				customerMap.put("value",customerNum);
 				list.add(customerMap);
 			}
 		}
