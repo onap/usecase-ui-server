@@ -191,14 +191,14 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 
 	@Override
-	public int queryDateBetween(String sourceId, String startTime, String endTime,String status) {
+	public int queryDateBetween(String sourceName, String startTime, String endTime,String status) {
 		if("1526554800000".equals(startTime)){
 			System.out.print(startTime);
 		}
 		try(Session session = getSession()) {
 			String hql = "select count(*) from AlarmsHeader a where 1=1 ";
-			if (sourceId != null && !"".equals(sourceId)){
-				hql += " and a.sourceId = :sourceId";
+			if (sourceName != null && !"".equals(sourceName)){
+				hql += " and a.sourceName = :sourceName";
 			}
 			if (UuiCommonUtil.isNotNullOrEmpty(status)){
 				hql += " and a.status = :status";
@@ -207,8 +207,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 				hql += " and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ";
 			}
 			Query query = session.createQuery(hql);
-			if (sourceId != null && !"".equals(sourceId)){
-				query.setString("sourceId",sourceId);
+			if (sourceName != null && !"".equals(sourceName)){
+				query.setString("sourceName",sourceName);
 			}
 			if (UuiCommonUtil.isNotNullOrEmpty(status)){
 				query.setString("status",status);

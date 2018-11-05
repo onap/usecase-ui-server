@@ -171,7 +171,7 @@ public class AlarmController
     }
     
     @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.POST,produces = "application/json")
-    public String diagram(@RequestParam String sourceId, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String format) {
+    public String diagram(@RequestParam String sourceName, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String format) {
         long timeInterval = 0;
     	try {
         	if("month".equals(format)){//alarm   day month year
@@ -192,7 +192,7 @@ public class AlarmController
         	sdf = new SimpleDateFormat(formatDate);
             long startTimel = sdf.parse(startTime).getTime();
             long endTimel = sdf.parse(endTime).getTime();
-            return getDiagram(sourceId, startTimel, endTimel+timeInterval, timeInterval, 1, 1,format);
+            return getDiagram(sourceName, startTimel, endTimel+timeInterval, timeInterval, 1, 1,format);
         } catch (Exception e) {
         	logger.error("alarmController diagram occured exception:"+e.getMessage());
             e.printStackTrace();
@@ -201,15 +201,15 @@ public class AlarmController
     }
     
     @SuppressWarnings("rawtypes")
-    private  String getDiagram(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format) throws JsonProcessingException{
+    private  String getDiagram(String sourceName, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format) throws JsonProcessingException{
 		Map<String,List> result = new HashMap<String,List>();
     	
-    	Map<String,List> allMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, keyVal, keyValIteraVal,format,"");
+    	Map<String,List> allMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, keyVal, keyValIteraVal,format,"");
     	//Map<String,List> criticalMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"CRITICAL");
     	//Map<String,List> majorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MAJOR");
     	//Map<String,List> minorMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"MINOR");
-    	Map<String,List> closedMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"closed");
-    	Map<String,List> activeMaps = dateProcess(sourceId, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"active");
+    	Map<String,List> closedMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"closed");
+    	Map<String,List> activeMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"active");
     	result.put("dateList", allMaps.get("dateTime"));
     	result.put("allList", allMaps.get("dataList"));
     	//result.put("criticalList",criticalMaps.get("dataList"));
@@ -219,13 +219,13 @@ public class AlarmController
     	result.put("ActiveList",activeMaps.get("dataList"));
     	return omAlarm.writeValueAsString(result);
     }
-    private Map<String,List> dateProcess(String sourceId, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format,String level) {
+    private Map<String,List> dateProcess(String sourceName, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format,String level) {
     	Map<String,List> result = new HashMap<String,List>();
         List<String> dateList = new ArrayList<String>();
         List<Integer> numList = new ArrayList<Integer>();
         long tmpEndTimeL = startTimeL + timeIteraPlusVal;
         while (endTimeL >= tmpEndTimeL) {
-            int num = alarmsInformationService.queryDateBetween(sourceId,startTimeL+"",tmpEndTimeL+"",level);
+            int num = alarmsInformationService.queryDateBetween(sourceName,startTimeL+"",tmpEndTimeL+"",level);
             dateList.add(DateUtils.getResultDate(startTimeL, format));
             int maxDay2 = DateUtils.MonthOfDay(sdf.format(new Date(tmpEndTimeL)), formatDate);
             int maxDay = DateUtils.MonthOfDay(sdf.format(new Date(startTimeL)), formatDate);
