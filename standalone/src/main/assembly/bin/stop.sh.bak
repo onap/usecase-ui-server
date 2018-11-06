@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2018 CMCC Corporation.
+# Copyright 2016-2017 ZTE Corporation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,19 +27,22 @@ cd $HOME; pwd
 
 echo @WORK_DIR@ $HOME
 
-function shutdown_usecaseui_server(){
-    echo ================== usecase-ui server shutdown is starting =============================================
-    curl -X POST http://localhost:8082/usecase-ui-server/shutdown
-    echo ================== usecase-ui server shutdown finished =============================================
+function save_service_pid(){
+    service_pid=`ps -ef | grep $Main_Class | grep -v grep | awk '{print $2}'`
+    echo @service_pid@ $service_pid
 }
 
-function shutdown_usecaseui_db(){
-    echo ================== usecase-ui database shutdown is starting =============================================
-    service mysql stop
-    echo ================== usecase-ui database shutdown finished =============================================
+function kill_service_process(){
+    ps -p $service_pid
+    if [ $? == 0 ]; then
+        kill -9 $service_pid
+    fi
 }
 
-shutdown_usecaseui_server;
-shutdown_usecaseui_db;
-echo "*****************usecase server shutdown finished*****************"
+save_service_pid;
+echo @C_CMD@ kill -9 $service_pid
+kill_service_process;
+
+echo "Stoping mysql"
+service mysql stop
 sleep 1
