@@ -29,7 +29,7 @@ echo @WORK_DIR@ $HOME
 
 function shutdown_usecaseui_server(){
     echo ================== usecase-ui server shutdown is starting =============================================
-    curl -X POST http://localhost:8082/usecase-ui-server/shutdown
+    curl -X POST http://127.0.0.1:8082/api/usecaseui/server/v1/shutdown
     echo ================== usecase-ui server shutdown finished =============================================
 }
 
