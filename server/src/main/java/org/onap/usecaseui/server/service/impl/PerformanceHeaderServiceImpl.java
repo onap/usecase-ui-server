@@ -93,76 +93,12 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 			if (null == performanceHeder) {
 				return 0;
 			}else {
-				if(null!=performanceHeder.getVersion()) {
-					String ver=performanceHeder.getVersion();
-					hql.append(" and a.version like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getEventName()) {
-					String ver=performanceHeder.getEventName();
-					hql.append(" and a.eventName like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getDomain()) {
-					String ver=performanceHeder.getDomain();
-					hql.append(" and a.domain like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getEventId()) {
-					String ver=performanceHeder.getEventId();
-					hql.append(" and a.eventId = '"+ver+"'");
-				}
-				if(null!=performanceHeder.getNfcNamingCode()) {
-					String ver=performanceHeder.getNfcNamingCode();
-					hql.append(" and a.nfcNamingCode like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getNfNamingCode()) {
-					String ver=performanceHeder.getNfNamingCode();
-					hql.append(" and a.nfNamingCode like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getSourceId()) {
-					String ver =performanceHeder.getSourceId();
-					hql.append(" and a.sourceId like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getSourceName()) {
+				if(UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getSourceName())) {
 					String ver =performanceHeder.getSourceName();
 					hql.append(" and a.sourceName like '%"+ver+"%'");
 				}
-				if(null!=performanceHeder.getReportingEntityId()) {
-					String ver =performanceHeder.getReportingEntityId();
-					hql.append(" and a.reportingEntityId like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getReportingEntityName()) {
-					String ver =performanceHeder.getReportingEntityName();
-					hql.append(" and a.reportingEntityName like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getPriority()) {
-					String ver =performanceHeder.getPriority();
-					hql.append(" and a.priority like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getStartEpochMicrosec()) {
-					String ver =performanceHeder.getStartEpochMicrosec();
-					hql.append(" and a.startEpochMicrosec like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getLastEpochMicroSec()) {
-					String ver =performanceHeder.getLastEpochMicroSec();
-					hql.append(" and a.lastEpochMicroSec like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getSequence()) {
-					String ver =performanceHeder.getSequence();
-					hql.append(" and a.sequence like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getMeasurementsForVfScalingVersion()) {
-					String ver =performanceHeder.getMeasurementsForVfScalingVersion();
-					hql.append(" and a.measurementsForVfScalingVersion like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getMeasurementInterval()) {
-					String ver =performanceHeder.getMeasurementInterval();
-					hql.append(" and a.measurementInterval like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getEventType()) {
-					String ver =performanceHeder.getEventType();
-					hql.append(" and a.eventType like '%"+ver+"%'");
-				}
-				if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
-					hql.append(" and a.startEpochMicrosec between :startTime and :endTime ");
+				if(UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getStartEpochMicrosec())&& UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getLastEpochMicroSec())) {
+					hql.append(" and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ");
 				}
 			}
 			Query query = session.createQuery(hql.toString());
@@ -187,15 +123,15 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 		try(Session session = getSession()){
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
-				if(null!=performanceHeder.getSourceName()) {
+				if(UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getSourceName())) {
 					String ver =performanceHeder.getSourceName();
 					hql.append(" and a.sourceName like '%"+ver+"%'");
 				}
-				if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
-					hql.append(" and a.startEpochMicrosec between :startTime and :endTime ");
+				if(UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getStartEpochMicrosec())&& UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getLastEpochMicroSec())) {
+					hql.append(" and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ");
 				}
 			Query query = session.createQuery(hql.toString());
-			if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
+			if(UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getStartEpochMicrosec())&& UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getLastEpochMicroSec())) {
 				query.setString("startTime",performanceHeder.getStartEpochMicrosec()).setString("endTime",performanceHeder.getLastEpochMicroSec());
 			}
 			query.setFirstResult(offset);

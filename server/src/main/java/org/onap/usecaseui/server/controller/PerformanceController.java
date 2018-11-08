@@ -32,7 +32,6 @@ import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
@@ -42,6 +41,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -72,11 +72,11 @@ public class PerformanceController {
 
     private ObjectMapper omPerformance = new ObjectMapper();
     
-    @RequestMapping(value = {"/performance/{currentPage}/{pageSize}","/performance/{currentPage}/{pageSize}/{sourceName}/{startTime}/{endTime}"},method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = {"/performance/{currentPage}/{pageSize}"},method = RequestMethod.GET, produces = "application/json")
     public String getPerformanceData(@PathVariable String currentPage,
                                      @PathVariable String pageSize,
-                                     @PathVariable(required = false) String sourceName,
-                                     @PathVariable(required = false) String startTime,@PathVariable(required = false) String endTime) throws JsonProcessingException, ParseException {
+                                     @RequestParam(required = false) String sourceName,
+                                     @RequestParam(required = false) String startTime,@RequestParam(required = false) String endTime) throws JsonProcessingException, ParseException {
         Page<PerformanceHeader> pa = new Page<PerformanceHeader>();
             PerformanceHeader performanceHeader = new PerformanceHeader();
             performanceHeader.setSourceName(sourceName);
@@ -122,9 +122,9 @@ public class PerformanceController {
         return string;
     }
     
-    @RequestMapping(value = {"/performanceSsourceNames/{currentPage}/{pageSize}/{sourceName}"},method = RequestMethod.GET, produces = "application/json")
-    public String getPerformanceSourceNames(@PathVariable int currentPage,@PathVariable int pageSize,
-            @PathVariable(required = false) String sourceName) throws JsonProcessingException{
+    @RequestMapping(value = {"/performance/getSourceNames/{currentPage}/{pageSize}"},method = RequestMethod.GET, produces = "application/json")
+    public String getPerformanceSourceNames(@PathVariable String currentPage,@PathVariable String pageSize,
+            @RequestParam(required = false) String sourceName) throws JsonProcessingException{
         PerformanceHeader performanceHeader = new PerformanceHeader();
         Page<PerformanceHeader> page = new Page<PerformanceHeader>();
         Set<String> names = new HashSet<String>();
@@ -144,8 +144,8 @@ public class PerformanceController {
             names.add(name);
         }
         Map<String,Object> map = new HashMap<>();
-        map.put("names",names);
-        map.put("totalRecords",UuiCommonUtil.getPageList(new ArrayList(names), currentPage, pageSize));
-    	return omPerformance.writeValueAsString(names);
+        map.put("names",names.size());
+        map.put("totalRecords",UuiCommonUtil.getPageList(new ArrayList(names), Integer.parseInt(currentPage),Integer.parseInt(pageSize)));
+    	return omPerformance.writeValueAsString(map);
     }
 }
