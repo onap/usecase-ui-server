@@ -29,8 +29,6 @@ import javax.annotation.Resource;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.bean.maxAndMinTimeBean;
-import org.onap.usecaseui.server.bo.AlarmBo;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
@@ -100,12 +98,11 @@ public class AlarmController
 	 * test commit
 	 * @throws ParseException 
 	 */
-    @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}",
-            "/alarm/{currentPage}/{pageSize}/{sourceName}/{priority}/{startTime}/{endTime}/{vfStatus}"},
+    @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}"},
             method = RequestMethod.GET , produces = "application/json")
-    public String getAlarmData(@PathVariable(required = false) String sourceName,
-                               @PathVariable(required = false) String priority,@PathVariable(required = false) String startTime,
-                               @PathVariable(required = false) String endTime,@PathVariable(required = false) String vfStatus,
+    public String getAlarmData(@RequestParam(required = false) String sourceName,
+    		@RequestParam(required = false) String priority,@RequestParam(required = false) String startTime,
+    		@RequestParam(required = false) String endTime,@RequestParam(required = false) String vfStatus,
                                @PathVariable String currentPage, @PathVariable String pageSize) throws JsonProcessingException, ParseException {
             AlarmsHeader alarm = new AlarmsHeader();
             alarm.setSourceName(sourceName);
@@ -170,8 +167,8 @@ public class AlarmController
         return omAlarm.writeValueAsString(sourceNames);
     }
     
-    @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.POST,produces = "application/json")
-    public String diagram(@RequestParam String sourceName, @RequestParam String startTime, @RequestParam String endTime, @RequestParam String format) {
+    @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.GET,produces = "application/json")
+    public String diagram(@RequestParam String sourceName, @RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime, @RequestParam String format) {
         long timeInterval = 0;
     	try {
         	if("month".equals(format)){//alarm   day month year
@@ -181,13 +178,6 @@ public class AlarmController
         	}else{
         		formatDate="yyyy-MM-dd";
         		timeInterval =86400000;
-        	}
-        	List<maxAndMinTimeBean> list = alarmsInformationService.queryMaxAndMinTime();
-        	if(!UuiCommonUtil.isNotNullOrEmpty(startTime)&&list.size()>0){
-        		startTime=list.get(0).getMinTime();
-        	}
-        	if(!UuiCommonUtil.isNotNullOrEmpty(endTime)&&list.size()>0){
-        		endTime=list.get(0).getMaxTime();
         	}
         	sdf = new SimpleDateFormat(formatDate);
             long startTimel = sdf.parse(startTime).getTime();
@@ -219,10 +209,14 @@ public class AlarmController
         List<Integer> numList = new ArrayList<Integer>();
         long tmpEndTimeL = startTimeL + timeIteraPlusVal;
         while (endTimeL >= tmpEndTimeL) {
+        	int maxDay2 = 1;
+        	int maxDay = 1;
             int num = alarmsInformationService.queryDateBetween(sourceName,startTimeL+"",tmpEndTimeL+"",level);
             dateList.add(DateUtils.getResultDate(startTimeL, format));
-            int maxDay2 = DateUtils.MonthOfDay(sdf.format(new Date(tmpEndTimeL)), formatDate);
-            int maxDay = DateUtils.MonthOfDay(sdf.format(new Date(startTimeL)), formatDate);
+            if("month".equals(format)){
+            	maxDay2 = DateUtils.MonthOfDay(sdf.format(new Date(tmpEndTimeL)), formatDate);
+            	maxDay = DateUtils.MonthOfDay(sdf.format(new Date(startTimeL)), formatDate);
+            }
             numList.add(num);
             startTimeL += 86400000L*maxDay;
             tmpEndTimeL += 86400000L*maxDay2;

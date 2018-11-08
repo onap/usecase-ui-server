@@ -29,6 +29,7 @@ import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.util.Page;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,108 +96,24 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 				logger.error("AlarmsHeaderServiceImpl getAllCount alarmsHeader is null!");
 				return -1;
 			}else {
-				if(null!=alarmsHeader.getVersion()) {
-					String ver=alarmsHeader.getVersion();
-					count.append(" and a.version like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventName()) {
-					String ver=alarmsHeader.getEventName();
-					count.append(" and a.eventName like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getAlarmCondition()) {
-					String ver=alarmsHeader.getAlarmCondition();
-					count.append(" and a.alarmCondition like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getDomain()) {
-					String ver=alarmsHeader.getDomain();
-					count.append(" and a.domain like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventId()) {
-					String ver=alarmsHeader.getEventId();
-					count.append(" and a.eventId = '"+ver+"'");
-				}
-				if(null!=alarmsHeader.getNfcNamingCode()) {
-					String ver=alarmsHeader.getNfcNamingCode();
-					count.append(" and a.nfcNamingCode like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getNfNamingCode()) {
-					String ver=alarmsHeader.getNfNamingCode();
-					count.append(" and a.nfNamingCode like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getSourceId()) {
-					String ver =alarmsHeader.getSourceId();
-					count.append(" and a.sourceId like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getSourceName()) {
+				if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getSourceName())) {
 					String ver =alarmsHeader.getSourceName();
 					count.append(" and a.sourceName like '%"+ver+"%'");
 				}
-				if(null!=alarmsHeader.getReportingEntityId()) {
-					String ver =alarmsHeader.getReportingEntityId();
-					count.append(" and a.reportingEntityId like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getReportingEntityName()) {
-					String ver =alarmsHeader.getReportingEntityName();
-					count.append(" and a.reportingEntityName like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getPriority()) {
+				if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getPriority())) {
 					String ver =alarmsHeader.getPriority();
 					count.append(" and a.priority like '%"+ver+"%'");
 				}
-				if(null!=alarmsHeader.getStartEpochMicrosec()) {
-					String ver =alarmsHeader.getStartEpochMicrosec();
-					count.append(" and a.startEpochMicrosec like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getLastEpochMicroSec()) {
-					String ver =alarmsHeader.getLastEpochMicroSec();
-					count.append(" and a.lastEpochMicroSec like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getSequence()) {
-					String ver =alarmsHeader.getSequence();
-					count.append(" and a.sequence like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getFaultFieldsVersion()) {
-					String ver =alarmsHeader.getFaultFieldsVersion();
-					count.append(" and a.faultFieldsVersion like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventServrity()) {
-					String ver =alarmsHeader.getEventServrity();
-					count.append(" and a.eventServrity like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventType()) {
-					String ver =alarmsHeader.getEventType();
-					count.append(" and a.eventSourceType like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getEventCategory()) {
-					String ver =alarmsHeader.getEventCategory();
-					count.append(" and a.eventCategory like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getAlarmCondition()) {
-					String ver =alarmsHeader.getAlarmCondition();
-					count.append(" and a.alarmCondition like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getSpecificProblem()) {
-					String ver =alarmsHeader.getSpecificProblem();
-					count.append(" and a.specificProblem like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getVfStatus()) {
-					String ver =alarmsHeader.getVfStatus();
-					count.append(" and a.vfStatus = '"+ver+"'");
-				}
-				if(null!=alarmsHeader.getAlarmInterfaceA()) {
-					String ver =alarmsHeader.getAlarmInterfaceA();
-					count.append(" and a.alarmInterfaceA like '%"+ver+"%'");
-				}
-				if(null!=alarmsHeader.getStatus()) {
+				if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getStatus())) {
 					String ver =alarmsHeader.getStatus();
 					count.append(" and a.status = '"+ver+"'");
 				}
-				if(null!=alarmsHeader.getStartEpochMicrosec() || alarmsHeader.getLastEpochMicroSec()!= null) {
-					count.append(" and a.startEpochMicrosec between :startTime and :endTime");
+				if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getStartEpochMicrosec())&&UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getLastEpochMicroSec())) {
+					count.append(" and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ");
 				}
 			}
 			Query query = session.createQuery(count.toString());
-			if(null!=alarmsHeader.getStartEpochMicrosec() || alarmsHeader.getLastEpochMicroSec()!= null) {
+			if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getStartEpochMicrosec())&&UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getLastEpochMicroSec())) {
 				query.setString("startTime",alarmsHeader.getStartEpochMicrosec());
 				query.setString("endTime",alarmsHeader.getLastEpochMicroSec());
 			}
@@ -222,25 +139,25 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 				logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
 				return null;
 			}else {
-				if(null!=alarmsHeader.getSourceName()) {
+				if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getSourceName())) {
 					String ver =alarmsHeader.getSourceName();
 					hql.append(" and a.sourceName like '%"+ver+"%'");
 				}
-				if(null!=alarmsHeader.getVfStatus()) {
+				if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getVfStatus())) {
 					String ver =alarmsHeader.getVfStatus();
 					hql.append(" and a.vfStatus = '"+ver+"'");
 				}
-				if(null!=alarmsHeader.getStatus()) {
+				if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getStatus())) {
 					String ver =alarmsHeader.getStatus();
 					hql.append(" and a.status = '"+ver+"'");
 				}
-				if(null!=alarmsHeader.getStartEpochMicrosec() || alarmsHeader.getLastEpochMicroSec()!= null) {
-					hql.append(" and a.startEpochMicrosec between :startTime and :endTime");
+				if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getStartEpochMicrosec())&&UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getLastEpochMicroSec())) {
+					hql.append(" and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ");
 				}
 			}
 			logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
 			Query query = session.createQuery(hql.toString());
-			if(null!=alarmsHeader.getStartEpochMicrosec() || alarmsHeader.getLastEpochMicroSec()!= null) {
+			if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getStartEpochMicrosec())&&UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getLastEpochMicroSec())) {
 				query.setString("startTime",alarmsHeader.getStartEpochMicrosec());
 				query.setString("endTime",alarmsHeader.getLastEpochMicroSec());
 			}

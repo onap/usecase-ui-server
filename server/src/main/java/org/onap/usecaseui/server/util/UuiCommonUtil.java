@@ -130,8 +130,8 @@ public class UuiCommonUtil {
         
 		List listPages = new ArrayList();
         int currIdx = (currentPage > 1 ? (currentPage -1) * pageSize : 0);
-        for (int i = 0; i < pageSize && i < listPages.size() - currIdx; i++) {
-            Object  listPage= listPages.get(currIdx + i);
+        for (int i = 0; i < pageSize && i < list.size() - currIdx; i++) {
+            Object  listPage= list.get(currIdx + i);
             listPages.add(listPage);
         }
 		return listPages;
