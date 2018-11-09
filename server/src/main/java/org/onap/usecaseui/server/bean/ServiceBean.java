@@ -21,7 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="service")
+@Table(name="service_instances")
 public class ServiceBean {
 	
 	@Id

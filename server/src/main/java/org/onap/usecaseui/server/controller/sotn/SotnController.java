@@ -32,6 +32,7 @@ import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -166,6 +167,12 @@ public class SotnController {
 		String result = HttpUtil.sendGet("http://172.60.3.45:8099/oss/inventory", "");
 		return result;
     }
+    
+    @RequestMapping(value = {"/deleteExtNetWork"}, method = RequestMethod.DELETE)
+    public String deleteExtNetwork(@RequestParam String extNetworkId,@RequestParam(value="resourceVersion") String resourceVersion){
+    	return sotnService.deleteExtNetwork(extNetworkId,resourceVersion);
+    }
+    
     private void createJson(String json,List<NetWorkResource> list){
 
     	ObjectMapper mapper = new ObjectMapper();

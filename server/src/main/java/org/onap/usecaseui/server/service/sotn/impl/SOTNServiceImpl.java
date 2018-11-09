@@ -399,4 +399,24 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
+	
+	@Override
+	public String deleteExtNetwork(String networkId,String resourceVersion) {
+		String result = "";
+        try {
+        	logger.info("aai deleteExtNetwork is starting");
+            Response<ResponseBody> response = aaiService.deleteExtNetwork(networkId,resourceVersion).execute();
+			logger.info("aai deleteExtNetwork has finished");
+            if (response.isSuccessful()) {
+            	result=Constant.CONSTANT_SUCCESS;
+            } else {
+            	result=Constant.CONSTANT_FAILED;
+                logger.error(String.format("Can not deleteExtNetwork[code=%s, message=%s]", response.code(), response.message()));
+            }
+        } catch (Exception e) {
+        	result=Constant.CONSTANT_FAILED;
+        	logger.error("deleteExtNetwork occur exception:"+e);
+        }
+        return result;
+	}
 }

@@ -56,4 +56,6 @@ public interface SOTNService {
 	public String getConnectivityInfo(String connectivityId);
 	
 	public String getPinterfaceByVpnId(String vpnId);
+	
+	public String deleteExtNetwork(String networkId,String resourceVersion);
 }
