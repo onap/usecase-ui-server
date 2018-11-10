@@ -19,8 +19,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class OperationProgress {
-
+	
+	private String serviceId;
+	
     private String operationId;
+    
+    private String serviceName;
 
     private String operation;
 
@@ -38,11 +42,31 @@ public class OperationProgress {
 
     private String finishedAt;
 
-    public String getOperationId() {
+    
+    
+    public OperationProgress(String serviceId, String operationId, String serviceName, String operation, String result,
+			String reason, String userId, String operationContent, int progress, String operateAt, String finishedAt) {
+		this.serviceId = serviceId;
+		this.operationId = operationId;
+		this.serviceName = serviceName;
+		this.operation = operation;
+		this.result = result;
+		this.reason = reason;
+		this.userId = userId;
+		this.operationContent = operationContent;
+		this.progress = progress;
+		this.operateAt = operateAt;
+		this.finishedAt = finishedAt;
+	}
+    
+    public OperationProgress() {
+	}
+
+	public String getOperationId() {
         return operationId;
     }
 
-    public void setOperationId(String operationId) {
+	public void setOperationId(String operationId) {
         this.operationId = operationId;
     }
 
@@ -109,4 +133,21 @@ public class OperationProgress {
     public void setFinishedAt(String finishedAt) {
         this.finishedAt = finishedAt;
     }
+
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+    
 }

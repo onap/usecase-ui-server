@@ -16,13 +16,21 @@
 package org.onap.usecaseui.server.service.lcm.domain.so.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class OperationProgressInformation {
-
+	
     private OperationProgress operationStatus;
+	
+    public OperationProgressInformation(@JsonProperty("operation")OperationProgress operationStatus) {
+		this.operationStatus = operationStatus;
+	}
+    
+	public OperationProgressInformation() {
+	}
 
-    public OperationProgress getOperationStatus() {
+	public OperationProgress getOperationStatus() {
         return operationStatus;
     }
 
