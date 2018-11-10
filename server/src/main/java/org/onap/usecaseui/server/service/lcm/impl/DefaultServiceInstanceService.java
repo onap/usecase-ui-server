@@ -33,12 +33,14 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
 import org.onap.usecaseui.server.util.RestfulServices;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,11 +83,12 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     public List<String> listServiceInstances(String customerId, String serviceType) {
     	List<String> result = new ArrayList<>();
         try {
-            Response<ServiceInstanceRsp> response = aaiService.listServiceInstances(customerId, serviceType).execute();
+            Response<ResponseBody> response = aaiService.listServiceInstances(customerId, serviceType).execute();
             if (response.isSuccessful()) {
-            	List<String> serviceInstances = response.body().getServiceInstances();
-            	if(serviceInstances.size()>0){
-            		result=this.parseServiceInstance(serviceInstances, customerId, serviceType);
+            	String resultStr=new String(response.body().bytes());
+            	JSONObject object = JSONObject.parseObject(resultStr);
+            	if(UuiCommonUtil.isNotNullOrEmpty(object)){
+            		result=this.parseServiceInstance(object, customerId, serviceType);
             	}
                 return result;
             } else {
@@ -98,11 +101,12 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
         }
     }
     
-	private List<String> parseServiceInstance(List<String> list,String customerId,String serviceType) throws JsonProcessingException{
+	private List<String> parseServiceInstance(JSONObject objects,String customerId,String serviceType) throws JsonProcessingException{
     	ObjectMapper mapper = new ObjectMapper();
     	List<String> result = new ArrayList<>();
-    	for(String serviceInstance:list){
-    			JSONObject object =  JSON.parseObject(serviceInstance);
+    	JSONArray serviceInstances=objects.getJSONArray("service-instance");
+    	for(Object serviceInstance:serviceInstances){
+    			JSONObject object =  JSON.parseObject(serviceInstance+"");
     			String serviceInstanceId=object.get("service-instance-id").toString();
     			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
     			String serviceDomain = serviceBean.getServiceDomain();
