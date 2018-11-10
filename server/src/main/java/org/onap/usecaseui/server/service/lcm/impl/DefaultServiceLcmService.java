@@ -166,7 +166,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 				logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceBean is null!");
 			}
 			Transaction tx = session.beginTransaction();
-			session.update(serviceBean);
+			session.saveOrUpdate(serviceBean);
 			tx.commit();
 			session.flush();
 		} catch (Exception e) {
