@@ -23,7 +23,11 @@ public class ServiceInstanceRsp {
 
     private List<String> serviceInstances;
 
-    @JsonProperty("service-instance")
+    public ServiceInstanceRsp(@JsonProperty("service-instance")List<String> serviceInstances) {
+		this.serviceInstances = serviceInstances;
+	}
+
+	@JsonProperty("service-instance")
     public List<String> getServiceInstances() {
         return serviceInstances;
     }

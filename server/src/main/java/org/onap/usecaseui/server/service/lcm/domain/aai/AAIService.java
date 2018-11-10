@@ -52,8 +52,8 @@ public interface AAIService {
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
-    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
-    Call<ServiceInstanceRsp> listServiceInstances(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
+    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
+    Call<ResponseBody> listServiceInstances(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
 
     @Headers({
             "X-TransactionId: 7777",
