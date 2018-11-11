@@ -109,6 +109,9 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     			JSONObject object =  JSON.parseObject(serviceInstance+"");
     			String serviceInstanceId=object.get("service-instance-id").toString();
     			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
+    			if(!UuiCommonUtil.isNotNullOrEmpty(serviceBean)){
+    				continue;
+    			}
     			String serviceDomain = serviceBean.getServiceDomain();
 				object.put("serviceDomain",serviceDomain);
 				if("SOTN".equals(serviceDomain)||"CCVPN".equals(serviceDomain)||"E2E Service".equals(serviceDomain)||"Network Service".equals(serviceDomain)){
