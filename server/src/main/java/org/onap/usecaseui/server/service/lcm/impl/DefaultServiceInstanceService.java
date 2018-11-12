@@ -123,7 +123,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 							parentServiceInstances.add(parentServiceInstance);
 						}
 					}
-					object.put("childServiceInstances",mapper.writeValueAsString(parentServiceInstances));
+					object.put("childServiceInstances",parentServiceInstances);
 					result.add(object.toString());
 				}
     	}
