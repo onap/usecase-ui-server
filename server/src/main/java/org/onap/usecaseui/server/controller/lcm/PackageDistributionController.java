@@ -123,7 +123,7 @@ public class PackageDistributionController {
         return packageDistributionService.deleteVfPackage(casrId);
     }
     
-    @RequestMapping(value = {"/uui-lcm/fetchNsTemplateData}"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/fetchNsTemplateData}"}, method = RequestMethod.POST , produces = "application/json")
     public String fetchNsTemplateData(HttpServletRequest request){
         return packageDistributionService.fetchNsTemplateData(request);
     }
