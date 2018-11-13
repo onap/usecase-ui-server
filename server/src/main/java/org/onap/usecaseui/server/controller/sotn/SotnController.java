@@ -96,7 +96,7 @@ public class SotnController {
     
     @RequestMapping(value = {"/createHostUrl/{aaiId:.+}"}, method = RequestMethod.PUT)
     public String createHostUrl(HttpServletRequest request,@PathVariable(value="aaiId") String aaiId){
-    	return sotnService.createTopoNetwork(request,aaiId);
+    	return sotnService.createHostUrl(request, aaiId);
     }
     
     @RequestMapping(value = {"/createTopoNetwork/{networkId:.+}"}, method = RequestMethod.PUT)
