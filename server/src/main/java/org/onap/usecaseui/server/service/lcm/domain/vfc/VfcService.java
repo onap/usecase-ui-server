@@ -37,7 +37,7 @@ public interface VfcService {
     @GET("/api/catalog/v1/jobs/{jobId}")
     Call<JobStatus> getJobStatus(@Path("jobId") String jobId, @Query("responseId") String responseId);
     
-    @GET("/api/nslcm/v1/jobs/{job_id}")
+    @GET("/api/nslcm/v1/jobs/{jobId}")
     Call<JobStatus> getNsLcmJobStatus(@Path("jobId") String jobId, @Query("responseId") String responseId);
 
     @DELETE("/api/catalog/v1/nspackages/{csarId}")
