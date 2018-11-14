@@ -126,7 +126,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/api/aai-network/V13/logical-links/logical-link/{link-name}")
+    @GET("/api/aai-network/v13/logical-links/logical-link/{link-name}")
     Call<ResponseBody> getSpecificLogicalLink(@Path("link-name") String linkName);
     
     @Headers({
