@@ -193,17 +193,17 @@ public class PackageDistributionController {
         return packageDistributionService.downLoadVnfPackage(vnfPkgId);
     }
     
-    @RequestMapping(value = {"/uui-lcm/deleteNsdPackage"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/deleteNsdPackage"}, method = RequestMethod.DELETE , produces = "application/json")
     public String deleteNsdPackage(@RequestParam String nsdInfoId){
         return packageDistributionService.deleteNsdPackage(nsdInfoId);
     }
     
-    @RequestMapping(value = {"/uui-lcm/deleteVnfPackage"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/deleteVnfPackage"}, method = RequestMethod.DELETE , produces = "application/json")
     public String deleteVnfPackage(@RequestParam String vnfPkgId){
         return packageDistributionService.deleteVnfPackage(vnfPkgId);
     }
     
-    @RequestMapping(value = {"/uui-lcm/deletePnfPackage"}, method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/deletePnfPackage"}, method = RequestMethod.DELETE , produces = "application/json")
     public String deletePnfPackage(@RequestParam String pnfdInfoId){
         return packageDistributionService.deletePnfPackage(pnfdInfoId);
     }
