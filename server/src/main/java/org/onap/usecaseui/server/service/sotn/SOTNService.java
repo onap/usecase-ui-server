@@ -33,6 +33,8 @@ public interface SOTNService {
 	
 	public String getHostUrl(String aaiId);
 	
+	public String getExtAaiId(String aaiId);
+	
 	public String createHostUrl(HttpServletRequest request,String aaiId);
 	
 	public String createTopoNetwork(HttpServletRequest request,String networkId);

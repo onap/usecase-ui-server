@@ -153,6 +153,15 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
+	@GET("/api/aai-network/v13/ext-aai-networks/ext-aai-network/{aai-id}")
+	Call<ResponseBody> getExtAaiId(@Path("aai-id") String aaiId);
+    
+    @Headers({
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+    })
 	@GET("/api/aai-network/v13/ext-aai-networks/ext-aai-network/{aai-id}/esr-system-info")
 	Call<ResponseBody> getHostUrl(@Path("aai-id") String aaiId);
     

@@ -157,6 +157,26 @@ public class SOTNServiceImpl implements SOTNService{
 	}
 	
 	@Override
+	public String getExtAaiId(String aaiId) {
+		String result="";
+        try {
+        	logger.info("aai getExtAaiId is starting!");
+            Response<ResponseBody> response = this.aaiService.getExtAaiId(aaiId).execute();
+            logger.info("aai getExtAaiId has finished!");
+            if (response.isSuccessful()) {
+            	result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getExtAaiId[code=%s, message=%s]", response.code(), response.message()));
+                result=Constant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getExtAaiId occur exception:"+e);
+            result=Constant.CONSTANT_FAILED;;
+        }
+        return result;
+	}
+	
+	@Override
 	public String createHostUrl(HttpServletRequest request,String aaiId) {
 		String result = "";
         try {

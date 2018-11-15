@@ -94,6 +94,11 @@ public class SotnController {
     	return sotnService.getHostUrl(aaiId);
     }
     
+    @RequestMapping(value = {"/getExtAaiId/{aaiId:.+}"}, method = RequestMethod.GET)
+    public String getExtAaiId(@PathVariable(value="aaiId") String aaiId){
+    	return sotnService.getExtAaiId(aaiId);
+    }
+    
     @RequestMapping(value = {"/createHostUrl/{aaiId:.+}"}, method = RequestMethod.PUT)
     public String createHostUrl(HttpServletRequest request,@PathVariable(value="aaiId") String aaiId){
     	return sotnService.createHostUrl(request, aaiId);
