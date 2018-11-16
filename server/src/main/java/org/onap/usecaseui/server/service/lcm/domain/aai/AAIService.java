@@ -255,6 +255,12 @@ public interface AAIService {
     @GET("/api/aai-network/v13/vpn-bindings")
     Call<ResponseBody> getPinterfaceByVpnId(@Query("vpn-id") String vpnId);
     
+    @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
     @DELETE("/api/aai-network/v13/ext-aai-networks/ext-aai-network/{aai-id}")
     Call<ResponseBody> deleteExtNetwork(@Path("aai-id") String aaiId,@Query("resource-version") String resourceVersion);
 }
