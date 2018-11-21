@@ -344,11 +344,11 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
 	@Override
 	public String deleteNsdPackage(String nsdInfoId) {
-
+		Response<ResponseBody> response=null;
 		String result="";
         try {
         	logger.info("vfc deleteNsdPackage is starting!");
-            Response<ResponseBody> response = this.vfcService.deleteNsdPackage(nsdInfoId).execute();
+            response = this.vfcService.deleteNsdPackage(nsdInfoId).execute();
             logger.info("vfc deleteNsdPackage has finished!");
             if (response.isSuccessful()) {
             	result=Constant.CONSTANT_SUCCESS;
@@ -357,6 +357,9 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=Constant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
+        	if(e.getMessage().contains("204")){
+        		return Constant.CONSTANT_SUCCESS;
+        	}
             logger.error("deleteNsdPackage occur exception:"+e);
             result=Constant.CONSTANT_FAILED;;
         }
@@ -366,11 +369,11 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
 	@Override
 	public String deleteVnfPackage(String vnfPkgId) {
-
+		Response<ResponseBody> response=null;
 		String result="";
         try {
         	logger.info("vfc deleteVnfPackage is starting!");
-            Response<ResponseBody> response = this.vfcService.deleteVnfdPackage(vnfPkgId).execute();
+            response = this.vfcService.deleteVnfdPackage(vnfPkgId).execute();
             logger.info("vfc deleteVnfPackage has finished!");
             if (response.isSuccessful()) {
             	result=Constant.CONSTANT_SUCCESS;
@@ -379,6 +382,9 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=Constant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
+        	if(e.getMessage().contains("204")){
+        		return Constant.CONSTANT_SUCCESS;
+        	}
             logger.error("deleteVnfPackage occur exception:"+e);
             result=Constant.CONSTANT_FAILED;;
         }
@@ -388,11 +394,11 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
 	@Override
 	public String deletePnfPackage(String pnfdInfoId) {
-
+		Response<ResponseBody> response=null;
 		String result="";
         try {
         	logger.info("vfc deletePnfPackage is starting!");
-            Response<ResponseBody> response = this.vfcService.deletePnfdPackage(pnfdInfoId).execute();
+        	response = this.vfcService.deletePnfdPackage(pnfdInfoId).execute();
             logger.info("vfc deletePnfPackage has finished!");
             if (response.isSuccessful()) {
             	result=Constant.CONSTANT_SUCCESS;
@@ -401,6 +407,9 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=Constant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
+        	if(e.getMessage().contains("204")){
+        		return Constant.CONSTANT_SUCCESS;
+        	}
             logger.error("deletePnfPackage occur exception:"+e);
             result=Constant.CONSTANT_FAILED;;
         }
@@ -462,11 +471,11 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
 	@Override
 	public String deleteNetworkServiceInstance(String nsInstanceId) {
-
+		Response response = null;
 		String result="";
         try {
         	logger.info("vfc deleteNetworkServiceInstance is starting!");
-            Response<ResponseBody> response = this.vfcService.deleteNetworkServiceInstance(nsInstanceId).execute();
+            response = this.vfcService.deleteNetworkServiceInstance(nsInstanceId).execute();
             logger.info("vfc deleteNetworkServiceInstance has finished!");
             if (response.isSuccessful()) {
             	result=Constant.CONSTANT_SUCCESS;
@@ -475,8 +484,11 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=Constant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
+        	if(e.getMessage().contains("204")){
+        		return Constant.CONSTANT_SUCCESS;
+        	}
             logger.error("deleteNetworkServiceInstance occur exception:"+e);
-            result=Constant.CONSTANT_FAILED;;
+            result=Constant.CONSTANT_FAILED;
         }
         return result;
 	
