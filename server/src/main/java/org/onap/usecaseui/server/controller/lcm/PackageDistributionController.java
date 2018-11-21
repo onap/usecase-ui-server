@@ -268,7 +268,7 @@ public class PackageDistributionController {
         return packageDistributionService.scaleNetworkServiceInstance(request,ns_instance_id);
     }
     
-    @RequestMapping(value = {"/uui-lcm/VnfInfo/{vnfinstid}"}, method = RequestMethod.POST , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/VnfInfo/{vnfinstid}"}, method = RequestMethod.GET , produces = "application/json")
     public String getVnfInfoById(@PathVariable String vnfinstid){
         return packageDistributionService.getVnfInfoById(vnfinstid);
     }

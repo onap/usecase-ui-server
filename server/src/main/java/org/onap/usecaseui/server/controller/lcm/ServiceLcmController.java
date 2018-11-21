@@ -67,7 +67,7 @@ public class ServiceLcmController {
     @RequestMapping(value = {"/uui-lcm/services/{serviceId}/operations/{operationId}"}, method = RequestMethod.GET , produces = "application/json")
     public OperationProgressInformation queryOperationProgress(@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId){
     	OperationProgressInformation operationProgressInformation =serviceLcmService.queryOperationProgress(serviceId, operationId);
-    	if(UuiCommonUtil.isNotNullOrEmpty(operationProgressInformation)&&UuiCommonUtil.isNotNullOrEmpty(operationProgressInformation.getOperationStatus())){
+    	if(UuiCommonUtil.isNotNullOrEmpty(operationProgressInformation)&&UuiCommonUtil.isNotNullOrEmpty(operationProgressInformation.getOperationStatus())&&"CREATE".equals(operationProgressInformation.getOperationStatus().getOperation())){
     		serviceLcmService.updateServiceInstanceStatusById(operationProgressInformation.getOperationStatus().getResult(), serviceId);
     	}
     	return operationProgressInformation;
