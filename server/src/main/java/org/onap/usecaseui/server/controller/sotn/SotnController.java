@@ -29,6 +29,7 @@ import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.sotn.SOTNService;
 import org.onap.usecaseui.server.util.HttpUtil;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +41,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
+@CrossOrigin(origins="*")
 @RequestMapping("/uui-sotn")
 public class SotnController {
 	

@@ -35,6 +35,7 @@ import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +48,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 @RestController
+@CrossOrigin(origins="*")
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
 public class PackageDistributionController {
@@ -114,7 +116,21 @@ public class PackageDistributionController {
     @RequestMapping(value = {"/uui-lcm/jobs/getNsLcmJobStatus/{jobId}"}, method = RequestMethod.GET , produces = "application/json")
     public JobStatus getNsLcmJobStatus(@PathVariable(value="jobId") String jobId, HttpServletRequest request){
         String responseId = request.getParameter("responseId");
-        return packageDistributionService.getNsLcmJobStatus(jobId, responseId);
+        String serviceInstanceId = request.getParameter("serviceInstanceId");
+        JobStatus jobStatus = packageDistributionService.getNsLcmJobStatus(jobId, responseId);
+        if(UuiCommonUtil.isNotNullOrEmpty(jobStatus)&&UuiCommonUtil.isNotNullOrEmpty(jobStatus.getResponseDescriptor())&&UuiCommonUtil.isNotNullOrEmpty(jobStatus.getResponseDescriptor().getProgress())){
+	        String processNum = jobStatus.getResponseDescriptor().getProgress();
+	        String status="processing";
+	        if(Integer.parseInt(processNum)==100){
+	        	status = "finished";
+	        }else if(Integer.parseInt(processNum)>100){
+	        	status="error";
+	        }else{
+	        	status="processing";
+	        }
+	        serviceLcmService.updateServiceInstanceStatusById(status,serviceInstanceId);
+        }
+        return jobStatus;
     }
     
     @ResponseBody
@@ -229,9 +245,12 @@ public class PackageDistributionController {
     	String serviceType = request.getParameter("serviceType");
     	String serviceDomain = request.getParameter("serviceDomain");
     	String ns_instance_id = request.getParameter("ns_instance_id");
-    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,null,null,null);
+    	String object = packageDistributionService.instantiateNetworkServiceInstance(request,ns_instance_id);
+    	JSONObject jobObject = JSONObject.parseObject(object);
+    	String jobId = jobObject.getString("jobId");
+    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,jobId,null,null);
     	serviceLcmService.saveOrUpdateServiceBean(serviceBean);
-        return packageDistributionService.instantiateNetworkServiceInstance(request,ns_instance_id);
+        return object;
     }
     
     @RequestMapping(value = {"/uui-lcm/terminateNetworkServiceInstance"}, method = RequestMethod.POST , produces = "application/json")
@@ -249,7 +268,7 @@ public class PackageDistributionController {
         return packageDistributionService.scaleNetworkServiceInstance(request,ns_instance_id);
     }
     
-    @RequestMapping(value = {"/uui-lcm/VnfInfo/{vnfinstid}"}, method = RequestMethod.POST , produces = "application/json")
+    @RequestMapping(value = {"/uui-lcm/VnfInfo/{vnfinstid}"}, method = RequestMethod.GET , produces = "application/json")
     public String getVnfInfoById(@PathVariable String vnfinstid){
         return packageDistributionService.getVnfInfoById(vnfinstid);
     }

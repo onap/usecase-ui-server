@@ -114,6 +114,8 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     			}
     			String serviceDomain = serviceBean.getServiceDomain();
 				object.put("serviceDomain",serviceDomain);
+				object.put("serviceStatus",serviceBean.getStatus());
+				object.put("operationId",serviceBean.getOperationId());
 				if("SOTN".equals(serviceDomain)||"CCVPN".equals(serviceDomain)||"E2E Service".equals(serviceDomain)||"Network Service".equals(serviceDomain)){
 					List<String> parentIds = serviceLcmService.getServiceInstanceIdByParentId(serviceInstanceId);
 					List<String> parentServiceInstances = new ArrayList<>();
