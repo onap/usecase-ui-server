@@ -29,14 +29,14 @@ public interface SOService {
             "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
-    @POST("/onap/so/infra/e2eServiceInstances/v3")
+    @POST("/api/so-serviceInstances/v5")
     Call<ServiceOperation> instantiateService(@Body RequestBody body);
 
     @Headers({
             "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
-    @GET("/onap/so/infra/e2eServiceInstances/v3/{serviceId}/operations/{operationId}")
+    @GET("/api/so-serviceInstances/v5/{serviceId}/operations/{operationId}")
     Call<OperationProgressInformation> queryOperationProgress(@Path("serviceId") String serviceId, @Path("operationId") String operationId);
 
     @Headers({
@@ -44,20 +44,20 @@ public interface SOService {
             "Accept: application/json"
     })
 //    @DELETE("/ecomp/mso/infra/e2eServiceInstances/v3/{serviceId}")
-    @HTTP(method="DELETE", path="/onap/so/infra/e2eServiceInstances/v3/{serviceId}", hasBody = true)
+    @HTTP(method="DELETE", path="/api/so-serviceInstances/v5/{serviceId}", hasBody = true)
     Call<DeleteOperationRsp> terminateService(@Path("serviceId") String serviceId, @Body RequestBody body);
     
     @Headers({
         "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
         "Accept: application/json"
     })
-	@POST("/onap/so/infra/e2eServiceInstances/v3/{serviceId}/scale")
+	@POST("/api/so-serviceInstances/v5/{serviceId}/scale")
 	Call<SaveOrUpdateOperationRsp> scaleService(@Path("serviceId") String serviceId, @Body RequestBody body);
     
     @Headers({
         "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
         "Accept: application/json"
     })
-	@PUT("/onap/so/infra/e2eServiceInstances/v3/{serviceId}")
+	@PUT("/api/so-serviceInstances/v5/{serviceId}")
 	Call<SaveOrUpdateOperationRsp> updateService(@Path("serviceId") String serviceId, @Body RequestBody body);
 }

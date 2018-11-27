@@ -99,7 +99,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-network/v13/network-resources")
+	@GET("/api/aai-network/v14/network-resources")
 	Call<ResponseBody> listNetWorkResources();
     
     @Headers({
@@ -108,7 +108,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-network/v13/pnfs/pnf/{pnfName}/p-interfaces")
+	@GET("/api/aai-network/v14/pnfs/pnf/{pnfName}/p-interfaces")
 	Call<PinterfaceRsp> getPinterfaceByPnfName(@Path("pnfName") String pnfName);
     
     @Headers({
@@ -117,7 +117,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-network/v13/logical-links")
+	@GET("/api/aai-network/v14/logical-links")
 	Call<ResponseBody> getLogicalLinks();
     
     @Headers({
@@ -126,7 +126,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/api/aai-network/v13/logical-links/logical-link/{link-name}")
+    @GET("/api/aai-network/v14/logical-links/logical-link/{link-name}")
     Call<ResponseBody> getSpecificLogicalLink(@Path("link-name") String linkName);
     
     @Headers({
@@ -135,7 +135,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @PUT("/api/aai-network/v13/network-resources/network-resource/{networkId}")
+    @PUT("/api/aai-network/v14/network-resources/network-resource/{networkId}")
     Call<ResponseBody> createTopoNetwork(@Body RequestBody body,@Path("networkId") String networkId);
     
     @Headers({
@@ -144,7 +144,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @PUT("/api/aai-network/v13/ext-aai-networks/ext-aai-network/{aai-id}")
+    @PUT("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}")
     Call<ResponseBody> createHostUrl(@Body RequestBody body,@Path("aai-id") String aaiId);
     
     @Headers({
@@ -153,7 +153,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-network/v13/ext-aai-networks/ext-aai-network/{aai-id}")
+	@GET("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}")
 	Call<ResponseBody> getExtAaiId(@Path("aai-id") String aaiId);
     
     @Headers({
@@ -162,7 +162,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-network/v13/ext-aai-networks/ext-aai-network/{aai-id}/esr-system-info")
+	@GET("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}/esr-system-info")
 	Call<ResponseBody> getHostUrl(@Path("aai-id") String aaiId);
     
     @Headers({
@@ -171,7 +171,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @PUT("/api/aai-network/v13/pnfs/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}")
+    @PUT("/api/aai-network/v14/pnfs/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}")
     Call<ResponseBody> createTerminationPoint(@Body RequestBody body,@Path("pnfName") String pnfName,@Path("tp-id") String tpId);
     
     @Headers({
@@ -180,7 +180,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @PUT("/api/aai-network/v13/pnfs/pnf/{pnfname}")
+    @PUT("/api/aai-network/v14/pnfs/pnf/{pnfname}")
     Call<ResponseBody> createPnf(@Body RequestBody body,@Path("pnfname") String pnfname);
     
     @Headers({
@@ -189,7 +189,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @PUT("/api/aai-network/v13/logical-links/logical-link/{linkName}")
+    @PUT("/api/aai-network/v14/logical-links/logical-link/{linkName}")
     Call<ResponseBody> createLink(@Body RequestBody body,@Path("linkName") String linkName);
     
     @Headers({
@@ -198,7 +198,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @DELETE("/api/aai-network/v13/logical-links/logical-link/{linkName}")
+    @DELETE("/api/aai-network/v14/logical-links/logical-link/{linkName}")
     Call<ResponseBody> deleteLink(@Path("linkName") String linkName,@Query("resource-version") String resourceVersion);
     
     @Headers({
@@ -207,7 +207,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
+    @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> getServiceInstances(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType);
     
     @Headers({
@@ -216,7 +216,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
+    @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> serviceInstaneInfo(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Query("service-instance-id") String serviceInstanceId);
     
     @Headers({
@@ -225,7 +225,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources")
+    @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources")
     Call<ResponseBody> getAllottedResources(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
     
     @Headers({
@@ -234,7 +234,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/api/aai-network/v13/pnfs/pnf/{pnfName}")
+    @GET("/api/aai-network/v14/pnfs/pnf/{pnfName}")
     Call<ResponseBody> getPnfInfo(@Path("pnfName") String pnfName);
     
     @Headers({
@@ -243,7 +243,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/api/aai-network/v13/connectivities")
+    @GET("/api/aai-network/v14/connectivities")
     Call<ResponseBody> getConnectivityInfo(@Query("connectivity-id") String connectivityId);
     
     @Headers({
@@ -252,9 +252,15 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/api/aai-network/v13/vpn-bindings")
+    @GET("/api/aai-network/v14/vpn-bindings")
     Call<ResponseBody> getPinterfaceByVpnId(@Query("vpn-id") String vpnId);
     
-    @DELETE("/api/aai-network/v13/ext-aai-networks/ext-aai-network/{aai-id}")
+    @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
+    @DELETE("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}")
     Call<ResponseBody> deleteExtNetwork(@Path("aai-id") String aaiId,@Query("resource-version") String resourceVersion);
 }

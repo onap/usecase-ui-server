@@ -218,7 +218,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 
 			String string = "from ServiceBean  where 1=1 and parentServiceInstanceId=:parentServiceInstanceId";
 			Query q = session.createQuery(string);
-			q.setString("serviceInstanceId",parentServiceInstanceId);
+			q.setString("parentServiceInstanceId",parentServiceInstanceId);
 			list = q.list();
 			session.flush();
 		}catch (Exception e){

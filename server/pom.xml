@@ -19,13 +19,13 @@
     <parent>
         <groupId>org.onap.usecase-ui.server</groupId>
         <artifactId>usecase-ui-server-parent</artifactId>
-        <version>1.2.1-SNAPSHOT</version>
+        <version>1.3.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.onap.usecase-ui.server</groupId>
     <artifactId>usecase-ui-server</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>usecase-ui-server/server</name>
     <description>project for usecase-ui server</description>
