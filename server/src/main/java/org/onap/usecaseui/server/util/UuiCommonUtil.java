@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -136,4 +137,14 @@ public class UuiCommonUtil {
         }
 		return listPages;
 	}
+	
+    public static boolean isExistFile(String path) {
+    	 
+        if (null == path || "".equals(path.trim())) {
+            return false;
+        }
+ 
+        File targetFile = new File(path);
+        return targetFile.exists();
+    }
 }
