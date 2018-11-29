@@ -31,6 +31,7 @@ import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
 import org.onap.usecaseui.server.util.RestfulServices;
+import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.openecomp.sdc.toscaparser.api.NodeTemplate;
 import org.openecomp.sdc.toscaparser.api.Property;
 import org.openecomp.sdc.toscaparser.api.ToscaTemplate;
@@ -94,7 +95,9 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         String toPath = String.format("/home/uui/%s.csar", uuid);
         //String toPath = String.format("D:\\work/%s.csar", uuid);
         try {
-        	downloadFile(toscaModelPath, toPath);
+        	if(!UuiCommonUtil.isExistFile(toPath)){
+        		downloadFile(toscaModelPath, toPath);
+        	}
             return extractTemplate(toPath, isVF);
         }  catch (IOException e) {
             throw new SDCCatalogException("download csar file failed!", e);
