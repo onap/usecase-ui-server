@@ -28,9 +28,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.bo.AlarmBo;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.Page;
+import org.onap.usecaseui.server.wrapper.AlarmWrapper;
 
 public class AlarmControllerTest {
 
@@ -103,4 +105,32 @@ public class AlarmControllerTest {
 		}
 	}
 	
+	@Test
+	public void testAlarmWrapper(){
+		AlarmWrapper  alarmWrapper = new AlarmWrapper();
+		AlarmsHeader alarmsHeader =new AlarmsHeader();
+		AlarmsInformation alarmsInformation = new AlarmsInformation();
+		int currentPage  = 1;
+		int pageSize  = 100;
+		alarmWrapper.setAlarmsHeader(alarmsHeader);
+		alarmWrapper.setAlarmsInformation(alarmsInformation);
+		alarmWrapper.setCurrentPage(currentPage);
+		alarmWrapper.setPageSize(pageSize);
+		alarmWrapper.getAlarmsHeader();
+		alarmWrapper.getAlarmsInformation();
+		alarmWrapper.getCurrentPage();
+		alarmWrapper.getPageSize();
+	}
+	
+	@Test
+	public void testAlarmBo (){
+		AlarmsHeader alarmsHeader =new AlarmsHeader();
+		List<AlarmsInformation> alarmsInformation = new ArrayList<>();
+		AlarmBo alarmBo2 = new AlarmBo(alarmsHeader,alarmsInformation);
+		AlarmBo alarmBo = new AlarmBo();
+		alarmBo.setAlarmsHeader(alarmsHeader);
+		alarmBo.setAlarmsInformation(alarmsInformation);
+		alarmBo.getAlarmsHeader();
+		alarmBo.getAlarmsInformation();
+	}
 }

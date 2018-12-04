@@ -67,8 +67,21 @@ public class PerformanceControllerTest {
 	    controller.getPerformanceData(currentPage+"",pageSize+"",null,null,null);
 	    verify(phs,times(1)).queryPerformanceHeader(header,currentPage,pageSize);
 
-}
-
+	}
+	
+	@Test
+	public void testGetPerformanceSourceNames() throws JsonProcessingException{
+		String currentPage="1";
+		String pageSize="10";
+		String sourceName="";
+		controller.getPerformanceSourceNames(currentPage, pageSize, sourceName);
+	}
+	
+	@Test
+	public void testGetSourceIds(){
+		controller.getSourceIds();
+	}
+	
 	@Test
 	public void testGetPerformanceHeaderDetail() {
 		try {
