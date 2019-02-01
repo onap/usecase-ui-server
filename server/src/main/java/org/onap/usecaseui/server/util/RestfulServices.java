@@ -15,13 +15,16 @@
  */
 package org.onap.usecaseui.server.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -58,14 +61,17 @@ public class RestfulServices {
     }
 
     public static RequestBody extractBody(HttpServletRequest request) throws IOException {
-        int len = request.getContentLength();
         ServletInputStream inStream = null;
+        StringBuilder sb = new StringBuilder();
         try {
             inStream = request.getInputStream();
-            byte[] buffer = new byte[len];
-            inStream.read(buffer, 0, len);
-            logger.info("The request body content is: "+new String(buffer));
-            return RequestBody.create(MediaType.parse("application/json"), buffer);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
+            String line = "";
+            while((line=reader.readLine())!=null){
+            	sb.append(line);
+            }
+            logger.info("The request body content is: "+sb.toString());
+            return RequestBody.create(MediaType.parse("application/json"),sb.toString());
         }finally {
             if (inStream != null) {
                 inStream.close();

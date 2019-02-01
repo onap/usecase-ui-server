@@ -15,12 +15,32 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.CATEGORY_E2E_SERVICE;
+import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.DISTRIBUTION_STATUS_DISTRIBUTED;
+import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
+import static org.onap.usecaseui.server.util.CallStub.failedCall;
+import static org.onap.usecaseui.server.util.CallStub.successfulCall;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.sdc.toscaparser.api.NodeTemplate;
+import org.onap.sdc.toscaparser.api.ToscaTemplate;
+import org.onap.sdc.toscaparser.api.common.JToscaException;
+import org.onap.sdc.toscaparser.api.elements.Metadata;
+import org.onap.sdc.toscaparser.api.parameters.Input;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
-import org.onap.usecaseui.server.service.impl.AlarmsInformationServiceImpl;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
@@ -31,24 +51,8 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
-import org.openecomp.sdc.toscaparser.api.NodeTemplate;
-import org.openecomp.sdc.toscaparser.api.ToscaTemplate;
-import org.openecomp.sdc.toscaparser.api.common.JToscaException;
-import org.openecomp.sdc.toscaparser.api.elements.Metadata;
-import org.openecomp.sdc.toscaparser.api.parameters.Input;
+
 import retrofit2.Call;
-
-import java.io.IOException;
-import java.util.*;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.CATEGORY_E2E_SERVICE;
-import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.DISTRIBUTION_STATUS_DISTRIBUTED;
-import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
-import static org.onap.usecaseui.server.util.CallStub.failedCall;
-import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class DefaultServiceTemplateServiceTest {
 	
