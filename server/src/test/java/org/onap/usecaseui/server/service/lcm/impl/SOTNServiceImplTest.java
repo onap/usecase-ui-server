@@ -48,9 +48,11 @@ import okhttp3.ResponseBody;
 public class SOTNServiceImplTest {
 	
 	SOTNServiceImpl dsts = null;
+	AAIService aaiService = null;
 	@Before
 	public void before() throws Exception {
-		dsts = new SOTNServiceImpl();
+		aaiService= mock(AAIService.class);
+		dsts = new SOTNServiceImpl(aaiService);
 	}
 	
     private HttpServletRequest mockRequest() throws IOException {
@@ -84,14 +86,12 @@ public class SOTNServiceImplTest {
     @Test
     public void itCanGetNetWorkResources(){
     	ResponseBody result=null;
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.listNetWorkResources()).thenReturn(successfulCall(result));
     	dsts.getNetWorkResources();
     }
     
     @Test
     public void getNetWorkResourcesWithThrowsEexception(){
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.listNetWorkResources()).thenReturn(failedCall("aai is not exist!"));
     	dsts.getNetWorkResources();
     }
@@ -105,14 +105,12 @@ public class SOTNServiceImplTest {
     	Pinterface pinterface = new Pinterface("interfaceName");
     	pinterfaces.add(pinterface);
     	rsp.setPinterfaces(pinterfaces);
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getPinterfaceByPnfName(pnfName)).thenReturn(successfulCall(rsp));
     	dsts.getPinterfaceByPnfName(pnfName);
     }
     
     @Test
     public void getPinterfaceByPnfNameWithThrowsEexception(){
-    	AAIService aaiService = mock(AAIService.class);
     	String pnfName="test";
     	when(aaiService.getPinterfaceByPnfName(pnfName)).thenReturn(failedCall("aai is not exist!"));
     	dsts.getPinterfaceByPnfName(pnfName);
@@ -121,14 +119,12 @@ public class SOTNServiceImplTest {
     @Test
     public void itCanGetLogicalLinks(){
     	ResponseBody result=null;
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getLogicalLinks()).thenReturn(successfulCall(result));
     	dsts.getLogicalLinks();
     }
     
     @Test
     public void getLogicalLinksWithThrowsEexception(){
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getLogicalLinks()).thenReturn(failedCall("aai is not exist!"));
     	dsts.getLogicalLinks();
     }
@@ -137,14 +133,12 @@ public class SOTNServiceImplTest {
     public void itCanGetSpecificLogicalLink(){
     	ResponseBody result=null;
     	String linkName="linkName";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getSpecificLogicalLink(linkName)).thenReturn(successfulCall(result));
     	dsts.getSpecificLogicalLink(linkName);
     }
     
     @Test
     public void getSpecificLogicalLinkWithThrowsEexception(){
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	when(aaiService.getSpecificLogicalLink(linkName)).thenReturn(failedCall("aai is not exist!"));
     	dsts.getSpecificLogicalLink(linkName);
@@ -154,14 +148,12 @@ public class SOTNServiceImplTest {
     public void itCanGetHostUrl(){
     	ResponseBody result=null;
     	String linkName="linkName";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getHostUrl(linkName)).thenReturn(successfulCall(result));
     	dsts.getHostUrl(linkName);
     }
     
     @Test
     public void getHostUrlWithThrowsEexception(){
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	when(aaiService.getHostUrl(linkName)).thenReturn(failedCall("aai is not exist!"));
     	dsts.getHostUrl(linkName);
@@ -171,14 +163,12 @@ public class SOTNServiceImplTest {
     public void itCanGetExtAaiId(){
     	ResponseBody result=null;
     	String linkName="linkName";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getExtAaiId(linkName)).thenReturn(successfulCall(result));
     	dsts.getExtAaiId(linkName);
     }
     
     @Test
     public void getExtAaiIdWithThrowsEexception(){
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	when(aaiService.getExtAaiId(linkName)).thenReturn(failedCall("aai is not exist!"));
     	dsts.getExtAaiId(linkName);
@@ -189,14 +179,12 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.createHostUrl(anyObject(),eq(linkName))).thenReturn(successfulCall(result));
     	Assert.assertSame(result,dsts.createHostUrl(request,linkName));
     }
     
     @Test
     public void createHostUrlWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
     	when(aaiService.createHostUrl(anyObject(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
@@ -208,14 +196,12 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.createTopoNetwork(anyObject(),eq(linkName))).thenReturn(successfulCall(result));
     	Assert.assertSame(result,dsts.createTopoNetwork(request,linkName));
     }
     
     @Test
     public void createTopoNetworkWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
     	when(aaiService.createTopoNetwork(anyObject(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
@@ -228,14 +214,12 @@ public class SOTNServiceImplTest {
     	String linkName="linkName";
     	String tpid="tpId";
     	HttpServletRequest request = mockRequest();
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.createTerminationPoint(anyObject(),eq(linkName),eq(linkName))).thenReturn(successfulCall(result));
     	Assert.assertSame(result,dsts.createTerminationPoint(request,linkName,tpid));
     }
     
     @Test
     public void createTerminationPointWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	String tpid="tpId";
     	HttpServletRequest request = mockRequest();
@@ -248,14 +232,12 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.createLink(anyObject(),eq(linkName))).thenReturn(successfulCall(result));
     	dsts.createLink(request,linkName);
     }
     
     @Test
     public void createLinkWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
     	when(aaiService.createLink(anyObject(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
@@ -267,14 +249,12 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.createPnf(anyObject(),eq(linkName))).thenReturn(successfulCall(result));
     	dsts.createPnf(request,linkName);
     }
     
     @Test
     public void createPnfWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
     	when(aaiService.createPnf(anyObject(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
@@ -286,14 +266,12 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.deleteLink(linkName,resourceVersion)).thenReturn(successfulCall(result));
     	dsts.deleteLink(linkName,resourceVersion);
     }
     
     @Test
     public void deleteLinkWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	when(aaiService.deleteLink(linkName,resourceVersion)).thenReturn(failedCall("aai is not exist!"));
@@ -305,14 +283,12 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getServiceInstances(linkName,resourceVersion)).thenReturn(successfulCall(result));
     	dsts.getServiceInstances(linkName,resourceVersion);
     }
     
     @Test
     public void getServiceInstancesWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	when(aaiService.getServiceInstances(linkName,resourceVersion)).thenReturn(failedCall("aai is not exist!"));
@@ -325,14 +301,12 @@ public class SOTNServiceImplTest {
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	String serviceId="serviceId";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.serviceInstaneInfo(linkName,resourceVersion,serviceId)).thenReturn(successfulCall(result));
     	dsts.serviceInstanceInfo(linkName,resourceVersion,serviceId);
     }
     
     @Test
     public void serviceInstanceInfoWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	String serviceId="serviceId";
@@ -344,14 +318,12 @@ public class SOTNServiceImplTest {
     public void itCanGetPnfInfo() throws IOException{
     	ResponseBody result=null;
     	String linkName="linkName";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getPnfInfo(linkName)).thenReturn(successfulCall(result));
     	dsts.getPnfInfo(linkName);
     }
     
     @Test
     public void getPnfInfoWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	when(aaiService.getPnfInfo(linkName)).thenReturn(failedCall("aai is not exist!"));
     	dsts.getPnfInfo(linkName);
@@ -363,14 +335,12 @@ public class SOTNServiceImplTest {
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	String serviceId="serviceId";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getAllottedResources(linkName,resourceVersion,serviceId)).thenReturn(successfulCall(result));
     	dsts.getAllottedResources(linkName,resourceVersion,serviceId);
     }
     
     @Test
     public void getAllottedResourcesWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	String serviceId="serviceId";
@@ -382,14 +352,12 @@ public class SOTNServiceImplTest {
     public void itCangetConnectivityInfo() throws IOException{
     	ResponseBody result=null;
     	String linkName="linkName";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getConnectivityInfo(linkName)).thenReturn(successfulCall(result));
     	dsts.getConnectivityInfo(linkName);
     }
     
     @Test
     public void getConnectivityInfoWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	when(aaiService.getConnectivityInfo(linkName)).thenReturn(failedCall("aai is not exist!"));
     	dsts.getConnectivityInfo(linkName);
@@ -399,14 +367,12 @@ public class SOTNServiceImplTest {
     public void itCangetPinterfaceByVpnId() throws IOException{
     	ResponseBody result=null;
     	String linkName="linkName";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.getPinterfaceByVpnId(linkName)).thenReturn(successfulCall(result));
     	dsts.getPinterfaceByVpnId(linkName);
     }
     
     @Test
     public void getPinterfaceByVpnIdWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	when(aaiService.getPinterfaceByVpnId(linkName)).thenReturn(failedCall("aai is not exist!"));
     	dsts.getPinterfaceByVpnId(linkName);
@@ -417,14 +383,12 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
-    	AAIService aaiService = mock(AAIService.class);
     	when(aaiService.deleteExtNetwork(linkName,resourceVersion)).thenReturn(successfulCall(result));
     	dsts.deleteExtNetwork(linkName,resourceVersion);
     }
     
     @Test
     public void deleteExtNetworkWithThrowsEexception() throws IOException{
-    	AAIService aaiService = mock(AAIService.class);
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	when(aaiService.deleteExtNetwork(linkName,resourceVersion)).thenReturn(failedCall("aai is not exist!"));

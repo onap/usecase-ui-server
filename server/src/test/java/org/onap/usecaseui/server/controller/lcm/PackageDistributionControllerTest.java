@@ -20,9 +20,13 @@ import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.mockito.Mockito.*;
+
+import java.io.IOException;
 
 public class PackageDistributionControllerTest {
 
@@ -34,7 +38,35 @@ public class PackageDistributionControllerTest {
         service = mock(PackageDistributionService.class);
         controller.setPackageDistributionService(service);
     }
+    
+    private HttpServletRequest mockRequest() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getContentLength()).thenReturn(0);
+        ServletInputStream inStream = new ServletInputStream() {
+            @Override
+            public boolean isFinished() {
+                return false;
+            }
 
+            @Override
+            public boolean isReady() {
+                return false;
+            }
+
+            @Override
+            public void setReadListener(ReadListener readListener) {
+
+            }
+
+            @Override
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+        when(request.getInputStream()).thenReturn(inStream);
+        return request;
+    }
+    
     @Test
     public void retrievePackageInfo() throws Exception {
         controller.retrievePackageInfo();
@@ -83,5 +115,225 @@ public class PackageDistributionControllerTest {
         controller.deleteVfPackage(csarId);
 
         verify(service, times(1)).deleteVfPackage(csarId);
+    }
+    
+    @Test
+    public void testGetNsLcmJobStatus() throws IOException {
+        String csarId = "1";
+        String responseId="1";
+        HttpServletRequest request = mockRequest();
+        controller.getNsLcmJobStatus(csarId,request);
+
+        verify(service, times(1)).getNsLcmJobStatus(csarId,responseId);
+    }
+    
+    @Test
+    public void testFetchNsTemplateData() throws IOException {
+        HttpServletRequest request = mockRequest();
+        controller.fetchNsTemplateData(request);
+
+        verify(service, times(1)).fetchNsTemplateData(request);
+    }
+    
+    @Test
+    public void testListNsTemplates(){
+        controller.listNsTemplates();
+
+        verify(service, times(1)).listNsTemplates();
+    }
+    
+    @Test
+    public void testGetNsPackages(){
+        controller.getNsPackages();
+
+        verify(service, times(1)).getNetworkServicePackages();
+    }
+    
+    @Test
+    public void testGetVnfPackages(){
+        controller.getVnfPackages();
+
+        verify(service, times(1)).getVnfPackages();
+    }
+    
+    @Test
+    public void testGetPnfPackages(){
+        controller.getPnfPackages();
+
+        verify(service, times(1)).getPnfPackages();
+    }
+    
+    @Test
+    public void testCreateNetworkServiceData() throws IOException {
+        HttpServletRequest request = mockRequest();
+        controller.createNetworkServiceData(request);
+
+        verify(service, times(1)).createNetworkServiceData(request);
+    }
+    
+    @Test
+    public void testCreateVnfData() throws IOException {
+        HttpServletRequest request = mockRequest();
+        controller.createVnfData(request);
+
+        verify(service, times(1)).createVnfData(request);
+    }
+    
+    @Test
+    public void testCreatePnfData() throws IOException {
+        HttpServletRequest request = mockRequest();
+        controller.createPnfData(request);
+
+        verify(service, times(1)).createPnfData(request);
+    }
+    
+    @Test
+    public void testGetNsdInfo(){
+    	String nsdInfoId ="1";
+    	
+        controller.getNsdInfo(nsdInfoId);
+
+        verify(service, times(1)).getNsdInfo(nsdInfoId);
+    }
+    
+    @Test
+    public void testGetVnfInfo(){
+    	String nsdInfoId ="1";
+    	
+        controller.getVnfInfo(nsdInfoId);
+
+        verify(service, times(1)).getVnfInfo(nsdInfoId);
+    }
+    
+    @Test
+    public void testGetPnfInfo(){
+    	String nsdInfoId ="1";
+    	
+        controller.getPnfInfo(nsdInfoId);
+
+        verify(service, times(1)).getPnfInfo(nsdInfoId);
+    }
+    
+    @Test
+    public void testDownLoadNsPackage(){
+    	String nsdInfoId ="1";
+    	
+        controller.downLoadNsPackage(nsdInfoId);
+
+        verify(service, times(1)).downLoadNsPackage(nsdInfoId);
+    }
+    
+    @Test
+    public void testDownLoadPnfPackage(){
+    	String nsdInfoId ="1";
+    	
+        controller.downLoadPnfPackage(nsdInfoId);
+
+        verify(service, times(1)).downLoadPnfPackage(nsdInfoId);
+    }
+    
+    @Test
+    public void testDownLoadVnfPackage(){
+    	String nsdInfoId ="1";
+    	
+        controller.downLoadVnfPackage(nsdInfoId);
+
+        verify(service, times(1)).downLoadVnfPackage(nsdInfoId);
+    }
+    
+    @Test
+    public void testDeleteNsdPackage(){
+    	String nsdInfoId ="1";
+    	
+        controller.deleteNsdPackage(nsdInfoId);
+
+        verify(service, times(1)).deleteNsdPackage(nsdInfoId);
+    }
+    
+    @Test
+    public void testDeleteVnfPackage(){
+    	String nsdInfoId ="1";
+    	
+        controller.deleteVnfPackage(nsdInfoId);
+
+        verify(service, times(1)).deleteVnfPackage(nsdInfoId);
+    }
+    
+    @Test
+    public void testDeletePnfPackage(){
+    	String nsdInfoId ="1";
+    	
+        controller.deletePnfPackage(nsdInfoId);
+
+        verify(service, times(1)).deletePnfPackage(nsdInfoId);
+    }
+    
+    @Test
+    public void testDeleteNetworkServiceInstance(){
+    	String nsdInfoId ="1";
+    	
+        controller.deleteNetworkServiceInstance(nsdInfoId);
+
+        verify(service, times(1)).deleteNetworkServiceInstance(nsdInfoId);
+    }
+    
+    @Test
+    public void testGetNetworkServiceInfo(){
+    	
+        controller.getNetworkServiceInfo();
+
+        verify(service, times(1)).getNetworkServiceInfo();
+    }
+    
+    @Test
+    public void testCreateNetworkServiceInstance() throws IOException {
+        HttpServletRequest request = mockRequest();
+        controller.createNetworkServiceInstance(request);
+
+        verify(service, times(1)).createNetworkServiceInstance(request);
+    }
+    
+    @Test
+    public void testInstantiateNetworkServiceInstance() throws IOException {
+    	String ns_instance_id="1";
+        HttpServletRequest request = mockRequest();
+        controller.instantiateNetworkServiceInstance(request);
+
+        verify(service, times(1)).instantiateNetworkServiceInstance(request,ns_instance_id);
+    }
+    
+    @Test
+    public void testTerminateNetworkServiceInstance() throws IOException {
+    	String ns_instance_id="1";
+        HttpServletRequest request = mockRequest();
+        controller.terminateNetworkServiceInstance(request,ns_instance_id);
+
+        verify(service, times(1)).terminateNetworkServiceInstance(request,ns_instance_id);
+    }
+    
+    @Test
+    public void testHealNetworkServiceInstance() throws IOException {
+    	String ns_instance_id="1";
+        HttpServletRequest request = mockRequest();
+        controller.healNetworkServiceInstance(request,ns_instance_id);
+
+        verify(service, times(1)).healNetworkServiceInstance(request,ns_instance_id);
+    }
+    
+    @Test
+    public void testScaleNetworkServiceInstance() throws IOException {
+    	String ns_instance_id="1";
+        HttpServletRequest request = mockRequest();
+        controller.scaleNetworkServiceInstance(request,ns_instance_id);
+
+        verify(service, times(1)).scaleNetworkServiceInstance(request,ns_instance_id);
+    }
+    	
+    @Test
+    public void testGetVnfInfoById() throws IOException {
+    	String ns_instance_id="1";
+        controller.getVnfInfoById(ns_instance_id);
+
+        verify(service, times(1)).getVnfInfoById(ns_instance_id);
     }
 }

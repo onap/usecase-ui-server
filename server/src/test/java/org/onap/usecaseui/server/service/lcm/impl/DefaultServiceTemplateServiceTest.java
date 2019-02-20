@@ -52,11 +52,6 @@ import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class DefaultServiceTemplateServiceTest {
 	
-	DefaultServiceTemplateService dsts = null;
-	@Before
-	public void before() throws Exception {
-		dsts = new DefaultServiceTemplateService();
-	}
     @Test
     public void itCanListDistributedServiceTemplate() {
         List<SDCServiceTemplate> templates = Collections.singletonList(new SDCServiceTemplate("uuid", "uuid", "name", "V1","url", "category"));
@@ -296,6 +291,8 @@ public class DefaultServiceTemplateServiceTest {
     
     @Test(expected = AAIException.class)
     public void testDownloadFile() throws IOException {
+    	SDCCatalogService sdcService = mock(SDCCatalogService.class);
+    	DefaultServiceTemplateService dsts  = new DefaultServiceTemplateService(sdcService,null);
     	dsts.downloadFile("toscaModelPath", "toPath");
     }
 }
