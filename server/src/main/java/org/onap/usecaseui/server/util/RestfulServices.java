@@ -62,16 +62,25 @@ public class RestfulServices {
     }
 
     public static RequestBody extractBody(HttpServletRequest request) throws IOException {
-        ServletInputStream inStream = null;
-        try {
-            inStream = request.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
-            logger.info("The request body content is: "+IOUtils.read(reader));
-            return RequestBody.create(MediaType.parse("application/json"), IOUtils.read(reader));
-        }finally {
-            if (inStream != null) {
-                inStream.close();
-            }
+      	 BufferedReader br = null;
+       	 StringBuilder sb = new StringBuilder("");
+       	 try {
+       		 br = request.getReader();
+                String str;
+                while ((str = br.readLine()) != null)
+                {
+                    sb.append(str);
+                }
+                br.close();
+                logger.info("The request body content is: "+sb.toString());
+                return RequestBody.create(MediaType.parse("application/json"),sb.toString());
+    		}catch(Exception e){
+    			 logger.info("RestfulServices occur exection,this content is: "+e.getMessage());
+    			 return RequestBody.create(MediaType.parse("application/json"),sb.toString());
+    		}finally {
+               if (null != br) {
+               	 br.close();
+               }
+    		}
         }
-    }
 }

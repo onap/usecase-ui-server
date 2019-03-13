@@ -102,14 +102,14 @@ public class DmaapSubscriber implements Runnable {
         }
     }
 
-    private List<String> getDMaaPData(String topic) {
+    public List<String> getDMaaPData(String topic) {
         Client client = ClientBuilder.newClient(new ClientConfig());
         WebTarget webTarget = client.target(url + "/" + topic + "/" + consumerGroup + "/" + consumer);
         Response response = webTarget.queryParam("timeout", timeout).request().get();
         return response.readEntity(List.class);
     }
 
-    private void initConfig() {
+    public void initConfig() {
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("dmaap.properties");
         Properties p = new Properties();
         try {
@@ -138,7 +138,7 @@ public class DmaapSubscriber implements Runnable {
         }
     }
 
-    private void alarmProcess(Map<String, Object> eventMap) {
+    public void alarmProcess(Map<String, Object> eventMap) {
         AlarmsHeader alarm_header = new AlarmsHeader();
         alarm_header.setId(UuiCommonUtil.getUUID());
         List<AlarmsInformation> alarm_informations = new ArrayList<>();
@@ -229,7 +229,7 @@ public class DmaapSubscriber implements Runnable {
     }
     }
 
-    private void performanceProcess(Map<String, Object> maps) {
+    public void performanceProcess(Map<String, Object> maps) {
         PerformanceHeader performance_header = new PerformanceHeader();
         performance_header.setId(UuiCommonUtil.getUUID());
         List<PerformanceInformation> performance_informations = new ArrayList<>();
@@ -302,7 +302,7 @@ public class DmaapSubscriber implements Runnable {
                 });
     }
     
-    private String getTime(String time){
+    public String getTime(String time){
     	String result=time;
     	if(time.length()>=13){
     		result=time.substring(0, 13);
