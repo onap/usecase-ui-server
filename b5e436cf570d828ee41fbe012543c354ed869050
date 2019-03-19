@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76cc1d39_2c5abd36",
+        "filename": "INFO.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 481
+      },
+      "writtenOn": "2019-03-19T16:41:23Z",
+      "side": 1,
+      "message": "Add the missing blocks:\n\nmailing_list:\n    type: \u0027groups.io\u0027\n    url: \u0027lists.onap.org\u0027\n    tag: \u0027\u003c[sub-project_name]\u003e\u0027\nrealtime_discussion: \u0027\u0027",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 9
+      },
+      "revId": "b5e436cf570d828ee41fbe012543c354ed869050",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ab858ed_d4c4b059",
+        "filename": "INFO.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 481
+      },
+      "writtenOn": "2019-03-19T16:41:23Z",
+      "side": 1,
+      "message": "This block seems indented 2 spaces.. please remove the 2 space indentation to make it look like:\n\n    - type: \u0027zoom\u0027\n      agenda: \u0027https://wiki.onap.org/pages/viewpage.action?pageId\u003d8228204\u0027\n      url: \u0027https://wiki.onap.org/display/DW/Usecase+UI+Project\u0027\n      server: \u0027n/a\u0027\n      channel: \u0027n/a\u0027\n      repeats: \u0027weekly\u0027\n      time: \u002702:00 UTC\u0027",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 25
+      },
+      "revId": "b5e436cf570d828ee41fbe012543c354ed869050",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "db32de85_8017768e",
+        "filename": "INFO.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 481
+      },
+      "writtenOn": "2019-03-19T16:41:23Z",
+      "side": 1,
+      "message": "Add this missing block before committers:\n\nrepositories:\n    - \u0027usecase-ui\u0027\n    - \u0027usecase-ui-server\u0027",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 11
+      },
+      "revId": "b5e436cf570d828ee41fbe012543c354ed869050",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
