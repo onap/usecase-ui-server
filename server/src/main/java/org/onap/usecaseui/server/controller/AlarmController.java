@@ -32,6 +32,7 @@ import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
+import org.onap.usecaseui.server.util.DateProcessDataObject;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -98,26 +99,30 @@ public class AlarmController
 	 * test commit
 	 * @throws ParseException 
 	 */
-    @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}"},
-            method = RequestMethod.GET , produces = "application/json")
+    @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}"}, method = RequestMethod.GET,
+            produces = "application/json")
     public String getAlarmData(@RequestParam(required = false) String sourceName,
-    		@RequestParam(required = false) String priority,@RequestParam(required = false) String startTime,
-    		@RequestParam(required = false) String endTime,@RequestParam(required = false) String vfStatus,
-                               @PathVariable String currentPage, @PathVariable String pageSize) throws JsonProcessingException, ParseException {
-            AlarmsHeader alarm = new AlarmsHeader();
-            alarm.setSourceName(sourceName);
-            alarm.setStatus(vfStatus);
-            alarm.setStartEpochMicrosec(!UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
-            alarm.setLastEpochMicroSec(!UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
-            Page  pa = alarmsHeaderService.queryAlarmsHeader(alarm,Integer.parseInt(currentPage),Integer.parseInt(pageSize));
+            @RequestParam(required = false) String priority, @RequestParam(required = false) String startTime,
+            @RequestParam(required = false) String endTime, @RequestParam(required = false) String vfStatus,
+            @PathVariable String currentPage, @PathVariable String pageSize)
+            throws JsonProcessingException, ParseException {
+        AlarmsHeader alarm = new AlarmsHeader();
+        alarm.setSourceName(sourceName);
+        alarm.setStatus(vfStatus);
+        alarm.setStartEpochMicrosec(!UuiCommonUtil.isNotNullOrEmpty(startTime) ? null
+                : new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime() + "");
+        alarm.setLastEpochMicroSec(!UuiCommonUtil.isNotNullOrEmpty(endTime) ? null
+                : new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime() + "");
+        Page pa =
+                alarmsHeaderService.queryAlarmsHeader(alarm, Integer.parseInt(currentPage), Integer.parseInt(pageSize));
         try {
-            Map<String,Object> map = new HashMap<>();
-            map.put("alarms",pa.getList());
-            map.put("totalRecords",pa.getTotalRecords());
+            Map<String, Object> map = new HashMap<>();
+            map.put("alarms", pa.getList());
+            map.put("totalRecords", pa.getTotalRecords());
             omAlarm.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
             return omAlarm.writeValueAsString(map);
         } catch (JsonProcessingException e) {
-            logger.debug("JsonProcessingException :"+e.getMessage());
+            logger.debug("JsonProcessingException :" + e.getMessage());
             return omAlarm.writeValueAsString("failed");
         }
     }
@@ -168,59 +173,75 @@ public class AlarmController
     }
     
     @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.GET,produces = "application/json")
-    public String diagram(@RequestParam String sourceName, @RequestParam(required = false) String startTime, @RequestParam(required = false) String endTime, @RequestParam String format) {
+    public String diagram(@RequestParam String sourceName, @RequestParam(required = false) String startTime,
+            @RequestParam(required = false) String endTime, @RequestParam String format) {
         long timeInterval = 0;
-    	try {
-        	if("month".equals(format)){//alarm   day month year
-        		formatDate="yyyy-MM";
-        		int maxDay= DateUtils.MonthOfDay(startTime, formatDate);
-        		timeInterval =86400000L*maxDay;
-        	}else{
-        		formatDate="yyyy-MM-dd";
-        		timeInterval =86400000;
-        	}
-        	sdf = new SimpleDateFormat(formatDate);
+        try {
+            if ("month".equals(format)) {// alarm day month year
+                formatDate = "yyyy-MM";
+                int maxDay = DateUtils.MonthOfDay(startTime, formatDate);
+                timeInterval = 86400000L * maxDay;
+            } else {
+                formatDate = "yyyy-MM-dd";
+                timeInterval = 86400000;
+            }
+            sdf = new SimpleDateFormat(formatDate);
             long startTimel = sdf.parse(startTime).getTime();
             long endTimel = sdf.parse(endTime).getTime();
-            return getDiagram(sourceName, startTimel, endTimel+timeInterval, timeInterval, 1, 1,format);
+            return getDiagram(sourceName, startTimel, endTimel + timeInterval, timeInterval, 1, 1, format);
         } catch (Exception e) {
-        	logger.error("alarmController diagram occured exception:"+e.getMessage());
+            logger.error("alarmController diagram occured exception:" + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
     
     @SuppressWarnings("rawtypes")
-    private  String getDiagram(String sourceName, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format) throws JsonProcessingException{
-		Map<String,List> result = new HashMap<String,List>();
-    	
-    	Map<String,List> allMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, keyVal, keyValIteraVal,format,"");
-    	Map<String,List> closedMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"closed");
-    	Map<String,List> activeMaps = dateProcess(sourceName, startTimeL, endTimeL, timeIteraPlusVal, 1, 1,format,"active");
-    	result.put("dateList", allMaps.get("dateTime"));
-    	result.put("allList", allMaps.get("dataList"));
-    	result.put("closedList",closedMaps.get("dataList"));
-    	result.put("ActiveList",activeMaps.get("dataList"));
-    	return omAlarm.writeValueAsString(result);
+    private String getDiagram(String sourceName, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal,
+            long keyValIteraVal, String format) throws JsonProcessingException {
+        Map<String, List> result = new HashMap<String, List>();
+
+        Map<String, List> allMaps = dateProcess(new DateProcessDataObject().setSourceName(sourceName)
+                .setStartTimeL(startTimeL).setEndTimeL(endTimeL).setTimeIteraPlusVal(timeIteraPlusVal).setKeyVal(keyVal)
+                .setKeyValIteraVal(keyValIteraVal).setFormat(format).setLevel(""));
+
+        Map<String, List> closedMaps = dateProcess(new DateProcessDataObject().setSourceName(sourceName)
+                .setStartTimeL(startTimeL).setEndTimeL(endTimeL).setTimeIteraPlusVal(timeIteraPlusVal).setKeyVal(1)
+                .setKeyValIteraVal(1).setFormat(format).setLevel("closed"));
+
+        Map<String, List> activeMaps = dateProcess(new DateProcessDataObject().setSourceName(sourceName)
+                .setStartTimeL(startTimeL).setEndTimeL(endTimeL).setTimeIteraPlusVal(timeIteraPlusVal).setKeyVal(1)
+                .setKeyValIteraVal(1).setFormat(format).setLevel("active"));
+
+        result.put("dateList", allMaps.get("dateTime"));
+        result.put("allList", allMaps.get("dataList"));
+        result.put("closedList", closedMaps.get("dataList"));
+        result.put("ActiveList", activeMaps.get("dataList"));
+        return omAlarm.writeValueAsString(result);
     }
-    private Map<String,List> dateProcess(String sourceName, long startTimeL, long endTimeL, long timeIteraPlusVal, long keyVal, long keyValIteraVal,String format,String level) {
-    	Map<String,List> result = new HashMap<String,List>();
+
+    private Map<String, List> dateProcess(DateProcessDataObject dataObject) {
+        Map<String, List> result = new HashMap<String, List>();
         List<String> dateList = new ArrayList<String>();
         List<Integer> numList = new ArrayList<Integer>();
-        long tmpEndTimeL = startTimeL + timeIteraPlusVal;
-        while (endTimeL >= tmpEndTimeL) {
-        	int maxDay2 = 1;
-        	int maxDay = 1;
-            int num = alarmsInformationService.queryDateBetween(sourceName,startTimeL+"",tmpEndTimeL+"",level);
-            dateList.add(DateUtils.getResultDate(startTimeL, format));
-            if("month".equals(format)){
-            	maxDay2 = DateUtils.MonthOfDay(sdf.format(new Date(tmpEndTimeL)), formatDate);
-            	maxDay = DateUtils.MonthOfDay(sdf.format(new Date(startTimeL)), formatDate);
+        long tmpEndTimeL = dataObject.getStartTimeL() + dataObject.getTimeIteraPlusVal();
+        while (dataObject.getEndTimeL() >= tmpEndTimeL) {
+            int maxDay2 = 1;
+            int maxDay = 1;
+            int num = alarmsInformationService.queryDateBetween(dataObject.getSourceName(),
+                    dataObject.getStartTimeL() + "", tmpEndTimeL + "", dataObject.getLevel());
+            dateList.add(DateUtils.getResultDate(dataObject.getStartTimeL(), dataObject.getFormat()));
+            if ("month".equals(dataObject.getFormat())) {
+                maxDay2 = DateUtils.MonthOfDay(sdf.format(new Date(tmpEndTimeL)), formatDate);
+                maxDay = DateUtils.MonthOfDay(sdf.format(new Date(dataObject.getStartTimeL())), formatDate);
             }
             numList.add(num);
-            startTimeL += 86400000L*maxDay;
-            tmpEndTimeL += 86400000L*maxDay2;
-            keyVal += keyValIteraVal;
+            long startTimeL1 = dataObject.getStartTimeL();
+            startTimeL1 += 86400000L * maxDay;
+            tmpEndTimeL += 86400000L * maxDay2;
+            long keyVal1 = dataObject.getKeyVal();
+            long keyValIteraVal1 = dataObject.getKeyValIteraVal();
+            keyVal1 += keyValIteraVal1;
         }
         result.put("dateTime", dateList);
         result.put("dataList", numList);
