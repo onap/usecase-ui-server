@@ -16,11 +16,7 @@
 package org.onap.usecaseui.server.service.lcm.domain.aai;
 
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.*;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -44,6 +40,24 @@ public interface AAIService {
 //    @GET("/api/aai-business/v11/customers")
     @GET("/api/aai-business/v11/customers")
     Call<AAICustomerRsp> listCustomer();
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-externalSystem/v16/esr-nfvo-list")
+    Call<AAIOrchestratorRsp> listOrchestrator();
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-externalSystem/v16/esr-nfvo-list/esr-nfvo/{nfvo-id}?depth=all")
+    Call<AAISingleOrchestratorRsp> getOrchestrator(@Path("nfvo-id") String nfvoId);
 
     @Headers({
             "X-TransactionId: 7777",
