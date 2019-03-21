@@ -18,9 +18,7 @@ package org.onap.usecaseui.server.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.transaction.Transactional;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -89,7 +87,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	public int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
 		try(Session session = getSession()){
-			StringBuffer hql = new StringBuffer("select count(*) from AlarmsInformation a where 1=1");
+			StringBuilder hql = new StringBuilder("select count(*) from AlarmsInformation a where 1=1");
 			if (null == alarmsInformation) {
 			}else {
 				if(null!=alarmsInformation.getName()) {

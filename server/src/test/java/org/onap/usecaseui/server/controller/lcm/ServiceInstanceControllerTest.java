@@ -15,14 +15,43 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import javax.servlet.http.HttpServletRequest;
-
+import javax.ws.rs.core.MediaType;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {ServiceInstanceController.class })
+@WebAppConfiguration
+@EnableWebMvc
+
 public class ServiceInstanceControllerTest {
+    
+    private MockMvc mockMvc;
+    
+    @Autowired
+    private WebApplicationContext wac;
+    
+    @Before
+    public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+    }
+    
     @Test
     public void testListServiceInstances() throws Exception {
         ServiceInstanceController controller = new ServiceInstanceController();
@@ -39,5 +68,23 @@ public class ServiceInstanceControllerTest {
 
         verify(service, times(1)).listServiceInstances(customerId, serviceType);
     }
+    
+
+    @Test
+    public void testListNsOrServiceInstances() throws Exception {
+        
+        ServiceInstanceController controller = new ServiceInstanceController();
+        ServiceInstanceService service = mock(ServiceInstanceService.class);
+        controller.setServiceInstanceService(service);
+
+       String uri = "/uui-lcm/service-ns-instances";
+       MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(uri)
+          .accept(MediaType.APPLICATION_JSON)).andReturn();
+       
+       int status = mvcResult.getResponse().getStatus();
+       assertEquals(200, status);
+  
+    }
+
 
 }
