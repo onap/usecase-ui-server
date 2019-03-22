@@ -27,6 +27,9 @@ public class AAISingleOrchestratorRsp {
     @JsonProperty("resource-version")
     private String resourceVersion;
 
+    @JsonProperty("api-root")
+    private String apiRoot;
+
     @JsonProperty("esr-system-info-list")
     private EsrSystemInfoList esrSystemInfoList;
 
@@ -54,7 +57,11 @@ public class AAISingleOrchestratorRsp {
         this.esrSystemInfoList = esrSystemInfoList;
     }
 
+    public String getApiRoot() {
+        return apiRoot;
+    }
 
-
-
+    public void setApiRoot(String apiRoot) {
+        this.apiRoot = apiRoot;
+    }
 }
