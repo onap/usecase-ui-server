@@ -54,7 +54,11 @@ public class AAISingleOrchestratorRsp {
         this.esrSystemInfoList = esrSystemInfoList;
     }
 
+    public String getApiRoot() {
+        return apiRoot;
+    }
 
-
-
+    public void setApiRoot(String apiRoot) {
+        this.apiRoot = apiRoot;
+    }
 }
