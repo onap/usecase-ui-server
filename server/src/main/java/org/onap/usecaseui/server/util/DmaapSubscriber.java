@@ -72,7 +72,7 @@ public class DmaapSubscriber implements Runnable {
     @Resource(name = "PerformanceInformationService")
     private PerformanceInformationService performanceInformationService;
 
-	public void subscribe(String topic) {
+    public void subscribe(String topic) {
         try {
             List<String> respList = getDMaaPData(topic);
             if (!UuiCommonUtil.isNotNullOrEmpty(respList)) {
@@ -82,7 +82,8 @@ public class DmaapSubscriber implements Runnable {
             objMapper.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
             respList.forEach(rl -> {
                 try {
-                    Map<String, Object> eventMaps = (Map<String, Object>) objMapper.readValue(rl, Map.class).get("event");
+                    Map<String, Object> eventMaps =
+                            (Map<String, Object>) objMapper.readValue(rl, Map.class).get("event");
                     if (eventMaps.containsKey("measurementsForVfScalingFields")) {
                         performanceProcess(eventMaps);
                     } else if (eventMaps.containsKey("faultFields")) {
@@ -90,15 +91,17 @@ public class DmaapSubscriber implements Runnable {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    logger.error("exception occurred while performing DmaapSubcriber performanceProcess or alarmProcess. Details:"+ e.getMessage());
-                    logger.error("exception from content:"+rl);
-                    logger.error("response content is :"+respList);
+                    logger.error(
+                            "exception occurred while performing DmaapSubcriber performanceProcess or alarmProcess. Details:{}",
+                            e.getMessage());
+                    logger.error("exception from content:{}", rl);
+                    logger.error("response content is :{}", respList);
                 }
             });
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("getDMaaP Information failed :" + e.getMessage());
+            logger.error("getDMaaP Information failed :{}", e.getMessage());
         }
     }
 
@@ -115,14 +118,13 @@ public class DmaapSubscriber implements Runnable {
         try {
             p.load(inputStream);
             this.url = p.getProperty("dmaap.url") + System.getenv("MR_ADDR");
-            //this.url = p.getProperty("dmaap.url");
             this.alarmTopic = p.getProperty("dmaap.alarmTopic");
             this.performanceTopic = p.getProperty("dmaap.performanceTopic");
             this.consumerGroup = p.getProperty("dmaap.consumerGroup");
             this.consumer = p.getProperty("dmaap.consumer");
             this.timeout = Integer.parseInt(p.getProperty("dmaap.timeout"));
         } catch (IOException e1) {
-            logger.error("get configuration file arise error :" + e1.getMessage());
+            logger.error("get configuration file arise error :{}",e1.getMessage());
         }
     }
 
@@ -134,7 +136,7 @@ public class DmaapSubscriber implements Runnable {
                 subscribe(performanceTopic);
             */}
         } catch (Exception e) {
-            logger.error("subscribe raise error :" + e.getCause());
+            logger.error("subscribe raise error :{}",e.getCause());
         }
     }
 
@@ -198,11 +200,14 @@ public class DmaapSubscriber implements Runnable {
                         try {
                             List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
                             m.forEach(i -> {
-                                alarm_informations.add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(), alarm_header.getSourceId(),alarm_header.getStartEpochMicrosec(),alarm_header.getLastEpochMicroSec(),alarm_header.getId()));
+                                alarm_informations
+                                        .add(new AlarmsInformation(i.get("name").toString(), i.get("value").toString(),
+                                                alarm_header.getSourceId(), alarm_header.getStartEpochMicrosec(),
+                                                alarm_header.getLastEpochMicroSec(), alarm_header.getId()));
                             });
                         } catch (Exception e) {
                             e.printStackTrace();
-                            logger.error("convert alarmAdditionalInformation error：" + e.getMessage());
+                            logger.error("convert alarmAdditionalInformation error：{}",e.getMessage());
                         }
                     }
                 });
@@ -212,16 +217,17 @@ public class DmaapSubscriber implements Runnable {
         Long l = System.currentTimeMillis();
 
         Timestamp date_get = new Timestamp(l);
-        if (alarm_header.getEventName().contains("Cleared")) {
-            alarm_header.setStatus("close");
-            alarmsHeaderService.updateAlarmsHeader2018("close", date_get, alarm_header.getStartEpochMicrosec(), alarm_header.getLastEpochMicroSec(), alarm_header.getEventName().replace("Cleared", ""), alarm_header.getReportingEntityName(), alarm_header.getSpecificProblem());
-            alarm_informations.forEach(information ->
-                alarmsInformationService.saveAlarmsInformation(information));
+            if (alarm_header.getEventName().contains("Cleared")) {
+                alarm_header.setStatus("close");
+                alarmsHeaderService.updateAlarmsHeader2018("close", date_get, alarm_header.getStartEpochMicrosec(),
+                        alarm_header.getLastEpochMicroSec(), alarm_header.getEventName().replace("Cleared", ""),
+                        alarm_header.getReportingEntityName(), alarm_header.getSpecificProblem());
+                alarm_informations.forEach(information -> alarmsInformationService.saveAlarmsInformation(information));
 
-        } else {
+            } else {
             alarm_header.setStatus("active");
             alarmsHeaderService.saveAlarmsHeader(alarm_header);
-            if(alarm_informations.size() > 0) {
+            if(alarm_informations.isEmpty()) {
             alarm_informations.forEach(information ->
                     alarmsInformationService.saveAlarmsInformation(information));
             }
@@ -278,17 +284,21 @@ public class DmaapSubscriber implements Runnable {
                                     List<Map<String, Object>> m = (List<Map<String, Object>>) v3;
                                     m.forEach(i -> {
                                         i.forEach( (k,v) -> {
-                                            if (k.equals("arrayOfFields")){
-                                                List<Map<String,String>> arrayOfFields = (List<Map<String, String>>) v;
-                                                arrayOfFields.forEach( fields -> {
-														performance_informations.add(new PerformanceInformation(fields.get("name"), fields.get("value"), performance_header.getSourceId(), performance_header.getStartEpochMicrosec(),performance_header.getLastEpochMicroSec(),performance_header.getId()));
-                                                } );
-                                            }
+                                    if (k.equals("arrayOfFields")) {
+                                        List<Map<String, String>> arrayOfFields = (List<Map<String, String>>) v;
+                                        arrayOfFields.forEach(fields -> {
+                                            performance_informations.add(new PerformanceInformation(fields.get("name"),
+                                                    fields.get("value"), performance_header.getSourceId(),
+                                                    performance_header.getStartEpochMicrosec(),
+                                                    performance_header.getLastEpochMicroSec(),
+                                                    performance_header.getId()));
+                                        });
+                                    }
                                         });
                                     });
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    logger.error("convert performanceAdditionalInformation error：" + e.getMessage());
+                                    logger.error("convert performanceAdditionalInformation error：{}",e.getMessage());
                                 }
                             }
                         });

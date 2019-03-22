@@ -39,6 +39,10 @@ public class HttpUtil {
      *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return URL 所代表远程资源的响应结果
      */
+	
+	private HttpUtil() {
+	    
+	}
     public static String sendGet(String url, String param) {
         String result = "";
         BufferedReader in = null;
@@ -58,7 +62,7 @@ public class HttpUtil {
             Map<String, List<String>> map = connection.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet()) {
-            	logger.error(key + "--->" + map.get(key));
+            	logger.error(key , "{} {}--->" , map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(
@@ -137,7 +141,7 @@ public class HttpUtil {
                 }
             }
             catch(IOException ex){
-                ex.printStackTrace();
+                logger.error("{}",ex.getMessage());
             }
         }
         return result;
