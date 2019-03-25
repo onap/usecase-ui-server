@@ -78,7 +78,7 @@ public class PerformanceController {
                                      @RequestParam(required = false) String sourceName,
                                      @RequestParam(required = false) String startTime,@RequestParam(required = false) String endTime) throws JsonProcessingException, ParseException {
         Page<PerformanceHeader> pa = new Page<PerformanceHeader>();
-            PerformanceHeader performanceHeader = new PerformanceHeader();
+            PerformanceHeader performanceHeader = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
             performanceHeader.setSourceName(sourceName);
             performanceHeader.setStartEpochMicrosec(!UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
             performanceHeader.setLastEpochMicroSec(!UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
@@ -125,7 +125,7 @@ public class PerformanceController {
     @RequestMapping(value = {"/performance/getSourceNames/{currentPage}/{pageSize}"},method = RequestMethod.GET, produces = "application/json")
     public String getPerformanceSourceNames(@PathVariable String currentPage,@PathVariable String pageSize,
             @RequestParam(required = false) String sourceName) throws JsonProcessingException{
-        PerformanceHeader performanceHeader = new PerformanceHeader();
+        PerformanceHeader performanceHeader = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
         Page<PerformanceHeader> page = new Page<PerformanceHeader>();
         Set<String> names = new HashSet<String>();
         performanceHeader.setSourceName(sourceName);
@@ -133,7 +133,7 @@ public class PerformanceController {
         if(!UuiCommonUtil.isNotNullOrEmpty(page)){
             page = new Page<>();
             List<PerformanceHeader> list = new ArrayList<>();
-            performanceHeader = new PerformanceHeader();
+            performanceHeader =  new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
             list.add(performanceHeader);
             page.setList(list);
 

@@ -34,10 +34,7 @@ public class PerformanceHeaderTest implements Serializable {
 
 	@Test
 	public void testGetPerformanceHeader() throws Exception {
-		PerformanceHeader ph = new PerformanceHeader("version", "eventName", "domain", "eventId", "eventType", "nfcNamingCode", "nfNamingCode",
-													"sourceId", "sourceName", "reportingEntityId", "reportingEntityName", "priority",
-													"startEpochMicrosec", "lastEpochMicroSec", "sequence", "measurementsForVfScalingVersion",
-													"measurementInterval", DateUtils.now(), DateUtils.now());
+		PerformanceHeader ph = new PerformanceHeader.PerformanceHeaderBuilder().setVersion("version").setEventName("eventName").setDomain("domain").setEventId("eventId").setEventType("eventType").setNfcNamingCode("nfcNamingCode").setNfNamingCode("nfNamingCode").setSourceId("sourceId").setSourceName("sourceName").setReportingEntityId("reportingEntityId").setReportingEntityName("reportingEntityName").setPriority("priority").setStartEpochMicrosec("startEpochMicrosec").setLastEpochMicroSec("lastEpochMicroSec").setSequence("sequence").setMeasurementsForVfScalingVersion("measurementsForVfScalingVersion").setMeasurementInterval("measurementInterval").setCreateTime(DateUtils.now()).setUpdateTime(DateUtils.now()).createPerformanceHeader();
 		ph.getVersion();
 		ph.getEventName();
 		ph.getDomain();
@@ -60,7 +57,7 @@ public class PerformanceHeaderTest implements Serializable {
 
 	@Test
 	public void testSetPerformanceHeader() throws Exception {
-		PerformanceHeader ph = new PerformanceHeader("sourceId");
+		PerformanceHeader ph = new PerformanceHeader.PerformanceHeaderBuilder().setSourceId("sourceId").createPerformanceHeader();
 		ph.setVersion("");
 		ph.setEventName("");
 		ph.setDomain("");

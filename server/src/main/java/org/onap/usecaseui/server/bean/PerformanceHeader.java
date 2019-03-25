@@ -83,6 +83,128 @@ public class PerformanceHeader implements Serializable {
 	
 	@Column(name = "measurementInterval")
 	private String measurementInterval;
+
+	/** */
+	public static class PerformanceHeaderBuilder {
+		private String sourceId;
+		private String version;
+		private String eventName;
+		private String domain;
+		private String eventId;
+		private String eventType;
+		private String nfcNamingCode;
+		private String nfNamingCode;
+		private String sourceName;
+		private String reportingEntityId;
+		private String reportingEntityName;
+		private String priority;
+		private String startEpochMicrosec;
+		private String lastEpochMicroSec;
+		private String sequence;
+		private String measurementsForVfScalingVersion;
+		private String measurementInterval;
+		private Date createTime;
+		private Date updateTime;
+
+		public PerformanceHeaderBuilder setSourceId(String sourceId) {
+			this.sourceId = sourceId;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setVersion(String version) {
+			this.version = version;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setEventName(String eventName) {
+			this.eventName = eventName;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setDomain(String domain) {
+			this.domain = domain;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setEventId(String eventId) {
+			this.eventId = eventId;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setEventType(String eventType) {
+			this.eventType = eventType;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setNfcNamingCode(String nfcNamingCode) {
+			this.nfcNamingCode = nfcNamingCode;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setNfNamingCode(String nfNamingCode) {
+			this.nfNamingCode = nfNamingCode;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setSourceName(String sourceName) {
+			this.sourceName = sourceName;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setReportingEntityId(String reportingEntityId) {
+			this.reportingEntityId = reportingEntityId;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setReportingEntityName(String reportingEntityName) {
+			this.reportingEntityName = reportingEntityName;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setPriority(String priority) {
+			this.priority = priority;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setStartEpochMicrosec(String startEpochMicrosec) {
+			this.startEpochMicrosec = startEpochMicrosec;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setLastEpochMicroSec(String lastEpochMicroSec) {
+			this.lastEpochMicroSec = lastEpochMicroSec;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setSequence(String sequence) {
+			this.sequence = sequence;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setMeasurementsForVfScalingVersion(String measurementsForVfScalingVersion) {
+			this.measurementsForVfScalingVersion = measurementsForVfScalingVersion;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setMeasurementInterval(String measurementInterval) {
+			this.measurementInterval = measurementInterval;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setCreateTime(Date createTime) {
+			this.createTime = createTime;
+			return this;
+		}
+
+		public PerformanceHeaderBuilder setUpdateTime(Date updateTime) {
+			this.updateTime = updateTime;
+			return this;
+		}
+
+		public PerformanceHeader createPerformanceHeader() {
+			return new PerformanceHeader(this);
+		}
+	}
 	
 	public PerformanceHeader() {
 	}
@@ -91,24 +213,24 @@ public class PerformanceHeader implements Serializable {
 		this.sourceId = sourceId;
 	}
 
-	public PerformanceHeader(String version, String eventName, String domain, String eventId, String eventType, String nfcNamingCode, String nfNamingCode, String sourceId, String sourceName, String reportingEntityId, String reportingEntityName, String priority, String startEpochMicrosec, String lastEpochMicroSec, String sequence, String measurementsForVfScalingVersion, String measurementInterval, Date createTime, Date updateTime) {
-		this.version = version;
-		this.eventName = eventName;
-		this.domain = domain;
-		this.eventId = eventId;
-		this.eventType = eventType;
-		this.nfcNamingCode = nfcNamingCode;
-		this.nfNamingCode = nfNamingCode;
-		this.sourceId = sourceId;
-		this.sourceName = sourceName;
-		this.reportingEntityId = reportingEntityId;
-		this.reportingEntityName = reportingEntityName;
-		this.priority = priority;
-		this.startEpochMicrosec = startEpochMicrosec;
-		this.lastEpochMicroSec = lastEpochMicroSec;
-		this.sequence = sequence;
-		this.measurementsForVfScalingVersion = measurementsForVfScalingVersion;
-		this.measurementInterval = measurementInterval;
+	public PerformanceHeader(PerformanceHeaderBuilder builder) {
+		this.version = builder.version;
+		this.eventName = builder.eventName;
+		this.domain = builder.domain;
+		this.eventId = builder.eventId;
+		this.eventType = builder.eventType;
+		this.nfcNamingCode = builder.nfcNamingCode;
+		this.nfNamingCode = builder.nfNamingCode;
+		this.sourceId = builder.sourceId;
+		this.sourceName = builder.sourceName;
+		this.reportingEntityId = builder.reportingEntityId;
+		this.reportingEntityName = builder.reportingEntityName;
+		this.priority = builder.priority;
+		this.startEpochMicrosec = builder.startEpochMicrosec;
+		this.lastEpochMicroSec = builder.lastEpochMicroSec;
+		this.sequence = builder.sequence;
+		this.measurementsForVfScalingVersion = builder.measurementsForVfScalingVersion;
+		this.measurementInterval = builder.measurementInterval;
 	}
 
 	public String getVersion() {

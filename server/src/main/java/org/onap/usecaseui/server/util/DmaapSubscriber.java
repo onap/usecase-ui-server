@@ -31,10 +31,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.bean.PerformanceHeader;
-import org.onap.usecaseui.server.bean.PerformanceInformation;
+import org.onap.usecaseui.server.bean.*;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
@@ -236,7 +233,7 @@ public class DmaapSubscriber implements Runnable {
     }
 
     public void performanceProcess(Map<String, Object> maps) {
-        PerformanceHeader performance_header = new PerformanceHeader();
+        PerformanceHeader performance_header = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
         performance_header.setId(UuiCommonUtil.getUUID());
         List<PerformanceInformation> performance_informations = new ArrayList<>();
         maps.forEach((ek1, ev1) -> {

@@ -19,8 +19,6 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
-import org.onap.usecaseui.server.service.impl.PerformanceHeaderServiceImpl;
-import org.onap.usecaseui.server.util.DateUtils;
 
 import java.util.*;
 import java.io.*;
@@ -85,7 +83,7 @@ public class PerformanceHeaderServiceImplTest {
 			}
 			@Mock
 			public List<PerformanceHeader> list() {
-				PerformanceHeader ph = new PerformanceHeader();
+				PerformanceHeader ph = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
 				return Arrays.asList(ph);
 			}
 			@Mock
@@ -139,7 +137,7 @@ public class PerformanceHeaderServiceImplTest {
 	public void testSavePerformanceHeader() throws Exception {
 		try {
 			PerformanceHeader ph = null;
-			PerformanceHeader phNew = new PerformanceHeader();
+			PerformanceHeader phNew = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
 			performanceHeaderServiceImpl.savePerformanceHeader(ph);
 			performanceHeaderServiceImpl.savePerformanceHeader(phNew);
 		} catch (Exception e) {
@@ -151,7 +149,7 @@ public class PerformanceHeaderServiceImplTest {
 	public void testUpdatePerformanceHeader() throws Exception {
 		try {
 			PerformanceHeader ph = null;
-			PerformanceHeader phNew = new PerformanceHeader();
+			PerformanceHeader phNew = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
 			performanceHeaderServiceImpl.updatePerformanceHeader(ph);
 			performanceHeaderServiceImpl.updatePerformanceHeader(phNew);
 		} catch (Exception e) {
@@ -168,7 +166,7 @@ public class PerformanceHeaderServiceImplTest {
 			}
 		};
 		try {
-			PerformanceHeader ph = new PerformanceHeader();
+			PerformanceHeader ph = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
 			ph.setVersion("");
 			ph.setEventName("");
 			ph.setDomain("");
@@ -190,7 +188,7 @@ public class PerformanceHeaderServiceImplTest {
 			ph.setLastEpochMicroSec("");;
 			performanceHeaderServiceImpl.getAllCount(ph, 1, 1);
 			
-			PerformanceHeader phNew = new PerformanceHeader();
+			PerformanceHeader phNew = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
 			performanceHeaderServiceImpl.getAllCount(phNew, 1, 1);
 			performanceHeaderServiceImpl.getAllCount(null, 1, 1);
 		} catch (Exception e) {
@@ -201,7 +199,7 @@ public class PerformanceHeaderServiceImplTest {
 	@Test
 	public void testQueryPerformanceHeader() throws Exception {
 		try {
-			PerformanceHeader ph = new PerformanceHeader();
+			PerformanceHeader ph = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
 			ph.setVersion("");
 			ph.setEventName("");
 			ph.setDomain("");
@@ -223,7 +221,7 @@ public class PerformanceHeaderServiceImplTest {
 			ph.setLastEpochMicroSec("");;
 			performanceHeaderServiceImpl.queryPerformanceHeader(ph, 1, 10);
 			
-			PerformanceHeader phNew = new PerformanceHeader();
+			PerformanceHeader phNew = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
 			performanceHeaderServiceImpl.queryPerformanceHeader(phNew, 1, 1);
 			performanceHeaderServiceImpl.queryPerformanceHeader(null, 1, 1);
 		} catch (Exception e) {

@@ -60,7 +60,7 @@ public class PerformanceControllerTest {
 	    String  priority="Normal";
 	    String  startTime="1521678529000";
 	    String  endTime="1521680329000";
-	    PerformanceHeader header = new PerformanceHeader();
+	    PerformanceHeader header = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
 
 
 	    controller.getPerformanceData(currentPage+"",pageSize+"",sourceName,startTime,endTime);
