@@ -16,7 +16,15 @@
 package org.onap.usecaseui.server.service.lcm.domain.aai;
 
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.*;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIOrchestratorRsp;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAISingleOrchestratorRsp;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -38,27 +46,54 @@ public interface AAIService {
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers")
-    @GET("/api/aai-business/v11/customers")
+    @GET("/api/aai-business/v13/customers")
     Call<AAICustomerRsp> listCustomer();
-
+    
     @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
-    @GET("/api/aai-externalSystem/v16/esr-nfvo-list")
-    Call<AAIOrchestratorRsp> listOrchestrator();
-
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	@GET("/api/aai-externalSystem/v16/esr-nfvo-list")
+	Call<AAIOrchestratorRsp> listOrchestrator();
+    
     @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	@GET("/api/aai-externalSystem/v16/esr-nfvo-list/esr-nfvo/{nfvo-id}?depth=all")
+	Call<AAISingleOrchestratorRsp> getOrchestrator(@Path("nfvo-id") String nfvoId);
+    
+    @Headers({
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
     })
-    @GET("/api/aai-externalSystem/v16/esr-nfvo-list/esr-nfvo/{nfvo-id}?depth=all")
-    Call<AAISingleOrchestratorRsp> getOrchestrator(@Path("nfvo-id") String nfvoId);
-
+    @PUT("/api/aai-business/v13/customers/customer/{global-customer-id}")
+    Call<ResponseBody> createOrUpdateCustomer(@Path("global-customer-id") String customerId,@Body RequestBody body);
+    
+    @Headers({
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+    })
+    @DELETE("/api/aai-business/v13//customers/customer/{global-customer-id}")
+    Call<ResponseBody> deleteCustomer(@Path("global-customer-id") String customerId,@Query("resource-version") String resourceVersion);
+    
+    @Headers({
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+    })
+    @GET("/api/aai-business/v13//customers/customer/{global-customer-id}")
+    Call<AAICustomer> getCustomerById(@Path("global-customer-id") String customerId);
+    
     @Headers({
             "X-TransactionId: 7777",
             "X-FromAppId: uui",
@@ -88,7 +123,37 @@ public interface AAIService {
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
     @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
     Call<ServiceSubscriptionRsp> listServiceSubscriptions(@Path("global-customer-id") String customerId);
-
+    
+    @Headers({
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	//@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
+	@PUT("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
+	Call<ResponseBody> createOrUpdateServiceType(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType);
+    
+    @Headers({
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	//@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
+	@PUT("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
+	Call<ResponseBody> deleteServiceType(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType,@Query("resource-version") String resourceVersion);
+    
+    @Headers({
+        "X-TransactionId: 7777",
+        "X-FromAppId: uui",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	//@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
+	@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
+	Call<AAIServiceSubscription> getServiceTypeById(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType);
+    
     @Headers({
             "X-TransactionId: 7777",
             "X-FromAppId: uui",

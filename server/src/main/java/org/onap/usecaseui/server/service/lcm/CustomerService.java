@@ -18,9 +18,27 @@ package org.onap.usecaseui.server.service.lcm;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface CustomerService {
+	
     List<AAICustomer> listCustomer();
+    
+    JSONObject createOrUpdateCustomer(HttpServletRequest request,String customerId);
+    
+    JSONObject deleteCustomer(String customerId,String resourceVersion);
+    
+    JSONObject getCustomerById(String customerId);
+    
     List<AAIServiceSubscription> listServiceSubscriptions(String customerId);
+    
+    JSONObject createOrUpdateServiceType(HttpServletRequest request,String serviceType);
+    
+    JSONObject deleteServiceType(String customerId,String serviceType,String resourceVersion);
+    
+    JSONObject getServiceTypeById(String customerId,String serviceType);
 }

@@ -27,11 +27,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
+
+import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service("CustomerService")
 @org.springframework.context.annotation.Configuration
@@ -65,11 +74,76 @@ public class DefaultCustomerService implements CustomerService {
             throw new AAIException("AAI is not available.", e);
         }
     }
-
+    
     @Override
-    public List<AAIServiceSubscription> listServiceSubscriptions(String customerId) {
+    public JSONObject createOrUpdateCustomer(HttpServletRequest request,String customerId){
+    		JSONObject result = new JSONObject();
+		try {
+			logger.info("aai createOrUpdateCustomer is starting!");
+			RequestBody requestBody = extractBody(request);
+			Response<ResponseBody> response = this.aaiService.createOrUpdateCustomer(customerId,requestBody).execute();
+			logger.info("aai createOrUpdateCustomer is finished!");
+			if(response.isSuccessful()){
+				result.put("status", "SUCCESS");
+			}else{
+				result.put("status", "FAILED");
+				result.put("errorMessage",String.format("Can not get createOrUpdateCustomer[code=%s, message=%s]", response.code(), response.message()));
+			}
+		} catch (IOException e) {
+			result.put("status", "FAILED");
+			result.put("errorMessage","createOrUpdateCustomer occur exception:"+e.getMessage());
+		}
+		return result;
+    }
+    
+    @Override
+    public JSONObject getCustomerById(String customerId){
+    		JSONObject result = new JSONObject();
+		try {
+			logger.info("aai getCustomerById is starting!");
+			Response<AAICustomer> response = this.aaiService.getCustomerById(customerId).execute();
+			logger.info("aai getCustomerById is finished!");
+			if(response.isSuccessful()){
+				result.put("status", "SUCCESS");
+				result.put("result",response.body());
+			}else{
+				result.put("status", "FAILED");
+				result.put("errorMessage",String.format("Can not get getCustomerById[code=%s, message=%s]", response.code(), response.message()));
+			}
+		} catch (IOException e) {
+			result.put("status", "FAILED");
+			result.put("errorMessage","getCustomerById occur exception:"+e.getMessage());
+		}
+		return result;
+    }
+    
+    @Override
+    public JSONObject deleteCustomer(String customerId,String resourceVersion){
+		JSONObject result = new JSONObject();
+		try {
+			logger.info("aai deleteCustomer is starting!");
+			Response<ResponseBody> response = this.aaiService.deleteCustomer(customerId,resourceVersion).execute();
+			logger.info("aai deleteCustomer is finished!");
+			if(response.isSuccessful()){
+				result.put("status", "SUCCESS");
+			}else{
+				result.put("status", "FAILED");
+				result.put("errorMessage",String.format("Can not get deleteCustomer[code=%s, message=%s]", response.code(), response.message()));
+			}
+		} catch (IOException e) {
+			result.put("status", "FAILED");
+			if(e.getMessage().contains("204")){
+				result.put("status", "SUCCESS");
+			}
+			result.put("errorMessage","deleteCustomer occur exception:"+e.getMessage());
+		}
+		return result;
+    }
+    
+    @Override
+    public List<AAIServiceSubscription> listServiceSubscriptions(String serviceType) {
         try {
-            Response<ServiceSubscriptionRsp> response = this.aaiService.listServiceSubscriptions(customerId).execute();
+            Response<ServiceSubscriptionRsp> response = this.aaiService.listServiceSubscriptions(serviceType).execute();
             if (response.isSuccessful()) {
                 return response.body().getServiceSubscriptions();
             } else {
@@ -80,5 +154,70 @@ public class DefaultCustomerService implements CustomerService {
             logger.error("list customers occur exception");
             throw new AAIException("AAI is not available.", e);
         }
+    }
+    
+    @Override
+    public JSONObject createOrUpdateServiceType(HttpServletRequest request,String serviceType){
+		JSONObject result = new JSONObject();
+		try {
+			logger.info("aai createOrUpdateServiceType is starting!");
+			RequestBody requestBody = extractBody(request);
+			Response<ResponseBody> response = this.aaiService.createOrUpdateCustomer(serviceType,requestBody).execute();
+			logger.info("aai createOrUpdateServiceType is finished!");
+			if(response.isSuccessful()){
+				result.put("status", "SUCCESS");
+			}else{
+				result.put("status", "FAILED");
+				result.put("errorMessage",String.format("Can not get createOrUpdateServiceType[code=%s, message=%s]", response.code(), response.message()));
+			}
+		} catch (IOException e) {
+			result.put("status", "FAILED");
+			result.put("errorMessage","createOrUpdateServiceType occur exception:"+e.getMessage());
+		}
+		return result;
+    }
+    
+    @Override
+    public JSONObject deleteServiceType(String customerId,String serviceType,String resourceVersion){
+		JSONObject result = new JSONObject();
+		try {
+			logger.info("aai deleteServiceType is starting!");
+			Response<ResponseBody> response = this.aaiService.deleteServiceType(customerId,serviceType,resourceVersion).execute();
+			logger.info("aai deleteServiceType is finished!");
+			if(response.isSuccessful()){
+				result.put("status", "SUCCESS");
+			}else{
+				result.put("status", "FAILED");
+				result.put("errorMessage",String.format("Can not get deleteServiceType[code=%s, message=%s]", response.code(), response.message()));
+			}
+		} catch (IOException e) {
+			result.put("status", "FAILED");
+			if(e.getMessage().contains("204")){
+				result.put("status", "SUCCESS");
+			}
+			result.put("errorMessage","deleteServiceType occur exception:"+e.getMessage());
+		}
+		return result;
+    }
+    
+    @Override
+    public JSONObject getServiceTypeById(String customerId,String serviceType){
+    		JSONObject result = new JSONObject();
+		try {
+			logger.info("aai getServiceTypeById is starting!");
+			Response<AAIServiceSubscription> response = this.aaiService.getServiceTypeById(customerId,serviceType).execute();
+			logger.info("aai getServiceTypeById is finished!");
+			if(response.isSuccessful()){
+				result.put("status", "SUCCESS");
+				result.put("result",response.body());
+			}else{
+				result.put("status", "FAILED");
+				result.put("errorMessage",String.format("Can not get getServiceTypeById[code=%s, message=%s]", response.code(), response.message()));
+			}
+		} catch (IOException e) {
+			result.put("status", "FAILED");
+			result.put("errorMessage","getServiceTypeById occur exception:"+e.getMessage());
+		}
+		return result;
     }
 }
