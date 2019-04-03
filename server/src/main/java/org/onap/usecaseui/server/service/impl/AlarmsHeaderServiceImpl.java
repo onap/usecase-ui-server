@@ -247,8 +247,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			Query q = session.createQuery(string);
 			q.setString("id",id);
 			AlarmsHeader alarmsHeader =(AlarmsHeader)q.uniqueResult();
-			session.flush();
-			return alarmsHeader;
+ 			return alarmsHeader;
 
 		}catch (Exception e){
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAlarmsHeaderDetail."+e.getMessage());

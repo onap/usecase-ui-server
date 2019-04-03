@@ -35,78 +35,78 @@ public class AlarmsHeader implements Serializable{
 	@Column(name = "version")
 	private String version;
 	
-	@Column(name = "eventName")
+	@Column(name = "event_name")
 	private String eventName;
 	
 	@Column(name = "domain")
 	private String domain;
 	
 	
-	@Column(name = "eventId")
+	@Column(name = "event_id")
 	private String eventId;
 	
-	@Column(name = "eventType")
+	@Column(name = "event_type")
 	private String eventType;
 	
-	@Column(name = "nfcNamingCode", nullable=false)
+	@Column(name = "nfc_naming_code", nullable=false)
 	private String nfcNamingCode;
 	
-	@Column(name = "nfNamingCode", nullable=false)
+	@Column(name = "nf_naming_code", nullable=false)
 	private String nfNamingCode;
 	
-	@Column(name = "sourceId")
+	@Column(name = "source_id")
 	private String sourceId;
 	
-	@Column(name = "sourceName")
+	@Column(name = "source_name")
 	private String sourceName;
 	
-	@Column(name = "reportingEntityId")
+	@Column(name = "reporting_entity_id")
 	private String reportingEntityId;
 	
-	@Column(name = "reportingEntityName")
+	@Column(name = "reporting_entity_name")
 	private String reportingEntityName;
 	
 	@Column(name = "priority")
 	private String priority;
 	
-	@Column(name = "startEpochMicrosec")
+	@Column(name = "start_epoch_microsec")
 	private String startEpochMicrosec;
 	
-	@Column(name = "lastEpochMicroSec")
+	@Column(name = "last_epoch_microsec")
 	private String lastEpochMicroSec;
 
-	@Column(name = "startEpochMicrosecCleared")
+	@Column(name = "start_epoch_microsec_cleared")
 	private String startEpochMicrosecCleared;
 
-	@Column(name = "lastEpochMicroSecCleared")
+	@Column(name = "last_epoch_microsec_cleared")
 	private String lastEpochMicroSecCleared;
 
 	
 	@Column(name = "sequence")
 	private String sequence;
 	
-	@Column(name = "faultFieldsVersion")
+	@Column(name = "fault_fields_version")
 	private String faultFieldsVersion;
 	
-	@Column(name = "eventServrity")
+	@Column(name = "event_servrity")
 	private String eventServrity;
 	
-	@Column(name = "eventSourceType")
+	@Column(name = "event_source_type")
 	private String eventSourceType;
 	
-	@Column(name = "eventCategory")
+	@Column(name = "event_category")
 	private String eventCategory;
 	
-	@Column(name = "alarmCondition")
+	@Column(name = "alarm_condition")
 	private String alarmCondition;
 	
-	@Column(name = "specificProblem")
+	@Column(name = "specific_problem")
 	private String specificProblem;
 	
-	@Column(name = "vfStatus")
+	@Column(name = "vf_status")
 	private String vfStatus;
 	
-	@Column(name = "alarmInterfaceA")
+	@Column(name = "alarm_interfacea")
 	private String alarmInterfaceA;
 	
 	@Column(name = "status")
