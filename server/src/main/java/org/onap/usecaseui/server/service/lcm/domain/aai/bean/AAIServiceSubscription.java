@@ -23,14 +23,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class AAIServiceSubscription {
 
     private String serviceType;
+    
+    private String resourceVersion;
 
     @JsonCreator
-    public AAIServiceSubscription(@JsonProperty("service-type") String serviceType) {
+    public AAIServiceSubscription(@JsonProperty("service-type") String serviceType,@JsonProperty("resource-version") String resourceVersion) {
         this.serviceType = serviceType;
+        this.resourceVersion = resourceVersion;
     }
 
     @JsonProperty("service-type")
     public String getServiceType() {
         return serviceType;
+    }
+    
+    @JsonProperty("resource-version")
+    public String getResourceVersion() {
+        return resourceVersion;
     }
 }

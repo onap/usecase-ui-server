@@ -76,7 +76,7 @@ public class DefaultCustomerServiceTest {
 
     @Test
     public void itCanRetrieveServiceSubscriptionsFromAAI() {
-        List<AAIServiceSubscription> serviceSubscriptions = singletonList(new AAIServiceSubscription("service type"));
+        List<AAIServiceSubscription> serviceSubscriptions = singletonList(new AAIServiceSubscription("service type","resourceVersion"));
 
         AAIService aaiService = mock(AAIService.class);
         ServiceSubscriptionRsp rsp = new ServiceSubscriptionRsp();

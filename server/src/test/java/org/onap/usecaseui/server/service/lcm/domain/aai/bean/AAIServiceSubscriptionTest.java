@@ -52,7 +52,7 @@ public class AAIServiceSubscriptionTest {
 
 	@Test
 	public void testAAIServiceSubscription() throws Exception {
-		AAIServiceSubscription ass = new AAIServiceSubscription("serviceType");
+		AAIServiceSubscription ass = new AAIServiceSubscription("serviceType","resourceVersion");
 		ass.getServiceType();
 	}
 }
