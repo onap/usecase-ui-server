@@ -32,4 +32,22 @@ public final class Constant
     public static final String CONSTANT_SUCCESS="{\"status\":\"SUCCESS\"}";
     
     public static final String CONSTANT_FAILED="{\"status\":\"FAILED\"}";
+    
+    public static final String CREATING_CODE="1001";
+    
+    public static final String DELETING_CODE="1002";
+    
+    public static final String SCALING_CODE="1003";
+    
+    public static final String HEALING_CODE="1004";
+    
+    public static final String SUCCESS_CODE="2001";
+    
+    public static final String FAIL_CODE="2002";
+    
+    public static final String IN_PROGRESS_CODE="2003";
+    
+    public static final String ALARM_TOPIC="unauthenticated.SEC_FAULT_OUTPUT";
+    
+    public static final String PERFORMANCE_TOPIC="unauthenticated.SEC_MEASUREMENT_OUTPUT";
 }
