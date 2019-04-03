@@ -28,26 +28,41 @@ public class ServiceBean {
 	@Column(name = "id")
 	private String id;
 	
-	@Column(name = "serviceInstanceId")
+	@Column(name = "service_instance_id")
 	private String serviceInstanceId;
 	
-	@Column(name = "customerId")
+	@Column(name = "customer_id")
 	private String customerId;
 	
-	@Column(name = "serviceType")
+	@Column(name = "service_type")
 	private String serviceType;
 	
-	@Column(name = "serviceDomain")
+	@Column(name = "usecase_type")
 	private String serviceDomain;
 	
-	@Column(name = "operationId")
-	private String operationId;
-	
-	@Column(name = "parentServiceInstanceId")
+	@Column(name = "parent_service_instance_id")
 	private String parentServiceInstanceId;
 	
-	@Column(name = "status")
-	private String status;
+	@Column(name = "uuid")
+	private String uuid;
+	
+	@Column(name = "invariant_uuid")
+	private String invariantUuuid;
+
+	public ServiceBean() {
+	}
+
+	public ServiceBean(String id, String serviceInstanceId, String customerId, String serviceType, String serviceDomain,
+			String parentServiceInstanceId, String uuid, String invariantUuuid) {
+		this.id = id;
+		this.serviceInstanceId = serviceInstanceId;
+		this.customerId = customerId;
+		this.serviceType = serviceType;
+		this.serviceDomain = serviceDomain;
+		this.parentServiceInstanceId = parentServiceInstanceId;
+		this.uuid = uuid;
+		this.invariantUuuid = invariantUuuid;
+	}
 
 	public String getId() {
 		return id;
@@ -89,14 +104,6 @@ public class ServiceBean {
 		this.serviceDomain = serviceDomain;
 	}
 
-	public String getOperationId() {
-		return operationId;
-	}
-
-	public void setOperationId(String operationId) {
-		this.operationId = operationId;
-	}
-
 	public String getParentServiceInstanceId() {
 		return parentServiceInstanceId;
 	}
@@ -105,34 +112,21 @@ public class ServiceBean {
 		this.parentServiceInstanceId = parentServiceInstanceId;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
-	public ServiceBean() {
+	public String getInvariantUuuid() {
+		return invariantUuuid;
 	}
 
-	public ServiceBean(String id, String serviceInstanceId, String customerId, String serviceType, String serviceDomain,
-			String operationId, String parentServiceInstanceId, String status) {
-		this.id = id;
-		this.serviceInstanceId = serviceInstanceId;
-		this.customerId = customerId;
-		this.serviceType = serviceType;
-		this.serviceDomain = serviceDomain;
-		this.operationId = operationId;
-		this.parentServiceInstanceId = parentServiceInstanceId;
-		this.status = status;
+	public void setInvariantUuuid(String invariantUuuid) {
+		this.invariantUuuid = invariantUuuid;
 	}
 
-	@Override
-	public String toString() {
-		return "ServiceBean [id=" + id + ", serviceInstanceId=" + serviceInstanceId + ", customerId=" + customerId
-				+ ", serviceType=" + serviceType + ", serviceDomain=" + serviceDomain + ", operationId=" + operationId
-				+ ", parentServiceInstanceId=" + parentServiceInstanceId + ", status=" + status + "]";
-	}
 	
 }
