@@ -20,6 +20,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -29,6 +31,7 @@ import javax.persistence.Table;
 public class PerformanceInformation implements Serializable {
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
 	
@@ -38,16 +41,16 @@ public class PerformanceInformation implements Serializable {
 	@Column(name = "value")
 	private String value;
 	
-	@Column(name = "sourceId")
+	@Column(name = "source_id")
 	private String sourceId;
 	
-	@Column(name = "startEpochMicrosec")
+	@Column(name = "start_epoch_microsec")
 	private String  startEpochMicrosec;
 	
-	@Column(name = "lastEpochMicroSec")
+	@Column(name = "last_epoch_microSec")
 	private String lastEpochMicroSec;
 	
-	@Column(name="headerId")
+	@Column(name="header_id")
 	private String headerId;
 	
 	public PerformanceInformation() {

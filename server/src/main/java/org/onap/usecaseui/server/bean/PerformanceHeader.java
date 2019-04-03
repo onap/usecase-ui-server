@@ -35,53 +35,53 @@ public class PerformanceHeader implements Serializable {
 	@Column(name = "version")
 	private String version;
 	
-	@Column(name = "eventName")
+	@Column(name = "event_name")
 	private String eventName;
 	
 	@Column(name = "domain")
 	private String domain;
 	
 	
-	@Column(name = "eventId")
+	@Column(name = "event_id")
 	private String eventId;
 	
-	@Column(name = "eventType")
+	@Column(name = "event_type")
 	private String eventType;
 	
-	@Column(name = "nfcNamingCode", nullable=false)
+	@Column(name = "nfc_naming_code", nullable=false)
 	private String nfcNamingCode;
 	
-	@Column(name = "nfNamingCode", nullable=false)
+	@Column(name = "nf_naming_code", nullable=false)
 	private String nfNamingCode;
 	
-	@Column(name = "sourceId")
+	@Column(name = "source_id")
 	private String sourceId;
 	
-	@Column(name = "sourceName")
+	@Column(name = "source_name")
 	private String sourceName;
 	
-	@Column(name = "reportingEntityId")
+	@Column(name = "reporting_entity_id")
 	private String reportingEntityId;
 	
-	@Column(name = "reportingEntityName")
+	@Column(name = "reporting_entity_name")
 	private String reportingEntityName;
 	
 	@Column(name = "priority")
 	private String priority;
 	
-	@Column(name = "startEpochMicrosec")
+	@Column(name = "start_epoch_microsec")
 	private String startEpochMicrosec;
 	
-	@Column(name = "lastEpochMicroSec")
+	@Column(name = "last_epoch_microsec")
 	private String lastEpochMicroSec;
 	
 	@Column(name = "sequence")
 	private String sequence;
 	
-	@Column(name = "measurementsForVfScalingVersion")
+	@Column(name = "measurements_for_vf_scaling_version")
 	private String measurementsForVfScalingVersion;
 	
-	@Column(name = "measurementInterval")
+	@Column(name = "measurement_interval")
 	private String measurementInterval;
 
 	/** */

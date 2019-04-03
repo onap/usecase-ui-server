@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,4 +148,11 @@ public class UuiCommonUtil {
         File targetFile = new File(path);
         return targetFile.exists();
     }
+    
+    public static String readJsonFile(String path) throws IOException{
+
+		File file = new File(path);
+		String content= FileUtils.readFileToString(file,"UTF-8");
+		return content;
+	}
 }
