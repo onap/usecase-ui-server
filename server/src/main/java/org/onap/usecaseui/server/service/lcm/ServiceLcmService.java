@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service.lcm;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
+import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
@@ -44,4 +45,10 @@ public interface ServiceLcmService {
     ServiceBean getServiceBeanByServiceInStanceId(String serviceInstanceId);
     
     List<String> getServiceInstanceIdByParentId(String serviceInstanceId);
+    
+    void saveOrUpdateServiceInstanceOperation(ServiceInstanceOperations serviceOperation);
+    
+    void updateServiceInstanceOperation(String serviceInstanceId,String operationType,String progress,String operationResult);
+    
+    ServiceInstanceOperations getServiceInstanceOperationById(String serviceId);
 }

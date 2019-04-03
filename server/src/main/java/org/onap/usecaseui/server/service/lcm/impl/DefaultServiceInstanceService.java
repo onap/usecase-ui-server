@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
+import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
@@ -109,13 +110,15 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     			JSONObject object =  JSON.parseObject(serviceInstance+"");
     			String serviceInstanceId=object.get("service-instance-id").toString();
     			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
+    			ServiceInstanceOperations serviceInstanceOperations = serviceLcmService.getServiceInstanceOperationById(serviceInstanceId);
     			if(!UuiCommonUtil.isNotNullOrEmpty(serviceBean)){
     				continue;
     			}
     			String serviceDomain = serviceBean.getServiceDomain();
 				object.put("serviceDomain",serviceDomain);
-				object.put("serviceStatus",serviceBean.getStatus());
-				object.put("operationId",serviceBean.getOperationId());
+				object.put("operationResult",serviceInstanceOperations.getOperationResult());
+				object.put("operationId",serviceInstanceOperations.getOperationId());
+				object.put("operationType",serviceInstanceOperations.getOperationType());
 				if("SOTN".equals(serviceDomain)||"CCVPN".equals(serviceDomain)||"E2E Service".equals(serviceDomain)||"Network Service".equals(serviceDomain)){
 					List<String> parentIds = serviceLcmService.getServiceInstanceIdByParentId(serviceInstanceId);
 					List<String> parentServiceInstances = new ArrayList<>();

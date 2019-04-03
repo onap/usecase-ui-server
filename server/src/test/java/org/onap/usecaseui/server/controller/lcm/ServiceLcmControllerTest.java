@@ -47,7 +47,8 @@ public class ServiceLcmControllerTest {
     public void testQueryOperationProgress() throws Exception {
         String serviceId = "1";
         String operationId = "1";
-        controller.queryOperationProgress(serviceId, operationId);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        controller.queryOperationProgress(request,serviceId, operationId);
 
         verify(service, times(1)).queryOperationProgress(serviceId, operationId);
     }

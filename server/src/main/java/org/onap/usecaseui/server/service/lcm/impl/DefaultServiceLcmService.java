@@ -28,8 +28,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.ServiceBean;
+import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
@@ -37,19 +37,16 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInf
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
-import org.onap.usecaseui.server.util.UuiCommonUtil;
+import org.onap.usecaseui.server.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import okhttp3.RequestBody;
 import retrofit2.Response;
 
 @Service("ServiceLcmService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class DefaultServiceLcmService implements ServiceLcmService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultServiceLcmService.class);
@@ -186,7 +183,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 			session.flush();
 
 		}catch (Exception e){
-			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."+e.getMessage());
+			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusById.Detail."+e.getMessage());
 		}
 	}
 
@@ -204,7 +201,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 				serviceBean = list.get(0);
 			}
 		}catch (Exception e){
-			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."+e.getMessage());
+			logger.error("exception occurred while performing DefaultServiceLcmService getServiceBeanByServiceInStanceId.Detail."+e.getMessage());
 			serviceBean = new ServiceBean();;
 		}
 		return serviceBean;
@@ -227,5 +224,63 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 		}
 		return list;
 	
+	}
+
+	@Override
+	public void saveOrUpdateServiceInstanceOperation(ServiceInstanceOperations serviceOperation) {
+		try(Session session = getSession()){
+			if (null == serviceOperation) {
+				logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceOperation is null!");
+			}
+			session.saveOrUpdate(serviceOperation);
+			session.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceInstanceOperation. Details:" + e.getMessage());
+		}
+	}
+
+	@Override
+	public void updateServiceInstanceOperation(String serviceInstanceId, String operationType, String progress,
+			String operationResult) {
+		List<ServiceInstanceOperations> list = new ArrayList<>();
+		try(Session session = getSession()) {
+			String hql="select a.* from service_instance_operations a where service_instance_id =:serviceId and operation_type =:operationType and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId )";
+			Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
+			q.setString("serviceId",serviceInstanceId);
+			q.setString("serviceInstanceId",serviceInstanceId);
+			q.setString("operationType",operationType);
+			list = q.list();
+			ServiceInstanceOperations serviceOperation =list.get(0);
+			serviceOperation.setOperationResult(operationResult);
+			serviceOperation.setOperationProgress(progress);
+			if("100".equals(progress)){
+				serviceOperation.setEndTime(DateUtils.dateToString(DateUtils.now()));
+			}
+			session.saveOrUpdate(serviceOperation);
+			session.flush();
+
+		}catch (Exception e){
+			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceOperation.Detail."+e.getMessage());
+		}
+	}
+
+	@Override
+	public ServiceInstanceOperations getServiceInstanceOperationById(String serviceId) {
+		ServiceInstanceOperations serviceOperation = null;
+		List<ServiceInstanceOperations> list = new ArrayList<>();
+		try(Session session = getSession()) {
+			String hql="select a.* from service_instance_operations a where service_instance_id =:serviceId and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId)";
+			Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
+			q.setString("serviceId",serviceId);
+			q.setString("serviceInstanceId",serviceId);
+			list = q.list();
+			serviceOperation =list.get(0);
+			session.flush();
+
+		}catch (Exception e){
+			logger.error("exception occurred while performing DefaultServiceLcmService getServiceInstanceOperationById."+e.getMessage());
+		}
+		return serviceOperation;
 	}
 }
