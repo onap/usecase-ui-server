@@ -180,4 +180,26 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 		result.put("customerServiceList", list);
 		return omAlarm.writeValueAsString(result);
 	}
+	
+	@Override
+	public String serviceNumByServiceType(String customerId) throws JsonProcessingException{
+		
+		List<AAIServiceSubscription> serviceTypes = customerService.listServiceSubscriptions(customerId);
+		
+		List<Map<String,Object>> list = new ArrayList<>();
+		
+		ObjectMapper omAlarm = new ObjectMapper();
+		
+		for (AAIServiceSubscription aaiServiceSubscription : serviceTypes) {
+			
+			Map<String,Object> serviceTypeMap = new HashMap<String,Object>();
+			
+			List<String> serviceInstances =this.listServiceInstances(customerId, aaiServiceSubscription.getServiceType());
+			
+			serviceTypeMap.put(aaiServiceSubscription.getServiceType(),serviceInstances.size());
+			
+			list.add(serviceTypeMap);
+		}
+		return omAlarm.writeValueAsString(list);
+	}
 }

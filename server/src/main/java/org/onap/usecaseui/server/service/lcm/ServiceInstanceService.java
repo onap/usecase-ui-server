@@ -26,4 +26,6 @@ public interface ServiceInstanceService {
     String getRelationShipData(String customerId, String serviceType,String serviceId );
     
     String serviceNumByCustomer() throws JsonProcessingException;
+    
+	String serviceNumByServiceType(String customerId) throws JsonProcessingException;
 }
