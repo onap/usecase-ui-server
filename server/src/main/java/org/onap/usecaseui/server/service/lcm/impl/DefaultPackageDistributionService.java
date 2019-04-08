@@ -168,19 +168,17 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     }
     
     @Override
-    public JobStatus getNsLcmJobStatus(String jobId, String responseId) {
-        try {
-            Response<JobStatus> response = vfcService.getNsLcmJobStatus(jobId, responseId).execute();
-            if (response.isSuccessful()) {
-                return response.body();
-            } else {
-                logger.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
-                throw new VfcException("VFC service getNsLcmJobStatus is not available!");
-            }
-        } catch (IOException e) {
-            throw new VfcException("VFC service getNsLcmJobStatus is not available!", e);
+    public JobStatus getNsLcmJobStatus(String serviceInstanceId,String jobId, String responseId,String operationType) {        try {
+        Response<JobStatus> response = vfcService.getNsLcmJobStatus(jobId, responseId).execute();
+        if (response.isSuccessful()) {
+            return response.body();
+        } else {
+            logger.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
+            throw new VfcException("VFC service getNsLcmJobStatus is not available!");
         }
-    }
+    } catch (IOException e) {
+        throw new VfcException("VFC service getNsLcmJobStatus is not available!", e);
+    }}
     
     @Override
     public DistributionResult deleteNsPackage(String csarId) {

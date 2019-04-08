@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 public class PackageDistributionControllerTest {
 
@@ -121,10 +122,12 @@ public class PackageDistributionControllerTest {
     public void testGetNsLcmJobStatus() throws IOException {
         String csarId = "1";
         String responseId="1";
+        String operationType="1";
+        String jobId="1";
         HttpServletRequest request = mockRequest();
         controller.getNsLcmJobStatus(csarId,request);
 
-        verify(service, times(1)).getNsLcmJobStatus(csarId,responseId);
+        verify(service, times(1)).getNsLcmJobStatus(csarId,responseId,operationType,jobId);
     }
     
     @Test
@@ -294,7 +297,7 @@ public class PackageDistributionControllerTest {
     }
     
     @Test
-    public void testInstantiateNetworkServiceInstance() throws IOException {
+    public void testInstantiateNetworkServiceInstance() throws IOException, ParseException {
     	String ns_instance_id="1";
         HttpServletRequest request = mockRequest();
         controller.instantiateNetworkServiceInstance(request);

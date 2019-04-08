@@ -250,11 +250,13 @@ public class DefaultPackageDistributionServiceTest {
         VfcService vfcService = mock(VfcService.class);
         String jobId = "1";
         String responseId = "1";
+        String serviceId= "1";
+        String operationType= "1";
         JobStatus jobStatus = new JobStatus();
         when(vfcService.getNsLcmJobStatus(jobId, responseId)).thenReturn(successfulCall(jobStatus));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame(jobStatus, service.getNsLcmJobStatus(jobId, responseId));
+        Assert.assertSame(jobStatus, service.getNsLcmJobStatus(serviceId,jobId, responseId,operationType));
     }
 
     @Test(expected = VfcException.class)
@@ -262,9 +264,11 @@ public class DefaultPackageDistributionServiceTest {
         VfcService vfcService = mock(VfcService.class);
         String jobId = "1";
         String responseId = "1";
+        String serviceId= "1";
+        String operationType= "1";
         when(vfcService.getNsLcmJobStatus(jobId, responseId)).thenReturn(failedCall("VFC is not available!"));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
-        service.getNsLcmJobStatus(jobId, responseId);
+        service.getNsLcmJobStatus(serviceId,jobId, responseId,operationType);
     }
 
     @Test(expected = VfcException.class)
@@ -272,9 +276,11 @@ public class DefaultPackageDistributionServiceTest {
         VfcService vfcService = mock(VfcService.class);
         String jobId = "1";
         String responseId = "1";
+        String serviceId= "1";
+        String operationType= "1";
         when(vfcService.getNsLcmJobStatus(jobId, responseId)).thenReturn(emptyBodyCall());
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
-        service.getNsLcmJobStatus(jobId, responseId);
+        service.getNsLcmJobStatus(serviceId,jobId, responseId,operationType);
     }
     
     @Test

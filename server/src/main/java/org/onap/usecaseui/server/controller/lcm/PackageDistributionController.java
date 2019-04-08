@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
+import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
+import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
@@ -31,6 +34,7 @@ import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
+import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,20 +121,20 @@ public class PackageDistributionController {
     public JobStatus getNsLcmJobStatus(@PathVariable(value="jobId") String jobId, HttpServletRequest request){
         String responseId = request.getParameter("responseId");
         String serviceInstanceId = request.getParameter("serviceInstanceId");
-        JobStatus jobStatus = packageDistributionService.getNsLcmJobStatus(jobId, responseId);
+        String operationType = request.getParameter("operationType");
+        JobStatus jobStatus = packageDistributionService.getNsLcmJobStatus(serviceInstanceId,jobId, responseId,operationType);
         if(UuiCommonUtil.isNotNullOrEmpty(jobStatus)&&UuiCommonUtil.isNotNullOrEmpty(jobStatus.getResponseDescriptor())&&UuiCommonUtil.isNotNullOrEmpty(jobStatus.getResponseDescriptor().getProgress())){
 	        String processNum = jobStatus.getResponseDescriptor().getProgress();
-	        String status="processing";
+	        String operationResult = Constant.IN_PROGRESS_CODE;
 	        if(Integer.parseInt(processNum)==100){
-	        	status = "finished";
+	        	operationResult = Constant.SUCCESS_CODE;
 	        }else if(Integer.parseInt(processNum)>100){
-	        	status="error";
-	        }else{
-	        	status="processing";
+	        	operationResult=Constant.FAIL_CODE;
 	        }
-	        serviceLcmService.updateServiceInstanceStatusById(status,serviceInstanceId);
+	        serviceLcmService.updateServiceInstanceOperation(serviceInstanceId,operationType,processNum,operationResult);
         }
         return jobStatus;
+    
     }
     
     @ResponseBody
@@ -240,7 +244,7 @@ public class PackageDistributionController {
     }
     
     @RequestMapping(value = {"/uui-lcm/instantiateNetworkServiceInstance"}, method = RequestMethod.POST , produces = "application/json")
-    public String instantiateNetworkServiceInstance(HttpServletRequest request){
+    public String instantiateNetworkServiceInstance(HttpServletRequest request) throws ParseException{
     	String customerId = request.getParameter("customerId");
     	String serviceType = request.getParameter("serviceType");
     	String serviceDomain = request.getParameter("serviceDomain");
@@ -248,7 +252,9 @@ public class PackageDistributionController {
     	String object = packageDistributionService.instantiateNetworkServiceInstance(request,ns_instance_id);
     	JSONObject jobObject = JSONObject.parseObject(object);
     	String jobId = jobObject.getString("jobId");
-    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,jobId,null,null);
+    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,null,null,null);
+    	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.CREATING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+    	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
     	serviceLcmService.saveOrUpdateServiceBean(serviceBean);
         return object;
     }

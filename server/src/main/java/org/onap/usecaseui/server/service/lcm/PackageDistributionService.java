@@ -42,7 +42,7 @@ public interface PackageDistributionService {
 
     JobStatus getJobStatus(String jobId, String responseId);
     
-    JobStatus getNsLcmJobStatus(String jobId, String responseId);
+    JobStatus getNsLcmJobStatus(String serviceInstanceId,String jobId, String responseId,String operationType);
 
     DistributionResult deleteNsPackage(String csarId);
 
