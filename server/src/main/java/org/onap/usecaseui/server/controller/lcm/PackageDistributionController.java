@@ -273,8 +273,16 @@ public class PackageDistributionController {
     }
     
     @RequestMapping(value = {"/uui-lcm/healNetworkServiceInstance"}, method = RequestMethod.POST , produces = "application/json")
-    public String healNetworkServiceInstance(HttpServletRequest request,@RequestParam String ns_instance_id){
-        return packageDistributionService.healNetworkServiceInstance(request,ns_instance_id);
+    public String healNetworkServiceInstance(HttpServletRequest request,@RequestParam String ns_instance_id) throws ParseException{
+    	String result= packageDistributionService.healNetworkServiceInstance(request,ns_instance_id);
+    	String jobId = "";
+    	if(UuiCommonUtil.isNotNullOrEmpty(result)){
+    		JSONObject jobIdObject = JSONObject.parseObject(result);
+    		jobId = jobIdObject.getString("jobId");
+    	}
+    	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.HEALING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+    	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
+    	return result;
     }
     
     @RequestMapping(value = {"/uui-lcm/scaleNetworkServiceInstance"}, method = RequestMethod.POST , produces = "application/json")

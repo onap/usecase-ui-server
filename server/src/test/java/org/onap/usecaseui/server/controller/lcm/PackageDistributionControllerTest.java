@@ -315,7 +315,7 @@ public class PackageDistributionControllerTest {
     }
     
     @Test
-    public void testHealNetworkServiceInstance() throws IOException {
+    public void testHealNetworkServiceInstance() throws IOException, ParseException{
     	String ns_instance_id="1";
         HttpServletRequest request = mockRequest();
         controller.healNetworkServiceInstance(request,ns_instance_id);
