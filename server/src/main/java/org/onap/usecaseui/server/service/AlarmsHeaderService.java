@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
+import org.onap.usecaseui.server.bean.SortMaster;
 import org.onap.usecaseui.server.util.Page;
 
 public interface AlarmsHeaderService {
@@ -61,4 +62,6 @@ public interface AlarmsHeaderService {
       * @return
      */
     AlarmsHeader getAlarmsHeaderById(String id);
+    
+    List<SortMaster> listSortMasters(String sortType);
 }

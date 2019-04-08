@@ -18,6 +18,8 @@ package org.onap.usecaseui.server.service.impl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -27,6 +29,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
+import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.bean.SortMaster;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -252,6 +256,21 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		}catch (Exception e){
 			logger.error("exception occurred while performing AlarmsHeaderServiceImpl getAlarmsHeaderDetail."+e.getMessage());
 			return null;
+		}
+	}
+
+	@Override
+	public List<SortMaster> listSortMasters(String sortType) {
+		
+		try(Session session = getSession()){
+			StringBuffer hql =new StringBuffer("from SortMaster a where 1=1 and a.sortType=:sortType");
+			Query query = session.createQuery(hql.toString());
+			query.setString("sortType",sortType);
+			List<SortMaster> list= query.list();
+			return list;
+		} catch (Exception e) {
+			logger.error("exception occurred while performing AlarmsInformationServiceImpl listSortMasters. Details:" + e.getMessage());
+			return Collections.emptyList();
 		}
 	}
 }

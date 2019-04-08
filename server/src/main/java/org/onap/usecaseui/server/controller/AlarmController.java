@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
+import org.onap.usecaseui.server.bean.SortMaster;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
@@ -273,5 +274,15 @@ public class AlarmController
 
         String string =omAlarm.writeValueAsString(map);
         return string;
+    }
+    
+    @RequestMapping(value="/listSortMasters",method=RequestMethod.GET,produces = "application/json")
+    public String getSortMasterInfo() throws JsonProcessingException{
+    	Map<String,List<SortMaster>> map = new HashMap<>();
+    	List<SortMaster> operationTypes = alarmsHeaderService.listSortMasters("operationType");
+    	List<SortMaster> operationResults = alarmsHeaderService.listSortMasters("operationResult");
+    	map.put("operationTypes", operationTypes);
+    	map.put("operationResults", operationResults);
+    	return omAlarm.writeValueAsString(map);
     }
 }
