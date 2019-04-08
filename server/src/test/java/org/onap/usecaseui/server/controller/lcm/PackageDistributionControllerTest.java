@@ -306,7 +306,7 @@ public class PackageDistributionControllerTest {
     }
     
     @Test
-    public void testTerminateNetworkServiceInstance() throws IOException {
+    public void testTerminateNetworkServiceInstance() throws Exception {
     	String ns_instance_id="1";
         HttpServletRequest request = mockRequest();
         controller.terminateNetworkServiceInstance(request,ns_instance_id);
