@@ -15,31 +15,25 @@
 # limitations under the License.
 #
 
-DIRNAME=`dirname $0`
-RUNHOME=`cd $DIRNAME/; pwd`
-echo @RUNHOME@ $RUNHOME
+main_path="/home/uui"
+echo @main_path@ $main_path
 
-echo "Starting mysql"
-service mysql start
+echo "Starting postgreSQL..."
+service postgresql start
 sleep 10
 
-echo "grep initDB status"
-ps -fe | grep initDB.sh
-SCRIPT="/home/uui/resources/bin/initDB.sh"
-chmod 755 $SCRIPT
-$SCRIPT root root 3306 127.0.0.1
+echo "running usecase-ui database init script..."
+dbScript="$main_path/resources/bin/initDB.sh"
+chmod 755 $dbScript
+$dbScript postgres postgres 127.0.0.1 5432 postgres
 
-echo @JAVA_HOME@ $JAVA_HOME
-JAVA="$JAVA_HOME/bin/java"
-echo @JAVA@ $JAVA
-main_path=$RUNHOME/../
-cd $main_path
+JAVA_PATH="$JAVA_HOME/bin/java"
 JAVA_OPTS="-Xms50m -Xmx128m"
-#port=9500
-#JAVA_OPTS="$JAVA_OPTS -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=$port,server=y,suspend=n"
+echo @JAVA_PATH@ $JAVA_PATH
 echo @JAVA_OPTS@ $JAVA_OPTS
 
-class_path="$main_path/:$main_path/usecase-ui-server.jar"
-echo @class_path@ $class_path
+jar_path="$main_path/usecase-ui-server.jar"
+echo @jar_path@ $jar_path
 
-"$JAVA" $JAVA_OPTS -classpath "$class_path" -jar "$main_path/usecase-ui-server.jar"
+echo "Starting usecase-ui-server..."
+$JAVA_PATH $JAVA_OPTS -classpath $jar_path -jar $jar_path

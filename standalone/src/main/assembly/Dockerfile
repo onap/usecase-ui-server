@@ -1,47 +1,52 @@
 FROM ubuntu:16.04
-
 MAINTAINER "Lu Ji" <lu.ji3@zte.com.cn>
 
+# Expose the Usecase-UI backend port and postgreSQL port
 EXPOSE 8082
-EXPOSE 3306
+EXPOSE 5432
 
-ARG HTTP_PROXY=${HTTP_PROXY}
-ARG HTTPS_PROXY=${HTTPS_PROXY}
+# set env parameters
+ENV PG_HOME=/etc/postgresql \
+    PG_VERSION=9.5 \
+    PG_VAR_LIB=/var/lib/postgresql \
+    PG_USR_LIB=/usr/lib/postgresql \
+    PG_LOGDIR=/var/log/postgresql
 
-ENV http_proxy $HTTP_PROXY
-ENV https_proxy $HTTPS_PROXY
+# Install PostgreSQL 9.5
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+    echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/apt/sources.list.d/pgdg.list && \
+    apt-get -y -q install postgresql-${PG_VERSION} postgresql-client-${PG_VERSION} postgresql-contrib-${PG_VERSION}
 
-RUN echo "mysql-server mysql-server/root_password password root" | debconf-set-selections
-RUN echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections
-
+# Update the Ubuntu and install tools
 RUN apt-get update && \
     apt-get install -y openjdk-8-jdk && \
     apt-get install -y gcc && \
-    apt-get install -y libmysqlclient-dev && \
-    apt-get install -y mysql-server && \
-    apt-get install -y mysql-client && \
     apt-get install -y curl && \
+    apt-get install -y vim && \
     apt-get install -y build-essential && \
     apt-get install -y libssl-dev && \
     apt-get install -y libffi-dev
 
-#configure the JDK
+# Adjust PostgreSQL configuration
+RUN echo "host all all 0.0.0.0/0 md5" >> ${PG_HOME}/${PG_VERSION}/main/pg_hba.conf
+RUN echo "listen_addresses='*'" >> ${PG_HOME}/${PG_VERSION}/main/postgresql.conf
+
+# Add VOLUMEs to allow backup of config, logs and databases
+VOLUME ["${PG_HOME}", "${PG_VAR_LIB}", "${PG_LOGDIR}"]
+
+# Set the default command to run postgreSQL when starting the container
+CMD ["${PG_USR_LIB}/${PG_VERSION}/bin/postgres", "-D", "${PG_VAR_LIB}/${PG_VERSION}/main", "-c", "config_file=${PG_HOME}/${PG_VERSION}/main/postgresql.conf"]
+
+#Configure Java SDK
 RUN sed -i 's|#networkaddress.cache.ttl=-1|networkaddress.cache.ttl=10|' /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/java.security
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH $PATH:/usr/lib/jvm/java-8-openjdk-amd64/jre/bin:/usr/lib/jvm/java-8-openjdk-amd64/bin
 ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 ENV JRE_HOME ${JAVA_HOME}/jre
 
-#add uui related resources to the docker image
+#Add Usecase-UI server related resources to the docker image
 RUN mkdir /home/uui
 WORKDIR /home/uui
 ADD usecase-ui-server-*-linux64.tar.gz /home/uui/
 
-#init db
-#RUN chmod 755 /home/uui/resources/bin/*.sh
-#RUN /home/uui/resources/bin/initDB.sh root root 3306 127.0.0.1
-
-#RUN chmod 755 /home/uui/bin/*.sh
-
-#ENTRYPOINT /home/uui/resources/bin/initDB.sh root root 3306 127.0.0.1
 ENTRYPOINT /home/uui/bin/run.sh
