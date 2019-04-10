@@ -14,8 +14,7 @@ ENV PG_HOME=/etc/postgresql \
 
 # Install PostgreSQL 9.5
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/apt/sources.list.d/pgdg.list && \
-    apt-get -y -q install postgresql-${PG_VERSION} postgresql-client-${PG_VERSION} postgresql-contrib-${PG_VERSION}
+    echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/apt/sources.list.d/pgdg.list
 
 # Update the Ubuntu and install tools
 RUN apt-get update && \
@@ -25,7 +24,8 @@ RUN apt-get update && \
     apt-get install -y vim && \
     apt-get install -y build-essential && \
     apt-get install -y libssl-dev && \
-    apt-get install -y libffi-dev
+    apt-get install -y libffi-dev && \
+    apt-get -y -q install postgresql-${PG_VERSION} postgresql-client-${PG_VERSION} postgresql-contrib-${PG_VERSION}
 
 # Adjust PostgreSQL configuration
 RUN echo "host all all 0.0.0.0/0 md5" >> ${PG_HOME}/${PG_VERSION}/main/pg_hba.conf
