@@ -12,9 +12,10 @@ ENV PG_HOME=/etc/postgresql \
     PG_USR_LIB=/usr/lib/postgresql \
     PG_LOGDIR=/var/log/postgresql
 
-# Install PostgreSQL 9.5
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/apt/sources.list.d/pgdg.list
+# Add the PostgreSQL PGP key to verify their Debian packages
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+# Add PostgreSQL's repository
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
 # Update the Ubuntu and install tools
 RUN apt-get update && \
