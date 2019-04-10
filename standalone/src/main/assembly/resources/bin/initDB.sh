@@ -15,36 +15,32 @@
 # limitations under the License.
 #
 
-DIRNAME=`dirname $0`
-HOME=`cd $DIRNAME/; pwd`
+echo "setting database init parameters"
+main_path="/home/uui"
 user=$1
 password=$2
-port=$3
-host=$4
-echo "start create usecase-ui db"
-sql_path=$HOME/../
-mysql -u$user -p$password -P$port -h$host <$sql_path/dbscripts/mysql/usecase-ui-createdb.sql
-sql_result=$?
-if [ $sql_result != 0 ] ; then
-    echo "failed to create usecase-ui database"
-    exit 1
-fi
-fileFlag=*createobj.sql
-location=$sql_path/dbscripts/mysql
-fileName=""
-for i in `ls $location`
-do
-    if [[ $i == ${fileFlag} ]];then
-        fileName=${i};
-        echo "start create table:${fileName}"
-        mysql -u$user -p$password -P$port -h$host <$sql_path/dbscripts/mysql/$fileName
-        sql_result=$?
-        if [ $sql_result != 0 ] ; then
-          echo "failed to init usecase-ui table:${fileName}"
-          exit 1
-        fi
-    fi
-done
-echo "init usecase-ui database success!"
-exit 0
+host=$3
+port=$4
+dbname=$5
 
+echo "start create usecase-ui database..."
+dbscripts_path="$main_path/resources/dbscripts/postgres"
+psql "host=$host port=$port user=$user password=$password dbname=$dbname" -f $dbscripts_path/uui_create_db.sql
+sql_result=$?
+if [ $sql_result!=0 ] then
+    echo "failed to create usecase-ui database!"
+    exit 1
+else
+    echo "usecase-ui database created successfully!"
+fi
+
+echo "start create usecase-ui tables..."
+psql "host=$host port=$port user=$user password=$password dbname=$dbname" -f $dbscripts_path/uui_create_table.sql
+sql_result=$?
+if [ $sql_result!=0 ] then
+    echo "failed to create usecase-ui table!"
+    exit 1
+else
+    echo "usecase-ui tables created successfully!"
+fi
+exit 0
