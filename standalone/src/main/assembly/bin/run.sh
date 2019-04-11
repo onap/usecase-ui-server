@@ -22,10 +22,11 @@ echo "Starting postgreSQL..."
 service postgresql start
 sleep 10
 
-echo "running usecase-ui database init script..."
+echo "usecase-ui database init script start..."
 dbScript="$main_path/resources/bin/initDB.sh"
 chmod 755 $dbScript
-$dbScript postgres postgres 127.0.0.1 5432 postgres
+source $dbScript postgres postgres 127.0.0.1 5432 postgres
+echo "usecase-ui database init script finished normally..."
 
 JAVA_PATH="$JAVA_HOME/bin/java"
 JAVA_OPTS="-Xms50m -Xmx128m"
