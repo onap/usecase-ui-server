@@ -19,20 +19,19 @@ echo "setting database init parameters"
 main_path="/home/uui"
 host=$1
 port=$2
-dbname=$3
-user=$4
-password=$5
+user_pg=$3
+user_uui=$4
 
 echo "setting postgres database password"
 su - $user <<EOF
-psql --command "alter user $user with password '$password';"
+psql --command "alter user $user_pg with password '$user_pg';"
 EOF
 
 echo "start create usecase-ui database..."
 dbscripts_path="$main_path/resources/dbscripts/postgres"
-psql "host=$host port=$port user=$user password=$password dbname=$dbname" -f $dbscripts_path/uui_create_db.sql
+psql "host=$host port=$port user=$user_pg password=$user_pg dbname=$user_pg" -f $dbscripts_path/uui_create_db.sql
 sql_result=$?
-if [ $sql_result!=0 ]; then
+if [ $sql_result -ne 0 ]; then
     echo "failed to create usecase-ui database!"
     exit 1
 else
@@ -40,12 +39,11 @@ else
 fi
 
 echo "start create usecase-ui tables..."
-psql "host=$host port=$port user=$user password=$password dbname=$dbname" -f $dbscripts_path/uui_create_table.sql
+psql "host=$host port=$port user=$user_uui password=$user_uui dbname=$user_uui" -f $dbscripts_path/uui_create_table.sql
 sql_result=$?
-if [ $sql_result!=0 ]; then
+if [ $sql_result -ne 0 ]; then
     echo "failed to create usecase-ui table!"
     exit 1
 else
     echo "usecase-ui tables created successfully!"
 fi
-exit 0

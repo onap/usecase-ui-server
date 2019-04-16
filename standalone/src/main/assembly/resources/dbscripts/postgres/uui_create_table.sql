@@ -17,7 +17,7 @@
 -- ----------------------------
 -- Table structure for "alarms_additionalinformation"
 -- ----------------------------
-DROP TABLE alarms_additionalinformation;
+DROP TABLE IF EXISTS alarms_additionalinformation;
 CREATE TABLE alarms_additionalinformation(
   id serial,
   "header_id" varchar(50) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE alarms_additionalinformation(
 -- ----------------------------
 -- Table structure for "alarms_commoneventheader"
 -- ----------------------------
-DROP TABLE alarms_commoneventheader;
+DROP TABLE IF EXISTS alarms_commoneventheader;
 CREATE TABLE alarms_commoneventheader (
   "id" varchar(50) NOT NULL,
   "version" varchar(100) DEFAULT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE alarms_commoneventheader (
 -- ----------------------------
 -- Table structure for "performance_additionalinformation"
 -- ----------------------------
-DROP TABLE performance_additionalinformation;
+DROP TABLE IF EXISTS performance_additionalinformation;
 CREATE TABLE performance_additionalinformation (
   id serial,
   "header_id" varchar(50) NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE performance_additionalinformation (
 -- ----------------------------
 -- Table structure for "performance_commoneventheader"
 -- ----------------------------
-DROP TABLE performance_commoneventheader;
+DROP TABLE IF EXISTS performance_commoneventheader;
 CREATE TABLE performance_commoneventheader (
   "id" varchar(50) NOT NULL,
   "version" varchar(100) DEFAULT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE performance_commoneventheader (
 -- ----------------------------
 -- Table structure for service_instances
 -- ----------------------------
-DROP TABLE service_instances;
+DROP TABLE IF EXISTS service_instances;
 CREATE TABLE service_instances  (
   "id" varchar(50) NOT NULL,
   "service_instance_id" varchar(100) NOT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE service_instances  (
 -- ----------------------------
 -- Table structure for service_instance_operations
 -- ----------------------------
-DROP TABLE service_instance_operations;
+DROP TABLE IF EXISTS service_instance_operations;
 CREATE TABLE service_instance_operations  (
   "service_instance_id" varchar(100) NOT NULL,
   "operation_id" varchar(100) NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE service_instance_operations  (
 -- ----------------------------
 -- Table structure for sort_master
 -- ----------------------------
-DROP TABLE sort_master;
+DROP TABLE IF EXISTS sort_master;
 CREATE TABLE sort_master  (
   "sort_type" varchar(50) NOT NULL,
   "sort_code" varchar(10) NOT NULL,
