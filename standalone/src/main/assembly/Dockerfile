@@ -36,7 +36,7 @@ RUN echo "listen_addresses='*'" >> ${PG_HOME}/${PG_VERSION}/main/postgresql.conf
 VOLUME ["${PG_HOME}", "${PG_VAR_LIB}", "${PG_LOGDIR}"]
 
 # Set the default command to run postgreSQL when starting the container
-CMD ["${PG_USR_LIB}/${PG_VERSION}/bin/postgres", "-D", "${PG_VAR_LIB}/${PG_VERSION}/main", "-c", "config_file=${PG_HOME}/${PG_VERSION}/main/postgresql.conf"]
+# CMD ["${PG_USR_LIB}/${PG_VERSION}/bin/postgres", "-D", "${PG_VAR_LIB}/${PG_VERSION}/main", "-c", "config_file=${PG_HOME}/${PG_VERSION}/main/postgresql.conf"]
 
 #Configure Java SDK
 RUN sed -i 's|#networkaddress.cache.ttl=-1|networkaddress.cache.ttl=10|' /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/java.security
