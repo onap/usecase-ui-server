@@ -23,7 +23,7 @@ user_pg=$3
 user_uui=$4
 
 echo "setting postgres database password"
-su - $user <<EOF
+su - $user_pg <<EOF
 psql --command "alter user $user_pg with password '$user_pg';"
 EOF
 
