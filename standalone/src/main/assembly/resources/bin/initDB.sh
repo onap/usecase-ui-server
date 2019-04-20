@@ -47,3 +47,13 @@ if [ $sql_result -ne 0 ]; then
 else
     echo "usecase-ui tables created successfully!"
 fi
+
+echo "start insert initial data into uui-server database..."
+psql "host=$host port=$port user=$user_uui password=$user_uui dbname=$user_uui" -f $dbscripts_path/uui_init_data.sql
+sql_result=$?
+if [ $sql_result -ne 0 ]; then
+    echo "failed to insert initial data!"
+    exit 1
+else
+    echo "usecase-ui database initial data import succeed!"
+fi

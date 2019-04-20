@@ -3,7 +3,6 @@ MAINTAINER "Lu Ji" <lu.ji3@zte.com.cn>
 
 # Expose the Usecase-UI backend port and postgreSQL port
 EXPOSE 8082
-EXPOSE 5432
 
 # set env parameters
 ENV PG_HOME=/etc/postgresql \
