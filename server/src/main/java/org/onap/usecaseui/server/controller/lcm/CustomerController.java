@@ -77,8 +77,8 @@ public class CustomerController {
     
     @ResponseBody
     @RequestMapping(value={"/uui-lcm/customers/{customerId}/service-subscriptions/{serviceType}"},method = RequestMethod.PUT,produces="application/json")
-    public JSONObject createOrUpdateServiceType(HttpServletRequest request,@PathVariable String serviceType){
-    	return customerService.createOrUpdateServiceType(request, serviceType);
+    public JSONObject createOrUpdateServiceType(HttpServletRequest request,@PathVariable String serviceType,@PathVariable String customerId){
+    	return customerService.createOrUpdateServiceType(request, serviceType,customerId);
     }
     
     @ResponseBody

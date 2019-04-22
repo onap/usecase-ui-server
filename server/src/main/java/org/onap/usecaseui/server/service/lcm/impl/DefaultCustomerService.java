@@ -157,12 +157,12 @@ public class DefaultCustomerService implements CustomerService {
     }
     
     @Override
-    public JSONObject createOrUpdateServiceType(HttpServletRequest request,String serviceType){
+    public JSONObject createOrUpdateServiceType(HttpServletRequest request,String serviceType,String customerId){
 		JSONObject result = new JSONObject();
 		try {
 			logger.info("aai createOrUpdateServiceType is starting!");
 			RequestBody requestBody = extractBody(request);
-			Response<ResponseBody> response = this.aaiService.createOrUpdateCustomer(serviceType,requestBody).execute();
+			Response<ResponseBody> response = this.aaiService.createOrUpdateServiceType(customerId,serviceType,requestBody).execute();
 			logger.info("aai createOrUpdateServiceType is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");

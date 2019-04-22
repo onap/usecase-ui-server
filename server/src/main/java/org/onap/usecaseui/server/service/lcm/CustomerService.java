@@ -36,7 +36,7 @@ public interface CustomerService {
     
     List<AAIServiceSubscription> listServiceSubscriptions(String customerId);
     
-    JSONObject createOrUpdateServiceType(HttpServletRequest request,String serviceType);
+    JSONObject createOrUpdateServiceType(HttpServletRequest request,String serviceType,String customerId);
     
     JSONObject deleteServiceType(String customerId,String serviceType,String resourceVersion);
     
