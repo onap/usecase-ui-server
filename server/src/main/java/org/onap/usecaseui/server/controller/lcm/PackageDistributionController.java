@@ -148,6 +148,12 @@ public class PackageDistributionController {
         return packageDistributionService.fetchNsTemplateData(request);
     }
     
+    @RequestMapping(value={"/uui-lcm/fetchTemplateInfo"},method = RequestMethod.POST,produces="application/json")
+    public JSONObject fetchTemplateInfo(HttpServletRequest request){
+        String model = packageDistributionService.fetchTemplateInfo(request).getString("model");
+        JSONObject modelJson = JSONObject.parseObject(model);
+    	return modelJson;
+    }
     @RequestMapping(value = {"/uui-lcm/listNsTemplates"}, method = RequestMethod.GET , produces = "application/json")
     public String listNsTemplates(){
         return packageDistributionService.listNsTemplates();

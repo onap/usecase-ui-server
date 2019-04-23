@@ -726,7 +726,30 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         }
         return result;
 	}
-
+	
+	@Override
+	public JSONObject fetchTemplateInfo(HttpServletRequest request) {
+		JSONObject result = new JSONObject();;
+        try {
+        	logger.info("aai fetchTemplateInfo is starting");
+        	RequestBody requestBody = extractBody(request);
+            Response<ResponseBody> response = vfcService.fetchTemplateInfo(requestBody).execute();
+			logger.info("aai fetchTemplateInfo has finished");
+            if (response.isSuccessful()) {
+            	result.put("status", Constant.CONSTANT_SUCCESS);
+            	result.put("result",JSONObject.parseObject(new String(response.body().bytes())));
+            } else {
+            	result.put("status", Constant.CONSTANT_FAILED);
+            	result.put("error",String.format("Can not fetchTemplateInfo[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not fetchTemplateInfo[code=%s, message=%s]", response.code(), response.message()));
+            }
+        } catch (Exception e) {
+        	result.put("status", Constant.CONSTANT_FAILED);
+        	result.put("errorMessage","fetchTemplateInfo occur exception:"+e);
+        }
+        return result;
+	}
+	
 	@Override
 	public String instantiateNetworkServiceInstance(HttpServletRequest request, String serviceInstanceId) {
 		String result = "";

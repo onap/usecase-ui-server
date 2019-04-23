@@ -28,6 +28,8 @@ import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
 
+import com.alibaba.fastjson.JSONObject;
+
 public interface PackageDistributionService {
 
     VfNsPackageInfo retrievePackageInfo();
@@ -51,6 +53,8 @@ public interface PackageDistributionService {
     String listNsTemplates();
     
     String fetchNsTemplateData(HttpServletRequest request);
+    
+    JSONObject fetchTemplateInfo(HttpServletRequest request);
     
     String getVnfPackages();
     
