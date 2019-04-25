@@ -115,7 +115,6 @@ CREATE TABLE service_instances  (
   "customer_id" varchar(50) NOT NULL,
   "service_type" varchar(50) NOT NULL,
   "usecase_type" varchar(50) NOT NULL,
-  "parent_service_instance_id" varchar(100) DEFAULT NULL,
   "uuid" varchar(100),
   "invariant_uuid" varchar(100),
   CONSTRAINT service_instances_pk PRIMARY KEY (service_instance_id)
