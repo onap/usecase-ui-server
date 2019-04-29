@@ -34,7 +34,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <hibernate.version>5.0.11.Final</hibernate.version>
+        <hibernate.version>5.3.6.Final</hibernate.version>
         <spring.version>4.3.4.RELEASE</spring.version>
         <javax.persistence.version>1.0.2</javax.persistence.version>
         <common.csv.version>1.4</common.csv.version>
@@ -286,8 +286,9 @@
                 <configuration>
                     <layout>ZIP</layout>
                     <excludeGroupIds>
-                        org.eclipse.jetty
-                        dom4j
+                        org.eclipse.jetty,
+                        dom4j,
+                        org.apache.tomcat.embed
                     </excludeGroupIds>
                 </configuration>
             </plugin>
