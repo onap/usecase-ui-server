@@ -39,6 +39,7 @@
         <javax.persistence.version>1.0.2</javax.persistence.version>
         <common.csv.version>1.4</common.csv.version>
         <jackson.version>2.9.8</jackson.version>
+        <tomcat.version>9.0.16</tomcat.version>
     </properties>
 
     <dependencyManagement>
@@ -284,18 +285,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <layout>ZIP</layout>
-                    <excludeGroupIds>
-                        org.eclipse.jetty,
-                        dom4j,
-                        org.apache.tomcat.embed
-                    </excludeGroupIds>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
                     <executable>true</executable>
                 </configuration>
                 <executions>
@@ -338,15 +327,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>*</exclude>
-                </excludes>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
     </build>
 
     <repositories>
