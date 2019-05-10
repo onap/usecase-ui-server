@@ -258,7 +258,7 @@ public class PackageDistributionController {
     	String object = packageDistributionService.instantiateNetworkServiceInstance(request,ns_instance_id);
     	JSONObject jobObject = JSONObject.parseObject(object);
     	String jobId = jobObject.getString("jobId");
-    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,null,null,null);
+    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,null,null);
     	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.CREATING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
     	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
     	serviceLcmService.saveOrUpdateServiceBean(serviceBean);

@@ -40,9 +40,6 @@ public class ServiceBean {
 	@Column(name = "usecase_type")
 	private String serviceDomain;
 	
-	@Column(name = "parent_service_instance_id")
-	private String parentServiceInstanceId;
-	
 	@Column(name = "uuid")
 	private String uuid;
 	
@@ -53,13 +50,12 @@ public class ServiceBean {
 	}
 
 	public ServiceBean(String id, String serviceInstanceId, String customerId, String serviceType, String serviceDomain,
-			String parentServiceInstanceId, String uuid, String invariantUuuid) {
+			String uuid, String invariantUuuid) {
 		this.id = id;
 		this.serviceInstanceId = serviceInstanceId;
 		this.customerId = customerId;
 		this.serviceType = serviceType;
 		this.serviceDomain = serviceDomain;
-		this.parentServiceInstanceId = parentServiceInstanceId;
 		this.uuid = uuid;
 		this.invariantUuuid = invariantUuuid;
 	}
@@ -102,14 +98,6 @@ public class ServiceBean {
 
 	public void setServiceDomain(String serviceDomain) {
 		this.serviceDomain = serviceDomain;
-	}
-
-	public String getParentServiceInstanceId() {
-		return parentServiceInstanceId;
-	}
-
-	public void setParentServiceInstanceId(String parentServiceInstanceId) {
-		this.parentServiceInstanceId = parentServiceInstanceId;
 	}
 
 	public String getUuid() {

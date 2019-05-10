@@ -61,8 +61,7 @@ public class ServiceLcmController {
     	String serviceDomain = request.getParameter("serviceDomain");
         String uuid = request.getParameter("uuid");
         String invariantUuuid = request.getParameter("invariantUuuid");
-    	String parentServiceInstanceId = request.getParameter("parentServiceInstanceId");
-    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),null,customerId,serviceType,serviceDomain,parentServiceInstanceId,uuid,invariantUuuid);
+    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),null,customerId,serviceType,serviceDomain,uuid,invariantUuuid);
     	ServiceOperation serviceOperation = serviceLcmService.instantiateService(request);
     	String serviceId = serviceOperation.getService().getServiceId();
     	String operationId = serviceOperation.getService().getOperationId();

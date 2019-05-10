@@ -52,7 +52,7 @@ public interface VfcService {
     @POST("/api/catalog/v1/parsernsd")
     Call<ResponseBody> fetchNsTemplateData(@Body RequestBody body);
     
-    @POST("/api/parser/v1/parser")
+    @POST("/api/parser/v1")
     Call<ResponseBody> fetchTemplateInfo(@Body RequestBody body);
     
     @GET("/api/nslcm/v1/ns")
