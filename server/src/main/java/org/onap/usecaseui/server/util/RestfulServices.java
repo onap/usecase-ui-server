@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.dubbo.common.utils.IOUtils;
 
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -45,9 +47,15 @@ public class RestfulServices {
     }
 
     public static <T> T create(Class<T> clazz) {
+        //Set the interface response time
+    	final OkHttpClient client = new OkHttpClient.Builder().
+    	        connectTimeout(300, TimeUnit.SECONDS).
+    	        readTimeout(300, TimeUnit.SECONDS).
+    	        writeTimeout(300, TimeUnit.SECONDS).build();
         String msbUrl = getMsbAddress();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://" + msbUrl+"/")
+                .baseUrl("http://" + msbUrl + "/")
+        		.client(client)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         return retrofit.create(clazz);
