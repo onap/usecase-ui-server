@@ -52,7 +52,7 @@ public interface VfcService {
     @POST("/api/catalog/v1/parsernsd")
     Call<ResponseBody> fetchNsTemplateData(@Body RequestBody body);
     
-    @POST("/api/parser/v1")
+    @POST("/api/parser/v1/parser")
     Call<ResponseBody> fetchTemplateInfo(@Body RequestBody body);
     
     @GET("/api/nslcm/v1/ns")
@@ -123,4 +123,16 @@ public interface VfcService {
     
     @GET("/api/nslcm/v1/ns/vnfs/{vnfinstid}")
     Call<ResponseBody> getVnfInfoById(@Path("vnfinstid") String vnfinstid);
+
+    @GET("/api/parser/v1/service_packages")
+    Call<ResponseBody> servicePackages();
+    
+    @GET("/api/parser/v1/service_packages/{csarId}")
+    Call<ResponseBody> servicePackages(@Path("csarId") String csarId);
+    
+    @POST("/api/parser/v1/service_packages")
+    Call<ResponseBody> servicePackages(@Body RequestBody body);
+    
+    @DELETE("/api/parser/v1/service_packages/{csarId}")
+    Call<ResponseBody> deleteServicePackages(@Path("csarId") String csarId);
 }

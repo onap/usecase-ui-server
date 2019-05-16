@@ -124,14 +124,14 @@ public class PackageDistributionController {
         String operationType = request.getParameter("operationType");
         JobStatus jobStatus = packageDistributionService.getNsLcmJobStatus(serviceInstanceId,jobId, responseId,operationType);
         if(UuiCommonUtil.isNotNullOrEmpty(jobStatus)&&UuiCommonUtil.isNotNullOrEmpty(jobStatus.getResponseDescriptor())&&UuiCommonUtil.isNotNullOrEmpty(jobStatus.getResponseDescriptor().getProgress())){
-	        String processNum = jobStatus.getResponseDescriptor().getProgress();
-	        String operationResult = Constant.IN_PROGRESS_CODE;
-	        if(Integer.parseInt(processNum)==100){
-	        	operationResult = Constant.SUCCESS_CODE;
-	        }else if(Integer.parseInt(processNum)>100){
-	        	operationResult=Constant.FAIL_CODE;
-	        }
-	        serviceLcmService.updateServiceInstanceOperation(serviceInstanceId,operationType,processNum,operationResult);
+            String processNum = jobStatus.getResponseDescriptor().getProgress();
+            String operationResult = Constant.IN_PROGRESS_CODE;
+            if(Integer.parseInt(processNum)==100){
+                operationResult = Constant.SUCCESS_CODE;
+            }else if(Integer.parseInt(processNum)>100){
+                operationResult=Constant.FAIL_CODE;
+            }
+            serviceLcmService.updateServiceInstanceOperation(serviceInstanceId,operationType,processNum,operationResult);
         }
         return jobStatus;
     
@@ -148,11 +148,10 @@ public class PackageDistributionController {
         return packageDistributionService.fetchNsTemplateData(request);
     }
     
-    @RequestMapping(value={"/uui-lcm/fetchTemplateInfo"},method = RequestMethod.POST,produces="application/json")
-    public JSONObject fetchTemplateInfo(HttpServletRequest request){
-        String model = packageDistributionService.fetchTemplateInfo(request).getString("model");
-        JSONObject modelJson = JSONObject.parseObject(model);
-    	return modelJson;
+    @RequestMapping(value={"/uui-lcm/fetchCCVPNTemplateData/{csarId}"},method = RequestMethod.POST,produces="application/json")
+    public JSONObject fetchCCVPNTemplateData(HttpServletRequest request, @PathVariable String csarId){
+        JSONObject model = (JSONObject) packageDistributionService.fetchCCVPNTemplateData(request, csarId).get("result");
+        return model;
     }
     @RequestMapping(value = {"/uui-lcm/listNsTemplates"}, method = RequestMethod.GET , produces = "application/json")
     public String listNsTemplates(){
@@ -251,44 +250,44 @@ public class PackageDistributionController {
     
     @RequestMapping(value = {"/uui-lcm/instantiateNetworkServiceInstance"}, method = RequestMethod.POST , produces = "application/json")
     public String instantiateNetworkServiceInstance(HttpServletRequest request) throws ParseException{
-    	String customerId = request.getParameter("customerId");
-    	String serviceType = request.getParameter("serviceType");
-    	String serviceDomain = request.getParameter("serviceDomain");
-    	String ns_instance_id = request.getParameter("ns_instance_id");
-    	String object = packageDistributionService.instantiateNetworkServiceInstance(request,ns_instance_id);
-    	JSONObject jobObject = JSONObject.parseObject(object);
-    	String jobId = jobObject.getString("jobId");
-    	ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,null,null);
-    	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.CREATING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
-    	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
-    	serviceLcmService.saveOrUpdateServiceBean(serviceBean);
+        String customerId = request.getParameter("customerId");
+        String serviceType = request.getParameter("serviceType");
+        String serviceDomain = request.getParameter("serviceDomain");
+        String ns_instance_id = request.getParameter("ns_instance_id");
+        String object = packageDistributionService.instantiateNetworkServiceInstance(request,ns_instance_id);
+        JSONObject jobObject = JSONObject.parseObject(object);
+        String jobId = jobObject.getString("jobId");
+        ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,null,null);
+        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.CREATING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+        serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
+        serviceLcmService.saveOrUpdateServiceBean(serviceBean);
         return object;
     }
     
     @RequestMapping(value = {"/uui-lcm/terminateNetworkServiceInstance"}, method = RequestMethod.POST , produces = "application/json")
     public String terminateNetworkServiceInstance(HttpServletRequest request,@RequestParam String ns_instance_id) throws ParseException{
-    	String result = packageDistributionService.terminateNetworkServiceInstance(request,ns_instance_id);
-    	String jobId = "";
-    	if(UuiCommonUtil.isNotNullOrEmpty(result)){
-    		JSONObject jobIdObject = JSONObject.parseObject(result);
-    		jobId = jobIdObject.getString("jobId");
-    	}
-    	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.DELETING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
-    	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
-    	return result;
+        String result = packageDistributionService.terminateNetworkServiceInstance(request,ns_instance_id);
+        String jobId = "";
+        if(UuiCommonUtil.isNotNullOrEmpty(result)){
+            JSONObject jobIdObject = JSONObject.parseObject(result);
+            jobId = jobIdObject.getString("jobId");
+        }
+        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.DELETING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+        serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
+        return result;
     }
     
     @RequestMapping(value = {"/uui-lcm/healNetworkServiceInstance"}, method = RequestMethod.POST , produces = "application/json")
     public String healNetworkServiceInstance(HttpServletRequest request,@RequestParam String ns_instance_id) throws ParseException{
-    	String result= packageDistributionService.healNetworkServiceInstance(request,ns_instance_id);
-    	String jobId = "";
-    	if(UuiCommonUtil.isNotNullOrEmpty(result)){
-    		JSONObject jobIdObject = JSONObject.parseObject(result);
-    		jobId = jobIdObject.getString("jobId");
-    	}
-    	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.HEALING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
-    	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
-    	return result;
+        String result= packageDistributionService.healNetworkServiceInstance(request,ns_instance_id);
+        String jobId = "";
+        if(UuiCommonUtil.isNotNullOrEmpty(result)){
+            JSONObject jobIdObject = JSONObject.parseObject(result);
+            jobId = jobIdObject.getString("jobId");
+        }
+        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.HEALING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+        serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
+        return result;
     }
     
     @RequestMapping(value = {"/uui-lcm/scaleNetworkServiceInstance"}, method = RequestMethod.POST , produces = "application/json")

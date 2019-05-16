@@ -274,8 +274,14 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 			Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
 			q.setString("serviceId",serviceId);
 			q.setString("serviceInstanceId",serviceId);
+			q.list();
 			list = q.list();
-			serviceOperation =list.get(0);
+			if (list.size() > 0) {
+				serviceOperation =list.get(0);
+			} else {
+				serviceOperation = new ServiceInstanceOperations();
+			}
+
 			session.flush();
 
 		}catch (Exception e){

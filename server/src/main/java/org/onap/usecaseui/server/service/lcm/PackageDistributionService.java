@@ -54,7 +54,7 @@ public interface PackageDistributionService {
     
     String fetchNsTemplateData(HttpServletRequest request);
     
-    JSONObject fetchTemplateInfo(HttpServletRequest request);
+    JSONObject fetchCCVPNTemplateData(HttpServletRequest request, String csarId);
     
     String getVnfPackages();
     

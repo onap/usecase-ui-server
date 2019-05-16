@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -105,7 +107,7 @@ public class ServiceInstanceController {
 	
 	@ResponseBody
     @RequestMapping(value = {"/uui-lcm/serviceNumByServiceType/{customerId}"}, method = RequestMethod.GET , produces = "application/json")
-    public String serviceNumByServiceType(String customerId) throws JsonProcessingException{
+    public String serviceNumByServiceType(@PathVariable String customerId) throws JsonProcessingException{
 		return serviceInstanceService.serviceNumByServiceType(customerId);
 	}
 	
