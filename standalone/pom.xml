@@ -23,7 +23,6 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>standalone</artifactId>
-    <version>2.0.0</version>
     <packaging>pom</packaging>
     <name>usecase-ui-server-standalone</name>
 
