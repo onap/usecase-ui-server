@@ -41,6 +41,21 @@
         <siteNexusPath>content/sites/site/${project.groupId}/${project.artifactId}/${project.version}/</siteNexusPath>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>onap-releases</id>
+            <url>${nexusproxy}/${releaseNexusPath}</url>
+        </repository>
+        <snapshotRepository>
+            <id>onap-snapshots</id>
+            <url>${nexusproxy}/${snapshotNexusPath}</url>
+        </snapshotRepository>
+        <site>
+            <id>onap-site</id>
+            <url>dav:${nexusproxy}${siteNexusPath}</url>
+        </site>
+    </distributionManagement>
+
     <!-- Specify the repositories here to avoid coordination of ~/.m2/settings.xml 
         files among developers. Use values (not properties) so oparent can be resolved. -->
     <repositories>
