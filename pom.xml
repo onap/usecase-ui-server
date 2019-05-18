@@ -112,7 +112,7 @@
 
     <modules>
         <module>server</module>
-        <!--module>standalone</module-->
+        <module>standalone</module>
     </modules>
 
     <!--build>
