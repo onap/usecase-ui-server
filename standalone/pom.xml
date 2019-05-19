@@ -181,8 +181,8 @@
                                     <name>onap/usecase-ui-server</name>
                                     <build>
                                         <cleanup>try</cleanup>
-                                        <dockerFileDir>${dockeroutput}</dockerFileDir>
-                                        <dockerFile>${dockeroutput}/Dockerfile</dockerFile>
+                                        <dockerFileDir>${basedir}/${dockeroutput}</dockerFileDir>
+                                        <dockerFile>${basedir}/${dockeroutput}/Dockerfile</dockerFile>
                                         <tags>
                                             <tag>${usecaseui.version}-SNAPSHOT-latest</tag>
                                             <tag>${usecaseui.version}-STAGING-latest</tag>
