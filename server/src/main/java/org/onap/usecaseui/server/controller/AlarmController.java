@@ -276,7 +276,7 @@ public class AlarmController
         return string;
     }
     
-    @RequestMapping(value="/listSortMasters",method=RequestMethod.GET,produces = "application/json")
+    @RequestMapping(value="/listSortMasters",method=RequestMethod.GET,produces = "application/json;charset=utf8")
     public String getSortMasterInfo() throws JsonProcessingException{
     	Map<String,List<SortMaster>> map = new HashMap<>();
     	List<SortMaster> operationTypes = alarmsHeaderService.listSortMasters("operationType");

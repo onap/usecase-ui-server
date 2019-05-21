@@ -141,7 +141,7 @@ public interface AAIService {
         "Accept: application/json"
 	})
 	//@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
-	@PUT("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
+	@DELETE("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
 	Call<ResponseBody> deleteServiceType(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType,@Query("resource-version") String resourceVersion);
     
     @Headers({
