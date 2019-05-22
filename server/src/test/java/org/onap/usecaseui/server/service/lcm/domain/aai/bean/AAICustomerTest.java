@@ -52,7 +52,7 @@ public class AAICustomerTest {
 
 	@Test
 	public void testAAICustomer() throws Exception {
-		AAICustomer ac = new AAICustomer("globalCustomerId", "subscriberName", "subscriberType");
+		AAICustomer ac = new AAICustomer("globalCustomerId", "subscriberName", "subscriberType","resourceVersion");
 		ac.getGlobalCustomerId();
 		ac.getSubscriberName();
 		ac.getSubscriberType();

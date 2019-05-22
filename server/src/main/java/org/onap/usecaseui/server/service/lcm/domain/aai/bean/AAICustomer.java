@@ -27,15 +27,19 @@ public class AAICustomer {
     private String subscriberName;
 
     private String subscriberType;
+    
+    private String resourceVersion;
 
     @JsonCreator
     public AAICustomer(
             @JsonProperty("global-customer-id") String globalCustomerId,
             @JsonProperty("subscriber-name") String subscriberName,
-            @JsonProperty("subscriber-type") String subscriberType) {
+            @JsonProperty("subscriber-type") String subscriberType,
+            @JsonProperty("resource-version") String resourceVersion) {
         this.globalCustomerId = globalCustomerId;
         this.subscriberName = subscriberName;
         this.subscriberType = subscriberType;
+        this.resourceVersion = resourceVersion;
     }
 
     @JsonProperty("global-customer-id")
@@ -51,5 +55,10 @@ public class AAICustomer {
     @JsonProperty("subscriber-type")
     public String getSubscriberType() {
         return subscriberType;
+    }
+    
+    @JsonProperty("resource-version")
+    public String getResourceVersion() {
+        return resourceVersion;
     }
 }

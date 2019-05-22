@@ -47,7 +47,7 @@ public class DefaultCustomerServiceTest {
 	
     @Test
     public void itCanRetrieveCustomersFromAAI() {
-        List<AAICustomer> customers = singletonList(new AAICustomer("1", "name", "type"));
+        List<AAICustomer> customers = singletonList(new AAICustomer("1", "name", "type","version"));
 
         AAIService aaiService = mock(AAIService.class);
         AAICustomerRsp rsp = new AAICustomerRsp();
@@ -154,7 +154,7 @@ public class DefaultCustomerServiceTest {
         AAIService aaiService = mock(AAIService.class);
         CustomerService customerService = new DefaultCustomerService(aaiService);
         String customerId="1";
-        AAICustomer customer = new AAICustomer(customerId, customerId, customerId);
+        AAICustomer customer = new AAICustomer(customerId, customerId, customerId,customerId);
         when(aaiService.getCustomerById(eq(customerId))).thenReturn(successfulCall(customer));
         customerService.getCustomerById(customerId);
     }
