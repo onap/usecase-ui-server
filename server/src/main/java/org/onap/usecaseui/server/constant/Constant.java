@@ -41,6 +41,8 @@ public final class Constant
     
     public static final String HEALING_CODE="1004";
     
+    public static final String UPDATING_CODE="1005";
+    
     public static final String SUCCESS_CODE="2001";
     
     public static final String FAIL_CODE="2002";

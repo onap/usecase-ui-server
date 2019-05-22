@@ -139,7 +139,7 @@ public class ServiceLcmController {
     @RequestMapping(value = {"/uui-lcm/services/updateService/{serviceId}"}, method = RequestMethod.PUT , produces = "application/json")
     public SaveOrUpdateOperationRsp updateServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request) throws ParseException{
     	SaveOrUpdateOperationRsp saveOrUpdateOperationRsp =serviceLcmService.scaleService(serviceId, request);
-    	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId,saveOrUpdateOperationRsp.getOperationId(),"UPDATING","0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+    	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId,saveOrUpdateOperationRsp.getOperationId(),Constant.UPDATING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
     	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
     	return saveOrUpdateOperationRsp;
     }

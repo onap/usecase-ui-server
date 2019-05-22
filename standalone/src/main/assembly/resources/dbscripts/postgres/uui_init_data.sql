@@ -21,10 +21,12 @@ INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('op
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1002', 'Deleting', 'en');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1003', 'Scaling', 'en');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1004', 'Healing', 'en');
+INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1005', 'Updating', 'en');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1001', '创建', 'cn');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1002', '删除', 'cn');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1003', '缩扩容', 'cn');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1004', '自愈', 'cn');
+INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationType', '1005', '更新', 'cn');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationResult', '2001', 'Successful', 'en');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationResult', '2002', 'Failed', 'en');
 INSERT INTO sort_master (sort_type, sort_code, sort_value, language) VALUES ('operationResult', '2003', 'In Progress', 'en');
