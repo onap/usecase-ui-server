@@ -135,29 +135,8 @@
                                         <include name="**/*.sh"/>
                                     </tarfileset>
                                 </tar>
-                                <!--attachartifact file="${version.output}/usecase-ui-server-${project.version}-linux64.tar.gz" classifier="linux64" type="tar.gz"/-->
+                                <attachartifact file="${dockeroutput}/usecase-ui-server-${project.version}-linux64.tar.gz" classifier="linux64" type="tar.gz"/>
                             </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-artifacts-linux64</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>${dockeroutput}/usecase-ui-server-${project.version}-linux64.tar.gz</file>
-                                    <type>tar.gz</type>
-                                </artifact>
-                            </artifacts>
                         </configuration>
                     </execution>
                 </executions>
