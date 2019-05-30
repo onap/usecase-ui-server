@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
+@CrossOrigin(origins="*")
 public class ServiceLcmController {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceLcmController.class);

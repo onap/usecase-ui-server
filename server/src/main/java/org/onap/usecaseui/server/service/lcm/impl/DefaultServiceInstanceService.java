@@ -103,7 +103,6 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
     }
     
 	private List<String> parseServiceInstance(JSONObject objects,String customerId,String serviceType) throws JsonProcessingException{
-    	ObjectMapper mapper = new ObjectMapper();
     	List<String> result = new ArrayList<>();
     	JSONArray serviceInstances=objects.getJSONArray("service-instance");
     	for(Object serviceInstance:serviceInstances){
@@ -119,18 +118,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 				object.put("operationResult",serviceInstanceOperations.getOperationResult());
 				object.put("operationId",serviceInstanceOperations.getOperationId());
 				object.put("operationType",serviceInstanceOperations.getOperationType());
-				if("SOTN".equals(serviceDomain)||"CCVPN".equals(serviceDomain)||"E2E Service".equals(serviceDomain)||"Network Service".equals(serviceDomain)){
-					List<String> parentIds = serviceLcmService.getServiceInstanceIdByParentId(serviceInstanceId);
-					List<String> parentServiceInstances = new ArrayList<>();
-					if(parentIds.size()>0){
-						for(String id:parentIds){
-							String parentServiceInstance=this.getRelationShipData(customerId, serviceType, id);
-							parentServiceInstances.add(parentServiceInstance);
-						}
-					}
-					object.put("childServiceInstances",parentServiceInstances);
-					result.add(object.toString());
-				}
+				result.add(object.toString());
     	}
     	return result;
     }
