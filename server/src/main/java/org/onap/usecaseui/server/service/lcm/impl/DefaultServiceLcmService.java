@@ -50,14 +50,14 @@ import retrofit2.Response;
 public class DefaultServiceLcmService implements ServiceLcmService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultServiceLcmService.class);
-    
-	@Autowired
-	private SessionFactory sessionFactory;
 
-	private Session getSession() {
-		return sessionFactory.openSession();
-	}
-	
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getSession() {
+        return sessionFactory.openSession();
+    }
+
     private SOService soService;
 
     public DefaultServiceLcmService() {
@@ -71,14 +71,15 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public ServiceOperation instantiateService(HttpServletRequest request) {
         try {
-        	logger.info("so instantiate is starting");
-        	RequestBody requestBody = extractBody(request);
+            logger.info("so instantiate is starting");
+            RequestBody requestBody = extractBody(request);
             Response<ServiceOperation> response = soService.instantiateService(requestBody).execute();
-			logger.info("so instantiate has finished");
+            logger.info("so instantiate has finished");
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.error(String.format("Can not instantiate service[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not instantiate service[code=%s, message=%s]", response.code(),
+                        response.message()));
                 throw new SOException("SO instantiate service failed!");
             }
         } catch (Exception e) {
@@ -89,11 +90,13 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public OperationProgressInformation queryOperationProgress(String serviceId, String operationId) {
         try {
-            Response<OperationProgressInformation> response = soService.queryOperationProgress(serviceId, operationId).execute();
+            Response<OperationProgressInformation> response =
+                    soService.queryOperationProgress(serviceId, operationId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.error(String.format("Can not query operation process[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not query operation process[code=%s, message=%s]", response.code(),
+                        response.message()));
                 throw new SOException("SO query operation process failed!");
             }
         } catch (IOException e) {
@@ -104,14 +107,15 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public DeleteOperationRsp terminateService(String serviceId, HttpServletRequest request) {
         try {
-        	logger.info("so terminate is starting");
+            logger.info("so terminate is starting");
             RequestBody requestBody = extractBody(request);
             Response<DeleteOperationRsp> response = soService.terminateService(serviceId, requestBody).execute();
-			logger.info("so terminate has finished");
+            logger.info("so terminate has finished");
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.error(String.format("Can not terminate service[code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not terminate service[code=%s, message=%s]", response.code(),
+                        response.message()));
                 throw new SOException("SO terminate service failed!");
             }
         } catch (IOException e) {
@@ -119,174 +123,191 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         }
     }
 
-	@Override
-	public SaveOrUpdateOperationRsp scaleService(String serviceId, HttpServletRequest request) {
-		try {
-			logger.info("so scale is finished");
-			RequestBody requestBody = extractBody(request);
-			Response<SaveOrUpdateOperationRsp> response = soService.scaleService(serviceId,requestBody).execute();
-			logger.info("so scale has finished");
-			if(response.isSuccessful()){
-				logger.info("scaleService response content is :"+response.body().toString());
-				return response.body();
-			}else{
-                logger.error(String.format("Can not scaleService service[code=%s, message=%s]", response.code(), response.message()));
+    @Override
+    public SaveOrUpdateOperationRsp scaleService(String serviceId, HttpServletRequest request) {
+        try {
+            logger.info("so scale is finished");
+            RequestBody requestBody = extractBody(request);
+            Response<SaveOrUpdateOperationRsp> response = soService.scaleService(serviceId, requestBody).execute();
+            logger.info("so scale has finished");
+            if (response.isSuccessful()) {
+                logger.info("scaleService response content is :" + response.body().toString());
+                return response.body();
+            } else {
+                logger.error(String.format("Can not scaleService service[code=%s, message=%s]", response.code(),
+                        response.message()));
                 throw new SOException("SO terminate service failed!");
-			}
-		} catch (IOException e) {
-			 throw new SOException("SO Service is not available!", e);
-		}
-	}
+            }
+        } catch (IOException e) {
+            throw new SOException("SO Service is not available!", e);
+        }
+    }
 
-	@Override
-	public SaveOrUpdateOperationRsp updateService(String serviceId, HttpServletRequest request) {
-		try {
-			logger.info("so update is starting");
-			RequestBody requestBody = extractBody(request);
-			Response<SaveOrUpdateOperationRsp> response = soService.updateService(serviceId,requestBody).execute();
-			logger.info("so update has finished");
-			if(response.isSuccessful()){
-				return response.body();
-			}else{
-                logger.error(String.format("Can not updateService service[code=%s, message=%s]", response.code(), response.message()));
+    @Override
+    public SaveOrUpdateOperationRsp updateService(String serviceId, HttpServletRequest request) {
+        try {
+            logger.info("so update is starting");
+            RequestBody requestBody = extractBody(request);
+            Response<SaveOrUpdateOperationRsp> response = soService.updateService(serviceId, requestBody).execute();
+            logger.info("so update has finished");
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                logger.error(String.format("Can not updateService service[code=%s, message=%s]", response.code(),
+                        response.message()));
                 throw new SOException("SO terminate service failed!");
-			}
-		} catch (IOException e) {
-			 throw new SOException("SO Service is not available!", e);
-		}
-	}
+            }
+        } catch (IOException e) {
+            throw new SOException("SO Service is not available!", e);
+        }
+    }
 
-	@Override
-	public void saveOrUpdateServiceBean(ServiceBean serviceBean) {
-		try(Session session = getSession()){
-			if (null == serviceBean) {
-				logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceBean is null!");
-			}
-			Transaction tx = session.beginTransaction();
-			session.saveOrUpdate(serviceBean);
-			tx.commit();
-			session.flush();
-		} catch (Exception e) {
-			logger.error("exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceBean. Details:" + e.getMessage());
-		}
-	}
+    @Override
+    public void saveOrUpdateServiceBean(ServiceBean serviceBean) {
+        try (Session session = getSession()) {
+            if (null == serviceBean) {
+                logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceBean is null!");
+            }
+            Transaction tx = session.beginTransaction();
+            session.saveOrUpdate(serviceBean);
+            tx.commit();
+            session.flush();
+        } catch (Exception e) {
+            logger.error(
+                    "exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceBean. Details:"
+                            + e.getMessage());
+        }
+    }
 
-	@Override
-	public void updateServiceInstanceStatusById(String status, String serviceInstanceId) {
-		try(Session session = getSession()) {
+    @Override
+    public void updateServiceInstanceStatusById(String status, String serviceInstanceId) {
+        try (Session session = getSession()) {
 
-			String string = "update ServiceBean set status=:status where 1=1 and serviceInstanceId=:serviceInstanceId";
-			Query q = session.createQuery(string);
-			q.setString("status",status);
-			q.setString("serviceInstanceId",serviceInstanceId);
+            String string = "update ServiceBean set status=:status where 1=1 and serviceInstanceId=:serviceInstanceId";
+            Query q = session.createQuery(string);
+            q.setString("status", status);
+            q.setString("serviceInstanceId", serviceInstanceId);
             q.executeUpdate();
-			session.flush();
+            session.flush();
 
-		}catch (Exception e){
-			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusById.Detail."+e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            logger.error(
+                    "exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusById.Detail."
+                            + e.getMessage());
+        }
+    }
 
-	@Override
-	public ServiceBean getServiceBeanByServiceInStanceId(String serviceInstanceId) {
-		ServiceBean serviceBean = null;
-		try(Session session = getSession()) {
+    @Override
+    public ServiceBean getServiceBeanByServiceInStanceId(String serviceInstanceId) {
+        ServiceBean serviceBean = null;
+        try (Session session = getSession()) {
 
-			String string = "from ServiceBean  where 1=1 and serviceInstanceId=:serviceInstanceId";
-			Query q = session.createQuery(string);
-			q.setString("serviceInstanceId",serviceInstanceId);
-			List<ServiceBean> list = q.list();
-			session.flush();
-			if(list.size()>0){
-				serviceBean = list.get(0);
-			}
-		}catch (Exception e){
-			logger.error("exception occurred while performing DefaultServiceLcmService getServiceBeanByServiceInStanceId.Detail."+e.getMessage());
-			serviceBean = new ServiceBean();;
-		}
-		return serviceBean;
-	
-	}
+            String string = "from ServiceBean  where 1=1 and serviceInstanceId=:serviceInstanceId";
+            Query q = session.createQuery(string);
+            q.setString("serviceInstanceId", serviceInstanceId);
+            List<ServiceBean> list = q.list();
+            session.flush();
+            if (list.size() > 0) {
+                serviceBean = list.get(0);
+            }
+        } catch (Exception e) {
+            logger.error(
+                    "exception occurred while performing DefaultServiceLcmService getServiceBeanByServiceInStanceId.Detail."
+                            + e.getMessage());
+            serviceBean = new ServiceBean();;
+        }
+        return serviceBean;
 
-	@Override
-	public List<String> getServiceInstanceIdByParentId(String parentServiceInstanceId) {
-		List<String> list = new ArrayList<>();
-		try(Session session = getSession()) {
+    }
 
-			String string = "from ServiceBean  where 1=1 and parentServiceInstanceId=:parentServiceInstanceId";
-			Query q = session.createQuery(string);
-			q.setString("parentServiceInstanceId",parentServiceInstanceId);
-			list = q.list();
-			session.flush();
-		}catch (Exception e){
-			list = new ArrayList<>();
-			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."+e.getMessage());
-		}
-		return list;
-	
-	}
+    @Override
+    public List<String> getServiceInstanceIdByParentId(String parentServiceInstanceId) {
+        List<String> list = new ArrayList<>();
+        try (Session session = getSession()) {
 
-	@Override
-	public void saveOrUpdateServiceInstanceOperation(ServiceInstanceOperations serviceOperation) {
-		try(Session session = getSession()){
-			if (null == serviceOperation) {
-				logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceOperation is null!");
-			}
-			session.saveOrUpdate(serviceOperation);
-			session.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceInstanceOperation. Details:" + e.getMessage());
-		}
-	}
+            String string = "from ServiceBean  where 1=1 and parentServiceInstanceId=:parentServiceInstanceId";
+            Query q = session.createQuery(string);
+            q.setString("parentServiceInstanceId", parentServiceInstanceId);
+            list = q.list();
+            session.flush();
+        } catch (Exception e) {
+            list = new ArrayList<>();
+            logger.error(
+                    "exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."
+                            + e.getMessage());
+        }
+        return list;
 
-	@Override
-	public void updateServiceInstanceOperation(String serviceInstanceId, String operationType, String progress,
-			String operationResult) {
-		List<ServiceInstanceOperations> list = new ArrayList<>();
-		try(Session session = getSession()) {
-			String hql="select a.* from service_instance_operations a where service_instance_id =:serviceId and operation_type =:operationType and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId )";
-			Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
-			q.setString("serviceId",serviceInstanceId);
-			q.setString("serviceInstanceId",serviceInstanceId);
-			q.setString("operationType",operationType);
-			list = q.list();
-			ServiceInstanceOperations serviceOperation =list.get(0);
-			serviceOperation.setOperationResult(operationResult);
-			serviceOperation.setOperationProgress(progress);
-			if("100".equals(progress)){
-				serviceOperation.setEndTime(DateUtils.dateToString(DateUtils.now()));
-			}
-			session.saveOrUpdate(serviceOperation);
-			session.flush();
+    }
 
-		}catch (Exception e){
-			logger.error("exception occurred while performing DefaultServiceLcmService updateServiceInstanceOperation.Detail."+e.getMessage());
-		}
-	}
+    @Override
+    public void saveOrUpdateServiceInstanceOperation(ServiceInstanceOperations serviceOperation) {
+        try (Session session = getSession()) {
+            if (null == serviceOperation) {
+                logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceOperation is null!");
+            }
+            session.saveOrUpdate(serviceOperation);
+            session.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(
+                    "exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceInstanceOperation. Details:"
+                            + e.getMessage());
+        }
+    }
 
-	@Override
-	public ServiceInstanceOperations getServiceInstanceOperationById(String serviceId) {
-		ServiceInstanceOperations serviceOperation = null;
-		List<ServiceInstanceOperations> list = new ArrayList<>();
-		try(Session session = getSession()) {
-			String hql="select a.* from service_instance_operations a where service_instance_id =:serviceId and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId)";
-			Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
-			q.setString("serviceId",serviceId);
-			q.setString("serviceInstanceId",serviceId);
-			q.list();
-			list = q.list();
-			if (list.size() > 0) {
-				serviceOperation =list.get(0);
-			} else {
-				serviceOperation = new ServiceInstanceOperations();
-			}
+    @Override
+    public void updateServiceInstanceOperation(String serviceInstanceId, String operationType, String progress,
+            String operationResult) {
+        List<ServiceInstanceOperations> list = new ArrayList<>();
+        try (Session session = getSession()) {
+            String hql =
+                    "select a.* from service_instance_operations a where service_instance_id =:serviceId and operation_type =:operationType and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId )";
+            Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
+            q.setString("serviceId", serviceInstanceId);
+            q.setString("serviceInstanceId", serviceInstanceId);
+            q.setString("operationType", operationType);
+            list = q.list();
+            ServiceInstanceOperations serviceOperation = list.get(0);
+            serviceOperation.setOperationResult(operationResult);
+            serviceOperation.setOperationProgress(progress);
+            if ("100".equals(progress)) {
+                serviceOperation.setEndTime(DateUtils.dateToString(DateUtils.now()));
+            }
+            session.saveOrUpdate(serviceOperation);
+            session.flush();
 
-			session.flush();
+        } catch (Exception e) {
+            logger.error(
+                    "exception occurred while performing DefaultServiceLcmService updateServiceInstanceOperation.Detail."
+                            + e.getMessage());
+        }
+    }
 
-		}catch (Exception e){
-			logger.error("exception occurred while performing DefaultServiceLcmService getServiceInstanceOperationById."+e.getMessage());
-		}
-		return serviceOperation;
-	}
+    @Override
+    public ServiceInstanceOperations getServiceInstanceOperationById(String serviceId) {
+        ServiceInstanceOperations serviceOperation = null;
+        List<ServiceInstanceOperations> list = new ArrayList<>();
+        try (Session session = getSession()) {
+            String hql =
+                    "select a.* from service_instance_operations a where service_instance_id =:serviceId and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId)";
+            Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
+            q.setString("serviceId", serviceId);
+            q.setString("serviceInstanceId", serviceId);
+            q.list();
+            list = q.list();
+            if (!list.isEmpty()) {
+                serviceOperation = list.get(0);
+            } else {
+                serviceOperation = new ServiceInstanceOperations();
+            }
+
+            session.flush();
+
+        } catch (Exception e) {
+            logger.error("exception occurred while performing DefaultServiceLcmService getServiceInstanceOperationById."
+                    + e.getMessage());
+        }
+        return serviceOperation;
+    }
 }
