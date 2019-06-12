@@ -122,55 +122,6 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation, int currentPage,
-			int pageSize) {
-		Page<AlarmsInformation> page = new Page<AlarmsInformation>();
-		int allRow =this.getAllCount(alarmsInformation,currentPage,pageSize);
-		int offset = page.countOffset(currentPage, pageSize);
-		
-		try(Session session = getSession()){
-			StringBuffer hql =new StringBuffer("from AlarmsInformation a where 1=1");
-			if (null == alarmsInformation) {
-				//logger.error("AlarmsInformationServiceImpl queryAlarmsInformation alarmsInformation is null!");
-			}else {
-				if(null!=alarmsInformation.getName()) {
-					String ver=alarmsInformation.getName();
-					hql.append(" and a.name like '%"+ver+"%'");
-				}
-				if(null!=alarmsInformation.getValue()) {
-					String ver=alarmsInformation.getValue();
-					hql.append(" and a.value like '%"+ver+"%'");
-				}
-				if(null!=alarmsInformation.getSourceId()) {
-					String ver=alarmsInformation.getSourceId();
-					hql.append(" and a.sourceId = '"+ver+"'");
-				}
-				if(null!=alarmsInformation.getStartEpochMicroSec() || alarmsInformation.getLastEpochMicroSec()!= null) {
-					hql.append(" and a.startEpochMicrosec between :startTime and :endTime");
-				}
-			}
-			Query query = session.createQuery(hql.toString());
-			if(null!=alarmsInformation.getStartEpochMicroSec() || alarmsInformation.getLastEpochMicroSec()!= null) {
-				query.setString("startTime",alarmsInformation.getStartEpochMicroSec());
-				query.setString("endTime",alarmsInformation.getLastEpochMicroSec());
-			}
-			query.setFirstResult(offset);
-			query.setMaxResults(pageSize);
-			List<AlarmsInformation> list= query.list();
-			page.setPageNo(currentPage);
-			page.setPageSize(pageSize);
-			page.setTotalRecords(allRow);
-			page.setList(list);
-			session.flush();
-			return page;
-		} catch (Exception e) {
-			logger.error("exception occurred while performing AlarmsInformationServiceImpl queryAlarmsInformation. Details:" + e.getMessage());
-			return null;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
 	public List<AlarmsInformation> queryId(String[] id) {
 		try {
 			if(id.length==0) {
