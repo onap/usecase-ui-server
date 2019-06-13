@@ -156,42 +156,6 @@ public class PerformanceInformationServiceImplTest {
 	}
 
 	@Test
-	public void testGetAllCount() throws Exception {
-		new MockUp<Query>() {
-			@Mock
-			public Object uniqueResult() {
-				return "1";
-			}
-		};
-		try {
-			PerformanceInformation pi = new PerformanceInformation();
-			pi.setName("");
-			pi.setValue("");
-			pi.setSourceId("");
-			pi.setStartEpochMicrosec("");;
-			pi.setLastEpochMicroSec("");;
-			performanceInformationServiceImpl.getAllCount(pi, 1, 1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
-	public void testQueryPerformanceInformation() throws Exception {
-		try {
-			PerformanceInformation pi = new PerformanceInformation();
-			pi.setName("");
-			pi.setValue("");
-			pi.setSourceId("");
-			pi.setStartEpochMicrosec("");;
-			pi.setLastEpochMicroSec("");;
-			performanceInformationServiceImpl.queryPerformanceInformation(pi, 1, 1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
 	public void testQueryId() throws Exception {
 		try {
 			String[] id = {"1", "2", "3"};

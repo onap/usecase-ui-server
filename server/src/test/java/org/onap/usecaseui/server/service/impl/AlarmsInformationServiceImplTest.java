@@ -177,21 +177,6 @@ public class AlarmsInformationServiceImplTest {
 	}
 
 	@Test
-	public void testQueryAlarmsInformation() throws Exception {
-		try {
-			AlarmsInformation ai = new AlarmsInformation();
-			ai.setName("");
-			ai.setValue("");
-			ai.setSourceId("");
-			ai.setStartEpochMicroSec("");;
-			ai.setLastEpochMicroSec("");;
-			alarmsInformationServiceImpl.queryAlarmsInformation(ai, 1, 1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
 	public void testQueryId() throws Exception {
 		try {
 			String[] id = {"1", "2", "3"};

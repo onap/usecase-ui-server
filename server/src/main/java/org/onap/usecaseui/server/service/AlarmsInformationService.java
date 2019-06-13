@@ -32,8 +32,6 @@ public interface AlarmsInformationService {
     
     int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize);
     
-    Page<AlarmsInformation> queryAlarmsInformation(AlarmsInformation alarmsInformation, int currentPage, int pageSize);
-
     List<AlarmsInformation> queryId(String[] id);
 
     int queryDateBetween(String sourceId, String startTime, String endTime,String level);
