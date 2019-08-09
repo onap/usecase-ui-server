@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.google.common.base.Throwables;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.SortMaster;
@@ -192,7 +193,7 @@ public class AlarmController
             return getDiagram(sourceName, startTimel, endTimel + timeInterval, timeInterval, 1, 1, format);
         } catch (Exception e) {
             logger.error("alarmController diagram occured exception:" + e.getMessage());
-            e.printStackTrace();
+            logger.error("alarmController diagram occured exception:"+ Throwables.getStackTraceAsString(e));
         }
         return null;
     }
