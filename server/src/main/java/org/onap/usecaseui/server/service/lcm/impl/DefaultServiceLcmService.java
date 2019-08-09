@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Throwables;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -249,7 +250,9 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             session.saveOrUpdate(serviceOperation);
             session.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(
+                    "exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceInstanceOperation. Details:"
+                            + Throwables.getStackTraceAsString(e));
             logger.error(
                     "exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceInstanceOperation. Details:"
                             + e.getMessage());
