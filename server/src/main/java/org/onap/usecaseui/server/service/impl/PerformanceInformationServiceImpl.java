@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import com.google.common.base.Throwables;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -99,7 +100,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 			list = query.setParameterList("alist", id).list();
 			return list;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + Throwables.getStackTraceAsString(e));
 			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryId. Details:" + e.getMessage());
 			return null;
 		}
@@ -206,7 +207,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             String num=(String) query.uniqueResult();
             return UuiCommonUtil.isNotNullOrEmpty(num)?num:0+"";
         } catch (Exception e) {
-            e.printStackTrace();
+			logger.error("exception occurred while performing PerformanceInformationServiceImpl queryMaxValueByBetweenDate. Details:" + Throwables.getStackTraceAsString(e));
             logger.error("exception occurred while performing PerformanceInformationServiceImpl queryMaxValueByBetweenDate. Details:" + e.getMessage());
             return 0+"";
         }
