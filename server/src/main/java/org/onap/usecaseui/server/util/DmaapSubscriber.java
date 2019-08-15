@@ -30,6 +30,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+import com.google.common.base.Throwables;
 import org.glassfish.jersey.client.ClientConfig;
 import org.onap.usecaseui.server.bean.*;
 import org.onap.usecaseui.server.constant.Constant;
@@ -87,7 +88,9 @@ public class DmaapSubscriber implements Runnable {
                         alarmProcess(eventMaps);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(
+                            "exception occurred while performing DmaapSubcriber performanceProcess or alarmProcess. Details:{}",
+                            Throwables.getStackTraceAsString(e));
                     logger.error(
                             "exception occurred while performing DmaapSubcriber performanceProcess or alarmProcess. Details:{}",
                             e.getMessage());
@@ -97,7 +100,7 @@ public class DmaapSubscriber implements Runnable {
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("getDMaaP Information failed :{}", Throwables.getStackTraceAsString(e));
             logger.error("getDMaaP Information failed :{}", e.getMessage());
         }
     }
@@ -203,7 +206,7 @@ public class DmaapSubscriber implements Runnable {
                                                 alarm_header.getLastEpochMicroSec(), alarm_header.getId()));
                             });
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.error("convert alarmAdditionalInformation error：{}",Throwables.getStackTraceAsString(e));
                             logger.error("convert alarmAdditionalInformation error：{}",e.getMessage());
                         }
                     }
@@ -294,7 +297,7 @@ public class DmaapSubscriber implements Runnable {
                                         });
                                     });
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    logger.error("convert performanceAdditionalInformation error：{}",Throwables.getStackTraceAsString(e));
                                     logger.error("convert performanceAdditionalInformation error：{}",e.getMessage());
                                 }
                             }
