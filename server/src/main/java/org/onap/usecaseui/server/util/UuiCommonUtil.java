@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +114,7 @@ public class UuiCommonUtil {
 			}
 		} catch (IOException e) {
 			logger.error("exception occurred while performing UuiCommonUtil OutRequestBody.Details:"+ e.getMessage());
-			e.printStackTrace();
+			logger.error("exception occurred while performing UuiCommonUtil OutRequestBody.Details:"+ Throwables.getStackTraceAsString(e));
 		}
 		return wholeStr;
 	}

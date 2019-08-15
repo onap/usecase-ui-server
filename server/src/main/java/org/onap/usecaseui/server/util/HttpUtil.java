@@ -24,6 +24,7 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,7 +74,7 @@ public class HttpUtil {
             }
         } catch (Exception e) {
         	logger.error("发送GET请求出现异常！" + e);
-            e.printStackTrace();
+            logger.error("发送GET请求出现异常！" + Throwables.getStackTraceAsString(e));
         }
         // 使用finally块来关闭输入流
         finally {
@@ -82,7 +83,7 @@ public class HttpUtil {
                     in.close();
                 }
             } catch (Exception e2) {
-                e2.printStackTrace();
+                logger.error("Exception occured while closing the connection {}" + Throwables.getStackTraceAsString(e2));
             }
         }
         return result;
@@ -128,7 +129,7 @@ public class HttpUtil {
             }
         } catch (Exception e) {
         	logger.error("发送 POST 请求出现异常！"+e);
-            e.printStackTrace();
+            logger.error("发送 POST 请求出现异常！"+Throwables.getStackTraceAsString(e));
         }
         //使用finally块来关闭输出流、输入流
         finally{
