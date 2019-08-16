@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.UsecaseuiServerApplication;
+import org.onap.usecaseui.server.UuiServerApplication;
 import org.onap.usecaseui.server.service.InitializationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

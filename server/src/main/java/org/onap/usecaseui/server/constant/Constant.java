@@ -22,7 +22,6 @@ import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 
 public final class Constant
 {
-
     public static final String DATE_FORMAT= "yyyy-MM-dd HH:mm:ss";
 
     public static final String RegEX_DATE_FORMAT = "[^0-9-:]";
