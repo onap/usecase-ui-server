@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.onap.usecaseui.server.bean.sotn.NetWorkResource;
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.Pnf;
-import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.sotn.SOTNService;
 import org.onap.usecaseui.server.util.HttpUtil;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -34,7 +33,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -168,13 +166,7 @@ public class SotnController {
         String serviceType = request.getParameter("serviceType");
     	return sotnService.getServiceInstances(customerId, serviceType);
     }
-    
-    @RequestMapping(value = {"/getOssInvenory"}, method = RequestMethod.GET)
-    public String getData(){
-		String result = HttpUtil.sendGet("http://172.60.3.45:8099/oss/inventory", "");
-		return result;
-    }
-    
+
     @RequestMapping(value = {"/deleteExtNetWork"}, method = RequestMethod.DELETE)
     public String deleteExtNetwork(@RequestParam String extNetworkId,@RequestParam(value="resourceVersion") String resourceVersion){
     	return sotnService.deleteExtNetwork(extNetworkId,resourceVersion);

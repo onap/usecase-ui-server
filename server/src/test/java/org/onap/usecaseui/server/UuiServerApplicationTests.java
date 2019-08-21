@@ -25,7 +25,7 @@ import java.text.ParseException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UsecaseuiServerApplicationTests {
+public class UuiServerApplicationTests {
 
 
 

@@ -31,7 +31,7 @@ import com.google.common.base.Throwables;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.SortMaster;
-import org.onap.usecaseui.server.constant.Constant;
+import org.onap.usecaseui.server.constant.CommonConstant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.DateProcessDataObject;
@@ -112,16 +112,16 @@ public class AlarmController
         alarm.setSourceName(sourceName);
         alarm.setStatus(vfStatus);
         alarm.setStartEpochMicrosec(!UuiCommonUtil.isNotNullOrEmpty(startTime) ? null
-                : new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime() + "");
+                : new SimpleDateFormat(CommonConstant.DATE_FORMAT).parse(startTime).getTime() + "");
         alarm.setLastEpochMicroSec(!UuiCommonUtil.isNotNullOrEmpty(endTime) ? null
-                : new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime() + "");
+                : new SimpleDateFormat(CommonConstant.DATE_FORMAT).parse(endTime).getTime() + "");
         Page pa =
                 alarmsHeaderService.queryAlarmsHeader(alarm, Integer.parseInt(currentPage), Integer.parseInt(pageSize));
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("alarms", pa.getList());
             map.put("totalRecords", pa.getTotalRecords());
-            omAlarm.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
+            omAlarm.setDateFormat(new SimpleDateFormat(CommonConstant.DATE_FORMAT));
             return omAlarm.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             logger.debug("JsonProcessingException :" + e.getMessage());

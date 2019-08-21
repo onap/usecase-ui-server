@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response;
 import com.google.common.base.Throwables;
 import org.glassfish.jersey.client.ClientConfig;
 import org.onap.usecaseui.server.bean.*;
-import org.onap.usecaseui.server.constant.Constant;
+import org.onap.usecaseui.server.constant.CommonConstant;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
@@ -77,7 +77,7 @@ public class DmaapSubscriber implements Runnable {
                 return;
             }
             ObjectMapper objMapper = new ObjectMapper();
-            objMapper.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
+            objMapper.setDateFormat(new SimpleDateFormat(CommonConstant.DATE_FORMAT));
             respList.forEach(rl -> {
                 try {
                     Map<String, Object> eventMaps =

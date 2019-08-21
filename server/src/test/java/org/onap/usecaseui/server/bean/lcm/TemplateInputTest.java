@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;
 import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.UsecaseuiServerApplication;
+import org.onap.usecaseui.server.UuiServerApplication;
 import org.onap.usecaseui.server.bean.lcm.*;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.Page;

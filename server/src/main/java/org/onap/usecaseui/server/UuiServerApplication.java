@@ -28,13 +28,12 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={JpaRepositoriesAutoConfiguration.class})
 @ComponentScan(basePackages = "org.onap.usecaseui.server")
-public class UsecaseuiServerApplication {
-	
+public class UuiServerApplication {
     public static DmaapSubscriber dmaapSubscriber;
 
     @Autowired
     public void setDatastore(DmaapSubscriber dmaapSubscriber) {
-        UsecaseuiServerApplication.dmaapSubscriber = dmaapSubscriber;
+        UuiServerApplication.dmaapSubscriber = dmaapSubscriber;
     }
     
     @Bean
@@ -43,7 +42,7 @@ public class UsecaseuiServerApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(UsecaseuiServerApplication.class, args);
+        SpringApplication.run(UuiServerApplication.class, args);
         dmaapSubscriber.run();
     }
 }
