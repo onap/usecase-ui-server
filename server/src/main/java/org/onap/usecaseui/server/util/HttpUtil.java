@@ -153,6 +153,55 @@ public class HttpUtil {
         return reponseResult;
     }
 
+    /**
+     * common GET method for REST API calling
+     *
+     * @param url
+     * @param httpRequestHeader
+     * @return HttpResponseResult
+     */
+    public HttpResponseResult sendGetRequest(
+            String url,
+            HttpRequestHeader httpRequestHeader) {
+        logger.info("[" + url + "]" + " API GET calling is starting......");
+        HttpResponseResult reponseResult = new HttpResponseResult(HttpStatus.SC_NOT_FOUND, BLANK);
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+
+        try {
+            // set request url and header for API calling
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.setHeader(HTTP_AUTHORIZATION, httpRequestHeader.getStrAuthorization());
+            httpGet.setHeader(HTTP_X_FROMAPP_ID, httpRequestHeader.getStrFromAppId());
+            httpGet.setHeader(HTTP_X_TRANSACTION_ID, httpRequestHeader.getStrTransactionId());
+            httpGet.setHeader(HTTP_CONTENT_TYPE, httpRequestHeader.getStrContentType());
+            httpGet.setHeader(HTTP_ACCEPT, httpRequestHeader.getStrAccept());
+
+            // execute API calling and return response
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                reponseResult.setResultContent(EntityUtils.toString(response.getEntity(), ENCODING_UTF8));
+            }
+            reponseResult.setResultCode(response.getStatusLine().getStatusCode());
+            response.close();
+        } catch (ClientProtocolException cpe) {
+            logger.error(cpe.toString());
+            cpe.printStackTrace();
+        } catch (IOException ioe) {
+            logger.error(ioe.toString());
+            ioe.printStackTrace();
+        } finally {
+            try {
+                httpClient.close();
+            } catch (Exception e) {
+                logger.error(e.toString());
+                e.printStackTrace();
+            }
+        }
+
+        logger.info("[" + url + "]" + " API GET calling has finished!");
+        return reponseResult;
+    }
+
     private static void setHttpPostHeader(HttpPost httpPost, HttpRequestHeader httpRequestHeader) {
         httpPost.setHeader(HTTP_AUTHORIZATION, httpRequestHeader.getStrAuthorization());
         httpPost.setHeader(HTTP_X_FROMAPP_ID, httpRequestHeader.getStrFromAppId());
