@@ -15,7 +15,7 @@
  */
 package org.onap.usecaseui.server.util;
 
-import org.onap.usecaseui.server.constant.Constant;
+import org.onap.usecaseui.server.constant.CommonConstant;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,7 +66,7 @@ public class DateUtils {
                 ldt = ldt.withSecond(0);
         } else
             ldt = ldt.withMinute(ldt.getSecond()-1);
-        return ldt.format(DateTimeFormatter.ofPattern(Constant.DATE_FORMAT));
+        return ldt.format(DateTimeFormatter.ofPattern(CommonConstant.DATE_FORMAT));
     }
 
 
@@ -85,7 +85,7 @@ public class DateUtils {
          * @throws ParseException
          */
     public static Date initProcessDate(Date d,int year,int month,int day,int hour,int minute,int second) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat(Constant.DATE_FORMAT);
+        SimpleDateFormat sdf = new SimpleDateFormat(CommonConstant.DATE_FORMAT);
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         if(year >= 0){
@@ -166,19 +166,19 @@ public class DateUtils {
                 }
                 break;
         }
-        return ldt.format(DateTimeFormatter.ofPattern(Constant.DATE_FORMAT));
+        return ldt.format(DateTimeFormatter.ofPattern(CommonConstant.DATE_FORMAT));
     }
 
     public static String dateToString(Date d){
-        return new SimpleDateFormat(Constant.DATE_FORMAT).format(d);
+        return new SimpleDateFormat(CommonConstant.DATE_FORMAT).format(d);
     }
 
     public static Date stringToDate(String d) throws ParseException {
-        return new SimpleDateFormat(Constant.DATE_FORMAT).parse(d);
+        return new SimpleDateFormat(CommonConstant.DATE_FORMAT).parse(d);
     }
 
     public static Date now() throws ParseException {
-        return new SimpleDateFormat(Constant.DATE_FORMAT).parse(dateToString(new Date()));
+        return new SimpleDateFormat(CommonConstant.DATE_FORMAT).parse(dateToString(new Date()));
     }
     
     public static String getYearMonthDayHourMinuteSecond(long timeMillis) {
