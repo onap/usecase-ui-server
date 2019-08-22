@@ -180,11 +180,6 @@ public class SotnControllerTest {
 	}
 	
 	@Test
-	public void TestGetData(){
-		sotnController.getData();
-	}
-	
-	@Test
 	public void TestDeleteExtNetwork(){
 		String linkName="pnfName";
 		String resourceVersion="resourceVersion";
