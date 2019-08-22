@@ -16,7 +16,6 @@
 package org.onap.usecaseui.server.controller.lcm;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -25,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
-import org.onap.usecaseui.server.constant.Constant;
+import org.onap.usecaseui.server.constant.CommonConstant;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
@@ -48,7 +47,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 @RestController
@@ -125,11 +123,11 @@ public class PackageDistributionController {
         JobStatus jobStatus = packageDistributionService.getNsLcmJobStatus(serviceInstanceId,jobId, responseId,operationType);
         if(UuiCommonUtil.isNotNullOrEmpty(jobStatus)&&UuiCommonUtil.isNotNullOrEmpty(jobStatus.getResponseDescriptor())&&UuiCommonUtil.isNotNullOrEmpty(jobStatus.getResponseDescriptor().getProgress())){
             String processNum = jobStatus.getResponseDescriptor().getProgress();
-            String operationResult = Constant.IN_PROGRESS_CODE;
+            String operationResult = CommonConstant.IN_PROGRESS_CODE;
             if(Integer.parseInt(processNum)==100){
-                operationResult = Constant.SUCCESS_CODE;
+                operationResult = CommonConstant.SUCCESS_CODE;
             }else if(Integer.parseInt(processNum)>100){
-                operationResult=Constant.FAIL_CODE;
+                operationResult= CommonConstant.FAIL_CODE;
             }
             serviceLcmService.updateServiceInstanceOperation(serviceInstanceId,operationType,processNum,operationResult);
         }
@@ -258,7 +256,7 @@ public class PackageDistributionController {
         JSONObject jobObject = JSONObject.parseObject(object);
         String jobId = jobObject.getString("jobId");
         ServiceBean serviceBean = new ServiceBean(UuiCommonUtil.getUUID(),ns_instance_id,customerId,serviceType,serviceDomain,null,null);
-        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.CREATING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId, CommonConstant.CREATING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
         serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
         serviceLcmService.saveOrUpdateServiceBean(serviceBean);
         return object;
@@ -272,7 +270,7 @@ public class PackageDistributionController {
             JSONObject jobIdObject = JSONObject.parseObject(result);
             jobId = jobIdObject.getString("jobId");
         }
-        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.DELETING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId, CommonConstant.DELETING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
         serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
         return result;
     }
@@ -285,7 +283,7 @@ public class PackageDistributionController {
             JSONObject jobIdObject = JSONObject.parseObject(result);
             jobId = jobIdObject.getString("jobId");
         }
-        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId,Constant.HEALING_CODE,"0",Constant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
+        ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(ns_instance_id,jobId, CommonConstant.HEALING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
         serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
         return result;
     }

@@ -19,7 +19,7 @@ import com.google.common.io.Files;
 import okhttp3.ResponseBody;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
-import org.onap.usecaseui.server.constant.Constant;
+import org.onap.usecaseui.server.constant.CommonConstant;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
@@ -221,7 +221,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         for (Map.Entry<String, Property> entry : properties.entrySet()) {
             String key = entry.getKey();
             if (key.endsWith("providing_service_uuid")) {
-            	Constant.netWorkMap.put(String.valueOf(entry.getValue().getValue()), newServiceTemplateInput(nodeTemplate));
+            	CommonConstant.netWorkMap.put(String.valueOf(entry.getValue().getValue()), newServiceTemplateInput(nodeTemplate));
                 return String.valueOf(entry.getValue().getValue());
             }
         }
@@ -285,8 +285,8 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     private static ServiceTemplateInput newServiceTemplateInput(ToscaTemplate tosca) {
-    	if(Constant.netWorkMap.containsKey(tosca.getMetaData().getValue("UUID"))){
-    		return Constant.netWorkMap.get(tosca.getMetaData().getValue("UUID"));
+    	if(CommonConstant.netWorkMap.containsKey(tosca.getMetaData().getValue("UUID"))){
+    		return CommonConstant.netWorkMap.get(tosca.getMetaData().getValue("UUID"));
     	}else{
             String invariantUUID = tosca.getMetaData().getValue("invariantUUID");
             String uuid = tosca.getMetaData().getValue("UUID");

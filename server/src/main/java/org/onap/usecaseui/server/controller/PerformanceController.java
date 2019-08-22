@@ -29,7 +29,7 @@ import javax.annotation.Resource;
 
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
-import org.onap.usecaseui.server.constant.Constant;
+import org.onap.usecaseui.server.constant.CommonConstant;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
 import org.onap.usecaseui.server.util.Page;
@@ -80,14 +80,14 @@ public class PerformanceController {
         Page<PerformanceHeader> pa = new Page<PerformanceHeader>();
             PerformanceHeader performanceHeader = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();
             performanceHeader.setSourceName(sourceName);
-            performanceHeader.setStartEpochMicrosec(!UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(startTime).getTime()+"");
-            performanceHeader.setLastEpochMicroSec(!UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(Constant.DATE_FORMAT).parse(endTime).getTime()+"");
+            performanceHeader.setStartEpochMicrosec(!UuiCommonUtil.isNotNullOrEmpty(startTime)?null:new SimpleDateFormat(CommonConstant.DATE_FORMAT).parse(startTime).getTime()+"");
+            performanceHeader.setLastEpochMicroSec(!UuiCommonUtil.isNotNullOrEmpty(endTime)?null:new SimpleDateFormat(CommonConstant.DATE_FORMAT).parse(endTime).getTime()+"");
             pa = performanceHeaderService.queryPerformanceHeader(performanceHeader,Integer.parseInt(currentPage),Integer.parseInt(pageSize));
         try {
             Map<String,Object> map = new HashMap<>();
             map.put("performances",pa.getList());
             map.put("totalRecords",pa.getTotalRecords());
-            omPerformance.setDateFormat(new SimpleDateFormat(Constant.DATE_FORMAT));
+            omPerformance.setDateFormat(new SimpleDateFormat(CommonConstant.DATE_FORMAT));
             return omPerformance.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             logger.error("JsonProcessingException"+e.getMessage());
