@@ -45,6 +45,11 @@ import static org.onap.usecaseui.server.constant.CommonConstant.ENCODING_UTF8;
 
 public class HttpUtil {
     private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
+    private static final String LOG_FORMATTER = "[ {} ] {} ";
+    private static final String CLIENT_PRTOCOL_EXCEPTION = "Client protocol exception";
+    private static final String IO_EXCEPTION = "IO Exception occured";
+    private static final String EXCEPTION = "Exception occured";
+    private static final String HTTP_CLIENT_CLOSING_EXCEPTION = "Exception occured while closing httpClient";
 
     /**
      * common POST method for REST API calling by using map request body
@@ -58,7 +63,7 @@ public class HttpUtil {
             String url,
             Map<String, String> headerMap,
             Map<String, String> requestBodyMap) {
-        logger.info("[" + url + "]" + " API POST calling is starting......");
+        logger.info(LOG_FORMATTER  ,url , "  API POST calling is starting......");
         HttpResponseResult responseResult = new HttpResponseResult(HttpStatus.SC_NOT_FOUND, BLANK);
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -74,24 +79,20 @@ public class HttpUtil {
             CloseableHttpResponse response = httpClient.execute(httpPost);
             setResponse(response, responseResult);
         } catch (ClientProtocolException cpe) {
-            logger.error(cpe.toString());
-            cpe.printStackTrace();
+            logger.error(CLIENT_PRTOCOL_EXCEPTION,cpe);
         } catch (IOException ioe) {
-            logger.error(ioe.toString());
-            ioe.printStackTrace();
+            logger.error(IO_EXCEPTION,ioe);
         } catch (Exception e) {
-            logger.error(e.toString());
-            e.printStackTrace();
+            logger.error("EXCEPTION",e);
         } finally {
             try {
                 httpClient.close();
             } catch (Exception e) {
-                logger.error(e.toString());
-                e.printStackTrace();
+                logger.error(HTTP_CLIENT_CLOSING_EXCEPTION,e);
             }
         }
 
-        logger.info("[" + url + "]" + " API POST calling has finished!");
+        logger.info(LOG_FORMATTER  ,url , "  API POST calling has finished!");
         return responseResult;
     }
 
@@ -107,7 +108,7 @@ public class HttpUtil {
             String url,
             Map<String, String> headerMap,
             String requestBodyJson) {
-        logger.info("[" + url + "]" + " API POST calling is starting......");
+        logger.info(LOG_FORMATTER  ,url , "  API POST calling is starting......");
         HttpResponseResult responseResult = new HttpResponseResult(HttpStatus.SC_NOT_FOUND, BLANK);
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -123,24 +124,20 @@ public class HttpUtil {
             CloseableHttpResponse response = httpClient.execute(httpPost);
             setResponse(response, responseResult);
         } catch (ClientProtocolException cpe) {
-            logger.error(cpe.toString());
-            cpe.printStackTrace();
+            logger.error(CLIENT_PRTOCOL_EXCEPTION,cpe);
         } catch (IOException ioe) {
-            logger.error(ioe.toString());
-            ioe.printStackTrace();
+            logger.error(IO_EXCEPTION,ioe);
         } catch (Exception e) {
-            logger.error(e.toString());
-            e.printStackTrace();
+            logger.error(EXCEPTION,e);
         } finally {
             try {
                 httpClient.close();
             } catch (Exception e) {
-                logger.error(e.toString());
-                e.printStackTrace();
+                logger.error(HTTP_CLIENT_CLOSING_EXCEPTION,e);
             }
         }
 
-        logger.info("[" + url + "]" + " API POST calling has finished!");
+        logger.info(LOG_FORMATTER  ,url , " API POST calling has finished!");
         return responseResult;
     }
 
@@ -154,7 +151,7 @@ public class HttpUtil {
     public HttpResponseResult sendGetRequest(
             String url,
             Map<String, String> headerMap) {
-        logger.info("[" + url + "]" + " API GET calling is starting......");
+        logger.info(LOG_FORMATTER  ,url , "API GET calling is starting......");
         HttpResponseResult responseResult = new HttpResponseResult(HttpStatus.SC_NOT_FOUND, BLANK);
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -167,24 +164,20 @@ public class HttpUtil {
             CloseableHttpResponse response = httpClient.execute(httpGet);
             setResponse(response, responseResult);
         } catch (ClientProtocolException cpe) {
-            logger.error(cpe.toString());
-            cpe.printStackTrace();
+            logger.error(CLIENT_PRTOCOL_EXCEPTION,cpe);
         } catch (IOException ioe) {
-            logger.error(ioe.toString());
-            ioe.printStackTrace();
+            logger.error(IO_EXCEPTION,ioe);
         } catch (Exception e) {
-            logger.error(e.toString());
-            e.printStackTrace();
+            logger.error(EXCEPTION,e);
         } finally {
             try {
                 httpClient.close();
             } catch (Exception e) {
-                logger.error(e.toString());
-                e.printStackTrace();
+                logger.error(HTTP_CLIENT_CLOSING_EXCEPTION,e);
             }
         }
 
-        logger.info("[" + url + "]" + " API GET calling has finished!");
+        logger.info(LOG_FORMATTER  ,url , "API GET calling has finished!");
         return responseResult;
     }
 
@@ -200,7 +193,7 @@ public class HttpUtil {
             String url,
             Map<String, String> headerMap,
             Map<String, String> requestBodyMap) {
-        logger.info("[" + url + "]" + " API PUT calling is starting......");
+        logger.info(LOG_FORMATTER ,url , "API PUT calling is starting......");
         HttpResponseResult responseResult = new HttpResponseResult(HttpStatus.SC_NOT_FOUND, BLANK);
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -216,24 +209,20 @@ public class HttpUtil {
             CloseableHttpResponse response = httpClient.execute(httpPut);
             setResponse(response, responseResult);
         } catch (ClientProtocolException cpe) {
-            logger.error(cpe.toString());
-            cpe.printStackTrace();
+            logger.error(CLIENT_PRTOCOL_EXCEPTION,cpe);
         } catch (IOException ioe) {
-            logger.error(ioe.toString());
-            ioe.printStackTrace();
+            logger.error(IO_EXCEPTION,ioe);
         } catch (Exception e) {
-            logger.error(e.toString());
-            e.printStackTrace();
+            logger.error(EXCEPTION,e);
         } finally {
             try {
                 httpClient.close();
             } catch (Exception e) {
-                logger.error(e.toString());
-                e.printStackTrace();
+                logger.error(HTTP_CLIENT_CLOSING_EXCEPTION,e);
             }
         }
 
-        logger.info("[" + url + "]" + " API PUT calling has finished!");
+        logger.info(LOG_FORMATTER ,url , " API PUT calling has finished!");
         return responseResult;
     }
 
@@ -249,7 +238,7 @@ public class HttpUtil {
             String url,
             Map<String, String> headerMap,
             String requestBodyJson) {
-        logger.info("[" + url + "]" + " API PUT calling is starting......");
+        logger.info(LOG_FORMATTER, url , "API PUT calling is starting......");
         HttpResponseResult responseResult = new HttpResponseResult(HttpStatus.SC_NOT_FOUND, BLANK);
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -265,24 +254,20 @@ public class HttpUtil {
             CloseableHttpResponse response = httpClient.execute(httpPut);
             setResponse(response, responseResult);
         } catch (ClientProtocolException cpe) {
-            logger.error(cpe.toString());
-            cpe.printStackTrace();
+            logger.error(CLIENT_PRTOCOL_EXCEPTION,cpe);
         } catch (IOException ioe) {
-            logger.error(ioe.toString());
-            ioe.printStackTrace();
+            logger.error(IO_EXCEPTION,ioe);
         } catch (Exception e) {
-            logger.error(e.toString());
-            e.printStackTrace();
+            logger.error(EXCEPTION,e);
         } finally {
             try {
                 httpClient.close();
             } catch (Exception e) {
-                logger.error(e.toString());
-                e.printStackTrace();
+                logger.error(HTTP_CLIENT_CLOSING_EXCEPTION,e);
             }
         }
 
-        logger.info("[" + url + "]" + " API PUT calling has finished!");
+        logger.info(LOG_FORMATTER,url , " API PUT calling has finished!");
         return responseResult;
     }
 
@@ -296,7 +281,7 @@ public class HttpUtil {
     public HttpResponseResult sendDeleteRequest(
             String url,
             Map<String, String> headerMap) {
-        logger.info("[" + url + "]" + " API DELETE calling is starting......");
+        logger.info(LOG_FORMATTER,url , " API DELETE calling is starting......");
         HttpResponseResult responseResult = new HttpResponseResult(HttpStatus.SC_NOT_FOUND, BLANK);
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -309,24 +294,20 @@ public class HttpUtil {
             CloseableHttpResponse response = httpClient.execute(httpDelete);
             setResponse(response, responseResult);
         } catch (ClientProtocolException cpe) {
-            logger.error(cpe.toString());
-            cpe.printStackTrace();
+            logger.error(CLIENT_PRTOCOL_EXCEPTION,cpe);
         } catch (IOException ioe) {
-            logger.error(ioe.toString());
-            ioe.printStackTrace();
+            logger.error(IO_EXCEPTION,ioe);
         } catch (Exception e) {
-            logger.error(e.toString());
-            e.printStackTrace();
+            logger.error(EXCEPTION,e);
         } finally {
             try {
                 httpClient.close();
             } catch (Exception e) {
-                logger.error(e.toString());
-                e.printStackTrace();
+                logger.error(HTTP_CLIENT_CLOSING_EXCEPTION,e);
             }
         }
 
-        logger.info("[" + url + "]" + " API DELETE calling has finished!");
+        logger.info(LOG_FORMATTER,url , " API DELETE calling has finished!");
         return responseResult;
     }
 
@@ -348,13 +329,13 @@ public class HttpUtil {
             }
             br.close();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            logger.error("IO exception occured",ioe);
         } finally {
             if (null != br) {
                 try {
                     br.close();
                 } catch (IOException ioe) {
-                    ioe.printStackTrace();
+                    logger.error("IO exception occured",ioe);
                 }
             }
         }
