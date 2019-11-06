@@ -28,7 +28,7 @@ meetings:
       repeats: 'weekly'
       time: '02:00 UTC'
 repositories:
-    - 'usecase-ui-server'
+    - 'usecase-ui/server'
 committers:
     - <<: *onap_releng_ptl
     - name: 'Tao Shen'
@@ -60,6 +60,11 @@ committers:
       email: 'zhanganbing@chinamobile.com'
       company: 'CMCC'
       id: 'zhangab'
+      timezone: 'China/Beijing'
+    - name: 'Ran Xu'
+      email: 'xuranyjy@chinamobile.com'
+      company: 'CMCC'
+      id: 'cyuamber'
       timezone: 'China/Beijing'
 tsc:
     approval: 'https://lists.onap.org/pipermail/onap-tsc'
