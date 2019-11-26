@@ -58,3 +58,13 @@ committers:
       timezone: 'China/Beijing'
 tsc:
     approval: 'https://lists.onap.org/pipermail/onap-tsc'
+    changes:
+      - type: 'Removal'
+        name: 'Amichai Hemli'
+        link: 'https://wiki.onap.org/display/DW/Amichai+Hemli+-+Committer+Removal+Request'
+      - type: 'Removal'
+        name: 'Xin Jin'
+        link: 'https://wiki.onap.org/display/DW/Xin+Jin+-+Committer+Removal+Request'
+      - type: 'Promotion'
+        name: 'Ran Xu'
+        link: 'https://wiki.onap.org/display/DW/Ran+Xu+-+Committer+Promotion+Request'
