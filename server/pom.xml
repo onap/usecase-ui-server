@@ -231,7 +231,11 @@
             <artifactId>okhttp</artifactId>
             <version>3.12.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.4</version>
+        </dependency>
         <!-- commons-csv -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -275,7 +279,11 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.4</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
