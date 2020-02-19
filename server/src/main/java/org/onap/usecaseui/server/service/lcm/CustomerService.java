@@ -41,4 +41,6 @@ public interface CustomerService {
     JSONObject deleteServiceType(String customerId,String serviceType,String resourceVersion);
     
     JSONObject getServiceTypeById(String customerId,String serviceType);
+
+    List<String> fetchNIList(String networkInterfaceType);
 }

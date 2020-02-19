@@ -51,4 +51,6 @@ public interface ServiceLcmService {
     void updateServiceInstanceOperation(String serviceInstanceId,String operationType,String progress,String operationResult);
     
     ServiceInstanceOperations getServiceInstanceOperationById(String serviceId);
+
+    List<ServiceBean>getAllServiceBean();
 }

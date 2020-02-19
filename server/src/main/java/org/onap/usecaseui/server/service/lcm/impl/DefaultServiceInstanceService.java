@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Iterator;
 import javax.annotation.Resource;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
@@ -102,6 +102,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
         }
     }
     
+
 	private List<String> parseServiceInstance(JSONObject objects,String customerId,String serviceType) throws JsonProcessingException{
     	List<String> result = new ArrayList<>();
     	JSONArray serviceInstances=objects.getJSONArray("service-instance");

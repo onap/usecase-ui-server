@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.service.lcm.domain.aai;
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAINetworkInterfaceResponse;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIOrchestratorRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAISingleOrchestratorRsp;
@@ -25,6 +26,7 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
+
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -101,7 +103,7 @@ public interface AAIService {
             "Accept: application/json"
     })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
-    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
+    @GET("/api/aai-business/v16/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> listServiceInstances(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
 
     @Headers({
@@ -342,4 +344,16 @@ public interface AAIService {
     })
     @DELETE("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}")
     Call<ResponseBody> deleteExtNetwork(@Path("aai-id") String aaiId,@Query("resource-version") String resourceVersion);
+
+    
+    @Headers({
+    	"X-TransactionId: 7777",
+    	"X-FromAppId: uui",
+    	"Authorization: Basic QUFJOkFBSQ==",
+    	"Accept: application/json"
+    })
+    @PUT("/api/aai-query/v16?format=resource")
+    Call<ResponseBody> querynNetworkResourceList(@Body RequestBody body);
+
+
 }
