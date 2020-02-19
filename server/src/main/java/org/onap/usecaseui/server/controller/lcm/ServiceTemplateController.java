@@ -16,7 +16,9 @@
 package org.onap.usecaseui.server.controller.lcm;
 
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
+import org.onap.usecaseui.server.bean.lcm.TemplateInput;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
+import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.ArrayList;
 
 @Controller
 @org.springframework.context.annotation.Configuration
@@ -38,6 +41,9 @@ public class ServiceTemplateController {
 
     @Resource(name="ServiceTemplateService")
     private ServiceTemplateService serviceTemplateService;
+
+    @Resource(name="CustomerService")
+        private CustomerService customerService;
 
     public void setServiceTemplateService(ServiceTemplateService serviceTemplateService) {
         this.serviceTemplateService = serviceTemplateService;
@@ -52,8 +58,7 @@ public class ServiceTemplateController {
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/service-templates/{uuid}"}, method = RequestMethod.GET , produces = "application/json")
     public ServiceTemplateInput getServiceTemplateInput(@PathVariable("uuid") String uuid, @RequestParam("toscaModelPath") String toscaModelPath){
-    	ServiceTemplateInput serviceTemplateInput = serviceTemplateService.fetchServiceTemplateInput(uuid, "/api"+toscaModelPath);
-    	logger.info("returned template content :"+serviceTemplateInput);
+	ServiceTemplateInput serviceTemplateInput = serviceTemplateService.fetchServiceTemplateInput(uuid, "/api"+toscaModelPath);
         return serviceTemplateInput;
     }
 
@@ -62,6 +67,14 @@ public class ServiceTemplateController {
     public List<VimInfo> getLocations(){
         return serviceTemplateService.listVim();
     }
+
+     @ResponseBody
+         @RequestMapping(value = {"/uui-lcm/getAllNI/{networkId}"}, method = RequestMethod.GET , produces = "application/json")
+	     public List<String> getAllNetworkInterface(@PathVariable("networkId") String networkId){
+		         	List<String> nIList = customerService.fetchNIList(networkId);
+				    	
+	   	return nIList;
+	}
 
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/sdnc-controllers/"}, method = RequestMethod.GET , produces = "application/json")

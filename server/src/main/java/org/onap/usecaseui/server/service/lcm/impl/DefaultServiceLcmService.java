@@ -312,5 +312,30 @@ public class DefaultServiceLcmService implements ServiceLcmService {
                     + e.getMessage());
         }
         return serviceOperation;
+
+
     }
+
+
+        @Override
+	public List<ServiceBean> getAllServiceBean() {
+        List<ServiceBean> list = new ArrayList<ServiceBean>();
+        try (Session session = getSession()) {
+
+            String string = "from ServiceBean";
+            Query q = session.createQuery(string);
+            list = q.list();
+            session.flush();
+        } catch (Exception e) {
+            list = new ArrayList<>();
+            logger.error(
+                    "exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."
+                            + e.getMessage());
+        }
+        return list;
+
+    }
+
+
+
 }
