@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import javax.annotation.Resource;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import org.onap.usecaseui.server.bean.nsmf.common.ResultHeader;
@@ -58,7 +59,9 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
 
     private final static Logger logger = LoggerFactory.getLogger(ResourceMonitorServiceImpl.class);
 
-    private ResourceMonitorServiceConvert resourceMonitorServiceConvert = new ResourceMonitorServiceConvert();
+    @Resource(name = "ResourceMonitorConvertService")
+    private ResourceMonitorServiceConvert resourceMonitorServiceConvert;
+
     Gson gson = new Gson();
 
     private KpiSliceService kpiSliceService;

@@ -28,8 +28,13 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
+@Service("GeneralConvertService")
+@org.springframework.context.annotation.Configuration
+@EnableAspectJAutoProxy
 public class GeneralConvertImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneralConvertImpl.class);

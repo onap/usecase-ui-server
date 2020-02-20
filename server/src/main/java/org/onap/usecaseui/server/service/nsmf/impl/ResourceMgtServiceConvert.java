@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import org.apache.commons.beanutils.BeanUtils;
 import org.onap.usecaseui.server.bean.nsmf.common.PagedResult;
 import org.onap.usecaseui.server.bean.nsmf.resource.HostedBusinessInfo;
@@ -59,12 +60,20 @@ import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
+@Service("ResourceMgtConvertService")
+@org.springframework.context.annotation.Configuration
+@EnableAspectJAutoProxy
 public class ResourceMgtServiceConvert {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceMgtServiceConvert.class);
-    GeneralConvertImpl generalConvert = new GeneralConvertImpl();
+
+    @Resource(name = "GeneralConvertService")
+    private GeneralConvertImpl generalConvert;
+
     private SOSliceService soSliceService;
     private AAISliceService aaiSliceService;
     Gson gson = new Gson();

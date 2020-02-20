@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import javax.annotation.Resource;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -51,7 +52,9 @@ import retrofit2.Response;
 public class TaskMgtServiceImpl implements TaskMgtService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskMgtServiceImpl.class);
-    private TaskMgtServiceConvert taskMgtServiceConvert = new TaskMgtServiceConvert();
+
+    @Resource(name = "TaskMgtConvertService")
+    private TaskMgtServiceConvert taskMgtServiceConvert;
 
     private SOSliceService soSliceService;
 

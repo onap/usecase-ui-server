@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import org.apache.commons.beanutils.BeanUtils;
 import org.onap.usecaseui.server.bean.nsmf.common.PagedResult;
 import org.onap.usecaseui.server.bean.nsmf.task.BusinessDemandInfo;
@@ -37,12 +38,19 @@ import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.stereotype.Service;
 
+@Service("TaskMgtConvertService")
+@org.springframework.context.annotation.Configuration
+@EnableAspectJAutoProxy
 public class TaskMgtServiceConvert {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskMgtServiceConvert.class);
 
-    private GeneralConvertImpl generalConvert = new GeneralConvertImpl();
+    @Resource(name = "GeneralConvertService")
+    private GeneralConvertImpl generalConvert;
+
     private AAISliceService aaiSliceService;
 
     public TaskMgtServiceConvert() {

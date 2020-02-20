@@ -72,8 +72,11 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
     @Resource(name = "ServiceLcmService")
     private ServiceLcmService serviceLcmService;
 
-    private ResourceMgtServiceConvert resourceMgtServiceConvert = new ResourceMgtServiceConvert();
-    GeneralConvertImpl generalConvert = new GeneralConvertImpl();
+    @Resource(name = "GeneralConvertService")
+    private GeneralConvertImpl generalConvert;
+
+    @Resource(name = "ResourceMgtConvertService")
+    private ResourceMgtServiceConvert resourceMgtServiceConvert;
 
     private AAISliceService aaiSliceService;
     private SOSliceService soSliceService;
