@@ -46,7 +46,7 @@ public class NsmfCommonUtil {
         if (list == null || pageNo < 1 || (pageNo - 1) * pageSize > list.size()) {
             return new PagedResult(0, Collections.EMPTY_LIST);
         }
-        list = list.stream().skip((pageNo - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
+        list = list.stream().skip((pageNo - 1) * (long)pageSize).limit(pageSize).collect(Collectors.toList());
         return new PagedResult(list.size(), list );
     }
 }
