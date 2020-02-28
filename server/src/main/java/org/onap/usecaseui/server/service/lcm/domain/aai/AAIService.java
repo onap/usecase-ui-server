@@ -345,15 +345,265 @@ public interface AAIService {
     @DELETE("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}")
     Call<ResponseBody> deleteExtNetwork(@Path("aai-id") String aaiId,@Query("resource-version") String resourceVersion);
 
-    
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/bandwidth-histories")
+    Call<ResponseBody> getDataMonitorInfo();
+
+    //added as part of activateEdge - start
     @Headers({
     	"X-TransactionId: 7777",
     	"X-FromAppId: uui",
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
+    @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
+    Call<ResponseBody> getServiceInstancesForEdge(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,
+                                                  @Path("service-instance-id") String serviceinstanceid);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/devices/device/{device-id}")
+    Call<ResponseBody> getDeviceInfo(@Path("device-id") String deviceId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/site-resources/site-resource/{site-resource-id}")
+    Call<ResponseBody> getSiteResourceInfo(@Path("site-resource-id") String siteResourceId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: BasicSi QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/edge-cameras/edge-camera/{edge-camera-id}")
+    Call<ResponseBody> getEdgeInfo(@Path("edge-camera-id") String edgeCameraId);
+    //added as part of activateEdge - end
+
+    @POST("/api/aai-network/v14/addSite")
+    Call<ResponseBody> addSite(@Query("siteBean") SiteBean siteBean);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-business/v13/customers")
+    Call<ResponseBody> getCustomers();
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+
+    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions")
+    Call<ResponseBody> getServiceSubscription(@Path("global-customer-id") String customerID);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
     @PUT("/api/aai-query/v16?format=resource")
     Call<ResponseBody> querynNetworkResourceList(@Body RequestBody body);
 
+  @GET("/api/aai-network/v14/site-resources/")
+    Call<ResponseBody> getSiteResources();
 
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/site-resources/site-resource/{site-resource-id}")
+    Call<ResponseBody> getService(@Query("site-resource-id") String siteResourceId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-cloudInfrastructure/v14/complexes/complex/{complex-id}")
+    Call<ResponseBody> getComplexObject(@Path("complex-id") String complexId);
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @PUT("/api/aai-network/v14/site-resources/site-resource/{site-resource-id}")
+    Call<ResponseBody> updateSiteStatus(@Body RequestBody body,@Path("site-resource-id") String siteResourceId, @Query("resource-version") String resourceVersion);
+
+
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/site-resources")
+    Call<ResponseBody> getAllSiteResourceInfo();
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-cloudInfrastructure/v14/complexes")
+    Call<ResponseBody> getAllComplexObject();
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/edge-cameras")
+    Call<ResponseBody> getAllEdgeInfo();
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/devices")
+    Call<ResponseBody> getAllDeviceInfo();
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-business/v11/customers")
+    Call<ResponseBody> listallCustomer();
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @PUT("/api/aai-query/v13")
+    Call<ResponseBody> getCustomQuery(@Body RequestBody body, @Query("format") String format, @Query("depth") String depth);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/generic-vnfs/generic-vnf/{vnf-id}")
+    Call<ResponseBody> getGenericVnfInformation(@Path("vnf-id") String vnfId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+
+    @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
+    Call<ResponseBody> getAllServiceInformation(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-business/v16/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
+    Call<ResponseBody> getServiceInstancesFor5G(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,
+                                                  @Path("service-instance-id") String serviceinstanceid);
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v16/generic-vnfs/generic-vnf/{vnf-id}")
+    Call<ResponseBody> getGenericVnfInfo5G(@Path("vnf-id") String vnfId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-business/v16/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources/allotted-resource/{allotted-resource-id}")
+    Call<ResponseBody> getAllotedResourceFor5G(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,
+                                                @Path("service-instance-id") String serviceinstanceid,@Path("allotted-resource-id") String allottedResourceId);
+
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/connectivities/connectivity")
+    Call<ResponseBody> getConnectivityInformation(@Query("connectivity-id") String connectivityId);
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-business/v16/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources/allotted-resource/{allotted-resource-id}")
+    Call<ResponseBody> getAllotedResource(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,
+                                               @Path("service-instance-id") String serviceinstanceid,@Path("allotted-resource-id") String allottedResourceId);
+
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/pnfs/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}")
+    Call<ResponseBody> getTerminationPoint(@Path("pnfName") String pnfName,@Path("tp-id") String tpId);
+
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v16/vpn-bindings/vpn-binding/{vpn-id}")
+    Call<ResponseBody> getSOTNPinterfaceByVpnId(@Query("vpn-id") String vpnId);
 }
