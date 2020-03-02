@@ -354,6 +354,87 @@ public interface AAIService {
     })
     @PUT("/api/aai-query/v16?format=resource")
     Call<ResponseBody> querynNetworkResourceList(@Body RequestBody body);
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
+    Call<ResponseBody> getServiceInstancesForEdge(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,
+                                                  @Path("service-instance-id") String serviceinstanceid);
 
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/connectivities/connectivity")
+    Call<ResponseBody> getConnectivityInformation(@Query("connectivity-id") String connectivityId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/pnfs/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}")
+    Call<ResponseBody> getTerminationPoint(@Path("pnfName") String pnfName,@Path("tp-id") String tpId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-business/v16/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources/allotted-resource/{allotted-resource-id}")
+    Call<ResponseBody> getAllotedResourceFor5G(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,
+                                               @Path("service-instance-id") String serviceinstanceid,@Path("allotted-resource-id") String allottedResourceId);
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-network/v14/site-resources/site-resource/{site-resource-id}")
+    Call<ResponseBody> getSiteResourceInfo(@Path("site-resource-id") String siteResourceId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/api/aai-cloudInfrastructure/v14/complexes/complex/{complex-id}")
+    Call<ResponseBody> getComplexObject(@Path("complex-id") String complexId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+
+    @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
+    Call<ResponseBody> getAllServiceInformation(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
+//    @Headers({
+//            "X-TransactionId: 7777",
+//            "X-FromAppId: uui",
+//            "Authorization: Basic QUFJOkFBSQ==",
+//            "Accept: application/json"
+//    })
+//    @GET("/api/aai-network/v14/pnfs/pnf/{pnfName}")
+//    Call<ResponseBody> getPnfInfo(@Path("pnfName") String pnfName);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+
+    @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions")
+    Call<ResponseBody> getServiceSubscription(@Path("global-customer-id") String customerID);
 
 }

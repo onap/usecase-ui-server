@@ -16,6 +16,7 @@
 package org.onap.usecaseui.server.service.lcm.domain.so;
 
 import okhttp3.RequestBody;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.E2EServiceInstanceRequest;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
@@ -60,4 +61,12 @@ public interface SOService {
     })
 	@PUT("/api/so-serviceInstances/v3/{serviceId}")
 	Call<SaveOrUpdateOperationRsp> updateService(@Path("serviceId") String serviceId, @Body RequestBody body);
+
+    @Headers({
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
+    })
+    //@POST("/onap/so/infra/e2eServiceInstances/v3")
+    @POST("/api/so-serviceInstances/v5")
+    Call<ServiceOperation> instantiateSOTNService(@Body E2EServiceInstanceRequest body);
 }
