@@ -131,7 +131,9 @@ public class DmaapSubscriber implements Runnable {
     public void run() {
         try {
             initConfig();
-            while (isActive) {/*
+            while (isActive) {
+                Thread.sleep(1000);
+                /*
                 subscribe(alarmTopic);
                 subscribe(performanceTopic);
             */}
