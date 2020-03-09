@@ -208,124 +208,126 @@ public class DefaultCustomerService implements CustomerService {
     }
     
     @Override
-    public JSONObject getServiceTypeById(String customerId,String serviceType){
-    		JSONObject result = new JSONObject();
-		try {
-			logger.info("aai getServiceTypeById is starting!");
-			Response<AAIServiceSubscription> response = this.aaiService.getServiceTypeById(customerId,serviceType).execute();
-			logger.info("aai getServiceTypeById is finished!");
-			if(response.isSuccessful()){
-				result.put("status", "SUCCESS");
-				result.put("result",response.body());
-			}else{
-				result.put("status", "FAILED");
-				result.put("errorMessage",String.format("Can not get getServiceTypeById[code=%s, message=%s]", response.code(), response.message()));
-			}
-		} catch (IOException e) {
-			result.put("status", "FAILED");
-			result.put("errorMessage","getServiceTypeById occur exception:"+e.getMessage());
-		}
-		return result;
+    public JSONObject getServiceTypeById(String customerId, String serviceType) {
+        JSONObject result = new JSONObject();
+        try {
+            logger.info("aai getServiceTypeById is starting!");
+            Response<AAIServiceSubscription> response =
+                    this.aaiService.getServiceTypeById(customerId, serviceType).execute();
+            logger.info("aai getServiceTypeById is finished!");
+            if (response.isSuccessful()) {
+                result.put("status", "SUCCESS");
+                result.put("result", response.body());
+            } else {
+                result.put("status", "FAILED");
+                result.put("errorMessage", String.format("Can not get getServiceTypeById[code=%s, message=%s]",
+                        response.code(), response.message()));
+            }
+        } catch (IOException e) {
+            result.put("status", "FAILED");
+            result.put("errorMessage", "getServiceTypeById occur exception:" + e.getMessage());
+        }
+        return result;
     }
         
         @Override
-	public List<String> fetchNIList(String networkInterfaceType) {
-		List<String> niList = new ArrayList<String>();
-		AAINetworkInterfaceResponse niResponse = null;
-		ObjectMapper mapper = new ObjectMapper();
-		Results[] interfaceList = null;
-		try {
-			logger.info("aai fetchNIList is starting!");
-			String body = "{\r\n" + "\"start\" : [\"network\"],\r\n" + "\"query\" : \"query/getInterfaceTypes?porttype="
-					+ networkInterfaceType + "\"\r\n" + "}";
-			logger.info("request body" + body + " for Interface type " + networkInterfaceType);
-			RequestBody request = RequestBody.create(MediaType.parse("application/json"), body);
-			Response<ResponseBody> response = this.aaiService.querynNetworkResourceList(request).execute();
-			if (response.isSuccessful()) {
-				String jsonResponse = response.body().string();
-				logger.info("response json returned" + jsonResponse);
-				try {
-					niResponse = mapper.readValue(jsonResponse, AAINetworkInterfaceResponse.class);
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-				if (niResponse != null) {
-					interfaceList = niResponse.getResults();
-				}
-				for (Results result : interfaceList) {
-					PInterface pInterface = result.getPinterface();
-					niList.add(pInterface.getInterfaceName()+" ("+pInterface.getPortDescription()+")");
-				}
-			} else {
-				logger.error("Request to AAI Fails dues to " + response.errorBody());
-				throw new IOException(response.errorBody().toString());
-			}
-		} catch (Exception e) {
-			niResponse = null;
-			logger.info("Request to AAI Fails dues to " + e);
-			logger.info("Mocking Response Data");
+    public List<String> fetchNIList(String networkInterfaceType) {
+        List<String> niList = new ArrayList<String>();
+        AAINetworkInterfaceResponse niResponse = null;
+        ObjectMapper mapper = new ObjectMapper();
+        Results[] interfaceList = null;
+        try {
+            logger.info("aai fetchNIList is starting!");
+            String body = "{\r\n" + "\"start\" : [\"network\"],\r\n" + "\"query\" : \"query/getInterfaceTypes?porttype="
+                    + networkInterfaceType + "\"\r\n" + "}";
+            logger.info("request body {} for Interface type {}" , body,networkInterfaceType);
+            RequestBody request = RequestBody.create(MediaType.parse("application/json"), body);
+            Response<ResponseBody> response = this.aaiService.querynNetworkResourceList(request).execute();
+            if (response.isSuccessful()) {
+                String jsonResponse = response.body().string();
+                logger.info("response json returned {}", jsonResponse);
+                try {
+                    niResponse = mapper.readValue(jsonResponse, AAINetworkInterfaceResponse.class);
+                } catch (IOException ex) {
+                    logger.info("read value exception", ex);
+                }
+                if (niResponse != null) {
+                    interfaceList = niResponse.getResults();
+                }
+                for (Results result : interfaceList) {
+                    PInterface pInterface = result.getPinterface();
+                    niList.add(pInterface.getInterfaceName() + " (" + pInterface.getPortDescription() + ")");
+                }
+            } else {
+                logger.error("Request to AAI Fails dues to {} " , response.errorBody());
+                throw new IOException(response.errorBody().toString());
+            }
+        } catch (Exception e) {
+            niResponse = null;
+            logger.info("Request to AAI Fails dues to " + e);
+            logger.info("Mocking Response Data");
 
-			String jsonMock = "{\r\n" + "    \"results\": [\r\n" + "        {\r\n"
-					+ "            \"p-interface\": {\r\n"
-					+ "                \"interface-name\": \"nodeId-11.11.11.12-ltpId-2\",\r\n"
-					+ "                \"speed-value\": \"100\",\r\n" + "                \"speed-units\": \"Gbps\",\r\n"
-					+ "                \"port-description\": \"\",\r\n"
-					+ "                \"interface-type\": \"XPONDER-NETWORK\",\r\n"
-					+ "                \"network-interface-type\": \"ENNI\",\r\n"
-					+ "                \"resource-version\": \"1572522050145\",\r\n"
-					+ "                \"in-maint\": true,\r\n"
-					+ "                \"network-ref\": \"otn-topology\",\r\n"
-					+ "                \"operational-status\": \"up\",\r\n"
-					+ "                \"relationship-list\": {\r\n" + "                    \"relationship\": [\r\n"
-					+ "                        {\r\n"
-					+ "                            \"related-to\": \"logical-link\",\r\n"
-					+ "                            \"relationship-label\": \"tosca.relationships.network.LinksTo\",\r\n"
-					+ "                            \"related-link\": \"/aai/v16/network/logical-links/logical-link/nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\",\r\n"
-					+ "                            \"relationship-data\": [\r\n"
-					+ "                                {\r\n"
-					+ "                                    \"relationship-key\": \"logical-link.link-name\",\r\n"
-					+ "                                    \"relationship-value\": \"nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\"\r\n"
-					+ "                                }\r\n" + "                            ]\r\n"
-					+ "                        }\r\n" + "                    ]\r\n" + "                }\r\n"
-					+ "           }\r\n" + "        },\r\n" + "        {\r\n" + "            \"p-interface\": {\r\n"
-					+ "                \"interface-name\": \"nodeId-12.12.12.12-ltpId-1\",\r\n"
-					+ "                \"speed-value\": \"100\",\r\n" + "                \"speed-units\": \"Gbps\",\r\n"
-					+ "                \"port-description\": \"\",\r\n"
-					+ "                \"interface-type\": \"XPONDER-NETWORK\",\r\n"
-					+ "                \"network-interface-type\": \"ENNI\",\r\n"
-					+ "                \"resource-version\": \"1572522469912\",\r\n"
-					+ "                \"in-maint\": true,\r\n"
-					+ "                \"network-ref\": \"tapi-topology\",\r\n"
-					+ "                \"operational-status\": \"up\",\r\n"
-					+ "                \"relationship-list\": {\r\n" + "                    \"relationship\": [\r\n"
-					+ "                        {\r\n"
-					+ "                            \"related-to\": \"logical-link\",\r\n"
-					+ "                            \"relationship-label\": \"tosca.relationships.network.LinksTo\",\r\n"
-					+ "                            \"related-link\": \"/aai/v16/network/logical-links/logical-link/nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\",\r\n"
-					+ "                            \"relationship-data\": [\r\n"
-					+ "                                {\r\n"
-					+ "                                    \"relationship-key\": \"logical-link.link-name\",\r\n"
-					+ "                                    \"relationship-value\": \"nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\"\r\n"
-					+ "                                }\r\n" + "                            ]\r\n"
-					+ "                        }\r\n" + "                    ]\r\n" + "                }\r\n"
-					+ "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}\r\n" + "";
+            String jsonMock = "{\r\n" + "    \"results\": [\r\n" + "        {\r\n"
+                    + "            \"p-interface\": {\r\n"
+                    + "                \"interface-name\": \"nodeId-11.11.11.12-ltpId-2\",\r\n"
+                    + "                \"speed-value\": \"100\",\r\n" + "                \"speed-units\": \"Gbps\",\r\n"
+                    + "                \"port-description\": \"\",\r\n"
+                    + "                \"interface-type\": \"XPONDER-NETWORK\",\r\n"
+                    + "                \"network-interface-type\": \"ENNI\",\r\n"
+                    + "                \"resource-version\": \"1572522050145\",\r\n"
+                    + "                \"in-maint\": true,\r\n"
+                    + "                \"network-ref\": \"otn-topology\",\r\n"
+                    + "                \"operational-status\": \"up\",\r\n"
+                    + "                \"relationship-list\": {\r\n" + "                    \"relationship\": [\r\n"
+                    + "                        {\r\n"
+                    + "                            \"related-to\": \"logical-link\",\r\n"
+                    + "                            \"relationship-label\": \"tosca.relationships.network.LinksTo\",\r\n"
+                    + "                            \"related-link\": \"/aai/v16/network/logical-links/logical-link/nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\",\r\n"
+                    + "                            \"relationship-data\": [\r\n"
+                    + "                                {\r\n"
+                    + "                                    \"relationship-key\": \"logical-link.link-name\",\r\n"
+                    + "                                    \"relationship-value\": \"nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\"\r\n"
+                    + "                                }\r\n" + "                            ]\r\n"
+                    + "                        }\r\n" + "                    ]\r\n" + "                }\r\n"
+                    + "           }\r\n" + "        },\r\n" + "        {\r\n" + "            \"p-interface\": {\r\n"
+                    + "                \"interface-name\": \"nodeId-12.12.12.12-ltpId-1\",\r\n"
+                    + "                \"speed-value\": \"100\",\r\n" + "                \"speed-units\": \"Gbps\",\r\n"
+                    + "                \"port-description\": \"\",\r\n"
+                    + "                \"interface-type\": \"XPONDER-NETWORK\",\r\n"
+                    + "                \"network-interface-type\": \"ENNI\",\r\n"
+                    + "                \"resource-version\": \"1572522469912\",\r\n"
+                    + "                \"in-maint\": true,\r\n"
+                    + "                \"network-ref\": \"tapi-topology\",\r\n"
+                    + "                \"operational-status\": \"up\",\r\n"
+                    + "                \"relationship-list\": {\r\n" + "                    \"relationship\": [\r\n"
+                    + "                        {\r\n"
+                    + "                            \"related-to\": \"logical-link\",\r\n"
+                    + "                            \"relationship-label\": \"tosca.relationships.network.LinksTo\",\r\n"
+                    + "                            \"related-link\": \"/aai/v16/network/logical-links/logical-link/nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\",\r\n"
+                    + "                            \"relationship-data\": [\r\n"
+                    + "                                {\r\n"
+                    + "                                    \"relationship-key\": \"logical-link.link-name\",\r\n"
+                    + "                                    \"relationship-value\": \"nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\"\r\n"
+                    + "                                }\r\n" + "                            ]\r\n"
+                    + "                        }\r\n" + "                    ]\r\n" + "                }\r\n"
+                    + "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}\r\n" + "";
 
-			try {
-				niResponse = mapper.readValue(jsonMock, AAINetworkInterfaceResponse.class);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+            try {
+                niResponse = mapper.readValue(jsonMock, AAINetworkInterfaceResponse.class);
+            } catch (IOException ex) {
+                logger.info("ReadValue exception", ex);
+            }
 
-			if (niResponse != null) {
-				interfaceList = niResponse.getResults();
-			}
-			for (Results result : interfaceList) {
-				PInterface pInterface = result.getPinterface();
-				niList.add(pInterface.getInterfaceName());
-			}
-		}
+            if (niResponse != null) {
+                interfaceList = niResponse.getResults();
+            }
+            for (Results result : interfaceList) {
+                PInterface pInterface = result.getPinterface();
+                niList.add(pInterface.getInterfaceName());
+            }
+        }
 
-		return niList;
-	}
+        return niList;
+    }
 
 }
