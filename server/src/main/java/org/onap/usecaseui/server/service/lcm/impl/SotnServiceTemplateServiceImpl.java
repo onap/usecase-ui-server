@@ -79,7 +79,6 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         try {
 
             Object object = parser.parse(new FileReader(jsonPath));
-            // System.out.println("mukesh"+object.toString());
             ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
             });
 
@@ -100,7 +99,6 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         try {
 
             Object object = parser.parse(new FileReader(jsonPath));
-            // System.out.println("mukesh"+object.toString());
             ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
             });
 
