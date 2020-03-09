@@ -101,7 +101,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService
                 .listService(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G).execute();
             if (response.isSuccessful()) {
@@ -131,7 +130,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing business instances query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in querySlicingBusiness response",e);
         }
 
         logger.info(resultMsg);
@@ -203,7 +202,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
         AAIServiceRsp aAIServiceRsp = new AAIServiceRsp();
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService.listServiceByStatus(
                 NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, processingStatus).execute();
             if (response.isSuccessful()) {
@@ -231,7 +229,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing business instances query based on status failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in querySlicingBusinessByStatus response",e);
         }
 
         logger.info(resultMsg);
@@ -252,7 +250,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService
                 .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId)
                 .execute();
@@ -275,7 +272,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing business details query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in querySlicingBusinessDetails response",e);
         }
 
         logger.info(resultMsg);
@@ -296,7 +293,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
 
         String resultMsg;
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService
                 .listServiceNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G).execute();
             if (response.isSuccessful()) {
@@ -321,7 +317,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing NSI service instances query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryNsiInstances response",e);
         }
 
         logger.info(resultMsg);
@@ -342,7 +338,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService.listServiceNSIByStatus(
                 NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, instanceStatus).execute();
             if (response.isSuccessful()) {
@@ -368,7 +363,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing NSI service instances based on status query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryNsiInstancesByStatus response",e);
         }
 
         logger.info(resultMsg);
@@ -390,7 +385,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, serviceInstanceId).execute();
             if (response.isSuccessful()) {
@@ -411,7 +405,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing business details query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryNsiDetails response",e);
         }
 
         logger.info(resultMsg);
@@ -430,7 +424,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         NsiRelatedNssiInfo nsiRelatedNssiInfo = new NsiRelatedNssiInfo();
         String resultMsg;
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService
                 .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId)
                 .execute();
@@ -453,7 +446,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "NSSI associated with NSI query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryNsiRelatedNssiInfo response",e);
         }
 
         logger.info(resultMsg);
@@ -473,7 +466,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
         AAIServiceRsp aAIServiceRsp = new AAIServiceRsp();
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService
                 .listServiceNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G).execute();
             if (response.isSuccessful()) {
@@ -499,7 +491,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing NSSI service instances query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryNssiInstances response",e);
         }
 
         logger.info(resultMsg);
@@ -519,7 +511,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
         AAIServiceRsp aAIServiceRsp = new AAIServiceRsp();
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService.listServiceNSSIByStatus(
                 NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, instanceStatus).execute();
             if (response.isSuccessful()) {
@@ -546,7 +537,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing NSSI service instances based on status query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryNssiInstancesByStatus response",e);
         }
 
         logger.info(resultMsg);
@@ -567,7 +558,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
         AAIServiceRsp aAIServiceRsp = new AAIServiceRsp();
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService.listServiceNSSIByEnv(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, environmentContext).execute();
             if (response.isSuccessful()) {
@@ -593,7 +583,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing NSSI service instances based on environment query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryNssiInstancesByEnvironment response",e);
         }
 
         logger.info(resultMsg);
@@ -614,7 +604,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService
                 .queryNSIByNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId).execute();
             if (response.isSuccessful()) {
@@ -634,7 +623,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing service nssi details query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryNssiDetails response",e);
         }
 
         logger.info(resultMsg);
@@ -653,7 +642,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            // TODO
             SubscriberInfo subscriberInfo = resourceMgtServiceConvert.buildSubscriberInfo(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G);
             String jsonstr = JSON.toJSONString(subscriberInfo);
@@ -683,7 +671,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing service activation failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in activateSlicingService response",e);
         }
 
         logger.info(resultMsg);
@@ -702,7 +690,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            // TODO
             SubscriberInfo subscriberInfo = resourceMgtServiceConvert.buildSubscriberInfo(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G);
             String jsonstr = JSON.toJSONString(subscriberInfo);
@@ -732,7 +719,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing service deactivation failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in deactivateSlicingService response",e);
         }
 
         logger.info(resultMsg);
@@ -751,7 +738,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            // TODO
             SubscriberInfo subscriberInfo = resourceMgtServiceConvert.buildSubscriberInfo(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G);
             String jsonstr = JSON.toJSONString(subscriberInfo);
@@ -781,7 +767,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing service termination failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in terminateSlicingService response",e);
         }
 
         logger.info(resultMsg);
@@ -800,7 +786,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg = "";
 
         try {
-            // TODO
             ServiceInstanceOperations serviceInstanceOperations = serviceLcmService
                 .getServiceInstanceOperationById(serviceId);
             if (serviceInstanceOperations != null) {
@@ -852,7 +837,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         } catch (Exception e) {
             resultMsg = "5G slicing service operation progress query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in queryOperationProgress response",e);
         }
 
         logger.info(resultMsg);
