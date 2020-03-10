@@ -46,6 +46,7 @@ public class SiteResourceTest {
         sr.getRole();
         sr.getSelflink();
         sr.getType();
+        sr.toString();
     }
 
     @Test

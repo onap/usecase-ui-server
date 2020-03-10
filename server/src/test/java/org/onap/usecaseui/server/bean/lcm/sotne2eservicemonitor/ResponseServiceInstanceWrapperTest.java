@@ -36,6 +36,7 @@ public class ResponseServiceInstanceWrapperTest {
     public void testGetServiceTemplateInput() throws Exception {
         ResponseServiceInstanceWrapper rsi = new ResponseServiceInstanceWrapper();
         rsi.getServiceInstanceListList();
+        rsi.toString();
     }
     @Test
     public void testSetServiceTemplateInput() throws Exception {

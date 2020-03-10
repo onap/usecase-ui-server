@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.bean.customer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.activateEdge.ServiceInstance;
 
 import static org.mockito.Matchers.anyObject;
 
@@ -34,28 +33,25 @@ public class ServiceInstanceTest {
 
     @Test
     public void testGetServiceInstance() throws Exception {
-        org.onap.usecaseui.server.bean.activateEdge.ServiceInstance si = new org.onap.usecaseui.server.bean.activateEdge.ServiceInstance();
+        ServiceInstance si = new ServiceInstance();
         si.getRelationshipList();
-        si.getInputparameters();
         si.getServiceInstanceName();
         si.getServiceInstanceId();
         si.getAdditionalProperties();
-        si.getOrchestrationstatus();
         si.getResourceVersion();
         si.getSelflink();
         si.getServiceRole();
         si.getServiceType();
+        si.toString();
     }
 
     @Test
     public void testSetServiceInstance() throws Exception {
-        org.onap.usecaseui.server.bean.activateEdge.ServiceInstance si = new ServiceInstance();
+        ServiceInstance si = new ServiceInstance();
         si.setRelationshipList(null);
-        si.setInputparameters("");
         si.setServiceInstanceName("");
         si.setServiceInstanceId("");
         si.setAdditionalProperty("", anyObject());
-        si.setOrchestrationstatus("");
         si.setResourceVersion("");
         si.setSelflink("");
         si.setServiceRole("");

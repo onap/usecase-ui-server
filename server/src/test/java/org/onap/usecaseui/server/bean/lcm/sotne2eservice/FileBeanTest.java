@@ -32,6 +32,7 @@ public class FileBeanTest {
     public void  testGetFileBean() throws Exception{
         FileBean fb = new FileBean();
         fb.getFileName();
+        fb.toString();
     }
     @Test
     public void  testSetFileBean() throws Exception{

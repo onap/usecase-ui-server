@@ -48,6 +48,7 @@ public class ComplexObjTest {
         co.getRelationshipList();
         co.getResourceVersion();
         co.getStreet1();
+        co.toString();
     }
 
     @Test

@@ -32,6 +32,7 @@ public class ServiceInstancesTest {
     public void testGetServiceInstances() throws Exception {
         ServiceInstances si = new ServiceInstances();
         si.getServiceInstances();
+        si.toString();
     }
 
     @Test

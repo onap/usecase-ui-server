@@ -40,6 +40,7 @@ public class VpnInformationTest {
         vpn.getVpnName();
         vpn.getVpnThreshold();
         vpn.getVpnType();
+        vpn.toString();
     }
 
     @Test

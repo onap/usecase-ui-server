@@ -34,6 +34,7 @@ public class FileWrapperTest {
     public void  testGetFileWrapper() throws Exception{
         FileWrapper fw = new  FileWrapper();
         fw.getFile();
+        fw.toString();
     }
     @Test
     public void  testSetFileWrapper() throws Exception{

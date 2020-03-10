@@ -37,6 +37,7 @@ public class RelationshipDatumTest {
         rd.getAdditionalProperties();
         rd.getRelationshipKey();
         rd.getRelationshipValue();
+        rd.toString();
     }
 
     @Test

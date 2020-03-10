@@ -40,6 +40,7 @@ public class ServiceEstimationTest {
         seb.getVpnCost();
         seb.getVpnInformations();
         seb.getWlanAccess();
+        seb.toString();
     }
 
     @Test
