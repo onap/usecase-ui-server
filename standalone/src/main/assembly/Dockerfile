@@ -49,4 +49,7 @@ RUN mkdir /home/uui
 WORKDIR /home/uui
 ADD usecase-ui-server-*-linux64.tar.gz /home/uui/
 
+RUN bash /home/uui/bin/docker-env-config.sh
+USER postgres
+WORKDIR /home/uui
 ENTRYPOINT /home/uui/bin/run.sh

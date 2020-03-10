@@ -24,7 +24,6 @@ sleep 10
 
 echo "usecase-ui database init script start..."
 dbScript="$main_path/resources/bin/initDB.sh"
-chmod 755 $dbScript
 source $dbScript 127.0.0.1 5432 postgres uui
 echo "usecase-ui database init script finished normally..."
 
