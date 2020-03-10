@@ -90,7 +90,7 @@ public class ResourceMgtServiceConvert {
     void convertSlicingBusinessList(SlicingBusinessList slicingBusinessList, AAIServiceRsp aAIServiceRsp, int pageNo,
         int pageSize)
         throws InvocationTargetException, IllegalAccessException, IOException {
-        if (aAIServiceRsp.getaAIService() == null || aAIServiceRsp.getaAIService().size() == 0) {
+        if (aAIServiceRsp.getaAIService() == null || aAIServiceRsp.getaAIService().isEmpty()) {
             logger.error("convertSlicingBusinessList：aAIServiceRsp.getaAIService() is null or size is 0");
             return;
         }
@@ -124,7 +124,6 @@ public class ResourceMgtServiceConvert {
 
     void getNsiInfoByBusiness(NsiInfo nsiInfo, String nsiId) {
         try {
-            // TODO
             AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
             Response<JSONObject> response = this.aaiSliceService
                 .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId)
@@ -154,7 +153,6 @@ public class ResourceMgtServiceConvert {
         String modelInvariantId;
         String modelVersionId;
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, nsiId).execute();
             if (response.isSuccessful()) {
@@ -171,12 +169,11 @@ public class ResourceMgtServiceConvert {
                 return;
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Exception in getNstInfoByBusiness response",e);
             return;
         }
 
         try {
-            // TODO
             Response<AAIServiceNST> nstResponse = this.aaiSliceService.queryServiceNST(modelInvariantId, modelVersionId)
                 .execute();
             if (nstResponse.isSuccessful()) {
@@ -190,7 +187,7 @@ public class ResourceMgtServiceConvert {
                 return;
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Exception in getNstInfoByBusiness nstResponse",e);
             return;
         }
     }
@@ -199,7 +196,6 @@ public class ResourceMgtServiceConvert {
         throws IOException {
         List<AAIServiceAndInstance> aaiServiceAndInstanceList = new ArrayList<>();
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService.queryAllottedResources(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, businessId).execute();
             if (response.isSuccessful()) {
@@ -226,7 +222,7 @@ public class ResourceMgtServiceConvert {
                 return "";
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Exception in getNsiIdByBusiness response",e);
             return "";
         }
         return "";
@@ -242,7 +238,6 @@ public class ResourceMgtServiceConvert {
 
         AAIServiceProfiles aaiServiceProfiles = new AAIServiceProfiles();
         try {
-            // TODO
             Response<JSONObject> response = this.aaiSliceService.getServiceProfiles(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, businessId).execute();
 
@@ -263,7 +258,8 @@ public class ResourceMgtServiceConvert {
                 }
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Exception in convertBusinessProfileDetails response",e);
+            
         }
 
         String useInterval = generalConvert.getUseInterval(businessId);
@@ -324,7 +320,6 @@ public class ResourceMgtServiceConvert {
         for (String nssiId : nssiIdList) {
             i++;
             try {
-                // TODO
                 AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
                 Response<JSONObject> response = this.aaiSliceService
                     .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId)
@@ -346,7 +341,8 @@ public class ResourceMgtServiceConvert {
                             response.message()));
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                logger.error("Exception in getIncludedNssiInfoList response",e);
+                
             }
         }
     }
@@ -355,7 +351,6 @@ public class ResourceMgtServiceConvert {
         throws IOException, InvocationTargetException, IllegalAccessException {
         for (String businessId : businessIdList) {
             try {
-                // TODO
                 // 添加给slicingTaskCreationProgress赋值的代码
                 AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
                 Response<JSONObject> response = this.aaiSliceService
@@ -377,7 +372,7 @@ public class ResourceMgtServiceConvert {
                             response.message()));
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                logger.error("Exception in getHostedBusinessInfoList response",e);
             }
         }
     }
@@ -445,7 +440,7 @@ public class ResourceMgtServiceConvert {
         AAIServiceRsp aAIServiceRsp,
         int pageNo, int pageSize)
         throws InvocationTargetException, IllegalAccessException {
-        if (aAIServiceRsp.getaAIService() == null || aAIServiceRsp.getaAIService().size() == 0) {
+        if (aAIServiceRsp.getaAIService() == null || aAIServiceRsp.getaAIService().isEmpty()) {
             logger.error("convertNssiServiceInstanceList: aAIServiceRsp.getaAIService() is null or size is 0");
             return;
         }
@@ -473,7 +468,6 @@ public class ResourceMgtServiceConvert {
         List<HostedNsiInfo> hostedNsiInfoList = new ArrayList<>();
         for (String nsiId : nsiIdList) {
             try {
-                // TODO
                 Response<JSONObject> response = this.aaiSliceService.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
                     NsmfParamConstant.SERVICE_TYPE_5G, nsiId).execute();
                 if (response.isSuccessful()) {
@@ -492,7 +486,7 @@ public class ResourceMgtServiceConvert {
                         response.message()));
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                logger.error("Exception in convertNssiDetails response",e);
             }
         }
 
@@ -562,7 +556,7 @@ public class ResourceMgtServiceConvert {
 
     public List<AAIServiceAndInstance> queryAllottedResourceUtil(JSONObject objectResource) {
         JSONArray arrayResource = objectResource.getJSONArray("allotted-resource");
-        if (arrayResource == null || arrayResource.size() == 0) {
+        if (arrayResource == null || arrayResource.isEmpty()) {
             logger.error("arrayResource is null or size is 0");
             return null;
         }
