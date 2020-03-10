@@ -34,7 +34,6 @@ public class E2EParametersTest {
         e2epr.getAdditionalProperties();
         e2epr.getRequestInputs();
         e2epr.getResources();
-
     }
     @Test
     public void  testSetE2EParameters() throws Exception{

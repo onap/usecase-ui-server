@@ -38,6 +38,7 @@ public class NodeTest {
         node.getImage();
         node.getLabel();
         node.getShape();
+        node.toString();
     }
 
     @Test

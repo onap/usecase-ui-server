@@ -46,6 +46,7 @@ public class SiteTest {
         site.getSubnet();
         site.getType();
         site.getZipCode();
+        site.toString();
     }
 
     @Test

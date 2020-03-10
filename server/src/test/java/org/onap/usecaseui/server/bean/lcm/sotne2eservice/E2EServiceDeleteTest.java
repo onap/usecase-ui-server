@@ -36,6 +36,7 @@ public class E2EServiceDeleteTest {
         e2esd.getAdditionalProperties();
         e2esd.getGlobalSubscriberId();
         e2esd.getServiceType();
+        e2esd.toString();
     }
     @Test
     public void  testSetE2EServiceDelete() throws Exception{

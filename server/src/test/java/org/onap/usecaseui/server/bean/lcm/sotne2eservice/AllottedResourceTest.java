@@ -47,6 +47,7 @@ public class AllottedResourceTest {
         ar.getRelationshipList();
         ar.getResourceVersion();
         ar.getSelflink();
+        ar.getVpnName();
     }
     @Test
     public void testSetAllocattedResource() {
@@ -66,5 +67,6 @@ public class AllottedResourceTest {
         ar.setRelationshipList(null);
         ar.setResourceVersion("");
         ar.setSelflink("");
+        ar.setVpnName("");
     }
 }

@@ -32,6 +32,7 @@ public class ServiceInstanceListTest {
     public void testGetServiceTemplateInput() throws Exception {
         ServiceInstanceList sil = new ServiceInstanceList();
         sil.getServiceInstance();
+        sil.toString();
     }
     @Test
     public void testGetServiceInstancename() throws Exception {

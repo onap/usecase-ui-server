@@ -41,6 +41,7 @@ public class RelationshipListTest {
         RelationshipList rl = new RelationshipList();
         rl.getRelationship();
         rl.getAdditionalProperties();
+        rl.toString();
     }
 
     @Test
