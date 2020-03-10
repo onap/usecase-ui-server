@@ -55,6 +55,7 @@ public class ConnectivityTest {
         c.getModelCustomizationId();
         c.getModelInvariantId();
         c.getModelVersionId();
+        c.toString();
 
     }
     @Test

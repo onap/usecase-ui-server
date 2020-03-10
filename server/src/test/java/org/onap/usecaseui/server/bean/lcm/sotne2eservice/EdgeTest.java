@@ -32,6 +32,7 @@ public class EdgeTest {
         Edge edge = new Edge();
         edge.getFrom();
         edge.getTo();
+        edge.toString();
     }
     @Test
     public void  testSetEdge() throws Exception{

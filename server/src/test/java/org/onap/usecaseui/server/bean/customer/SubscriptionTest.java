@@ -34,6 +34,7 @@ public class SubscriptionTest {
         sc.getAccountId();
         sc.getResourceVersion();
         sc.getServiceType();
+        sc.toString();
     }
 
     @Test

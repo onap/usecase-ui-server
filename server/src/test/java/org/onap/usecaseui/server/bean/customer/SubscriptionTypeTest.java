@@ -33,6 +33,7 @@ public class SubscriptionTypeTest {
     public void testGetSubscriptionType() throws Exception {
         SubscriptionType st = new SubscriptionType();
         st.getSubscriptions();
+        st.toString();
     }
 
     @Test

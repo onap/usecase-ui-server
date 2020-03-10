@@ -35,6 +35,7 @@ public class ResourceResponseTest {
         ResourceResponse rr = new ResourceResponse();
         rr.getEdges();
         rr.getNodes();
+        rr.toString();
     }
 
     @Test
