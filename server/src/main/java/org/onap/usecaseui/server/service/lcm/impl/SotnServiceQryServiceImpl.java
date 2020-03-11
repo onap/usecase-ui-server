@@ -102,7 +102,9 @@ public class SotnServiceQryServiceImpl implements SotnServiceQryService {
 
     public ModelConfig readFile() {
         JSONParser parser = new JSONParser();
-        String jsonPath = "/home/root1/Desktop/modelconfig.json";
+        //String jsonPath = "/home/root1/Desktop/modelconfig.json";
+        //String absolutepath = "/home/root1/Desktop/Subhosree/gerrit clone for ui backend";//configure absolute path as per systempath
+        String jsonPath = "/home/modelconfig.json";
         String jsonString = null;
         ObjectMapper mapper = new ObjectMapper();
 

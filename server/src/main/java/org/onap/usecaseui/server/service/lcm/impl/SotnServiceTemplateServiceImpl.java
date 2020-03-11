@@ -71,6 +71,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 
         public ModelConfig readFile() {
         JSONParser parser = new JSONParser();
+        //String jsonPath = "/home/modelconfig.json";
         String jsonPath = "/home/modelconfig.json";
         String jsonPath_2 = "";
         String jsonString = null;
