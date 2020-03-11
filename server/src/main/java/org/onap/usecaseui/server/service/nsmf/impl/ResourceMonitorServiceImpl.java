@@ -84,7 +84,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
             String strKpiHours = p.getProperty("slicing.kpi.hours");
             this.kpiHours = Integer.parseInt(strKpiHours);
         } catch (IOException e1) {
-            logger.error("get configuration file arise error :{}", e1.getMessage());
+            logger.error("get configuration file arise error :{}", e1);
         }
     }
 
@@ -99,7 +99,6 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
         String resultMsg = "";
 
         try {
-            // TODO
             for (ServiceInfo serviceInfo : serviceInfoList) {
                 String newTimestamp = NsmfCommonUtil.time2Timestamp(queryTimestamp)
                     .replace(NsmfParamConstant.SPACE, "T");
@@ -129,7 +128,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
         } catch (Exception e) {
             resultMsg = "5G slicing usage traffic query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in querySlicingUsageTraffic :{}",e);
         }
         usageTrafficList.setUsageTrafficInfoList(usageTrafficInfoList);
         logger.info(resultMsg);
@@ -151,7 +150,6 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
         String resultMsg = "";
 
         try {
-            // TODO
             for (ServiceInfo serviceInfo : serviceInfoList) {
                 String newTimestamp = NsmfCommonUtil.time2Timestamp(queryTimestamp)
                     .replace(NsmfParamConstant.SPACE, "T");
@@ -182,7 +180,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
         } catch (Exception e) {
             resultMsg = "5G slicing online users query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in querySlicingOnlineUserNumber :{}",e);
         }
 
         logger.info(resultMsg);
@@ -237,7 +235,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
         } catch (Exception e) {
             resultMsg = "5G slicing total bandwidth query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            logger.error("Exception in querySlicingTotalBandwidth :{}",e);
         }
 
         logger.info(resultMsg);

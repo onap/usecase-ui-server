@@ -16,13 +16,9 @@
 package org.onap.usecaseui.server.service.slicingdomain;
 
 
-import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
-
-import com.alibaba.fastjson.JSONObject;
-
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
+import com.alibaba.fastjson.JSONObject;
 
 public interface SlicServiceInstanceService {
 	

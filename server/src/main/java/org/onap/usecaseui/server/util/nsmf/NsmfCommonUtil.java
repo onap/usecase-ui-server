@@ -37,14 +37,14 @@ public class NsmfCommonUtil {
 
     public static String time2Timestamp(String time) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(NsmfParamConstant.DATE_FORMAT);
-        long longTime = new Long(time);
+        long longTime = Long.parseLong(time);
         Date date = new Date(longTime);
         return simpleDateFormat.format(date);
     }
 
     public static <T> PagedResult getPagedList(List<T> list, int pageNo, int pageSize) {
         if (list == null || pageNo < 1 || (pageNo - 1) * pageSize > list.size()) {
-            return new PagedResult(0, Collections.EMPTY_LIST);
+            return new PagedResult(0, Collections.emptyList());
         }
         list = list.stream().skip((pageNo - 1) * (long)pageSize).limit(pageSize).collect(Collectors.toList());
         return new PagedResult(list.size(), list );
