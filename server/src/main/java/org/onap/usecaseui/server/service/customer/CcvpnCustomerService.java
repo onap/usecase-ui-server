@@ -15,15 +15,11 @@
  */
 package org.onap.usecaseui.server.service.customer;
 
-import org.onap.usecaseui.server.bean.customer.ServiceInstance;
 import org.onap.usecaseui.server.bean.customer.ServiceInstances;
-
-import java.util.List;
 
 public interface CcvpnCustomerService {
 
     public ServiceInstances getServiceInstances(String customerId, String serviceType);
-    //public String getServiceInformation(String serviceInstanceId) throws Exception;
     public String querySubscriptionType(String customerId);
 }
 

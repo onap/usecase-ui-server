@@ -22,10 +22,11 @@ import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -43,18 +44,16 @@ public class SlicingController {
     }
 
     @ResponseBody
-    @RequestMapping(
+    @PostMapping(
         value = {"/5gSlicing"},
-        method = RequestMethod.POST,
         produces = "application/json")
     public ServiceResult createSlicingService(@RequestBody SlicingOrder slicingOrder) {
         return slicingService.createSlicingService(slicingOrder);
     }
 
     @ResponseBody
-    @RequestMapping(
+    @GetMapping(
         value = {"/5gSlicing/orders/status/{status}/pageNo/{pageNo}/pageSize/{pageSize}"},
-        method = RequestMethod.GET,
         produces = "application/json")
     public ServiceResult querySlicingServiceOrder(
         @PathVariable(value="status") String status,
