@@ -107,7 +107,7 @@ public interface AAISliceService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
 	})
-	@GET("/api/aai-business/v16/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/service-profiles")
+	@GET("/api/aai-business/v19/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/service-profiles")
 	Call<JSONObject> getServiceProfiles(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
 
 	@Headers({
