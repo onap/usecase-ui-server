@@ -17,6 +17,8 @@ package org.onap.usecaseui.server.service.nsmf.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -73,16 +75,17 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
 
     public ResourceMonitorServiceImpl(KpiSliceService kpiSliceService) {
         this.kpiSliceService = kpiSliceService;
-        initConfig();
     }
 
     public void initConfig() {
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("slicing.properties");
+        String slicingPath = System.getProperty("user.dir") + File.separator + "config" + File.separator + "slicing.properties";
         Properties p = new Properties();
         try {
+            InputStream inputStream = new FileInputStream(new File(slicingPath));
             p.load(inputStream);
             String strKpiHours = p.getProperty("slicing.kpi.hours");
             this.kpiHours = Integer.parseInt(strKpiHours);
+            logger.info("kpiHours configuration is :{}", this.kpiHours);
         } catch (IOException e1) {
             logger.error("get configuration file arise error :{}", e1);
         }
@@ -92,7 +95,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
     public ServiceResult querySlicingUsageTraffic(String queryTimestamp, ServiceList serviceList) {
         ServiceResult serviceResult = new ServiceResult();
         ResultHeader resultHeader = new ResultHeader();
-
+        initConfig();
         UsageTrafficList usageTrafficList = new UsageTrafficList();
         List<UsageTrafficInfo> usageTrafficInfoList = new ArrayList<>();
         List<ServiceInfo> serviceInfoList = serviceList.getServiceInfoList();
@@ -143,6 +146,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
     public ServiceResult querySlicingOnlineUserNumber(String queryTimestamp, ServiceList serviceList) {
         ServiceResult serviceResult = new ServiceResult();
         ResultHeader resultHeader = new ResultHeader();
+        initConfig();
         ServiceOnlineUserList serviceOnlineUserList = new ServiceOnlineUserList();
         List<ServiceOnlineUserInfo> serviceOnlineUserInfoList = new ArrayList<>();
         List<ServiceInfo> serviceInfoList = serviceList.getServiceInfoList();
@@ -196,6 +200,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
     public ServiceResult querySlicingTotalBandwidth(String queryTimestamp, ServiceList serviceList) {
         ServiceResult serviceResult = new ServiceResult();
         ResultHeader resultHeader = new ResultHeader();
+        initConfig();
         ServiceTotalBandwidthList serviceTotalBandwidthList = new ServiceTotalBandwidthList();
 
         List<ServiceTotalBandwidthInfo> serviceTotalBandwidthInfoList = new ArrayList<>();
