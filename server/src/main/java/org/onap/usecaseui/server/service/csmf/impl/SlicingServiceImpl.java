@@ -20,6 +20,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -120,11 +122,16 @@ public class SlicingServiceImpl implements SlicingService {
             CreationService creationService = new CreationService();
             creationService.setName(slicingOrder.getSlicing_order_info().getName());
             creationService.setDescription(CommonConstant.BLANK);
-            InputStream  inputStream = this.getClass().getClassLoader().getResourceAsStream("slicing.properties");
+            String slicingPath = System.getProperty("user.dir") + File.separator + "config" + File.separator + "slicing.properties";
+            InputStream inputStream = new FileInputStream(new File(slicingPath));
             Properties environment = new Properties();
             environment.load(inputStream);
-            creationService.setServiceInvariantUuid(environment.getProperty("slicing.serviceInvariantUuid"));
-            creationService.setServiceUuid(environment.getProperty("slicing.serviceUuid"));
+            String serviceInvariantUuid = environment.getProperty("slicing.serviceInvariantUuid");
+            creationService.setServiceInvariantUuid(serviceInvariantUuid);
+            String serviceUuid = environment.getProperty("slicing.serviceUuid");
+            creationService.setServiceUuid(serviceUuid);
+            logger.info("serviceInvariantUuid is {}, serviceUuid is {}.", serviceInvariantUuid, serviceUuid);
+
             creationService.setGlobalSubscriberId(environment.getProperty("slicing.globalSubscriberId"));
             creationService.setServiceType(environment.getProperty("slicing.serviceType"));
             creationService.setParameters(parameters);
