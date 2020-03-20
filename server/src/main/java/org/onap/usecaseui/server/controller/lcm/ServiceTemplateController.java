@@ -15,10 +15,11 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import java.util.List;
+import javax.annotation.Resource;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
-import org.onap.usecaseui.server.bean.lcm.TemplateInput;
-import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
+import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
@@ -26,11 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.ArrayList;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @org.springframework.context.annotation.Configuration
@@ -50,26 +50,26 @@ public class ServiceTemplateController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/service-templates"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/service-templates"} , produces = "application/json")
     public List<SDCServiceTemplate> getServiceTemplates(){
         return serviceTemplateService.listDistributedServiceTemplate();
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/service-templates/{uuid}"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/service-templates/{uuid}"}, produces = "application/json")
     public ServiceTemplateInput getServiceTemplateInput(@PathVariable("uuid") String uuid, @RequestParam("toscaModelPath") String toscaModelPath){
 	ServiceTemplateInput serviceTemplateInput = serviceTemplateService.fetchServiceTemplateInput(uuid, "/api"+toscaModelPath);
         return serviceTemplateInput;
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/locations/"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/locations/"}, produces = "application/json")
     public List<VimInfo> getLocations(){
         return serviceTemplateService.listVim();
     }
 
      @ResponseBody
-         @RequestMapping(value = {"/uui-lcm/getAllNI/{networkId}"}, method = RequestMethod.GET , produces = "application/json")
+         @GetMapping(value = {"/uui-lcm/getAllNI/{networkId}"}, produces = "application/json")
 	     public List<String> getAllNetworkInterface(@PathVariable("networkId") String networkId){
 		         	List<String> nIList = customerService.fetchNIList(networkId);
 				    	
@@ -77,7 +77,7 @@ public class ServiceTemplateController {
 	}
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/sdnc-controllers/"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/sdnc-controllers/"}, produces = "application/json")
     public List<SDNCController> getSDNCControllers(){
         return serviceTemplateService.listSDNCControllers();
     }
