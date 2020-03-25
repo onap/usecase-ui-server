@@ -26,7 +26,7 @@ public class RelationshipData {
 
 	private String relationshipKey;
 
-	@JsonProperty("relationship-key")
+	@JsonProperty("relationship-value")
 	public String getRelationshipValue() {
 		return relationshipValue;
 	}
@@ -35,7 +35,7 @@ public class RelationshipData {
 		this.relationshipValue = relationshipValue;
 	}
 
-	@JsonProperty("relationship-value")
+	@JsonProperty("relationship-key")
 	public String getRelationshipKey() {
 		return relationshipKey;
 	}

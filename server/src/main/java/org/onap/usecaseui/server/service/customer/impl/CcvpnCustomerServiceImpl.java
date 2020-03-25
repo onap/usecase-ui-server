@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -98,12 +99,12 @@ public class CcvpnCustomerServiceImpl implements CcvpnCustomerService {
     }
 
 
-    public String querySubscriptionType(String customerId) {
+    public String querySubscriptionType() {
         SubscriptionType subscriptions = new SubscriptionType();
         String result = "";
         ModelConfig modelConfig = readFile();
         Map<String, Model> modelInfo = readConfigToMap(modelConfig);
-        customerId = modelConfig.getSubscriberId();
+        String customerId = modelConfig.getSubscriberId();
         ObjectMapper mapper = new ObjectMapper();
         try {
             logger.info("aai querySubscriptionType is starting!");
@@ -140,24 +141,17 @@ public class CcvpnCustomerServiceImpl implements CcvpnCustomerService {
 
     public ModelConfig readFile() {
         JSONParser parser = new JSONParser();
-        //String absolutepath = "/home/root1/Desktop/Subhosree/gerrit clone for ui backend";//configure absolute path as per systempath
-        String jsonPath = "/home/modelconfig.json";
-        String jsonString = null;
+        ClassLoader classLoader = new CcvpnCustomerServiceImpl().getClass().getClassLoader();
+        File file = new File(classLoader.getResource("modelconfig.json").getFile());
         ObjectMapper mapper = new ObjectMapper();
-
         try {
-
-            Object object = parser.parse(new FileReader(jsonPath));
-            //System.out.println(object.toString());
+            Object object = parser.parse(new FileReader(file));
             ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
             });
-
             return modelInformation;
         } catch (ParseException | IOException ex) {
             logger.error("Exception occured while reading configuration file:" + ex);
             return null;
         }
     }
-
-
 }

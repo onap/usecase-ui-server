@@ -25,7 +25,9 @@ public interface SotnServiceTemplateService {
 
     public String getSOTNSiteInformationTopology(String subscriptionType, String instanceid);
     public ServiceOperation instantiate_CCVPN_Service(HashMap<String, Object> reqt);
-    //public DeleteOperationRsp deleteService(String serviceId, String subscriptionType, HttpServletRequest request);
+    public DeleteOperationRsp deleteService(String serviceId, String subscriptionType) throws Exception;
     public String getSOTNResourceInformationTopology(String subscriptionType, String instanceid) throws Exception;
     public String getService(String subscriptionType, String instanceid);
+    public String getServiceInformationTopology(String subscriptionType, String instanceid) throws Exception;
+    public String getVPNBindingInformationTopology(String subscriptionType, String instanceid, String vpnId) throws Exception;
 }

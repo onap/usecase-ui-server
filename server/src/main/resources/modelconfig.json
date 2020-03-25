@@ -1,0 +1,66 @@
+{
+	"subscriberId":"ISAAC",
+	"subscriptionType":"SOTN",
+	"status":1,
+	"modelInformation":[
+			{
+				"modelType":"sotnservice",
+				"model": {
+					"resourceName":"sotn",
+					"resourceDescription":"sotn service",
+					"resourceInvariantUuid":"b36a7816-d4bf-4355-a3f1-20825ee7fce7",
+					"resourceUuid":"68db4561-8d85-4e7e-9653-7263118cb3ef",
+					"resourceCustomizationUuid":""
+					}
+			},
+{
+				"modelType":"siteservice",
+				"model": {
+					"resourceName":"siteservice",
+					"resourceDescription":"sotn service",
+					"resourceInvariantUuid":"5448e42c-a22a-4bbd-bd24-387db52d3e58",
+					"resourceUuid":"0bf85631-6d70-471c-b97c-b5cc05056034",
+					"resourceCustomizationUuid":""
+					}
+			},
+			{
+				"modelType":"site",
+				"model": {
+					"resourceName":"SiteVF",
+					"resourceDescription":"site 0",
+					"resourceInvariantUuid":"66b96cb7-541d-4340-9bd6-8a5e37f1d5f1",
+					"resourceUuid":"60504c1f-8c3a-42c3-b071-1f1750688f3a",
+					"resourceCustomizationUuid":"c0f4205b-3101-41cf-90b3-aae6d97b3576"
+					}
+			},
+			{
+				"modelType":"connectivity",
+				"model": {
+					"resourceName":"sotnconnectivityv2 0",
+					"resourceDescription":"sotnconnectivityv2 0",
+					"resourceInvariantUuid":"fea25ffc-f87c-418d-a33b-6ddfbf1d014d",
+					"resourceUuid":"d5dad832-e337-4b33-8faa-6d3dfb41c7fb",
+					"resourceCustomizationUuid":"67053d18-4350-48e9-9c11-2785605fb3bb"
+					}
+			},
+			{
+				"modelType":"partner",
+				"model": {
+					"resourceName":"SPpartnerVF",
+					"resourceDescription":"spPartnerv2 0",
+					"resourceInvariantUuid":"0b0f5ceb-4235-4422-8be1-2ea48ddcd283",
+					"resourceUuid":"180fcfa0-4eda-4038-916b-1c69b1723395",
+					"resourceCustomizationUuid":"f6d84644-ce0d-4445-a52c-28361f73439f"
+					}
+			},
+			{
+				"modelType":"attachment",
+				"model": {
+					"resourceName":"elinesotnattachmentvf0",
+					"resourceDescription":"spPartnerv2 0",
+					"resourceInvariantUuid":"4aa1e3ee-8318-4214-b2e8-29e7bc7528ce",
+					"resourceUuid":"2ca95a2b-b034-4e7e-97b5-636c21681652",
+					"resourceCustomizationUuid":"7f35f47b-3f60-41db-ab44-9ff89917d247"
+					}
+			}]	
+}

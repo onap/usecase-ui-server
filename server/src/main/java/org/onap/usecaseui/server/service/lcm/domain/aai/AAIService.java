@@ -438,4 +438,23 @@ public interface AAIService {
     @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions")
     Call<ResponseBody> getServiceSubscription(@Path("global-customer-id") String customerID);
 
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+
+    @GET("/aai/v19/network/generic-vnfs/generic-vnf/{vnf-id}")
+    Call<ResponseBody> getVNFsDetail(@Path("vnf-id") String vnfId);
+
+    @Headers({
+            "X-TransactionId: 7777",
+            "X-FromAppId: uui",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+
+    @GET("/aai/v19/network/unis/uni/{uni-id}")
+    Call<ResponseBody> getUNIInfo(@Path("uni-id") String uniId);
 }

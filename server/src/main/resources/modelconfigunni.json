@@ -1,0 +1,41 @@
+{
+	"subscriberId":"ISAAC_1",
+	"subscriptionType":"SOTN",
+	"serviceInvariantUuid":"5c13f3fb-2744-4635-9f1f-c59c92dc8f70",
+	"serviceUuid":"3a76b1f5-fb0d-4b6b-82d5-0e8a4ebc3838",
+	"globalSubscriberId":"test_custormer",
+	"serviceType":"example-service-type",
+	"status":1,
+	"servicemodelinformation":{
+		"modelType":"service",
+		"model":{
+			"resourceName":"sotn",
+			"resourceDescription":"sotn service",
+			"resourceInvariantUuid":"b36a7816-d4bf-4355-a3f1-20825ee7fce7",
+			"resourceUuid":"68db4561-8d85-4e7e-9653-7263118cb3ef",
+			"resourceCustomizationUuid":""
+		}
+	},
+	"resourcemodelinformation":[
+		{
+			"modelType":"1",
+			"model":{
+				"resourceName":"l2vppn",
+				"resourceDescription":"l2vpn resource",
+				"resourceInvariantUuid":"5448e42c-a22a-4bbd-bd24-387db52d3e58",
+				"resourceUuid":"0bf85631-6d70-471c-b97c-b5cc05056034",
+				"resourceCustomizationUuid":""
+			}
+		},
+		{
+			"modelType":"2",
+			"model":{
+				"resourceName":"sotnUni",
+				"resourceDescription":"sotnUni Resource",
+				"resourceInvariantUuid":"66b96cb7-541d-4340-9bd6-8a5e37f1d5f1",
+				"resourceUuid":"60504c1f-8c3a-42c3-b071-1f1750688f3a",
+				"resourceCustomizationUuid":"c0f4205b-3101-41cf-90b3-aae6d97b3576"
+			}
+		}
+	]
+}

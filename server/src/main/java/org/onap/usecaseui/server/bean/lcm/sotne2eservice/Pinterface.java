@@ -34,12 +34,18 @@ import org.onap.usecaseui.server.bean.activateEdge.RelationshipList;
         "in-maint",
         "network-ref",
         "transparent",
-        "operational-status"
+        "operational-status",
+        "speed-units",
+        "port-description"
 })
 
 public class Pinterface {
     @JsonProperty("interface-name")
     private String interfaceName;
+    @JsonProperty("speed-units")
+    private String speedUnits;
+    @JsonProperty("port-description")
+    private String portDescription;
     @JsonProperty("speed-value")
     private String speedValue;
     @JsonProperty("equipment-identifier")
@@ -144,5 +150,25 @@ public class Pinterface {
 
     public void setRelationshipList(RelationshipList relationshipList) {
         this.relationshipList = relationshipList;
+    }
+
+    @JsonProperty("speed-units")
+    public String getSpeedUnits() {
+        return speedUnits;
+    }
+
+    @JsonProperty("speed-units")
+    public void setSpeedUnits(String speedUnits) {
+        this.speedUnits = speedUnits;
+    }
+
+    @JsonProperty("port-description")
+    public String getPortDescription() {
+        return portDescription;
+    }
+
+    @JsonProperty("port-description")
+    public void setPortDescription(String portDescription) {
+        this.portDescription = portDescription;
     }
 }

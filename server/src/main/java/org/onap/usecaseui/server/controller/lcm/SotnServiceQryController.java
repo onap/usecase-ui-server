@@ -57,17 +57,17 @@ public class SotnServiceQryController {
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/Sotnservices/ServiceInstances/{serviceType}"}, method = RequestMethod.GET , produces = "application/json")
     public String getSotnServiceInstances(@PathVariable(value="serviceType") String serviceType){
-
+        System.out.println("Get Service Instance called.");
         String response = sotnServiceQryService.getServiceInstances(serviceType);
-
         return response;
     }
 
     @ResponseBody
     @RequestMapping(value = {"/uui-lcm/customers/service-subscriptions"}, method = RequestMethod.GET , produces = "application/json")
     public String getServiceSubscriptions(){
-        String customerId="";
-        return ccvpnCustomerService.querySubscriptionType(customerId);
+        System.out.println("Get Service Subscription called.");
+        String response = ccvpnCustomerService.querySubscriptionType();
+        return response;
     }
 
 }

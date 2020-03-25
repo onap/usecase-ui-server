@@ -20,15 +20,19 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 //import org.onap.usecaseui.server.bean.lcm.sotne2eservice.*;
 //import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Connectivity;
 //import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.orderservice.ServiceEstimationBean;
+import org.onap.usecaseui.server.service.customer.impl.CcvpnCustomerServiceImpl;
 import org.onap.usecaseui.server.service.lcm.SotnServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.Relationship;
 //import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.Operation;
@@ -39,6 +43,8 @@ import retrofit2.Response;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.RelationshipData;
 
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import org.json.simple.parser.JSONParser;
@@ -71,15 +77,13 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 
         public ModelConfig readFile() {
         JSONParser parser = new JSONParser();
-        //String jsonPath = "/home/modelconfig.json";
-        String jsonPath = "/home/modelconfig.json";
-        String jsonPath_2 = "";
-        String jsonString = null;
+        ClassLoader classLoader = new CcvpnCustomerServiceImpl().getClass().getClassLoader();
+        File file = new File(classLoader.getResource("modelconfig.json").getFile());
         ObjectMapper mapper = new ObjectMapper();
 
         try {
 
-            Object object = parser.parse(new FileReader(jsonPath));
+            Object object = parser.parse(new FileReader(file));
             ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
             });
 
@@ -92,17 +96,13 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 
     public ModelConfig readFile_unni(){
         JSONParser parser = new JSONParser();
-        String jsonPath = "/home/modelconfigunni.json";
-        String jsonPath_2 = "";
-        String jsonString = null;
+        ClassLoader classLoader = new CcvpnCustomerServiceImpl().getClass().getClassLoader();
+        File file = new File(classLoader.getResource("modelconfigunni.json").getFile());
         ObjectMapper mapper = new ObjectMapper();
-
         try {
-
-            Object object = parser.parse(new FileReader(jsonPath));
+            Object object = parser.parse(new FileReader(file));
             ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
             });
-
             return modelInformation;
         } catch (ParseException | IOException ex) {
            // logger.error("Exception occured while reading configuration file:" + ex);
@@ -543,30 +543,78 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         return jsonresponse;
     }
 
+    public DeleteOperationRsp deleteService(String serviceId, String subscriptionType) {
+        ModelConfig modelConfig = readFile();
+        Map<String, Model> modelInfo = readConfigToMap(modelConfig);
+        String customerId = modelConfig.getSubscriberId();
+        E2EServiceDelete deleteRequest = new E2EServiceDelete();
+        deleteRequest.setServiceType(subscriptionType);
+        deleteRequest.setGlobalSubscriberId(customerId);
+        String requestStr = deleteRequest.toString();
+        Integer sleeptime = Integer.parseInt(modelConfig.getDeleteSleepTime());
+        //Get the service information from AAI - Begin
+        ServiceInstance serviceInstance = new ServiceInstance();
+        try {
+            serviceInstance = getServiceInstancesInfo(customerId, subscriptionType, serviceId);
+            if (serviceInstance == null) {
+//                logger.info("Query Service Instance information failed. No service information found for customer "
+//                        + customerId + " and Service Type " + subscriptionType);
+                return null;
+            }
 
+        } catch (Exception e) {
+//            logger.info("Query Service Instance information failed. No service information found for customer "
+//                    + customerId + " and Service Type " + subscriptionType);
+            return null;
+        }
 
+        List<Relationship> ssrelationship = serviceInstance.getRelationshipList().getRelationship().stream()
+                .filter(siterelation -> siterelation.getRelatedTo().equalsIgnoreCase("service-instance"))
+                .collect(Collectors.toList());
 
+        //Get the service information from AAI - Begin
+        for (Relationship siterelation : ssrelationship) {
 
+            String siteserviceId = siterelation.getRelatedLink().substring(siterelation.getRelatedLink().lastIndexOf("/") + 1);
+            try {
+//                logger.info("so begin terminate site service " + siteserviceId);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), requestStr);
+                Response<DeleteOperationRsp> response = soService.terminateService(siteserviceId, requestBody).execute();
+//                logger.info("so terminate has finished");
+                if (response.isSuccessful()) {
+//                    logger.info("so terminated site service " + siteserviceId + "successfully...");
 
+                } else {
+//                    logger.error(String.format("Can not terminate service " + siteserviceId + " [code=%s, message=%s]", response.code(), response.message()));
+                    throw new SOException("SO terminate service failed!");
+                }
+            } catch (IOException e) {
+                throw new SOException("SO Service is not available!", e);
+            }
+        }
+        try {
+//            logger.info("Began to sleep for " + sleeptime);
+            Thread.sleep(sleeptime);
+        } catch (InterruptedException e) {
+//            logger.error(String.format("Thread Interruppted from sleep while deleting service subscription"));
+        }
+        try {
+//            logger.info("so begin terminate Connectivity service " + serviceId);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), requestStr);
+            Response<DeleteOperationRsp> response = soService.terminateService(serviceId, requestBody).execute();
+//            logger.info("so terminate has finished");
+            if (response.isSuccessful()) {
+//                logger.info("so terminated connectivity service " + serviceId + "successfully...");
 
-
-
-
-
-
-
-
-
-
-
-//    public DeleteOperationRsp deleteService(String serviceId, String subscriptionType, HttpServletRequest request)
-//    {
-//
-//    }
-
-
-
-
+            } else {
+//                logger.error(String.format("Can not terminate service " + serviceId + " [code=%s, message=%s]", response.code(), response.message()));
+                throw new SOException("SO terminate service failed!");
+            }
+            return response.body();
+        } catch (IOException e) {
+            throw new SOException("SO Service is not available!", e);
+        }
+    }
 
     public VpnBinding getSOTNPinterfaceByVpnId(String vpnId) throws Exception {
 
@@ -585,16 +633,11 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
            // logger.info("Fire getSOTNPinterfaceByVpnId : Failed");
 
         }
-
         return null;
-
-
     }
 
 
     public Pnf getSOTNPnf(String pnfname) throws Exception {
-
-       // logger.info("Fire get SOTN PnF by Name : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getPnfInfo(pnfname).execute();
         if (response.isSuccessful()) {
@@ -605,14 +648,11 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             //System.out.println("Response received : "+response.body().bytes());
         } else {
            // logger.info("Fire get SOTN PnF by Name : Failed" + pnfname);
-
         }
-
         return null;
     }
 
     public LogicalLink getSOTNLinkbyName(String linkName) throws Exception {
-
        // logger.info("Fire getSOTNLinkbyName : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getSpecificLogicalLink(linkName).execute();
@@ -624,10 +664,287 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             //System.out.println("Response received : "+response.body().bytes());
         } else {
            // logger.info("Fire getSOTNLinkbyName : Failed");
-
         }
-
         return null;
+    }
+
+    public Uni getUNIInfo(String uniId) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        Response<ResponseBody> response = this.aaiService.getUNIInfo(uniId).execute();
+        if (response.isSuccessful()) {
+            String result = new String(response.body().bytes());
+            Uni uni = mapper.readValue(result, Uni.class);
+            return uni;
+        }
+        return null;
+    }
+
+    public Vnfs getVnfs(String vnfId) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        Response<ResponseBody> response = this.aaiService.getVNFsDetail(vnfId).execute();
+        if (response.isSuccessful()) {
+            String result = new String(response.body().bytes());
+            Vnfs vnf = mapper.readValue(result, Vnfs.class);
+            return vnf;
+        }
+        return null;
+    }
+
+    public Node getNode(String id, String label, String image) {
+        Node node = new Node();
+        node.setId(id);
+        node.setShape("circularImage");
+        node.setImage("./assets/images/"+image);
+        node.setLabel(label);
+        node.setColor("Green");
+        return node;
+    }
+
+    public Edge getEdge(String fromId, String toId) {
+        Edge edge = new Edge();
+        edge.setFrom(fromId);
+        edge.setTo(toId);
+        return edge;
+    }
+
+    @Override
+    public String getVPNBindingInformationTopology(String subscriptionType, String instanceid, String vpnId) throws Exception {
+
+        List<Node> nodes = new ArrayList<Node>();
+        List<Edge> edges = new ArrayList<Edge>();
+        List<String> vpnparams = new ArrayList<String>(Arrays.asList("cir", "eir", "cbs", "ebs", "colorAware", "couplingFlag", "ethtSvcName"));
+        String jsonresponse = "";
+        Node connode = new Node();
+        try {
+            //---------------------------------Query VPN : Begin------------------------------
+            VpnBinding vpnBinding = getSOTNPinterfaceByVpnId(vpnId);
+            VpnInformation vpnInformation = vpnBinding.getVpnBinding().get(0);
+            Node vpn = getNode(vpnInformation.getVpnId(), "VPN Binding", "vpnbinding.png");
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> props = mapper.convertValue(vpnInformation, Map.class);
+            props.remove("relationship-list");
+            props.remove("resource-version");
+            props.remove("vpn-region");
+            props.remove("vpn-id");
+            vpn.setDataNode(new ObjectMapper().writeValueAsString(props));
+            nodes.add(vpn);
+            //Query VPN : End
+
+            //Query P Interfaces
+            List<Relationship> vpnpinterfacerelation = vpnInformation.getRelationshipList().getRelationship().stream()
+                    .filter(relate -> "p-interface".equalsIgnoreCase(relate.getRelatedTo())).collect(Collectors.toList());
+            for (Relationship temprel : vpnpinterfacerelation) {
+                String pinterfaceid = temprel.getRelatedLink().substring(temprel.getRelatedLink().lastIndexOf("/") + 1);
+                String parentaccessnode = "";
+
+                RelationshipData[] pnfrelatedprop = temprel.getRelationshipData();
+                for (RelationshipData temp : pnfrelatedprop) {
+                    if ("pnf.pnf-name".equalsIgnoreCase(temp.getRelationshipKey())) {
+                        parentaccessnode = temp.getRelationshipValue();
+                        break;
+                    }
+                }
+                Pinterface pinterface = new Pinterface();
+                pinterface = getTerminationPoint(parentaccessnode, pinterfaceid);
+                Node vpnpinterface = getNode(pinterface.getInterfaceName(), "P-interface", "tpoint.png");
+                ObjectMapper vpnpintmapper = new ObjectMapper();
+                Map<String, Object> vpnpintprops = vpnpintmapper.convertValue(pinterface, Map.class);
+                vpnpintprops.remove("relationship-list");
+                vpnpintprops.remove("resource-version");
+                vpnpintprops.remove("in-maint");
+                vpnpinterface.setDataNode(new ObjectMapper().writeValueAsString(vpnpintprops));
+                nodes.add(vpnpinterface);
+                edges.add(getEdge(vpn.getId(),vpnpinterface.getId()));
+            }
+        } catch (Exception ex) {
+        }
+        ResourceResponse resourceResponse = new ResourceResponse();
+        resourceResponse.setNodes(nodes);
+        resourceResponse.setEdges(edges);
+        System.out.println(jsonresponse);
+        return resourceResponse.toString();
+    }
+
+    @Override
+    public String getServiceInformationTopology(String subscriptionType, String instanceid) throws Exception {
+
+        List<Node> nodes = new ArrayList<Node>();
+        List<Edge> edges = new ArrayList<Edge>();
+        ServiceInstance serviceInstance = null;
+        Connectivity connectivity = new Connectivity();
+        Node connode = new Node();
+
+        //----------------------------- GET SERVICE INSTANCE INFORMATION FROM AAI : BEGIN ---------------------------------------
+        try {
+            ModelConfig modelConfig = readFile();
+            String customerId = modelConfig.getSubscriberId();
+
+            serviceInstance = getServiceInstancesInfo(customerId, subscriptionType, instanceid);
+            if (serviceInstance == null) {
+                return null;
+            }
+            else {
+                ObjectMapper serviceMapper = new ObjectMapper();
+                Map<String, Object> serviceProps = serviceMapper.convertValue(serviceInstance, Map.class);
+                serviceProps.remove("relationship-list");
+                serviceProps.remove("input-parameters");
+                serviceProps.remove("resource-version");
+                Node serviceNode = getNode(serviceInstance.getServiceInstanceId(), "Service", "service.png");
+                serviceNode.setDataNode(new ObjectMapper().writeValueAsString(serviceProps));
+                nodes.add(serviceNode);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        //----------------------------- GET SERVICE INSTANCE INFORMATION FROM AAI : END ---------------------------------------
+
+        //-------------------------------GET GENERIC VNFS : BEGIN ----------------------------------------
+
+        List<Relationship> relationship = serviceInstance.getRelationshipList().getRelationship().stream().filter(relation -> relation.getRelatedTo()
+                .equalsIgnoreCase("generic-vnf")).collect(Collectors.toList());
+        if (relationship.size() > 0 && relationship != null) {
+            relationship = serviceInstance.getRelationshipList().getRelationship();
+            Vnfs vnf = getVnfs(relationship.get(0).getRelatedTo());
+            relationship = vnf.getRelationshipList().getRelationship();
+
+            ObjectMapper serviceMapper = new ObjectMapper();
+            Map<String, Object> vnfProps = serviceMapper.convertValue(vnf, Map.class);
+            vnfProps.remove("relationship-list");
+            vnfProps.remove("in-maint");
+            vnfProps.remove("resource-version");
+            Node vnfNode = getNode(vnf.getVnfInstanceId(), "Vnf", "VNF.png");
+            vnfNode.setDataNode(new ObjectMapper().writeValueAsString(vnfProps));
+            nodes.add(vnfNode);
+            edges.add(getEdge(serviceInstance.getServiceInstanceId(),vnf.getVnfInstanceId()));
+
+            Relationship relation = relationship.stream()
+                    .filter(relate -> "connectivity".equalsIgnoreCase(relate.getRelatedTo()))
+                    .findAny()
+                    .orElse(null);
+            try {
+                String connectivityinstanceid = relation.getRelatedLink().substring(relation.getRelatedLink().lastIndexOf("/") + 1);
+                connectivity = getConnectivityInfo(connectivityinstanceid);
+                Map<String, Object> connectivityparams = new ObjectMapper().readValue(connectivity.toString(), HashMap.class);
+                connode = getNode(connectivityparams.get("connectivityId").toString(), "Connectivity", "connectivity.png");
+                ObjectMapper conMapper = new ObjectMapper();
+                Map<String, Object> conprops = conMapper.convertValue(connectivity, Map.class);
+                conprops.remove("relationship-list");
+                conprops.remove("resource-version");
+                connode.setDataNode(new ObjectMapper().writeValueAsString(conprops));
+                nodes.add(connode);
+                edges.add(getEdge(vnf.getVnfInstanceId(), connectivityparams.get("connectivityId").toString()));
+            } catch (IOException e) {
+                // logger.info("IO Exception occured " + e.getMessage());
+            }
+
+            //Query Connectivity : End
+            List<Relationship> relationship1 = vnf.getRelationshipList().getRelationship().stream().filter(relation1 -> relation1.getRelatedTo()
+                    .equalsIgnoreCase("uni")).collect(Collectors.toList());
+            if (relationship1.size() > 0 && relationship1 != null) {
+                for (Relationship rel : relationship1) {
+                    try {
+                        String s = rel.getRelatedLink();
+                        String uniId = s.substring(s.lastIndexOf("/")+1);
+                        Uni uniInfo = getUNIInfo(uniId);
+                        Node uuinode = getNode(uniInfo.getId(), uniInfo.getId(), "edge.png");
+                        ObjectMapper uuiMapper = new ObjectMapper();
+                        Map<String, Object> uuiprops = uuiMapper.convertValue(uniInfo, Map.class);
+                        uuiprops.remove("relationship-list");
+                        uuiprops.remove("resource-version");
+                        uuinode.setDataNode(new ObjectMapper().writeValueAsString(uuiprops));
+                        nodes.add(uuinode);
+                        edges.add(getEdge(vnf.getVnfInstanceId(), uniInfo.getId()));
+
+                        List<Relationship> unipinterfaceralation = uniInfo.getRelationshipList().getRelationship().stream()
+                                .filter(relate -> "p-interface".equalsIgnoreCase(relate.getRelatedTo())).collect(Collectors.toList());
+                        for (Relationship temprel : unipinterfaceralation) {
+                            String pinterfaceid = temprel.getRelatedLink().substring(temprel.getRelatedLink().lastIndexOf("/") + 1);
+                            String parentaccessnode = "";
+
+                            RelationshipData[] pnfrelatedprop = temprel.getRelationshipData();
+                            for (RelationshipData temp : pnfrelatedprop) {
+                                if ("pnf.pnf-name".equalsIgnoreCase(temp.getRelationshipKey())) {
+                                    parentaccessnode = temp.getRelationshipValue();
+                                    break;
+                                }
+                            }
+                            try {
+
+                                Pinterface pinterface = getTerminationPoint(parentaccessnode, pinterfaceid);
+
+                                ObjectMapper unipintmapper = new ObjectMapper();
+                                Map<String, Object> unipintprops = unipintmapper.convertValue(pinterface, Map.class);
+                                unipintprops.remove("relationship-list");
+                                unipintprops.remove("resource-version");
+                                unipintprops.remove("in-maint");
+
+                                Node unipinterface = getNode(pinterface.getInterfaceName(), "P-interface", "tpoint.png");
+                                unipinterface.setDataNode(new ObjectMapper().writeValueAsString(unipintprops));
+                                nodes.add(unipinterface);
+                                edges.add(getEdge(uniInfo.getId(), unipinterface.getId()));
+
+                            } catch (Exception e) {
+                            }
+                        }
+
+                    } catch (IOException e) {
+                        // logger.info("IO Exception occured " + e.getMessage());
+                    }
+                }
+                //Query UNI : End
+            }
+
+            //---------------------------------Query VPN : Begin------------------------------
+            Relationship vpnrelation = connectivity.getRelationshipList().getRelationship().stream()
+                    .filter(relate -> "vpn-binding".equalsIgnoreCase(relate.getRelatedTo()))
+                    .findAny()
+                    .orElse(null);
+            String vpnid = vpnrelation.getRelatedLink().substring(vpnrelation.getRelatedLink().lastIndexOf("/") + 1);
+            VpnBinding vpnBinding = new VpnBinding();
+            VpnInformation vpnInformation = new VpnInformation();
+            try {
+                vpnBinding = getSOTNPinterfaceByVpnId(vpnid);
+                vpnInformation = vpnBinding.getVpnBinding().get(0);
+            } catch (Exception e) {
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> props = mapper.convertValue(vpnInformation, Map.class);
+            props.remove("relationship-list");
+            props.remove("resource-version");
+            props.remove("vpn-region");
+            props.remove("vpn-id");
+            Node vpn = getNode(vpnInformation.getVpnId(), "VPN Binding", "vpnbinding.png");
+            vpn.setDataNode(new ObjectMapper().writeValueAsString(props));
+            nodes.add(vpn);
+            edges.add(getEdge(connode.getId(), vpn.getId()));
+            //Query VPN : End
+
+            //Query P Interfaces
+            List<Relationship> vpnpinterfacerelation = vpnInformation.getRelationshipList().getRelationship().stream()
+                    .filter(relate -> "p-interface".equalsIgnoreCase(relate.getRelatedTo())).collect(Collectors.toList());
+            for (Relationship temprel : vpnpinterfacerelation) {
+                String pinterfaceid = temprel.getRelatedLink().substring(temprel.getRelatedLink().lastIndexOf("/") + 1);
+                String parentaccessnode = "";
+
+                RelationshipData[] pnfrelatedprop = temprel.getRelationshipData();
+                for (RelationshipData temp : pnfrelatedprop) {
+                    if ("pnf.pnf-name".equalsIgnoreCase(temp.getRelationshipKey())) {
+                        parentaccessnode = temp.getRelationshipValue();
+                        break;
+                    }
+                }
+                try {
+                    Pinterface pinterface = getTerminationPoint(parentaccessnode, pinterfaceid);
+                    edges.add(getEdge(vpn.getId(), pinterface.getInterfaceName()));
+                } catch (Exception e) {
+                }
+            }
+        }
+        ResourceResponse resourceResponse = new ResourceResponse();
+        resourceResponse.setNodes(nodes);
+        resourceResponse.setEdges(edges);
+        return resourceResponse.toString();
     }
 
     @Override

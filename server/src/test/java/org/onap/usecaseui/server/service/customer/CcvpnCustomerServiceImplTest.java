@@ -86,7 +86,7 @@ public class CcvpnCustomerServiceImplTest {
     @Test
     public void getQuerySubscriptionWithThrowsEexception(){
         when(aaiService.getServiceSubscription("123")).thenReturn(failedCall("aai is not exist!"));
-        dsts.querySubscriptionType("123");
+        dsts.querySubscriptionType();
     }
 
     @Test

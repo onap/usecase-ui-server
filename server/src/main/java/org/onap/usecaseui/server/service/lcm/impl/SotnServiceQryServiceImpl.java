@@ -27,6 +27,7 @@ import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ResponseServiceI
 import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ServiceInstanceList;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ServiceInstanceListWrapper;
 //import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ServiceSubscriptionWrapper;
+import org.onap.usecaseui.server.service.customer.impl.CcvpnCustomerServiceImpl;
 import org.onap.usecaseui.server.service.lcm.SotnServiceQryService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.util.RestfulServices;
@@ -37,6 +38,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -102,19 +104,13 @@ public class SotnServiceQryServiceImpl implements SotnServiceQryService {
 
     public ModelConfig readFile() {
         JSONParser parser = new JSONParser();
-        //String jsonPath = "/home/root1/Desktop/modelconfig.json";
-        //String absolutepath = "/home/root1/Desktop/Subhosree/gerrit clone for ui backend";//configure absolute path as per systempath
-        String jsonPath = "/home/modelconfig.json";
-        String jsonString = null;
+        ClassLoader classLoader = new CcvpnCustomerServiceImpl().getClass().getClassLoader();
+        File file = new File(classLoader.getResource("modelconfig.json").getFile());
         ObjectMapper mapper = new ObjectMapper();
-
         try {
-
-            Object object = parser.parse(new FileReader(jsonPath));
-            //System.out.println(object.toString());
+            Object object = parser.parse(new FileReader(file));
             ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
             });
-
             return modelInformation;
         } catch (ParseException | IOException ex) {
             logger.error("Exception occured while reading configuration file:" + ex);
