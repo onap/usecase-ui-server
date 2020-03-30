@@ -16,12 +16,8 @@
 package org.onap.usecaseui.server.service;
 
 import java.util.List;
-import java.util.Map;
-
-import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.maxAndMinTimeBean;
-import org.onap.usecaseui.server.util.Page;
 
 
 public interface AlarmsInformationService {

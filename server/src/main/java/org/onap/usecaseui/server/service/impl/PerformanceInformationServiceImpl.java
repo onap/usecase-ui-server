@@ -18,10 +18,8 @@ package org.onap.usecaseui.server.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+
 
 import javax.transaction.Transactional;
 
@@ -32,7 +30,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
-import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -17,10 +17,7 @@ package org.onap.usecaseui.server.service;
 
 import java.util.Date;
 import java.util.List;
-
 import org.onap.usecaseui.server.bean.PerformanceInformation;
-import org.onap.usecaseui.server.util.Page;
-
 
 public interface PerformanceInformationService {
     
