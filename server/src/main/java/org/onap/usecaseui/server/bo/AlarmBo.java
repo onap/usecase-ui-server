@@ -17,7 +17,6 @@ package org.onap.usecaseui.server.bo;
 
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
-import org.onap.usecaseui.server.util.Page;
 
 import java.io.Serializable;
 import java.util.List;
