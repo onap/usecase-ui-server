@@ -42,8 +42,14 @@ public class VfNsPackageInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+	{
+		 return true;
+	}
+        if (o == null || getClass() != o.getClass())
+	{ 	
+		return false;
+	}
         VfNsPackageInfo that = (VfNsPackageInfo) o;
         return Objects.equals(nsPackage, that.nsPackage) &&
                 Objects.equals(vnfPackages, that.vnfPackages);
