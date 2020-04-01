@@ -15,10 +15,6 @@
  */
 package org.onap.usecaseui.server.constant;
 
-import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class HttpConstant
 {
