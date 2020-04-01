@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.service.impl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +28,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
-import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.SortMaster;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.util.Page;

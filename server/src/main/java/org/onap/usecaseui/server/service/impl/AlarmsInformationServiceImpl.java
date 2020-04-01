@@ -26,7 +26,6 @@ import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.maxAndMinTimeBean;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
