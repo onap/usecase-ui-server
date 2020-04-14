@@ -35,6 +35,8 @@ import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
@@ -103,17 +105,14 @@ public class SotnServiceQryServiceImpl implements SotnServiceQryService {
     }
 
     public ModelConfig readFile() {
-        JSONParser parser = new JSONParser();
-        ClassLoader classLoader = new SotnServiceQryServiceImpl().getClass().getClassLoader();
-        File file = new File(classLoader.getResource("modelconfig.json").getFile());
         ObjectMapper mapper = new ObjectMapper();
         try {
-            Object object = parser.parse(new FileReader(file));
-            ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
-            });
+            Resource resource = new ClassPathResource("modelconfig.json");
+            ModelConfig modelInformation = mapper.readValue(resource.getInputStream(), ModelConfig.class);
+            logger.info("subscriber id is: {}.", modelInformation.getSubscriberId());
             return modelInformation;
-        } catch (ParseException | IOException ex) {
-            logger.error("Exception occured while reading configuration file:" + ex);
+        } catch (IOException ex) {
+            logger.error("Exception occured while reading configuration file: {}", ex);
             return null;
         }
     }
