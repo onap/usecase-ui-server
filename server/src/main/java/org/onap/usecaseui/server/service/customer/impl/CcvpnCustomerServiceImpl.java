@@ -126,8 +126,8 @@ public class CcvpnCustomerServiceImpl implements CcvpnCustomerService {
             logger.error("getServiceSubscription exception occured:" + ex);
             result = Constant.CONSTANT_FAILED;
         }
-        return "{\"subscriptions\":[{\"serviceType\":\"SOTN\"}]}";
-        //return subscriptions.toString();
+	logger.info("getServiceSubscription:" + subscriptions.toString());
+        return subscriptions.toString();
     }
 
 

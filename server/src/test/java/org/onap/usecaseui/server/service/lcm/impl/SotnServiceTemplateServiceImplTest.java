@@ -15,6 +15,8 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.junit.Before;
 import org.junit.Test;
@@ -136,4 +138,127 @@ public class SotnServiceTemplateServiceImplTest {
         when(aaiService.getSpecificLogicalLink("link")).thenReturn(failedCall("Failed to get link info."));
         sotnServiceTemplateService.getSOTNLinkbyName("link");
     }
+
+
+    @Test
+    public void getUNIInfoTest() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getUNIInfo("uni-id")).thenReturn(successfulCall(result));
+        sotnServiceTemplateService.getUNIInfo("uni-id");
+    }
+    @Test
+    public void getUNIInfoWithThrowException() throws Exception {
+        when(aaiService.getUNIInfo("uni-id")).thenReturn(failedCall("Failed to get link info."));
+        sotnServiceTemplateService.getUNIInfo("uni-id");
+    }
+    @Test
+    public void getVnfsTest() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getVNFsDetail("vnf-id")).thenReturn(successfulCall(result));
+        sotnServiceTemplateService.getVnfs("vnf-id");
+    }
+    @Test
+    public void getVnfsWithThrowException() throws Exception {
+        when(aaiService.getVNFsDetail("vnf-id")).thenReturn(failedCall("Failed to get link info."));
+        sotnServiceTemplateService.getVnfs("vnf-id");
+    }
+    @Test
+    public void getReadFile_unniTest() throws Exception {
+        ModelConfig mdl = new ModelConfig();
+        sotnServiceTemplateService.readFile_unni();
+    }
+    @Test
+    public void getReadFileTest() throws Exception {
+        ModelConfig mdl = new ModelConfig();
+        sotnServiceTemplateService.readFile();
+    }
+    @Test
+    public void getSOTNSiteInformationTopologyTest() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getServiceInstancesForEdge("1","SOTN","ISAAC")).thenReturn(successfulCall(result));
+        sotnServiceTemplateService.getSOTNSiteInformationTopology("SOTN", "ISAAC");
+    }
+    @Test
+    public void getSOTNSiteInformationTopologyWithThrowException() throws Exception {
+        when(aaiService.getServiceInstancesForEdge("1","SOTN","ISAAC")).thenReturn(failedCall("Failed to get connectivity."));
+        sotnServiceTemplateService.getSOTNSiteInformationTopology("SOTN", "ISAAC");
+    }
+    @Test
+    public void getServiceTest() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getServiceInstancesForEdge("1","SOTN","ISAAC")).thenReturn(successfulCall(result));
+        ResponseBody result1 = null;
+        when(aaiService.getConnectivityInformation("1")).thenReturn(successfulCall(result1));
+        ResponseBody result2 = null;
+        when(aaiService.getAllotedResourceFor5G("1", "SONT", "ISAAC", "2")).thenReturn(successfulCall(result2));
+        sotnServiceTemplateService.getService("SOTN", "ISAAC");
+    }
+    @Test
+    public void getServiceWithThrowException() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getServiceInstancesForEdge("1","SOTN","ISAAC")).thenReturn(failedCall("failed to get instances"));
+        ResponseBody result1 = null;
+        when(aaiService.getConnectivityInformation("1")).thenReturn(failedCall("Failed to get connectivity"));
+        ResponseBody result2 = null;
+        when(aaiService.getAllotedResourceFor5G("1", "SONT", "ISAAC", "2")).thenReturn(failedCall("failed to get allocated resource"));
+        sotnServiceTemplateService.getService("SOTN", "ISAAC");
+    }
+    @Test
+    public void getSOTNServiceInformationTopologyTest() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(successfulCall(result));
+        sotnServiceTemplateService.getServiceInformationTopology("example-service-type-val-52265", "NNI-001");
+    }
+    @Test
+    public void getSOTNServiceInformationTopologyWithThrowException() throws Exception {
+        when(aaiService.getServiceInstancesForEdge("1","SOTN","ISAAC")).thenReturn(failedCall("Failed to get connectivity."));
+        sotnServiceTemplateService.getServiceInformationTopology("SOTN", "ISAAC");
+    }
+    @Test
+    public void getVPNBindingInformationTopologyTest() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(successfulCall(result));
+        sotnServiceTemplateService.getVPNBindingInformationTopology("example-service-type-val-52265", "NNI-001", "vpn-bind-1");
+    }
+    @Test
+    public void getVPNBindingInformationTopologyWithThrowException() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(failedCall("failed to get vpn binding topology."));
+        sotnServiceTemplateService.getVPNBindingInformationTopology("example-service-type-val-52265", "NNI-001", "vpn-bind-1");
+    }
+    @Test
+    public void deleteServiceTest() throws Exception {
+        Response result = null;
+        RequestBody requestBody = null;
+        when(soService.terminateService("serviceId",requestBody)).thenReturn(successfulCall(null));
+        sotnServiceTemplateService.deleteService("NNI-001", "vpn-bind-1");
+    }
+    @Test
+    public void deleteServiceWithThrowException() throws Exception {
+        Response result = null;
+        RequestBody requestBody = null;
+        when(soService.terminateService("serviceId",requestBody)).thenReturn(failedCall("failed to delete the server."));
+        sotnServiceTemplateService.deleteService("NNI-001", "vpn-bind-1");
+    }
+    @Test
+    public void getNodeTest() throws Exception {
+        sotnServiceTemplateService.getNode("001", "vpn-bind-1","image.png");
+    }
+    @Test
+    public void getEdgeTest() throws Exception {
+        sotnServiceTemplateService.getEdge("fromid", "toId");
+    }
+    @Test
+    public void getSOTNResourceInformationTopologyTest() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(successfulCall(result));
+        sotnServiceTemplateService.getSOTNResourceInformationTopology("example-service-type-val-52265", "NNI-001");
+    }
+    @Test
+    public void getSOTNResourceInformationTopologyWithThrowException() throws Exception {
+        ResponseBody result = null;
+        when(aaiService.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(failedCall("failed to get sotn resource topology."));
+        sotnServiceTemplateService.getSOTNResourceInformationTopology("example-service-type-val-52265", "NNI-001");
+    }
 }
+

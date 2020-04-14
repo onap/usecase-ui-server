@@ -1,4 +1,4 @@
-/**
+	/**
  * Copyright (C) 2020 Huawei, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 public class PinterfaceTest {
     @Before
     public void before() throws Exception {
     }
-
     @After
     public void after() throws Exception {
     }
-
     @Test
     public void testGetPinterface() throws Exception {
         Pinterface pi = new Pinterface();
@@ -40,8 +36,9 @@ public class PinterfaceTest {
         pi.getResourceVersion();
         pi.getSpeedValue();
         pi.getTransparent();
+        pi.getSpeedUnits();
+        pi.getPortDescription();
     }
-
     @Test
     public void testSetPinterface() throws Exception {
         Pinterface pi = new Pinterface();
@@ -54,5 +51,7 @@ public class PinterfaceTest {
         pi.setResourceVersion("");
         pi.setSpeedValue("");
         pi.setTransparent("");
+        pi.setSpeedUnits("");
+        pi.setPortDescription("");
     }
 }

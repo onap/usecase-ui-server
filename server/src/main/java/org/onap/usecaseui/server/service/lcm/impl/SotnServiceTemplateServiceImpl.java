@@ -27,7 +27,6 @@ import okhttp3.ResponseBody;
 //import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Connectivity;
 //import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.orderservice.ServiceEstimationBean;
-import org.onap.usecaseui.server.service.customer.impl.CcvpnCustomerServiceImpl;
 import org.onap.usecaseui.server.service.lcm.SotnServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.Relationship;
@@ -39,6 +38,9 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.Operation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.*;
 import org.onap.usecaseui.server.bean.activateEdge.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import retrofit2.Response;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.RelationshipData;
 
@@ -61,6 +63,8 @@ import org.springframework.stereotype.Service;
 @EnableAspectJAutoProxy
 public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateService {
 
+    private static final Logger logger = LoggerFactory.getLogger(SotnServiceTemplateServiceImpl.class);
+    
     private SOService soService;
     private AAIService aaiService;
 
@@ -75,30 +79,29 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         return null;
     }
 
-        public ModelConfig readFile() {
+    public ModelConfig readFile() {
         JSONParser parser = new JSONParser();
-        ClassLoader classLoader = new CcvpnCustomerServiceImpl().getClass().getClassLoader();
+        ClassLoader classLoader = new SotnServiceQryServiceImpl().getClass().getClassLoader();
         File file = new File(classLoader.getResource("modelconfig.json").getFile());
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-
             Object object = parser.parse(new FileReader(file));
             ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
             });
 
             return modelInformation;
         } catch (ParseException | IOException ex) {
-           // logger.error("Exception occured while reading configuration file:" + ex);
+            logger.error("Exception occured while reading configuration file:" + ex);
             return null;
         }
     }
 
     public ModelConfig readFile_unni(){
         JSONParser parser = new JSONParser();
-        ClassLoader classLoader = new CcvpnCustomerServiceImpl().getClass().getClassLoader();
+        ClassLoader classLoader = new SotnServiceQryServiceImpl().getClass().getClassLoader();
         File file = new File(classLoader.getResource("modelconfigunni.json").getFile());
-        ObjectMapper mapper = new ObjectMapper();
+       ObjectMapper mapper = new ObjectMapper();
         try {
             Object object = parser.parse(new FileReader(file));
             ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
@@ -120,61 +123,41 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         //Map<String, Model> modelInfo = readConfigToMap(modelConfig);
         List<ModelInfor> resourceModel = modelConfig.getResourcemodelinformation();
 
-//        try {
-//            inStream = request.getInputStream();
-//            BufferedReader    reader = new BufferedReader(new InputStreamReader(inStream));
-//            String requestJson = IOUtils.read(reader);
-//            logger.info("The request body content is: " + requestJson);
-//        } catch (IOException e) {
-//            logger.info("The request body parsing failed." + e.getMessage());
-//            return null;
-//        } finally {
-//            if (inStream != null) {
-//                try {
-//                    inStream.close();
-//                } catch (IOException e) {
-//
-//                }
-//            }
-//        }
-
         String customerid = modelConfig.getSubscriberId();
         String subscriptionType = modelConfig.getSubscriptionType();
 
         requestBody = create_CCVPN_Request_Body(reqt, resourceModel, customerid, subscriptionType, servicemodel);
         try {
-            System.out.println("SO request formed : " + new ObjectMapper().writeValueAsString(requestBody));
+            logger.info("SO request formed : " + new ObjectMapper().writeValueAsString(requestBody));
         } catch (IOException e) {
-
+	    logger.info("IOException : " + e.getMessage());
         }
 
         ServiceOperation sotnserviceoperation = createSotnService(requestBody);
         sotnservice = sotnserviceoperation.getService();
-        //logger.info("Began to sleep for ");
+        logger.info("Began to sleep for ");
         try {
             Thread.sleep(1);
         } catch (Exception e) {
-           // logger.info("sleep Interrupted");
+            logger.info("sleep Interrupted");
         }
 
-       // logger.info("wokeup to sleep ");
-
-
+        logger.info("wokeup to sleep ");
         return sotnserviceoperation;
-        //return null;
     }
+
     public ServiceOperation createSotnService(E2EServiceInstanceRequest requestBody) {
         Operation result = new Operation();
         try {
-           // logger.info("SO instantiate SOTN service is starting");
-                Response<ServiceOperation> sotnserviceresponse = soService.instantiateSOTNService(requestBody).execute();
-           // logger.info("SO instantiate SOTN service has finished");
+              logger.info("SO instantiate SOTN service is starting");
+              Response<ServiceOperation> sotnserviceresponse = soService.instantiateSOTNService(requestBody).execute();
+              logger.info("SO instantiate SOTN service has finished");
             if (sotnserviceresponse.isSuccessful()) {
-              //  logger.info("SO instantiate SOTN service is successful");
-                //result=sotnserviceresponse.body().getService();
+                logger.info("SO instantiate SOTN service is successful");
+                result=sotnserviceresponse.body().getService();
                 return sotnserviceresponse.body();
             } else {
-               // logger.error(String.format("Can not instantiate SOTN service[code=%s, message=%s]", sotnserviceresponse.code(), sotnserviceresponse.message()));
+                logger.error(String.format("Can not instantiate SOTN service[code=%s, message=%s]", sotnserviceresponse.code(), sotnserviceresponse.message()));
                 throw new SOException("SO instantiate SOTN service failed!");
             }
         } catch (Exception e) {
@@ -247,113 +230,94 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 
 
     public ServiceInstance getServiceInstancesInfo(String customerId, String serviceType, String serviceInstanceId) throws Exception {
-        //logger.info("Fire getServiceInstances : Begin");
+        logger.info("Fire getServiceInstances : Begin");
         ObjectMapper mapper = new ObjectMapper();
 
         Response<ResponseBody> response = this.aaiService.getServiceInstancesForEdge(customerId, serviceType, serviceInstanceId).execute();
         if (response.isSuccessful()) {
-          //  logger.info("Fire getServiceInstances : End");
+            logger.info("Fire getServiceInstances : End");
             String result = new String(response.body().bytes());
             ServiceInstance serviceInstance = mapper.readValue(result, ServiceInstance.class);
             return serviceInstance;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-           // logger.info("Fire getServiceInstances : Failed");
-
+            logger.info("Fire getServiceInstances : Failed");
         }
         return null;
     }
 
     private Connectivity getConnectivityInfo(String connectivityinstanceid) throws IOException {
-        //logger.info("Fire getServiceInstancesForEdge : Begin");
+        logger.info("Fire getServiceInstancesForEdge : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getConnectivityInformation(connectivityinstanceid).execute();
         if (response.isSuccessful()) {
-           // logger.info("Fire getServiceInstancesForEdge : End");
+            logger.info("Fire getServiceInstancesForEdge : End");
             String result = new String(response.body().bytes());
             Connectivity connectivity = mapper.readValue(result, Connectivity.class);
             return connectivity;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-           // logger.info("Fire getServiceInstancesForEdge : Failed");
-
+           logger.info("Fire getServiceInstancesForEdge : Failed");
         }
-
-
         return null;
     }
 
     public Pinterface getTerminationPoint(String pnfName, String tpId) throws Exception {
-        //logger.info("Fire getTerminationPoint : Begin");
+        logger.info("Fire getTerminationPoint : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        //Response<ResponseBody> response = this.aaiService.getPinterfaceByPnfName(pnfName,tpId).execute();
+        // Response<ResponseBody> response = this.aaiService.getPinterfaceByPnfName(pnfName,tpId).execute();
         Response<ResponseBody> response = this.aaiService.getTerminationPoint(pnfName, tpId).execute();
         if (response.isSuccessful()) {
-          //  logger.info("Fire getTerminationPoint : End");
+            logger.info("Fire getTerminationPoint : End");
             String result = new String(response.body().bytes());
             Pinterface pinterface = mapper.readValue(result, Pinterface.class);
             return pinterface;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-            //logger.info("Fire getTerminationPoint : Failed");
-
+            logger.info("Fire getTerminationPoint : Failed");
         }
-
         return null;
     }
     private AllottedResource getAllottedResource(String globalCustomerId, String serviceType, String siteserviceinstanceid, String allottedResourceId) throws IOException {
-       // logger.info("Fire getServiceInstancesForEdge : Begin");
+        logger.info("Fire getServiceInstancesForEdge : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getAllotedResourceFor5G(globalCustomerId, serviceType, siteserviceinstanceid, allottedResourceId).execute();
         if (response.isSuccessful()) {
-            //logger.info("Fire getServiceInstancesForEdge : End");
+            logger.info("Fire getServiceInstancesForEdge : End");
             String result = new String(response.body().bytes());
             AllottedResource allottedResource = mapper.readValue(result, AllottedResource.class);
             return allottedResource;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-            //logger.info("Fire getServiceInstancesForEdge : Failed");
-
+            logger.info("Fire getServiceInstancesForEdge : Failed");
         }
-
-
         return null;
     }
 
     private SiteResource getSiteResource(String siteResourceID) throws IOException {
-        //logger.info("Fire get site resource : Begin");
+        logger.info("Fire get site resource : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getSiteResourceInfo(siteResourceID).execute();
         if (response.isSuccessful()) {
-           // logger.info("Fire get site resource : End");
+            logger.info("Fire get site resource : End");
             String result = new String(response.body().bytes());
             SiteResource resource = mapper.readValue(result, SiteResource.class);
             return resource;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-           // logger.info("Fire get site resource : Failed");
-
+            logger.info("Fire get site resource : Failed");
         }
 
         return null;
     }
 
     private ComplexObj getComplexData(String complexID) throws IOException {
-       // logger.info("Fire get complex Object : Begin");
+        logger.info("Fire get complex Object : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getComplexObject(complexID).execute();
         if (response.isSuccessful()) {
-          //  logger.info("Fire get complex Object : End");
+            logger.info("Fire get complex Object : End");
             String result = new String(response.body().bytes());
             ComplexObj complexObj = mapper.readValue(result, ComplexObj.class);
             return complexObj;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-           // logger.info("Fire get complex Object : Failed");
-
+           logger.info("Fire get complex Object : Failed");
         }
-
-
         return null;
     }
 
@@ -381,8 +345,8 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             if (serviceInstance == null)
                 return null;
         } catch (Exception e) {
-//            logger.info("Query Service Instance information failed. No service information found for customer "
-//                    + customerId + " and Service Type " + subscriptionType);
+            logger.info("Query Service Instance information failed. No service information found for customer "
+                    + customerId + " and Service Type " + subscriptionType);
             return null;
         }
 
@@ -401,7 +365,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 Connectivity connectivity = getConnectivityInfo(connectivityinstanceid);
                 connectivityparams = new ObjectMapper().readValue(connectivity.toString(), HashMap.class);
             } catch (IOException e) {
-               // logger.info("IO Exception occured " + e.getMessage());
+                logger.info("IO Exception occured " + e.getMessage());
             }
             //nodeId-10.10.10.10-ltpId-147
             allottedpinterfaceid = "nodeId-" + connectivityparams.get("accessNodeId").toString() + "-ltpId-" + connectivityparams.get("accessLtpId").toString();
@@ -412,7 +376,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 if (linkstatus.equalsIgnoreCase("overloaded"))
                     linkstatus = "up";
             } catch (Exception e) {
-
+		logger.info("Exception: "+ e.getMessage());
             }
 
             List<Relationship> servicerelationList = relationship.stream()
@@ -427,8 +391,8 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                     if (siteservice == null)
                         return null;
                 } catch (Exception e) {
-//                    logger.info("Query Service Instance information failed. No service information found for customer "
-//                            + customerId + " and Service Type " + subscriptionType);
+                    logger.info("Query Service Instance information failed. No service information found for customer "
+                            + customerId + " and Service Type " + subscriptionType);
                     return null;
                 }
                 List<Relationship> ssrelationship = siteservice.getRelationshipList().getRelationship().stream()
@@ -447,7 +411,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                         externalltp = allottedResource.getAccessLtpId();
 
                     } catch (Exception e) {
-                      //  logger.info("Query Allotted resource for site service" + siteserviceinstanceid + " allotted resource Id " + allottedResourceId);
+                        logger.info("Query Allotted resource for site service" + siteserviceinstanceid + " allotted resource Id " + allottedResourceId);
                     }
 
 
@@ -485,8 +449,8 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                         site.put("attribute", attr);
                         sites.add(site);
                     } catch (Exception e) {
-//                        logger.info("Query Service Instance information failed. No service information found for customer "
-//                                + customerId + " and Service Type " + subscriptionType);
+                        logger.info("Query Service Instance information failed. No service information found for customer "
+                                + customerId + " and Service Type " + subscriptionType);
                         return null;
                     }
                 } else {
@@ -497,6 +461,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                         e2eserviceRequest = mapper.readValue(requestinput.toString(), new TypeReference<E2EServiceInstanceRequest>() {
                         });
                     } catch (IOException e) {
+			logger.info("IOException: "+ e.getMessage());
                     }
 
                     HashMap<String, ?> requestInputs = e2eserviceRequest.getService().getParameters().getRequestInputs();
@@ -535,7 +500,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 jsonresponse = new ObjectMapper().writeValueAsString(sites);
                 System.out.println(jsonresponse);
             } catch (IOException e) {
-
+		logger.info("IOException: "+ e.getMessage());
             }
 
         }
@@ -557,14 +522,14 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         try {
             serviceInstance = getServiceInstancesInfo(customerId, subscriptionType, serviceId);
             if (serviceInstance == null) {
-//                logger.info("Query Service Instance information failed. No service information found for customer "
-//                        + customerId + " and Service Type " + subscriptionType);
+                logger.info("Query Service Instance information failed. No service information found for customer "
+                        + customerId + " and Service Type " + subscriptionType);
                 return null;
             }
 
         } catch (Exception e) {
-//            logger.info("Query Service Instance information failed. No service information found for customer "
-//                    + customerId + " and Service Type " + subscriptionType);
+            logger.info("Query Service Instance information failed. No service information found for customer "
+                    + customerId + " and Service Type " + subscriptionType);
             return null;
         }
 
@@ -577,15 +542,15 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 
             String siteserviceId = siterelation.getRelatedLink().substring(siterelation.getRelatedLink().lastIndexOf("/") + 1);
             try {
-//                logger.info("so begin terminate site service " + siteserviceId);
+                logger.info("so begin terminate site service " + siteserviceId);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), requestStr);
                 Response<DeleteOperationRsp> response = soService.terminateService(siteserviceId, requestBody).execute();
-//                logger.info("so terminate has finished");
+                logger.info("so terminate has finished");
                 if (response.isSuccessful()) {
-//                    logger.info("so terminated site service " + siteserviceId + "successfully...");
+                    logger.info("so terminated site service " + siteserviceId + "successfully...");
 
                 } else {
-//                    logger.error(String.format("Can not terminate service " + siteserviceId + " [code=%s, message=%s]", response.code(), response.message()));
+                    logger.error(String.format("Can not terminate service " + siteserviceId + " [code=%s, message=%s]", response.code(), response.message()));
                     throw new SOException("SO terminate service failed!");
                 }
             } catch (IOException e) {
@@ -593,21 +558,21 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             }
         }
         try {
-//            logger.info("Began to sleep for " + sleeptime);
+            logger.info("Began to sleep for " + sleeptime);
             Thread.sleep(sleeptime);
         } catch (InterruptedException e) {
-//            logger.error(String.format("Thread Interruppted from sleep while deleting service subscription"));
+            logger.error(String.format("Thread Interruppted from sleep while deleting service subscription"));
         }
         try {
-//            logger.info("so begin terminate Connectivity service " + serviceId);
+            logger.info("so begin terminate Connectivity service " + serviceId);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), requestStr);
             Response<DeleteOperationRsp> response = soService.terminateService(serviceId, requestBody).execute();
-//            logger.info("so terminate has finished");
+            logger.info("so terminate has finished");
             if (response.isSuccessful()) {
-//                logger.info("so terminated connectivity service " + serviceId + "successfully...");
+                logger.info("so terminated connectivity service " + serviceId + "successfully...");
 
             } else {
-//                logger.error(String.format("Can not terminate service " + serviceId + " [code=%s, message=%s]", response.code(), response.message()));
+                logger.error(String.format("Can not terminate service " + serviceId + " [code=%s, message=%s]", response.code(), response.message()));
                 throw new SOException("SO terminate service failed!");
             }
             return response.body();
@@ -618,74 +583,79 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 
     public VpnBinding getSOTNPinterfaceByVpnId(String vpnId) throws Exception {
 
-       // logger.info("Fire getSOTNPinterfaceByVpnId : Begin");
+        logger.info("Fire getSOTNPinterfaceByVpnId : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getPinterfaceByVpnId(vpnId).execute();
 
         //Response<ResponseBody> response = this.aaiService.getSOTNPinterfaceByVpnId(vpnId).execute();
         if (response.isSuccessful()) {
-          //  logger.info("Fire getSOTNPinterfaceByVpnId : End");
+            logger.info("Fire getSOTNPinterfaceByVpnId : End");
             String result = new String(response.body().bytes());
             VpnBinding vpnBinding = mapper.readValue(result, VpnBinding.class);
             return vpnBinding;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-           // logger.info("Fire getSOTNPinterfaceByVpnId : Failed");
-
+           logger.info("Fire getSOTNPinterfaceByVpnId : Failed");
         }
         return null;
     }
 
 
     public Pnf getSOTNPnf(String pnfname) throws Exception {
+	logger.info("Fire getSOTNPnf : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getPnfInfo(pnfname).execute();
         if (response.isSuccessful()) {
-           // logger.info("Fire getSOTNLinkbyName : End");
+            logger.info("Fire getSOTNPnf : End");
             String result = new String(response.body().bytes());
             Pnf pnf = mapper.readValue(result, Pnf.class);
             return pnf;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-           // logger.info("Fire get SOTN PnF by Name : Failed" + pnfname);
+           logger.info("Fire get SOTN PnF by Name : Failed" + pnfname);
         }
         return null;
     }
 
     public LogicalLink getSOTNLinkbyName(String linkName) throws Exception {
-       // logger.info("Fire getSOTNLinkbyName : Begin");
+        logger.info("Fire getSOTNLinkbyName : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getSpecificLogicalLink(linkName).execute();
         if (response.isSuccessful()) {
-          //  logger.info("Fire getSOTNLinkbyName : End");
+            logger.info("Fire getSOTNLinkbyName : End");
             String result = new String(response.body().bytes());
             LogicalLink logicalLink = mapper.readValue(result, LogicalLink.class);
             return logicalLink;
-            //System.out.println("Response received : "+response.body().bytes());
         } else {
-           // logger.info("Fire getSOTNLinkbyName : Failed");
+           logger.info("Fire getSOTNLinkbyName : Failed");
         }
         return null;
     }
 
     public Uni getUNIInfo(String uniId) throws Exception {
+        logger.info("Fire getUNIInfo : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getUNIInfo(uniId).execute();
         if (response.isSuccessful()) {
+            logger.info("Fire getUNIInfo : Begin");
             String result = new String(response.body().bytes());
             Uni uni = mapper.readValue(result, Uni.class);
             return uni;
-        }
+        } else {
+	   logger.info("Fire getUNIInfo : Failed");
+	}
         return null;
     }
 
     public Vnfs getVnfs(String vnfId) throws Exception {
+        logger.info("Fire getVnfs : Begin");
         ObjectMapper mapper = new ObjectMapper();
         Response<ResponseBody> response = this.aaiService.getVNFsDetail(vnfId).execute();
         if (response.isSuccessful()) {
+	    logger.info("Fire getVnfs : End");
             String result = new String(response.body().bytes());
             Vnfs vnf = mapper.readValue(result, Vnfs.class);
             return vnf;
+        } else {
+            logger.info("Fire getVnfs : Failed");
         }
         return null;
     }
@@ -757,6 +727,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 edges.add(getEdge(vpn.getId(),vpnpinterface.getId()));
             }
         } catch (Exception ex) {
+	    logger.info("Exception: "+ ex);
         }
         ResourceResponse resourceResponse = new ResourceResponse();
         resourceResponse.setNodes(nodes);
@@ -794,6 +765,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 nodes.add(serviceNode);
             }
         } catch (Exception e) {
+            logger.info("Exception: "+ e);
             return null;
         }
         //----------------------------- GET SERVICE INSTANCE INFORMATION FROM AAI : END ---------------------------------------
@@ -804,7 +776,8 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 .equalsIgnoreCase("generic-vnf")).collect(Collectors.toList());
         if (relationship.size() > 0 && relationship != null) {
             relationship = serviceInstance.getRelationshipList().getRelationship();
-            Vnfs vnf = getVnfs(relationship.get(0).getRelatedTo());
+            String relatedLinkID = relationship.get(0).getRelatedLink();
+            Vnfs vnf = getVnfs(relatedLinkID.substring(relatedLinkID.lastIndexOf("/") + 1));
             relationship = vnf.getRelationshipList().getRelationship();
 
             ObjectMapper serviceMapper = new ObjectMapper();
@@ -834,7 +807,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 nodes.add(connode);
                 edges.add(getEdge(vnf.getVnfInstanceId(), connectivityparams.get("connectivityId").toString()));
             } catch (IOException e) {
-                // logger.info("IO Exception occured " + e.getMessage());
+                logger.info("IO Exception occured " + e.getMessage());
             }
 
             //Query Connectivity : End
@@ -843,8 +816,8 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             if (relationship1.size() > 0 && relationship1 != null) {
                 for (Relationship rel : relationship1) {
                     try {
-                        String s = rel.getRelatedLink();
-                        String uniId = s.substring(s.lastIndexOf("/")+1);
+                        String uniLink = rel.getRelatedLink();
+                        String uniId = uniLink.substring(uniLink.lastIndexOf("/")+1);
                         Uni uniInfo = getUNIInfo(uniId);
                         Node uuinode = getNode(uniInfo.getId(), uniInfo.getId(), "edge.png");
                         ObjectMapper uuiMapper = new ObjectMapper();
@@ -888,7 +861,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                         }
 
                     } catch (IOException e) {
-                        // logger.info("IO Exception occured " + e.getMessage());
+                        logger.info("IO Exception occured " + e.getMessage());
                     }
                 }
                 //Query UNI : End
@@ -906,6 +879,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 vpnBinding = getSOTNPinterfaceByVpnId(vpnid);
                 vpnInformation = vpnBinding.getVpnBinding().get(0);
             } catch (Exception e) {
+		logger.info("Exception:"+e.getMessage());
             }
 
             ObjectMapper mapper = new ObjectMapper();
@@ -938,12 +912,14 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                     Pinterface pinterface = getTerminationPoint(parentaccessnode, pinterfaceid);
                     edges.add(getEdge(vpn.getId(), pinterface.getInterfaceName()));
                 } catch (Exception e) {
+		    logger.info("Exception:"+e.getMessage());
                 }
             }
         }
         ResourceResponse resourceResponse = new ResourceResponse();
         resourceResponse.setNodes(nodes);
         resourceResponse.setEdges(edges);
+	logger.info("Service Topology:"+resourceResponse.toString());
         return resourceResponse.toString();
     }
 
@@ -981,8 +957,8 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             if (serviceInstance == null)
                 return null;
         } catch (Exception e) {
-//            logger.info("Query Service Instance information failed. No service information found for customer "
-//                    + customerId + " and Service Type " + subscriptionType);
+            logger.info("Query Service Instance information failed. No service information found for customer "
+                    + customerId + " and Service Type " + subscriptionType);
             return null;
         }
 
@@ -1020,7 +996,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 nodes.add(connode);
 
             } catch (IOException e) {
-               // logger.info("IO Exception occured " + e.getMessage());
+               logger.info("IO Exception occured " + e.getMessage());
             }
             //Query Connectivity : End
 
@@ -1037,6 +1013,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 vpnBinding = getSOTNPinterfaceByVpnId(vpnid);
                 vpnInformation = vpnBinding.getVpnBinding().get(0);
             } catch (Exception e) {
+		logger.info("Exception occured " + e.getMessage());
             }
             Node vpn = new Node();
             vpn.setId(vpnInformation.getVpnId());
@@ -1164,6 +1141,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                     }
 
                 } catch (Exception e) {
+		    logger.info("Exception occured " + e.getMessage());
                 }
             }
             //Query logical Link : Begin
@@ -1190,6 +1168,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 tptologicallinkedge.setTo(logiclink.getId());
                 edges.add(tptologicallinkedge);
             } catch (Exception e) {
+		logger.info("Exception occured " + e.getMessage());
             }
 
             List<Relationship> llrelationlist = logicallink.getRelationshipList().getRelationship().stream().filter(llrelation -> llrelation.getRelatedTo()
@@ -1284,7 +1263,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         }
         resourceResponse.setNodes(nodes);
         resourceResponse.setEdges(edges);
-        System.out.println(jsonresponse);
+        logger.info("jsonresponse: "+jsonresponse);
         return resourceResponse.toString();
     }
 
@@ -1306,11 +1285,16 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         //----------------------------- GET SERVICE INSTANCE INFORMATION FROM AAI : BEGIN ---------------------------------------
         try {
             serviceInstance = getServiceInstancesInfo(customerId, subscriptionType, instanceid);
-            if (serviceInstance == null)
+            if (serviceInstance == null) {
+                logger.info("Query site Service Instance information failed. No service information found for customer "
+                        + customerId + " and Service Type " + subscriptionType);
                 return null;
+            } else {
+                logger.info("Instance Name is:"+serviceInstance.getServiceInstanceName()+", Instance ID is: "+ serviceInstance.getServiceInstanceId());
+            }
         } catch (Exception e) {
-//            logger.info("Query Service Instance information failed. No service information found for customer "
-//                    + customerId + " and Service Type " + subscriptionType);
+            logger.info("Query Service Instance information failed. No service information found for customer "
+                    + customerId + " and Service Type " + subscriptionType);
             return null;
         }
 
@@ -1329,7 +1313,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                             connectivityparams = new ObjectMapper().readValue(connectivity.toString(), HashMap.class);
 
                         } catch (IOException e) {
-                            //logger.info("IO Exception occured " + e.getMessage());
+                            logger.info("IO Exception occured " + e.getMessage());
                         }
 
                         break;
@@ -1341,13 +1325,13 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                         try {
                             siteservice = getServiceInstancesInfo(customerId, subscriptionType, siteserviceinstanceid);
                             if (siteservice == null) {
-//                                logger.info("Query site Service Instance information failed. No service information found for customer "
-//                                        + customerId + " and Service Type " + subscriptionType);
+                                logger.info("Query site Service Instance information failed. No service information found for customer "
+                                        + customerId + " and Service Type " + subscriptionType);
                                 return null;
                             }
                         } catch (Exception e) {
-//                            logger.info("Query site Instance information failed. No service information found for customer "
-//                                    + customerId + " and Service Type " + subscriptionType);
+                            logger.info("Query site Instance information failed. No service information found for customer "
+                                    + customerId + " and Service Type " + subscriptionType);
                             return null;
                         }
                         List<Relationship> ssrelationship = siteservice.getRelationshipList().getRelationship().stream()
@@ -1396,8 +1380,8 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 //                                site.put("attribute", attr);
                                 sites.add(site);
                             } catch (Exception e) {
-                               // logger.info("Query Service Instance information failed. No service information found for customer "
-                                  //      + customerId + " and Service Type " + subscriptionType);
+                                logger.info("Query Service Instance information failed. No service information found for customer "
+                                        + customerId + " and Service Type " + subscriptionType);
                                 return null;
                             }
                         } else {
@@ -1408,7 +1392,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                                 e2eserviceRequest = mapper.readValue(requestinput.toString(), new TypeReference<E2EServiceInstanceRequest>() {
                                 });
                             } catch (IOException e) {
-                               // logger.info("Query remove Service Instance information failed" + e.getMessage());
+                                logger.info("Query remove Service Instance information failed" + e.getMessage());
                             }
 
                             HashMap<String, ?> requestInputs = e2eserviceRequest.getService().getParameters().getRequestInputs();
@@ -1535,17 +1519,67 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             try {
 
                 jsonresponse = new ObjectMapper().writeValueAsString(response);
-                System.out.println(jsonresponse);
+                logger.info("jsonresponse:"+ jsonresponse);
             } catch (IOException e) {
-
+		logger.info("IO Exception occured " + e.getMessage());
             }
 
         } else {
             //This is DWAN service
+	    logger.info("There is no logic for get Service");
         }
 
         //----------------------------- GET SERVICE INSTANCE INFORMATION FROM AAI : END -----------------------------------------
         return jsonresponse;
     }
 
+    @Override
+    public String getSOTNInstantiationstatus(String instanceid) {
+        ServiceInstantiationResponse serviceInstantiationResponse = new ServiceInstantiationResponse();
+        ServiceInstance infraInstance = null;
+        ServiceInstance siteInstance = null;
+        ModelConfig modelConfig = readFile();
+        String subscriptionType = modelConfig.getSubscriptionType();
+        String customerId = modelConfig.getSubscriberId();
+        int activatedsitecount = 0;
+        try {
+            infraInstance = getServiceInstancesInfo(customerId, subscriptionType, instanceid);
+            if (infraInstance == null)
+                return null;
+        } catch (Exception e) {
+             logger.info("Query Service Instance information failed. No service information found for customer "
+                 + customerId + " and Service Type " + subscriptionType);
+            return null;
+        }
+        if (infraInstance.getOrchestrationstatus().equalsIgnoreCase("Assigned") || infraInstance.getOrchestrationstatus().equalsIgnoreCase("Active")) {
+            activatedsitecount = activatedsitecount + 1;
+            List<Relationship> infrarelationlist = infraInstance.getRelationshipList().getRelationship().stream().filter(relation -> relation.getRelatedTo().equalsIgnoreCase("service-instance"))
+                    .collect(Collectors.toList());
+            for (Relationship relation : infrarelationlist) {
+                String siteservice = relation.getRelatedLink().substring(relation.getRelatedLink().lastIndexOf("/") + 1);
+                try {
+                    siteInstance = getServiceInstancesInfo(customerId, subscriptionType, siteservice);
+                    if (infraInstance == null) {
+                        serviceInstantiationResponse.setStatus("0");
+                        return serviceInstantiationResponse.toString();
+                    }
+                } catch (Exception e) {
+                    logger.info("Query Service Instance information failed. No service information found for customer "
+                      + customerId + " and Service Type " + subscriptionType);
+                    serviceInstantiationResponse.setStatus("0");
+                    return serviceInstantiationResponse.toString();
+                }
+                if (siteInstance.getOrchestrationstatus().equalsIgnoreCase("Assigned") || siteInstance.getOrchestrationstatus().equalsIgnoreCase("Active")) {
+                    activatedsitecount = activatedsitecount + 1;
+                } else {
+                    break;
+                }
+            }
+        } else {
+            serviceInstantiationResponse.setStatus("0");
+        }
+        if (activatedsitecount == 3)
+            serviceInstantiationResponse.setStatus("1");
+        return serviceInstantiationResponse.toString();
+    }
 }

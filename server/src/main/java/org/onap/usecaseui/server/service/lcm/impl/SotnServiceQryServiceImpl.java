@@ -104,7 +104,7 @@ public class SotnServiceQryServiceImpl implements SotnServiceQryService {
 
     public ModelConfig readFile() {
         JSONParser parser = new JSONParser();
-        ClassLoader classLoader = new CcvpnCustomerServiceImpl().getClass().getClassLoader();
+        ClassLoader classLoader = new SotnServiceQryServiceImpl().getClass().getClassLoader();
         File file = new File(classLoader.getResource("modelconfig.json").getFile());
         ObjectMapper mapper = new ObjectMapper();
         try {
