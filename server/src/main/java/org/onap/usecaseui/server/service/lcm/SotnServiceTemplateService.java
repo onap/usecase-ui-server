@@ -30,4 +30,5 @@ public interface SotnServiceTemplateService {
     public String getService(String subscriptionType, String instanceid);
     public String getServiceInformationTopology(String subscriptionType, String instanceid) throws Exception;
     public String getVPNBindingInformationTopology(String subscriptionType, String instanceid, String vpnId) throws Exception;
+    public String getSOTNInstantiationstatus(String serviceid);
 }
