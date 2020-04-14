@@ -112,4 +112,11 @@ public class SotnServiceLcmController {
         logger.info("Vpn Binding topology called.");
         return sotnServiceTemplateService.getVPNBindingInformationTopology(servicetype, serviceInstanceId, vpinId);
     }
+
+    @ResponseBody
+    @GetMapping(value = {"/uui-lcm/Sotnservices/serviceStatus/service-instance/{instanceid}"}, produces = "application/json")
+    public String getSotnServicestatus(@PathVariable("instanceid") String instanceid) {
+        logger.info("service status called.");
+        return sotnServiceTemplateService.getSOTNInstantiationstatus(instanceid);
+    }
 }
