@@ -41,6 +41,8 @@ import org.onap.usecaseui.server.bean.activateEdge.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import retrofit2.Response;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.RelationshipData;
 
@@ -80,35 +82,26 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     }
 
     public ModelConfig readFile() {
-        JSONParser parser = new JSONParser();
-        ClassLoader classLoader = new SotnServiceQryServiceImpl().getClass().getClassLoader();
-        File file = new File(classLoader.getResource("modelconfig.json").getFile());
         ObjectMapper mapper = new ObjectMapper();
-
         try {
-            Object object = parser.parse(new FileReader(file));
-            ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
-            });
-
+            Resource resource = new ClassPathResource("modelconfig.json");
+            ModelConfig modelInformation = mapper.readValue(resource.getInputStream(), ModelConfig.class);
+            System.out.println("modelconfig.json: " + modelInformation.getSubscriberId() );
             return modelInformation;
-        } catch (ParseException | IOException ex) {
+        } catch (IOException ex) {
             logger.error("Exception occured while reading configuration file:" + ex);
             return null;
         }
     }
-
     public ModelConfig readFile_unni(){
-        JSONParser parser = new JSONParser();
-        ClassLoader classLoader = new SotnServiceQryServiceImpl().getClass().getClassLoader();
-        File file = new File(classLoader.getResource("modelconfigunni.json").getFile());
-       ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            Object object = parser.parse(new FileReader(file));
-            ModelConfig modelInformation = mapper.readValue(object.toString(), new TypeReference<ModelConfig>() {
-            });
+            Resource resource = new ClassPathResource("modelconfigunni.json");
+            ModelConfig modelInformation = mapper.readValue(resource.getInputStream(), ModelConfig.class);
+            System.out.println("modelconfigunni.json: " + modelInformation.getSubscriberId() );
             return modelInformation;
-        } catch (ParseException | IOException ex) {
-           // logger.error("Exception occured while reading configuration file:" + ex);
+        } catch (IOException ex) {
+            logger.error("Exception occured while reading configuration file:" + ex);
             return null;
         }
     }
@@ -154,7 +147,6 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
               logger.info("SO instantiate SOTN service has finished");
             if (sotnserviceresponse.isSuccessful()) {
                 logger.info("SO instantiate SOTN service is successful");
-                result=sotnserviceresponse.body().getService();
                 return sotnserviceresponse.body();
             } else {
                 logger.error(String.format("Can not instantiate SOTN service[code=%s, message=%s]", sotnserviceresponse.code(), sotnserviceresponse.message()));
@@ -857,6 +849,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                                 edges.add(getEdge(uniInfo.getId(), unipinterface.getId()));
 
                             } catch (Exception e) {
+				logger.info("Exception:"+e.getMessage());
                             }
                         }
 
