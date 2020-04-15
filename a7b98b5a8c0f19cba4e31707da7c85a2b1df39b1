@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb417331_deabd04f",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/customer/impl/CcvpnCustomerServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2020-04-15T03:10:34Z",
+      "side": 1,
+      "message": "I think maybe when we print the log, the placeholder {} is a better way than \"+\".",
+      "range": {
+        "startLine": 149,
+        "startChar": 12,
+        "endLine": 149,
+        "endChar": 84
+      },
+      "revId": "a7b98b5a8c0f19cba4e31707da7c85a2b1df39b1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e720a068_82d03541",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/lcm/impl/SotnServiceQryServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2020-04-15T03:10:34Z",
+      "side": 1,
+      "message": "I think maybe when we print the log, the placeholder {} is a better way than \"+\"",
+      "range": {
+        "startLine": 112,
+        "startChar": 12,
+        "endLine": 112,
+        "endChar": 84
+      },
+      "revId": "a7b98b5a8c0f19cba4e31707da7c85a2b1df39b1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "07785f72_71019f24",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/lcm/impl/SotnServiceTemplateServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2020-04-15T03:10:34Z",
+      "side": 1,
+      "message": "Please do not use system.out.println to print logs, thank you!",
+      "range": {
+        "startLine": 89,
+        "startChar": 12,
+        "endLine": 89,
+        "endChar": 91
+      },
+      "revId": "a7b98b5a8c0f19cba4e31707da7c85a2b1df39b1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1e11260_55df73c7",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/lcm/impl/SotnServiceTemplateServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2020-04-15T03:10:34Z",
+      "side": 1,
+      "message": "Please do not use system.out.println to print logs, thank you!",
+      "range": {
+        "startLine": 101,
+        "startChar": 12,
+        "endLine": 101,
+        "endChar": 95
+      },
+      "revId": "a7b98b5a8c0f19cba4e31707da7c85a2b1df39b1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
