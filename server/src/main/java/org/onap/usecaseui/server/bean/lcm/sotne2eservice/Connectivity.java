@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;

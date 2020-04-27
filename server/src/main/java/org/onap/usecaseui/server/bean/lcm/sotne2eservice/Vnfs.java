@@ -20,9 +20,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.onap.usecaseui.server.bean.activateEdge.RelationshipList;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "vnf-id",

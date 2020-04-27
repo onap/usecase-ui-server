@@ -17,7 +17,6 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.immutables.value.internal.$processor$.meta.$GsonMirrors;
 
 import java.util.List;
 
