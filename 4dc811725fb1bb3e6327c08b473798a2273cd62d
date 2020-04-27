@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e41f3a94_7d287c74",
+        "filename": "server/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2020-04-27T11:53:17Z",
+      "side": 1,
+      "message": "Hello, please indent this line the same as other lines, thank you!",
+      "revId": "4dc811725fb1bb3e6327c08b473798a2273cd62d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
