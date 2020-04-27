@@ -18,11 +18,8 @@ package org.onap.usecaseui.server.controller.lcm;
 import org.onap.usecaseui.server.service.customer.CcvpnCustomerService;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.SotnServiceQryService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
-import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Controller
 @org.springframework.context.annotation.Configuration

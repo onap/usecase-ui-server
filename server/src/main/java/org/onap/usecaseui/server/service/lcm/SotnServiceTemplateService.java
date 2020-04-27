@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.service.lcm;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
 public interface SotnServiceTemplateService {

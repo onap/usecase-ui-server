@@ -19,12 +19,10 @@ package org.onap.usecaseui.server.service.lcm.domain.aai;
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAINetworkInterfaceResponse;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIOrchestratorRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAISingleOrchestratorRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 
