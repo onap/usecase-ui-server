@@ -83,6 +83,7 @@ public class ServiceLcmController {
     	if(UuiCommonUtil.isNotNullOrEmpty(operationProgressInformation)&&UuiCommonUtil.isNotNullOrEmpty(operationProgressInformation.getOperationStatus())){
     		//serviceLcmService.updateServiceInstanceStatusById(operationProgressInformation.getOperationStatus().getResult(), serviceId);
     		int progress =operationProgressInformation.getOperationStatus().getProgress();
+		String status = operationProgressInformation.getOperationStatus().getOperationContent().toLowerCase();
     		if (status.contains("failed")) {
 			operationResult = CommonConstant.FAIL_CODE;
 		} else {
