@@ -325,8 +325,9 @@ public class DefaultCustomerService implements CustomerService {
                 PInterface pInterface = result.getPinterface();
                 niList.add(pInterface.getInterfaceName());
             }
-        }
-
+        
+	}
+	Collections.sort(niList);
         return niList;
     }
 
