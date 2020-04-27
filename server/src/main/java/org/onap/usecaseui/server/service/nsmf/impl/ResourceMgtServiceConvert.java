@@ -55,7 +55,6 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceRsp;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
