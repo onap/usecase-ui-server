@@ -16,7 +16,6 @@
 package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.immutables.value.internal.$processor$.meta.$GsonMirrors;
 
 
 public class ModelInfor {
