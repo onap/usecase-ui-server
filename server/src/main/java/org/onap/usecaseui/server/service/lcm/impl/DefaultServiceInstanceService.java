@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 import javax.annotation.Resource;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
@@ -32,7 +31,6 @@ import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstanceRsp;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;

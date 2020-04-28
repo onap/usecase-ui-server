@@ -18,8 +18,6 @@ package org.onap.usecaseui.server.service.customer.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import okhttp3.ResponseBody;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import org.onap.usecaseui.server.bean.customer.ServiceInstance;
 import org.onap.usecaseui.server.bean.customer.ServiceInstances;
@@ -40,7 +38,6 @@ import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;

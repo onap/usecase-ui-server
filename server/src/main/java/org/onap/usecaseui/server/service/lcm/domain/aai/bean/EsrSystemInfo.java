@@ -17,7 +17,6 @@
 package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.immutables.value.internal.$processor$.meta.$JacksonMirrors;
 
 public class EsrSystemInfo {
 

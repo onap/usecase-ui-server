@@ -15,9 +15,6 @@
  */
 package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
 
 public class resourcemodelinformation {
 
