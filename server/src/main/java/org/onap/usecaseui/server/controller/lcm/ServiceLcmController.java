@@ -83,12 +83,17 @@ public class ServiceLcmController {
     	if(UuiCommonUtil.isNotNullOrEmpty(operationProgressInformation)&&UuiCommonUtil.isNotNullOrEmpty(operationProgressInformation.getOperationStatus())){
     		//serviceLcmService.updateServiceInstanceStatusById(operationProgressInformation.getOperationStatus().getResult(), serviceId);
     		int progress =operationProgressInformation.getOperationStatus().getProgress();
-    		if(0<=progress&&progress<100){
-    			operationResult= CommonConstant.IN_PROGRESS_CODE;
-    		}else if(progress==100){
-    			operationResult= CommonConstant.SUCCESS_CODE;
-    		}
-    		serviceLcmService.updateServiceInstanceOperation(serviceId,operationType,progress+"",operationResult);
+                String status = operationProgressInformation.getOperationStatus().getOperationContent().toLowerCase();
+    		if (status.contains("failed")) {
+			operationResult = CommonConstant.FAIL_CODE;
+		} else {
+			if(0<=progress&&progress<100){
+				operationResult= CommonConstant.IN_PROGRESS_CODE;
+			}else if(progress==100){
+		   		operationResult= CommonConstant.SUCCESS_CODE;
+			  		}
+			}
+		serviceLcmService.updateServiceInstanceOperation(serviceId,operationType,progress+"",operationResult);
     	}
     	return operationProgressInformation;
     }

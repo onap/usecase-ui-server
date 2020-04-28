@@ -351,7 +351,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @PUT("/api/aai-query/v16?format=resource")
+    @PUT("/api/aai-query/v19?format=resource")
     Call<ResponseBody> querynNetworkResourceList(@Body RequestBody body);
     @Headers({
             "X-TransactionId: 7777",
