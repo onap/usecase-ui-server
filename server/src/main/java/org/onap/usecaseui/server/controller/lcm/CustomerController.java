@@ -23,6 +23,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,49 +51,49 @@ public class CustomerController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/customers"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/customers"} , produces = "application/json")
     public List<AAICustomer> getCustomers(){
         return customerService.listCustomer();
     }
     
     @ResponseBody
-    @RequestMapping(value={"/uui-lcm/customers/{customerId}"},method = RequestMethod.PUT,produces="application/json")
+    @PutMapping(value={"/uui-lcm/customers/{customerId}"},produces="application/json")
     public JSONObject createOrUpdateCustomer(HttpServletRequest request,@PathVariable String customerId){
     	return customerService.createOrUpdateCustomer(request, customerId);
     }
     
     @ResponseBody
-    @RequestMapping(value={"/uui-lcm/customers/{customerId}"},method = RequestMethod.GET,produces="application/json")
+    @GetMapping(value={"/uui-lcm/customers/{customerId}"},produces="application/json")
     public JSONObject getCustomerById(@PathVariable String customerId){
     	return customerService.getCustomerById(customerId);
     }
     
     @ResponseBody
-    @RequestMapping(value={"/uui-lcm/customers"},method = RequestMethod.DELETE,produces="application/json")
+    @DeleteMapping(value={"/uui-lcm/customers"},produces="application/json")
     public JSONObject deleteCustomer(@RequestParam String customerId,@RequestParam String resourceVersion){
     	return customerService.deleteCustomer(customerId,resourceVersion);
     }
     
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/customers/{customerId}/service-subscriptions"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/customers/{customerId}/service-subscriptions"} , produces = "application/json")
     public List<AAIServiceSubscription> getServiceSubscriptions(@PathVariable(value="customerId") String customerId){
         return customerService.listServiceSubscriptions(customerId);
     }
     
     @ResponseBody
-    @RequestMapping(value={"/uui-lcm/customers/{customerId}/service-subscriptions/{serviceType}"},method = RequestMethod.PUT,produces="application/json")
+    @PutMapping(value={"/uui-lcm/customers/{customerId}/service-subscriptions/{serviceType}"},produces="application/json")
     public JSONObject createOrUpdateServiceType(HttpServletRequest request,@PathVariable String serviceType,@PathVariable String customerId){
     	return customerService.createOrUpdateServiceType(request, serviceType,customerId);
     }
     
     @ResponseBody
-    @RequestMapping(value={"/uui-lcm/customers/{customerId}/service-subscriptions/{serviceType}"},method = RequestMethod.DELETE,produces="application/json")
+    @DeleteMapping(value={"/uui-lcm/customers/{customerId}/service-subscriptions/{serviceType}"},produces="application/json")
     public JSONObject deleteServiceType(@PathVariable String customerId,@PathVariable String serviceType,@RequestParam String resourceVersion){
     	return customerService.deleteServiceType(customerId,serviceType,resourceVersion);
     }
     
     @ResponseBody
-    @RequestMapping(value={"/uui-lcm/customers/{customerId}/service-subscriptions/{serviceType}"},method = RequestMethod.GET,produces="application/json")
+    @GetMapping(value={"/uui-lcm/customers/{customerId}/service-subscriptions/{serviceType}"}, produces="application/json")
     public JSONObject getServiceTypeById(@PathVariable String customerId,@PathVariable String serviceType){
     	return customerService.getServiceTypeById(customerId,serviceType);
     }
