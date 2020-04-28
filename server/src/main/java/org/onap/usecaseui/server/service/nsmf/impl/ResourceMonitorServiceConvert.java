@@ -19,7 +19,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.beanutils.BeanUtils;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceOnlineUserInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceTotalBandwidthInfo;

@@ -14,8 +14,6 @@ package org.onap.usecaseui.server.service.slicingdomain.aai.bean;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class AAIServiceAndInstance {
 
     private String serviceInstanceId;

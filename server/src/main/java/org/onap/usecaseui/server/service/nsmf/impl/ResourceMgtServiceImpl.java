@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.service.nsmf.impl;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.ParseException;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
