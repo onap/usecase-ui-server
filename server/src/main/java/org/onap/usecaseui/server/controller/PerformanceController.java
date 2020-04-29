@@ -40,6 +40,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,7 +73,7 @@ public class PerformanceController {
 
     private ObjectMapper omPerformance = new ObjectMapper();
     
-    @RequestMapping(value = {"/performance/{currentPage}/{pageSize}"},method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = {"/performance/{currentPage}/{pageSize}"}, produces = "application/json")
     public String getPerformanceData(@PathVariable String currentPage,
                                      @PathVariable String pageSize,
                                      @RequestParam(required = false) String sourceName,
@@ -95,7 +96,7 @@ public class PerformanceController {
         }
     }
     
-    @RequestMapping(value = {"/performance/queryAllSourceNames"},method = RequestMethod.GET)
+    @GetMapping(value = {"/performance/queryAllSourceNames"})
     public String getSourceIds(){
         try {
             return omPerformance.writeValueAsString(performanceHeaderService.queryAllSourceNames());
@@ -122,7 +123,7 @@ public class PerformanceController {
         return string;
     }
     
-    @RequestMapping(value = {"/performance/getSourceNames/{currentPage}/{pageSize}"},method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = {"/performance/getSourceNames/{currentPage}/{pageSize}"}, produces = "application/json")
     public String getPerformanceSourceNames(@PathVariable String currentPage,@PathVariable String pageSize,
             @RequestParam(required = false) String sourceName) throws JsonProcessingException{
         PerformanceHeader performanceHeader = new PerformanceHeader.PerformanceHeaderBuilder().createPerformanceHeader();

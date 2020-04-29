@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -101,7 +102,7 @@ public class AlarmController
 	 * test commit
 	 * @throws ParseException 
 	 */
-    @RequestMapping(value = {"/alarm/{currentPage}/{pageSize}"}, method = RequestMethod.GET,
+    @GetMapping(value = {"/alarm/{currentPage}/{pageSize}"},
             produces = "application/json")
     public String getAlarmData(@RequestParam(required = false) String sourceName,
             @RequestParam(required = false) String priority, @RequestParam(required = false) String startTime,
@@ -129,7 +130,7 @@ public class AlarmController
         }
     }
 
-    @RequestMapping(value = {"/alarm/sourceId"},method = RequestMethod.GET)
+    @GetMapping(value = {"/alarm/sourceId"})
     public String getSourceId() throws JsonProcessingException{
         List<String> sourceIds = new ArrayList<>();
        Page page  = alarmsHeaderService.queryAlarmsHeader(new AlarmsHeader(), 1, Integer.MAX_VALUE);
@@ -153,7 +154,7 @@ public class AlarmController
         return omAlarm.writeValueAsString(sourceIds);
     }
     
-    @RequestMapping(value = {"/alarm/getSourceNames"},method = RequestMethod.GET,produces = "application/json")
+    @GetMapping(value = {"/alarm/getSourceNames"},produces = "application/json")
     public String getSourceNames() throws JsonProcessingException{
        Set<String> sourceNames = new HashSet<>();
        Page<AlarmsHeader> page  = alarmsHeaderService.queryAlarmsHeader(new AlarmsHeader(), 1, Integer.MAX_VALUE);
@@ -174,7 +175,7 @@ public class AlarmController
         return omAlarm.writeValueAsString(sourceNames);
     }
     
-    @RequestMapping(value = {"/alarm/diagram"},method = RequestMethod.GET,produces = "application/json")
+    @GetMapping(value = {"/alarm/diagram"},produces = "application/json")
     public String diagram(@RequestParam String sourceName, @RequestParam(required = false) String startTime,
             @RequestParam(required = false) String endTime, @RequestParam String format) {
         long timeInterval = 0;
@@ -250,7 +251,7 @@ public class AlarmController
         return result;
     }
     
-    @RequestMapping(value = "/alarm/statusCount", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "/alarm/statusCount", produces = "application/json")
     public String getStatusCount() throws JsonProcessingException {
         List<String> statusCount = new ArrayList<>();
 
@@ -277,7 +278,7 @@ public class AlarmController
         return string;
     }
     
-    @RequestMapping(value="/listSortMasters",method=RequestMethod.GET,produces = "application/json;charset=utf8")
+    @GetMapping(value="/listSortMasters",produces = "application/json;charset=utf8")
     public String getSortMasterInfo() throws JsonProcessingException{
     	Map<String,List<SortMaster>> map = new HashMap<>();
     	List<SortMaster> operationTypes = alarmsHeaderService.listSortMasters("operationType");
