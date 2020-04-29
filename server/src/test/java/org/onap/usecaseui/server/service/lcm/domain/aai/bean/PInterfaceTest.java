@@ -1,11 +1,8 @@
-package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
-
-import org.junit.After;
-import org.junit.Before;
-
 /**
  * Copyright (C) 2020 Huawei, Inc. and others. All rights reserved.
- *
+ *===================================================================
+ * Modifications Copyright (C) 2020 IBM.
+ * ===================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,32 +16,19 @@ import org.junit.Before;
  * limitations under the License.
  */
 
+package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 public class PInterfaceTest {
 
-    @Before
-    public void before() throws Exception {
-    }
-
-    @After
-    public void after() throws Exception {
-    }
-
-    public void pinterface() throws  Exception
+    @Test
+    public void testGetMethods() throws  Exception
     {
         PInterface pInterface = new PInterface();
         RelationshipList relationshipList = new RelationshipList();
-
-        pInterface.getInMaint();
-        pInterface.getInterfaceName();
-        pInterface.getInterfaceType();
-        pInterface.getNetworkInterfaceType();
-        pInterface.getOperationalStatus();
-        pInterface.getNetworkRef();
-        pInterface.getPortDescription();
-        pInterface.getRelationshipList();
-        pInterface.getResourceVersion();
-        pInterface.getSpeedUnits();
-        pInterface.getSpeedValue();
 
         pInterface.setInMaint("123");
         pInterface.setInterfaceName("123");
@@ -56,7 +40,19 @@ public class PInterfaceTest {
         pInterface.setPortDescription("123");
         pInterface.setSpeedValue("123");
         pInterface.setSpeedUnits("123");
+        pInterface.setResourceVersion("1.0.0");
 
+        Assert.assertEquals(pInterface.getInMaint(),"123");
+        Assert.assertEquals(pInterface.getInterfaceName(),"123");
+        Assert.assertEquals(pInterface.getInterfaceType(),"123");
+        Assert.assertEquals(pInterface.getNetworkInterfaceType(),"123");
+        Assert.assertEquals(pInterface.getOperationalStatus(),"123");
+        Assert.assertEquals(pInterface.getNetworkRef(),"123");
+        Assert.assertEquals(pInterface.getPortDescription(),"123");
+        Assert.assertNotNull(pInterface.getRelationshipList());
+        Assert.assertEquals(pInterface.getResourceVersion(),"1.0.0");
+        Assert.assertEquals(pInterface.getSpeedUnits(),"123");
+        Assert.assertEquals(pInterface.getSpeedValue(),"123");
 
     }
 
