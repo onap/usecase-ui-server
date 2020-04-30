@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9649443a_94b3b9e4",
+        "filename": "server/src/test/java/org/onap/usecaseui/server/service/lcm/domain/aai/bean/AAINetworkInterfaceResponseTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2020-04-30T02:56:10Z",
+      "side": 1,
+      "message": "Hello, I think you\u0027d better also add the test code of setResults",
+      "revId": "2dd754054c8ba7734aa338c0f8a60f84615ecf62",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
