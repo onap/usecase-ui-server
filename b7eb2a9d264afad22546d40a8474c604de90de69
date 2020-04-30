@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "82f7f0b5_b6d2d74d",
+        "filename": "server/src/test/java/org/onap/usecaseui/server/service/lcm/domain/aai/bean/AAISingleOrchestratorRspTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2020-04-30T02:57:58Z",
+      "side": 1,
+      "message": "Hello， I think you can also add the test code of set function, thank you!",
+      "revId": "b7eb2a9d264afad22546d40a8474c604de90de69",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
