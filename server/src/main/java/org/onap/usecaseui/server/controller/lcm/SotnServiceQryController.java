@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -50,7 +51,7 @@ public class SotnServiceQryController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/Sotnservices/ServiceInstances/{serviceType}"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/Sotnservices/ServiceInstances/{serviceType}"}, produces = "application/json")
     public String getSotnServiceInstances(@PathVariable(value="serviceType") String serviceType){
         System.out.println("Get Service Instance called.");
         String response = sotnServiceQryService.getServiceInstances(serviceType);
@@ -58,7 +59,7 @@ public class SotnServiceQryController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/customers/service-subscriptions"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/customers/service-subscriptions"}, produces = "application/json")
     public String getServiceSubscriptions(){
         System.out.println("Get Service Subscription called.");
         String response = ccvpnCustomerService.querySubscriptionType();
