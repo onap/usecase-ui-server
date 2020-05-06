@@ -31,6 +31,9 @@ import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +57,7 @@ public class SotnController {
 		this.sotnService = sotnService;
 	}
 	
-    @RequestMapping(value = {"/getNetWorkResources"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getNetWorkResources"})
 	public List<NetWorkResource> getNetWorkResources(){
     	List<NetWorkResource> result = new ArrayList<NetWorkResource>();
     	String json  = sotnService.getNetWorkResources();
@@ -74,62 +77,62 @@ public class SotnController {
 		return result;
 	}
     
-    @RequestMapping(value = {"/getPinterfaceByPnfName/{pnfName:.+}"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getPinterfaceByPnfName/{pnfName:.+}"})
     public List<Pinterface>  getPinterfaceByPnfName(@PathVariable(value="pnfName") String pnfName){
     	return sotnService.getPinterfaceByPnfName(pnfName);
     }
     
-    @RequestMapping(value = {"/getLogicalLinks"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getLogicalLinks"})
     public String getLogicalLinks(){
     	return sotnService.getLogicalLinks();
     }
     
-    @RequestMapping(value = {"/getSpecificLogicalLink/{linkName:.+}"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getSpecificLogicalLink/{linkName:.+}"})
     public String getSpecificLogicalLink(@PathVariable(value="linkName") String linkName){
     	return sotnService.getSpecificLogicalLink(linkName);
     }
     
-    @RequestMapping(value = {"/getHostUrl/{aaiId:.+}"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getHostUrl/{aaiId:.+}"})
     public String getHostUrl(@PathVariable(value="aaiId") String aaiId){
     	return sotnService.getHostUrl(aaiId);
     }
     
-    @RequestMapping(value = {"/getExtAaiId/{aaiId:.+}"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getExtAaiId/{aaiId:.+}"})
     public String getExtAaiId(@PathVariable(value="aaiId") String aaiId){
     	return sotnService.getExtAaiId(aaiId);
     }
     
-    @RequestMapping(value = {"/createHostUrl/{aaiId:.+}"}, method = RequestMethod.PUT)
+    @PutMapping(value = {"/createHostUrl/{aaiId:.+}"})
     public String createHostUrl(HttpServletRequest request,@PathVariable(value="aaiId") String aaiId){
     	return sotnService.createHostUrl(request, aaiId);
     }
     
-    @RequestMapping(value = {"/createTopoNetwork/{networkId:.+}"}, method = RequestMethod.PUT)
+    @PutMapping(value = {"/createTopoNetwork/{networkId:.+}"})
     public String createTopoNetwork(HttpServletRequest request,@PathVariable(value="networkId") String networkId){
     	return sotnService.createTopoNetwork(request,networkId);
     }
     
-    @RequestMapping(value = {"/pnf/{pnfName:.+}/p-interfaces/p-interface/{tp-id:.+}/createTerminationPoint"}, method = RequestMethod.PUT)
+    @PutMapping(value = {"/pnf/{pnfName:.+}/p-interfaces/p-interface/{tp-id:.+}/createTerminationPoint"})
     public String createTerminationPoint(HttpServletRequest request,@PathVariable(value="pnfName") String pnfName,@PathVariable(value="tp-id") String tpId){
     	return sotnService.createTerminationPoint(request,pnfName,tpId);
     }
     
-    @RequestMapping(value = {"/createLink/{linkName:.+}"}, method = RequestMethod.PUT)
+    @PutMapping(value = {"/createLink/{linkName:.+}"})
     public String createLink(HttpServletRequest request,@PathVariable(value="linkName") String linkName){
     	return sotnService.createLink(request, linkName);
     }
     
-    @RequestMapping(value = {"/createPnf/{pnfName:.+}"}, method = RequestMethod.PUT)
+    @PutMapping(value = {"/createPnf/{pnfName:.+}"})
     public String createPnf(HttpServletRequest request,@PathVariable(value="pnfName") String pnfName){
     	return sotnService.createPnf(request, pnfName);
     }
     
-    @RequestMapping(value = {"/deleteLink/{linkName:.+}/{resourceVersion:.+}"}, method = RequestMethod.DELETE)
+    @DeleteMapping(value = {"/deleteLink/{linkName:.+}/{resourceVersion:.+}"})
     public String deleteLink(@PathVariable(value="linkName") String linkName,@PathVariable(value="resourceVersion") String resourceVersion){
     	return sotnService.deleteLink(linkName,resourceVersion);
     }
     
-    @RequestMapping(value = {"/getServiceInstanceInfo"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getServiceInstanceInfo"})
     public String getServiceInstanceInfo(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
@@ -137,12 +140,12 @@ public class SotnController {
     	return sotnService.serviceInstanceInfo(customerId, serviceType, serviceId);
     }
     
-    @RequestMapping(value = {"/getPnfInfo/{pnfName:.+}"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getPnfInfo/{pnfName:.+}"})
     public String getPnfInfo(@PathVariable(value="pnfName") String pnfName){
     	return sotnService.getPnfInfo(pnfName);
     }
     
-    @RequestMapping(value = {"/getAllottedResources"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getAllottedResources"})
     public String getAllottedResources(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
@@ -150,24 +153,24 @@ public class SotnController {
     	return sotnService.getAllottedResources(customerId, serviceType,serviceId);
     }
     
-    @RequestMapping(value = {"/getConnectivityInfo/{connectivityId:.+}"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getConnectivityInfo/{connectivityId:.+}"})
     public String getConnectivityInfo(@PathVariable(value="connectivityId") String connectivityId){
     	return sotnService.getConnectivityInfo(connectivityId);
     }
     
-    @RequestMapping(value = {"/getPinterfaceByVpnId/{vpnId:.+}"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getPinterfaceByVpnId/{vpnId:.+}"})
     public String getPinterfaceByVpnId(@PathVariable(value="vpnId") String vpnId){
     	return sotnService.getPinterfaceByVpnId(vpnId);
     }
     
-    @RequestMapping(value = {"/getServiceInstanceList"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/getServiceInstanceList"})
     public String getServiceInstanceList(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
     	return sotnService.getServiceInstances(customerId, serviceType);
     }
 
-    @RequestMapping(value = {"/deleteExtNetWork"}, method = RequestMethod.DELETE)
+    @DeleteMapping(value = {"/deleteExtNetWork"})
     public String deleteExtNetwork(@RequestParam String extNetworkId,@RequestParam(value="resourceVersion") String resourceVersion){
     	return sotnService.deleteExtNetwork(extNetworkId,resourceVersion);
     }

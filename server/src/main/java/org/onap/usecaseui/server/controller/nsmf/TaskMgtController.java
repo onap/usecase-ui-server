@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -43,41 +45,41 @@ public class TaskMgtController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {
-        "/business/pageNo/{pageNo}/pageSize/{pageSize}"}, method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = {
+        "/business/pageNo/{pageNo}/pageSize/{pageSize}"}, produces = "application/json")
     public ServiceResult querySlicingTask(@PathVariable int pageNo, @PathVariable int pageSize) {
         return taskMgtService.querySlicingTask(pageNo, pageSize);
     }
 
     @ResponseBody
-    @RequestMapping(value = {
-        "/{processingStatus}/business/pageNo/{pageNo}/pageSize/{pageSize}"}, method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = {
+        "/{processingStatus}/business/pageNo/{pageNo}/pageSize/{pageSize}"}, produces = "application/json")
     public ServiceResult querySlicingTaskByStatus(@PathVariable String processingStatus, @PathVariable int pageNo,
         @PathVariable int pageSize) {
         return taskMgtService.querySlicingTaskByStatus(processingStatus, pageNo, pageSize);
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/{taskId}/auditInfo"}, method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = {"/{taskId}/auditInfo"}, produces = "application/json")
     public ServiceResult queryTaskAuditInfo(@PathVariable String taskId) {
         return taskMgtService.queryTaskAuditInfo(taskId);
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/auditInfo"}, method = RequestMethod.PUT, produces = "application/json")
+    @PutMapping(value = {"/auditInfo"}, produces = "application/json")
     public ServiceResult updateTaskAuditInfo(@RequestBody SlicingTaskAuditInfo slicingTaskAuditInfo) {
         return taskMgtService.updateTaskAuditInfo(slicingTaskAuditInfo);
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/{taskId}/taskCreationInfo"}, method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = {"/{taskId}/taskCreationInfo"}, produces = "application/json")
     public ServiceResult queryTaskCreationInfo(@PathVariable String taskId) {
         return taskMgtService.queryTaskCreationInfo(taskId);
     }
 
     @ResponseBody
-    @RequestMapping(value = {
-        "/{taskId}/taskCreationProgress"}, method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = {
+        "/{taskId}/taskCreationProgress"}, produces = "application/json")
     public ServiceResult queryTaskCreationProgress(@PathVariable String taskId) {
         return taskMgtService.queryTaskCreationProgress(taskId);
     }
