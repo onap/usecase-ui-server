@@ -2,6 +2,9 @@ package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Copyright (C) 2020 Huawei, Inc. and others. All rights reserved.
@@ -28,11 +31,26 @@ public class RelationshipListTest {
     public void after() throws Exception {
     }
 
+    @Test
     public void  relationshipListTest() throws  Exception
     {
         RelationshipList relationshipList = new RelationshipList();
+        Relationship relationship = new Relationship();
+        RelationshipData relationshipData = new RelationshipData();
 
-        relationshipList.getRelationship();
+        relationshipData.setRelationshipKey("123");
+        relationshipData.setRelationshipValue("123");
+
+        relationship.setRelatedLink("123");
+        relationship.setRelatedTo("123");
+        relationship.setRelationshipLabel("123");
+
+        RelationshipData[] rd=new RelationshipData[]{relationshipData};
+        relationship.setRelationshipData(rd);
+
+        Relationship[] rslist=new Relationship[]{relationship};
+        relationshipList.setRelationship(rslist);
+        assertNotNull(relationshipList.getRelationship());
 
     }
 
