@@ -15,7 +15,8 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
-import org.junit.Test; 
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;
 import org.junit.runner.RunWith;
@@ -56,5 +57,10 @@ public class AAICustomerTest {
 		ac.getGlobalCustomerId();
 		ac.getSubscriberName();
 		ac.getSubscriberType();
+		ac.getResourceVersion();
+		Assert.assertEquals(ac.getGlobalCustomerId(),"globalCustomerId");
+		Assert.assertEquals(ac.getResourceVersion(),"resourceVersion");
+		Assert.assertEquals(ac.getSubscriberName(),"subscriberName");
+		Assert.assertEquals(ac.getSubscriberType(),"subscriberType");
 	}
 }
