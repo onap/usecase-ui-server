@@ -16,6 +16,7 @@ package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
  */
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,13 +30,16 @@ public class RelationshipDataTest {
     public void after() throws Exception {
     }
 
+    @Test
     public  void relationshipdatatest() throws Exception
     {
         RelationshipData relationshipData = new RelationshipData();
 
-        relationshipData.getRelationshipKey();
-        relationshipData.getRelationshipValue();
         relationshipData.setRelationshipKey("123");
         relationshipData.setRelationshipValue("123");
+
+        Assert.assertEquals(relationshipData.getRelationshipKey(),"123");
+        Assert.assertEquals(relationshipData.getRelationshipValue(),"123");
+
     }
 }
