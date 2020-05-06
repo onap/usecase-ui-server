@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -43,8 +44,8 @@ public class ResourceMonitorController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {
-        "/queryTimestamp/{queryTimestamp}/trafficData"}, method = RequestMethod.POST, produces = "application/json")
+    @PostMapping(value = {
+        "/queryTimestamp/{queryTimestamp}/trafficData"}, produces = "application/json")
     public ServiceResult querySlicingUsageTraffic(@PathVariable(value = "queryTimestamp") String queryTimestamp,
         @RequestBody
             ServiceList serviceList) {
@@ -52,8 +53,8 @@ public class ResourceMonitorController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {
-        "/queryTimestamp/{queryTimestamp}/onlineUsers"}, method = RequestMethod.POST, produces = "application/json")
+    @PostMapping(value = {
+        "/queryTimestamp/{queryTimestamp}/onlineUsers"}, produces = "application/json")
     public ServiceResult querySlicingOnlineUserNumber(@PathVariable(value = "queryTimestamp") String queryTimestamp,
         @RequestBody
             ServiceList serviceList) {
@@ -61,8 +62,8 @@ public class ResourceMonitorController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {
-        "/queryTimestamp/{queryTimestamp}/bandwidth"}, method = RequestMethod.POST, produces = "application/json")
+    @PostMapping(value = {
+        "/queryTimestamp/{queryTimestamp}/bandwidth"}, produces = "application/json")
     public ServiceResult querySlicingTotalBandwidth(@PathVariable(value = "queryTimestamp") String queryTimestamp,
         @RequestBody
             ServiceList serviceList) {
