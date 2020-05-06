@@ -32,6 +32,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -56,7 +60,7 @@ public class ServiceLcmController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/services"}, method = RequestMethod.POST , produces = "application/json")
+    @PostMapping(value = {"/uui-lcm/services"}, produces = "application/json")
     public ServiceOperation instantiateService(HttpServletRequest request) throws ParseException{
     	String customerId = request.getParameter("customerId");
     	String serviceType = request.getParameter("serviceType");
@@ -75,7 +79,7 @@ public class ServiceLcmController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/services/{serviceId}/operations/{operationId}"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/services/{serviceId}/operations/{operationId}"}, produces = "application/json")
     public OperationProgressInformation queryOperationProgress(HttpServletRequest request,@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId){
     	String operationType = request.getParameter("operationType");
     	String operationResult = CommonConstant.IN_PROGRESS_CODE;
@@ -99,7 +103,7 @@ public class ServiceLcmController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/services/{serviceId}"}, method = RequestMethod.DELETE , produces = "application/json")
+    @DeleteMapping(value = {"/uui-lcm/services/{serviceId}"}, produces = "application/json")
     public DeleteOperationRsp terminateService(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request) throws ParseException{
     	DeleteOperationRsp deleteOperationRsp = serviceLcmService.terminateService(serviceId, request);
     	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId,deleteOperationRsp.getOperationId(), CommonConstant.DELETING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
@@ -121,7 +125,7 @@ public class ServiceLcmController {
      * @throws ParseException 
      */
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/services/scaleServices/{serviceId}"}, method = RequestMethod.POST , produces = "application/json")
+    @PostMapping(value = {"/uui-lcm/services/scaleServices/{serviceId}"}, produces = "application/json")
     public SaveOrUpdateOperationRsp scaleServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request) throws ParseException{
     	SaveOrUpdateOperationRsp saveOrUpdateOperationRsp =serviceLcmService.scaleService(serviceId, request);
     	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId,saveOrUpdateOperationRsp.getOperationId(), CommonConstant.SCALING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
@@ -143,7 +147,7 @@ public class ServiceLcmController {
      * @throws ParseException 
      */
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/services/updateService/{serviceId}"}, method = RequestMethod.PUT , produces = "application/json")
+    @PutMapping(value = {"/uui-lcm/services/updateService/{serviceId}"}, produces = "application/json")
     public SaveOrUpdateOperationRsp updateServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request) throws ParseException{
     	SaveOrUpdateOperationRsp saveOrUpdateOperationRsp =serviceLcmService.scaleService(serviceId, request);
     	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId,saveOrUpdateOperationRsp.getOperationId(), CommonConstant.UPDATING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);

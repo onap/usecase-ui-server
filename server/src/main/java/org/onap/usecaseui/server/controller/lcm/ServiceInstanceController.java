@@ -31,6 +31,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -61,7 +62,7 @@ public class ServiceInstanceController {
     }
 
 	@ResponseBody
-    @RequestMapping(value = {"/uui-lcm/service-instances"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/service-instances"}, produces = "application/json")
     public String listServiceInstances(HttpServletRequest request) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
         String customerId = request.getParameter("customerId");
@@ -76,7 +77,7 @@ public class ServiceInstanceController {
     }
 	
 	@ResponseBody
-    @RequestMapping(value = {"/uui-lcm/service-ns-instances"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/service-ns-instances"}, produces = "application/json")
     public String listNsOrServiceInstances(HttpServletRequest request) throws JsonProcessingException{
 		ObjectMapper mapper = new ObjectMapper();
         String customerId = request.getParameter("customerId");
@@ -95,19 +96,19 @@ public class ServiceInstanceController {
     }
 	
 	@ResponseBody
-    @RequestMapping(value = {"/uui-lcm/serviceNumByCustomer"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/serviceNumByCustomer"}, produces = "application/json")
     public String serviceNumByCustomer(HttpServletRequest request) throws JsonProcessingException{
 		return serviceInstanceService.serviceNumByCustomer();
 	}
 	
 	@ResponseBody
-    @RequestMapping(value = {"/uui-lcm/serviceNumByServiceType/{customerId}"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/serviceNumByServiceType/{customerId}"}, produces = "application/json")
     public String serviceNumByServiceType(@PathVariable String customerId) throws JsonProcessingException{
 		return serviceInstanceService.serviceNumByServiceType(customerId);
 	}
 	
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/getServiceInstanceById"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/getServiceInstanceById"}, produces = "application/json")
     public String getServiceInstanceById(HttpServletRequest request){
         String customerId = request.getParameter("customerId");
         String serviceType = request.getParameter("serviceType");
