@@ -15,7 +15,8 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
-import org.junit.Test; 
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;
 import org.junit.runner.RunWith;
@@ -54,5 +55,7 @@ public class AAIServiceSubscriptionTest {
 	public void testAAIServiceSubscription() throws Exception {
 		AAIServiceSubscription ass = new AAIServiceSubscription("serviceType","resourceVersion");
 		ass.getServiceType();
+		Assert.assertEquals(ass.getServiceType(),"serviceType");
+		Assert.assertEquals(ass.getResourceVersion(),"resourceVersion");
 	}
 }
