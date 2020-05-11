@@ -19,7 +19,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.HttpRequest;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;

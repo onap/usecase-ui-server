@@ -167,7 +167,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                     SOOperation soOperation = response.body();
                     Gson gson = new Gson();
                     logger.info("addBusinessProgress: queryOperationProgress reponse is:{}",
-                        gson.toJson(soOperation).toString());
+                        gson.toJson(soOperation));
                     if (soOperation == null || soOperation.getOperation() == null) {
                         logger.error("addBusinessProgress: soOperation is null or getOperation() is null for businessId {}!", businessId);
                         continue;
@@ -644,14 +644,14 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
             SubscriberInfo subscriberInfo = resourceMgtServiceConvert.buildSubscriberInfo(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G);
             String jsonstr = JSON.toJSONString(subscriberInfo);
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
             Response<ActivateService> activeResponse = this.soSliceService.activeService(serviceId, requestBody)
                 .execute();
 
             if (activeResponse.isSuccessful()) {
                 ActivateService activateService = activeResponse.body();
                 logger.info("activateSlicingService: activeService reponse is:{}",
-                    gson.toJson(activateService).toString());
+                    gson.toJson(activateService));
                 String operationId = activateService.getOperationId();
                 serviceActiveResult.setOperationId(operationId);
                 ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId, operationId,
@@ -699,7 +699,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
             if (activeResponse.isSuccessful()) {
                 ActivateService activateService = activeResponse.body();
                 logger.info("deactivateSlicingService: deactiveService reponse is:{}",
-                    gson.toJson(activateService).toString());
+                    gson.toJson(activateService));
                 String operationId = activateService.getOperationId();
                 serviceDeactivateResult.setOperationId(operationId);
                 ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId, operationId,
@@ -740,14 +740,14 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
             SubscriberInfo subscriberInfo = resourceMgtServiceConvert.buildSubscriberInfo(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G);
             String jsonstr = JSON.toJSONString(subscriberInfo);
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
             Response<ActivateService> activeResponse = this.soSliceService.terminateService(serviceId, requestBody)
                 .execute();
 
             if (activeResponse.isSuccessful()) {
                 ActivateService activateService = activeResponse.body();
                 logger.info("terminateSlicingService: terminateService reponse is:{}",
-                    gson.toJson(activateService).toString());
+                    gson.toJson(activateService));
                 String operationId = activateService.getOperationId();
                 serviceTerminateResult.setOperationId(activateService.getOperationId());
                 ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId, operationId,
@@ -796,7 +796,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                     SOOperation soOperation = response.body();
                     Gson gson = new Gson();
                     logger.info("queryOperationProgress: queryOperationProgress reponse is:{}",
-                        gson.toJson(soOperation).toString());
+                        gson.toJson(soOperation));
                     if (soOperation == null || soOperation.getOperation() == null
                         || soOperation.getOperation().getOperation() == null) {
                         logger.error("queryOperationProgress: soOperation is null or getOperation() is null!");
