@@ -20,6 +20,7 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIEsrNfvo;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,7 +40,7 @@ public class OrchestratorController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/uui-lcm/orchestrators"}, method = RequestMethod.GET , produces = "application/json")
+    @GetMapping(value = {"/uui-lcm/orchestrators"}, produces = "application/json")
     public List<AAIEsrNfvo> getOrchestrators(){
         return orchestratorService.listOrchestrator();
     }

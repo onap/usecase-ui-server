@@ -92,7 +92,7 @@ public class AlarmController
     private ObjectMapper omAlarm = new ObjectMapper();
 
 
-    @RequestMapping(value = {"/usecase-ui"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/usecase-ui"})
     public ModelAndView index(){
         return new ModelAndView("index");
     }
