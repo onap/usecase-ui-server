@@ -40,6 +40,8 @@ import org.hibernate.Transaction;
 import mockit.Mock;
 import mockit.MockUp;
 
+import static org.junit.Assert.assertEquals;
+
 public class OperationProgressTest {
 
 	@Before
@@ -53,15 +55,17 @@ public class OperationProgressTest {
 	@Test
 	public void testOperationProgress() throws Exception {
 		OperationProgress op = new OperationProgress();
-		op.setUserId("");
-		op.setOperationId("");
-		op.setOperation("");
-		op.setResult("");
-		op.setReason("");
-		op.setOperationContent("");
-		op.setProgress(1);
-		op.setOperateAt("");
-		op.setFinishedAt("");
+		op.setUserId("test");
+		op.setOperationId("test");
+		op.setOperation("test");
+		op.setResult("test");
+		op.setReason("test");
+		op.setOperationContent("test");
+		op.setProgress(123);
+		op.setOperateAt("test");
+		op.setFinishedAt("test");
+		op.setServiceId("123");
+		op.setServiceName("test");
 		op.getOperationId();
 		op.getOperation();
 		op.getResult();
@@ -70,6 +74,33 @@ public class OperationProgressTest {
 		op.getOperationContent();
 		op.getProgress();
 		op.getOperateAt();
-		op.getFinishedAt();
+		assertEquals("123",op.getServiceId());
+		assertEquals("test",op.getOperationId());
+		assertEquals("test",op.getServiceName());
+		assertEquals("test",op.getOperation());
+		assertEquals("test",op.getResult());
+		assertEquals("test",op.getReason());
+		assertEquals("test",op.getUserId());
+		assertEquals("test",op.getFinishedAt());
+		assertEquals("test",op.getOperateAt());
+		assertEquals("test",op.getOperationContent());
+		assertEquals(123,op.getProgress());
+
+	}
+	@Test
+	public void testConstructor(){
+		OperationProgress op = new OperationProgress("123","test","test","test","test","test","test","test",123,"test","test");
+		assertEquals("123",op.getServiceId());
+		assertEquals("test",op.getOperationId());
+		assertEquals("test",op.getServiceName());
+		assertEquals("test",op.getOperation());
+		assertEquals("test",op.getResult());
+		assertEquals("test",op.getReason());
+		assertEquals("test",op.getUserId());
+		assertEquals("test",op.getFinishedAt());
+		assertEquals("test",op.getOperateAt());
+		assertEquals("test",op.getOperationContent());
+		assertEquals(123,op.getProgress());
+
 	}
 }
