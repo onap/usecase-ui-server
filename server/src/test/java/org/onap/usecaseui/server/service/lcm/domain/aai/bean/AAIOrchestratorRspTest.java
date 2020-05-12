@@ -55,5 +55,6 @@ public class AAIOrchestratorRspTest {
         rspObj.add(aaiEsrNfvo);
         rsp.setEsrNfvo(rspObj);
         assertNotNull(rsp);
+        assertNotNull(rsp.getEsrNfvo());
     }
 }
