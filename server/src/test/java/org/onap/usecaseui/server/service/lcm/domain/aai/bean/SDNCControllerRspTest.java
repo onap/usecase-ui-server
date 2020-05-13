@@ -40,6 +40,8 @@ import org.hibernate.Transaction;
 import mockit.Mock;
 import mockit.MockUp;
 
+import static org.junit.Assert.assertNotNull;
+
 public class SDNCControllerRspTest {
 
 	@Before
@@ -52,8 +54,13 @@ public class SDNCControllerRspTest {
 
 	@Test
 	public void testSDNCControllerRsp() throws Exception {
+		SDNCController sc = new SDNCController();
+		sc.setSdncId("sdncId");
+		sc.setLocation("location");
+		List sdncList=new ArrayList<SDNCController>();
+		sdncList.add(sc);
 		SDNCControllerRsp scr = new SDNCControllerRsp();
-		scr.setEsrThirdpartySdncList(null);
-		scr.getEsrThirdpartySdncList();
+		scr.setEsrThirdpartySdncList(sdncList);
+		assertNotNull(scr.getEsrThirdpartySdncList());
 	}
 }
