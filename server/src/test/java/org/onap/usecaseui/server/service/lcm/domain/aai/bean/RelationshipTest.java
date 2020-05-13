@@ -1,6 +1,9 @@
 /**
  * Copyright (C) 2020 Huawei, Inc. and others. All rights reserved.
  *
+ * ================================================================================
+ *  Modifications Copyright (C) 2020 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +23,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class RelationshipTest {
 
     @Before
@@ -34,15 +40,21 @@ public class RelationshipTest {
     public void relationshiptest() throws  Exception
     {
         Relationship relationship = new Relationship();
-
-        relationship.getRelatedLink();
-        relationship.getRelatedTo();
-        relationship.getRelationshipData();
-        relationship.getRelationshipLabel();
-
+        RelationshipData relationshipData = new RelationshipData();
+        relationshipData.setRelationshipKey("123");
+        relationshipData.setRelationshipValue("123");
+        RelationshipData[] rd=new RelationshipData[]{relationshipData};
+        relationship.setRelationshipData(rd);
         relationship.setRelatedLink("123");
         relationship.setRelatedTo("123");
         relationship.setRelationshipLabel("123");
+
+        assertEquals("123",relationship.getRelatedLink());
+        assertEquals("123",relationship.getRelatedTo());
+        assertNotNull(relationship.getRelationshipData());
+        assertEquals("123",relationship.getRelationshipLabel());
+
+
 
 
     }
