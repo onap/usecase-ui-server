@@ -40,6 +40,8 @@ import org.hibernate.Transaction;
 import mockit.Mock;
 import mockit.MockUp;
 
+import static org.junit.Assert.assertEquals;
+
 public class DeleteOperationRspTest {
 
 	@Before
@@ -53,7 +55,7 @@ public class DeleteOperationRspTest {
 	@Test
 	public void testDeleteOperationRsp() throws Exception {
 		DeleteOperationRsp dor = new DeleteOperationRsp();
-		dor.setOperationId("");
-		dor.getOperationId();
+		dor.setOperationId("test");
+		assertEquals("test", dor.getOperationId());
 	}
 }
