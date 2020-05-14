@@ -15,7 +15,8 @@
  */
 package org.onap.usecaseui.server.bean;
 
-import org.junit.Test; 
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;
 import org.junit.runner.RunWith;
@@ -82,6 +83,8 @@ public class AlarmsHeaderTest {
 		ah.getAlarmInterfaceA();
 		ah.getStatus();
 		ah.getId();
+		Assert.assertNotNull(ah);
+		Assert.assertNotNull(ah.getAlarmInterfaceA());
 	}
 
 	@Test
@@ -114,5 +117,7 @@ public class AlarmsHeaderTest {
 		ah.setStartEpochMicrosec(DateUtils.now().getTime()+"");
 		ah.setLastEpochMicroSec(DateUtils.now().getTime()+"");
 		ah.setId("");
+		Assert.assertNotNull(ah);
+
 	}
 }
