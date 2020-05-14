@@ -15,52 +15,27 @@
  */
 package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
-import org.junit.Test; 
-import org.junit.Before; 
-import org.junit.After;
-import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.UuiServerApplication;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.*;
-import org.onap.usecaseui.server.util.DateUtils;
-import org.onap.usecaseui.server.util.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.junit.Test;
+import org.junit.Assert;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.io.*;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 
-import mockit.Mock;
-import mockit.MockUp;
+import static org.junit.Assert.assertEquals;
 
 public class ServiceInstanceTest {
-
-	@Before
-	public void before() throws Exception {
-	}
-
-	@After
-	public void after() throws Exception {
-	}
 
 	@Test
 	public void testServiceInstance() throws Exception {
 		ServiceInstance si = new ServiceInstance("globalCustomerId", "serviceType", "serviceInstanceId", "subscriberName",
 												"subscriberType", "serviceInstanceName", "serviceInstanceLocationId");
-		si.getGlobalCustomerId();
-		si.getServiceType();
-		si.getServiceInstanceId();
-		si.getSubscriberName();
-		si.getSubscriberType();
-		si.getServiceInstanceName();
-		si.getServiceInstanceLocationId();
+		si.setServiceDomain("serviceDomain");
+		assertEquals("globalCustomerId",si.getGlobalCustomerId());
+		assertEquals("serviceType",si.getServiceType());
+		assertEquals("serviceInstanceId",si.getServiceInstanceId());
+		assertEquals("subscriberName",si.getSubscriberName());
+		assertEquals("subscriberType",si.getSubscriberType());
+		assertEquals("serviceInstanceName",si.getServiceInstanceName());
+		assertEquals("serviceInstanceLocationId",si.getServiceInstanceLocationId());
+		assertEquals("serviceDomain",si.getServiceDomain());
 	}
 }
 
