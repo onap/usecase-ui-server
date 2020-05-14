@@ -163,7 +163,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
             if (response.isSuccessful()) {
                 SOTask soTaskInfo = response.body();
                 Gson gson = new Gson();
-                logger.info("queryTaskAuditInfo: getTaskById response is:{}", gson.toJson(soTaskInfo).toString());
+                logger.info("queryTaskAuditInfo: getTaskById response is:{}", gson.toJson(soTaskInfo));
                 taskMgtServiceConvert.convertTaskAuditInfo(slicingTaskAuditInfo, soTaskInfo);
                 // return normal result code
                 resultMsg = "5G slicing task configure audit information query result.";
@@ -199,11 +199,11 @@ public class TaskMgtServiceImpl implements TaskMgtService {
             if (response.isSuccessful()) {
                 SOTask soTaskInfo = response.body();
                 Gson gson = new Gson();
-                logger.info("updateTaskAuditInfo: getTaskById response is:{}", gson.toJson(soTaskInfo).toString());
+                logger.info("updateTaskAuditInfo: getTaskById response is:{}", gson.toJson(soTaskInfo));
                 taskMgtServiceConvert.convertTaskAuditToSoTask(soTaskInfo, slicingTaskAuditInfo);
 
                 String jsonstr = JSON.toJSONString(soTaskInfo);
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
                 Response<ResponseBody> updateResponse = soSliceService
                     .updateService(slicingTaskAuditInfo.getTaskId(), requestBody).execute();
 
@@ -261,7 +261,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
             if (response.isSuccessful()) {
                 Gson gson = new Gson();
                 SOTask soTask = response.body();
-                logger.info("updateTaskAuditInfo: getTaskById response is:{}", gson.toJson(soTask).toString());
+                logger.info("updateTaskAuditInfo: getTaskById response is:{}", gson.toJson(soTask));
                 taskMgtServiceConvert.convertTaskCreationInfo(slicingTaskCreationInfo, soTask);
                 // return normal result code
                 resultMsg = "5G slicing task creation infomation query result.";
@@ -302,7 +302,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
             if (response.isSuccessful()) {
                 SOTask soTask = response.body();
                 Gson gson = new Gson();
-                logger.info("queryTaskCreationProgress: getTaskById response is:{}", gson.toJson(soTask).toString());
+                logger.info("queryTaskCreationProgress: getTaskById response is:{}", gson.toJson(soTask));
                 taskMgtServiceConvert.convertTaskCreationProgress(slicingTaskCreationProgress, soTask);
                 resultMsg = "5G slicing task operation progress query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);

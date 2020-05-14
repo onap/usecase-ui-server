@@ -108,12 +108,12 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                 TrafficReqInfo trafficReqInfo = resourceMonitorServiceConvert
                     .buildTrafficReqInfo(serviceInfo, newTimestamp);
                 String jsonstr = JSON.toJSONString(trafficReqInfo);
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
                 Response<KpiTotalTraffic> response = this.kpiSliceService.listTotalTraffic(requestBody).execute();
                 if (response.isSuccessful()) {
                     KpiTotalTraffic kpiTotalTraffic = response.body();
                     logger.info("querySlicingUsageTraffic: listTotalTraffic reponse is:{}",
-                        gson.toJson(kpiTotalTraffic).toString());
+                        gson.toJson(kpiTotalTraffic));
                     UsageTrafficInfo usageTrafficInfo = new UsageTrafficInfo();
                     resourceMonitorServiceConvert.convertUsageTrafficInfo(usageTrafficInfo, kpiTotalTraffic);
                     usageTrafficInfoList.add(usageTrafficInfo);
@@ -160,13 +160,13 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                 SlicingKpiReqInfo slicingKpiReqInfo = resourceMonitorServiceConvert
                     .buildSlicingKpiReqInfo(serviceInfo, newTimestamp, kpiHours);
                 String jsonstr = JSON.toJSONString(slicingKpiReqInfo);
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
                 Response<KpiUserNumber> response = this.kpiSliceService.listUserNumber(requestBody).execute();
 
                 if (response.isSuccessful()) {
                     KpiUserNumber kpiUserNumber = response.body();
                     logger.info("querySlicingOnlineUserNumber: listUserNumber reponse is:{}",
-                        gson.toJson(kpiUserNumber).toString());
+                        gson.toJson(kpiUserNumber));
                     ServiceOnlineUserInfo serviceOnlineUserInfo = new ServiceOnlineUserInfo();
                     resourceMonitorServiceConvert.convertServiceOnlineUserInfo(serviceOnlineUserInfo, kpiUserNumber);
                     serviceOnlineUserInfoList.add(serviceOnlineUserInfo);
@@ -215,13 +215,13 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                 SlicingKpiReqInfo slicingKpiReqInfo = resourceMonitorServiceConvert
                     .buildSlicingKpiReqInfo(serviceInfo, newTimestamp, kpiHours);
                 String jsonstr = JSON.toJSONString(slicingKpiReqInfo);
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
                 Response<KpiTotalBandwidth> response = this.kpiSliceService.listTotalBandwidth(requestBody).execute();
 
                 if (response.isSuccessful()) {
                     KpiTotalBandwidth kpiTotalBandwidth = response.body();
                     logger.info("querySlicingTotalBandwidth: listTotalBandwidth reponse is:{}",
-                        gson.toJson(kpiTotalBandwidth).toString());
+                        gson.toJson(kpiTotalBandwidth));
                     ServiceTotalBandwidthInfo serviceTotalBandwidthInfo = new ServiceTotalBandwidthInfo();
                     resourceMonitorServiceConvert
                         .convertServiceTotalBandwidthInfo(serviceTotalBandwidthInfo, kpiTotalBandwidth);
