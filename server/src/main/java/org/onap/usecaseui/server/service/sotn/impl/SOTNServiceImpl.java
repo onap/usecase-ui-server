@@ -72,7 +72,7 @@ public class SOTNServiceImpl implements SOTNService{
             }
         } catch (IOException e) {
             logger.error("getNetWorkResources occur exception:"+e);
-            result = CommonConstant.CONSTANT_FAILED;;
+            result = CommonConstant.CONSTANT_FAILED;
         }
         return result;
 	}
@@ -107,11 +107,11 @@ public class SOTNServiceImpl implements SOTNService{
             	result=new String(response.body().bytes());
             } else {
                 logger.info(String.format("Can not get getLogicalLinks[code=%s, message=%s]", response.code(), response.message()));
-                result= CommonConstant.CONSTANT_FAILED;;
+                result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
             logger.error("getLogicalLinks occur exception:"+e);
-            result= CommonConstant.CONSTANT_FAILED;;
+            result= CommonConstant.CONSTANT_FAILED;
         }
         return result;
 	}
@@ -151,7 +151,7 @@ public class SOTNServiceImpl implements SOTNService{
             }
         } catch (IOException e) {
             logger.error("getHostUrl occur exception:"+e);
-            result= CommonConstant.CONSTANT_FAILED;;
+            result= CommonConstant.CONSTANT_FAILED;
         }
         return result;
 	}
@@ -171,7 +171,7 @@ public class SOTNServiceImpl implements SOTNService{
             }
         } catch (IOException e) {
             logger.error("getExtAaiId occur exception:"+e);
-            result= CommonConstant.CONSTANT_FAILED;;
+            result= CommonConstant.CONSTANT_FAILED;
         }
         return result;
 	}
@@ -355,7 +355,7 @@ public class SOTNServiceImpl implements SOTNService{
             }
         } catch (IOException e) {
             logger.error("getPnfInfo occur exception:"+e);
-            result= CommonConstant.CONSTANT_FAILED;;
+            result= CommonConstant.CONSTANT_FAILED;
         }
         return result;
 	}
@@ -375,7 +375,7 @@ public class SOTNServiceImpl implements SOTNService{
             }
         } catch (IOException e) {
             logger.error("getAllottedResources occur exception:"+e);
-            result= CommonConstant.CONSTANT_FAILED;;
+            result= CommonConstant.CONSTANT_FAILED;
         }
         return result;
 	}
@@ -395,7 +395,7 @@ public class SOTNServiceImpl implements SOTNService{
             }
         } catch (IOException e) {
             logger.error("getConnectivityInfo occur exception:"+e);
-            result= CommonConstant.CONSTANT_FAILED;;
+            result= CommonConstant.CONSTANT_FAILED;
         }
         return result;
 	}
@@ -415,7 +415,7 @@ public class SOTNServiceImpl implements SOTNService{
             }
         } catch (IOException e) {
             logger.error("getPinterfaceByVpnId occur exception:"+e);
-            result= CommonConstant.CONSTANT_FAILED;;
+            result= CommonConstant.CONSTANT_FAILED;
         }
         return result;
 	}
