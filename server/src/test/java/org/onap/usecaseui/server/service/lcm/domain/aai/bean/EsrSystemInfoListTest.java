@@ -63,5 +63,6 @@ public class EsrSystemInfoListTest {
         EsrSystemInfoList list=new EsrSystemInfoList();
         list.setEsrSystemInfo(rspObj);
         assertNotNull(list);
+        assertNotNull(list.getEsrSystemInfo());
     }
 }
