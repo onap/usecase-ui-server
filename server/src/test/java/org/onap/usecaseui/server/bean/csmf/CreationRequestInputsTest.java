@@ -39,7 +39,7 @@ public class CreationRequestInputsTest {
         creationRequestInputs.setLatency(12);
         creationRequestInputs.setMaxNumberofUEs(123);
         creationRequestInputs.setResourceSharingLevel("share");
-        creationRequestInputs.setUemobilityLevel("mobile");
+        creationRequestInputs.setUEMobilityLevel("mobile");
         creationRequestInputs.setUseInterval("230");
 
         creationRequestInputs.getCoverageAreaList();
@@ -48,7 +48,7 @@ public class CreationRequestInputsTest {
         creationRequestInputs.getLatency();
         creationRequestInputs.getMaxNumberofUEs();
         creationRequestInputs.getResourceSharingLevel();
-        creationRequestInputs.getUemobilityLevel();
+        creationRequestInputs.getUEMobilityLevel();
         creationRequestInputs.getUseInterval();
     }
 }

@@ -25,7 +25,7 @@ public class CreationRequestInputs {
     private Integer expDataRateUL;
     private Integer latency;
     private Integer maxNumberofUEs;
-    private String uemobilityLevel;
+    private String uEMobilityLevel;
     private String resourceSharingLevel;
     private String coverageAreaList;
     private String useInterval;

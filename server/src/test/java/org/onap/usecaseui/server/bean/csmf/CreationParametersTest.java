@@ -39,7 +39,7 @@ public class CreationParametersTest {
         creationRequestInputs.setLatency(12);
         creationRequestInputs.setMaxNumberofUEs(123);
         creationRequestInputs.setResourceSharingLevel("share");
-        creationRequestInputs.setUemobilityLevel("mobile");
+        creationRequestInputs.setUEMobilityLevel("mobile");
         creationRequestInputs.setUseInterval("230");
 
         CreationParameters creationParameters = new CreationParameters();

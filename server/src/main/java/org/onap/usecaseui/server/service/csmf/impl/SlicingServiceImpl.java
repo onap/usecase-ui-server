@@ -102,7 +102,7 @@ public class SlicingServiceImpl implements SlicingService {
             requestInputs.setExpDataRateUL(slicingOrder.getSlicing_order_info().getExpDataRateUL());
             requestInputs.setLatency(slicingOrder.getSlicing_order_info().getLatency());
             requestInputs.setMaxNumberofUEs(slicingOrder.getSlicing_order_info().getMaxNumberofUEs());
-            requestInputs.setUemobilityLevel(slicingOrder.getSlicing_order_info().getUEMobilityLevel());
+            requestInputs.setUEMobilityLevel(slicingOrder.getSlicing_order_info().getUEMobilityLevel());
             requestInputs.setResourceSharingLevel(slicingOrder.getSlicing_order_info().getResourceSharingLevel());
             requestInputs.setCoverageAreaList(slicingOrder.getSlicing_order_info().getCoverageArea());
             //use default value
