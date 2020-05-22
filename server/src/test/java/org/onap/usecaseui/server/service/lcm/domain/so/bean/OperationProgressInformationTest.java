@@ -1,6 +1,9 @@
 /**
  * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
  *
+ * ================================================================================
+ *  Modifications Copyright (C) 2020 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,6 +43,8 @@ import org.hibernate.Transaction;
 import mockit.Mock;
 import mockit.MockUp;
 
+import static org.junit.Assert.assertEquals;
+
 public class OperationProgressInformationTest {
 
 	@Before
@@ -51,9 +56,16 @@ public class OperationProgressInformationTest {
 	}
 
 	@Test
-	public void testOperationProgressInformation() throws Exception {
+	public void testGet() throws Exception {
 		OperationProgressInformation opi = new OperationProgressInformation();
-		opi.setOperationStatus(null);
-		opi.getOperationStatus();
+		OperationProgress op = new OperationProgress("123","test","test","test","test","test","test","test",123,"test","test");
+		opi.setOperationStatus(op);
+		assertEquals(op,opi.getOperationStatus());
+	}
+	@Test
+	public void testConstructor() throws Exception {
+		OperationProgress op = new OperationProgress("123","test","test","test","test","test","test","test",123,"test","test");
+		OperationProgressInformation opi = new OperationProgressInformation(op);
+		assertEquals(op,opi.getOperationStatus());
 	}
 }

@@ -1,6 +1,9 @@
 /**
  * Copyright (C) 2017 CMCC, Inc. and others. All rights reserved.
  *
+ * ================================================================================
+ * Modifications Copyright (C) 2020 IBM.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,6 +43,8 @@ import org.hibernate.Transaction;
 import mockit.Mock;
 import mockit.MockUp;
 
+import static org.junit.Assert.assertEquals;
+
 public class OperationTest {
 
 	@Before
@@ -53,9 +58,9 @@ public class OperationTest {
 	@Test
 	public void testOperation() throws Exception {
 		Operation o = new Operation();
-		o.setServiceId("");
-		o.setOperationId("");
-		o.getServiceId();
-		o.getOperationId();
+		o.setServiceId("123");
+		o.setOperationId("123");
+		assertEquals("123",o.getServiceId());
+		assertEquals("123",o.getOperationId());
 	}
 }
