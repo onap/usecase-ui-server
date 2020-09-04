@@ -33,7 +33,7 @@ public interface AAISliceService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
 	})
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=e2eslice-service")
+	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=service-profile")
     Call<JSONObject> listService(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType);
 	
 	@Headers({
@@ -42,7 +42,7 @@ public interface AAISliceService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
 	})
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=e2eslice-service")
+	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=service-profile")
 	Call<JSONObject> listServiceByStatus(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Query("orchestration-status") String orchestrationStatus);
 
 	@Headers({

@@ -33,14 +33,7 @@ public class AAIServiceProfilesTest {
     public void testSetAndGetAAIServiceProfiles() throws Exception {
         AAIServiceProfiles aaiServiceProfiles = new AAIServiceProfiles();
         aaiServiceProfiles.setActivityFactor(100);
-        aaiServiceProfiles.setAreaTrafficCapDL(200);
-        aaiServiceProfiles.setAreaTrafficCapUL(200);
-        aaiServiceProfiles.setConnDensity(100);
         aaiServiceProfiles.setCoverageAreaTAList("test");
-        aaiServiceProfiles.setCsAvailability(200);
-        aaiServiceProfiles.setExpDataRate(100);
-        aaiServiceProfiles.setExpDataRateDL(200);
-        aaiServiceProfiles.setExpDataRateUL(100);
         aaiServiceProfiles.setJitter(20);
         aaiServiceProfiles.setLatency(20);
         aaiServiceProfiles.setMaxNumberOfUEs(20);
@@ -49,18 +42,9 @@ public class AAIServiceProfilesTest {
         aaiServiceProfiles.setResourceSharingLevel("share");
         aaiServiceProfiles.setResourceVersion("ver123");
         aaiServiceProfiles.setSurvivalTime(200);
-        aaiServiceProfiles.setTrafficDensity(200);
         aaiServiceProfiles.setUeMobilityLevel("mobile");
-
         aaiServiceProfiles.getActivityFactor();
-        aaiServiceProfiles.getAreaTrafficCapDL();
-        aaiServiceProfiles.getAreaTrafficCapUL();
-        aaiServiceProfiles.getConnDensity();
         aaiServiceProfiles.getCoverageAreaTAList();
-        aaiServiceProfiles.getCsAvailability();
-        aaiServiceProfiles.getExpDataRate();
-        aaiServiceProfiles.getExpDataRateUL();
-        aaiServiceProfiles.getExpDataRateDL();
         aaiServiceProfiles.getJitter();
         aaiServiceProfiles.getLatency();
         aaiServiceProfiles.getMaxNumberOfUEs();
@@ -69,7 +53,6 @@ public class AAIServiceProfilesTest {
         aaiServiceProfiles.getResourceSharingLevel();
         aaiServiceProfiles.getResourceVersion();
         aaiServiceProfiles.getSurvivalTime();
-        aaiServiceProfiles.getTrafficDensity();
         aaiServiceProfiles.getUeMobilityLevel();
     }
 }

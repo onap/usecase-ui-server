@@ -28,16 +28,25 @@ public class SlicingTaskCreationProgress {
     @JsonProperty("an_status")
     private String anStatus;
 
+    @JsonProperty("an_statusDescription")
+    private String anStatusDescription;
+
     @JsonProperty("tn_progress")
     private String tnProgress;
 
     @JsonProperty("tn_status")
     private String tnStatus;
 
+    @JsonProperty("tn_statusDescription")
+    private String tnStatusDescription;
+
     @JsonProperty("cn_progress")
     private String cnProgress;
 
     @JsonProperty("cn_status")
     private String cnStatus;
+
+    @JsonProperty("cn_statusDescription")
+    private String cnStatusDescription;
 
 }

@@ -62,4 +62,41 @@ public class BusinessDemandInfo {
 
     @JsonProperty("max_number_of_ues")
     String maxNumberOfUEs;
+
+    @JsonProperty("serviceProfile_Availability")
+    String serviceProfileAvailability;
+
+    @JsonProperty("serviceProfile_PLMNIdList")
+    String serviceProfilePLMNIdList;
+
+    @JsonProperty("serviceProfile_Reliability")
+    String serviceProfileReliability;
+
+    @JsonProperty("serviceProfile_DLThptPerSlice")
+    String serviceProfileDLThptPerSlice;
+
+    @JsonProperty("serviceProfile_DLThptPerUE")
+    String serviceProfileDLThptPerUE;
+
+    @JsonProperty("serviceProfile_ULThptPerSlice")
+    String serviceProfileULThptPerSlice;
+
+    @JsonProperty("serviceProfile_ULThptPerUE")
+    String serviceProfileULThptPerUE;
+
+    @JsonProperty("serviceProfile_MaxPktSize")
+    String serviceProfileMaxPktSize;
+
+    @JsonProperty("serviceProfile_MaxNumberofConns")
+    String serviceProfileMaxNumberofConns;
+
+    @JsonProperty("serviceProfile_TermDensity")
+    String serviceProfileTermDensity;
+
+    @JsonProperty("serviceProfile_Jitter")
+    String serviceProfileJitter;
+
+    @JsonProperty("serviceProfile_SurvivalTime")
+    String serviceProfileSurvivalTime;
+
 }

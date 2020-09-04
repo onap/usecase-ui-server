@@ -263,10 +263,23 @@ public class ResourceMgtServiceConvert {
 
         String useInterval = generalConvert.getUseInterval(businessId);
         businessDemandInfo.setUseInterval(useInterval);
-        BeanUtils.copyProperties(businessDemandInfo, aaiServiceProfiles);
+        convertServiceProfilesToBusinessDemandInfo(businessDemandInfo, aaiServiceProfiles);
         List<String> areaInfoList = generalConvert.getAreaTaList(aaiServiceProfiles.getCoverageAreaTAList());
         businessDemandInfo.setCoverageAreaTaList(areaInfoList);
         slicingBusinessDetails.setBusinessDemandInfo(businessDemandInfo);
+    }
+
+    void convertServiceProfilesToBusinessDemandInfo(BusinessDemandInfo businessDemandInfo, AAIServiceProfiles aaiServiceProfiles)
+        throws InvocationTargetException, IllegalAccessException {
+        BeanUtils.copyProperties(businessDemandInfo, aaiServiceProfiles);
+        businessDemandInfo.setServiceProfileAvailability(String.valueOf(aaiServiceProfiles.getAvailability()));
+        businessDemandInfo.setServiceProfileDLThptPerSlice(String.valueOf(aaiServiceProfiles.getDLThptPerSlice()));
+        businessDemandInfo.setServiceProfileDLThptPerUE(String.valueOf(aaiServiceProfiles.getDLThptPerUE()));
+        businessDemandInfo.setServiceProfileULThptPerSlice(String.valueOf(aaiServiceProfiles.getULThptPerSlice()));
+        businessDemandInfo.setServiceProfileULThptPerUE(String.valueOf(aaiServiceProfiles.getULThptPerUE()));
+        businessDemandInfo.setServiceProfileMaxPktSize(String.valueOf(aaiServiceProfiles.getMaxPktSize()));
+        businessDemandInfo.setServiceProfileMaxNumberofConns(String.valueOf(aaiServiceProfiles.getMaxNumberofConns()));
+        businessDemandInfo.setServiceProfileTermDensity(String.valueOf(aaiServiceProfiles.getTermDensity()));
     }
 
     void convertHostedNsiList(NsiServiceInstanceList nsiServiceInstanceList, AAIServiceRsp aAIServiceRsp, int pageNo,

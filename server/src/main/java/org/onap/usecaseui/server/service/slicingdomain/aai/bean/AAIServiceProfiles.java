@@ -14,7 +14,11 @@ package org.onap.usecaseui.server.service.slicingdomain.aai.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AAIServiceProfiles {
 
@@ -36,18 +40,6 @@ public class AAIServiceProfiles {
     @JsonProperty("resource-sharing-level")
     private String resourceSharingLevel;
 
-    @JsonProperty("exp-data-rate-UL")
-    private int expDataRateUL;
-
-    @JsonProperty("exp-data-rate-DL")
-    private int expDataRateDL;
-
-    @JsonProperty("area-traffic-cap-UL")
-    private int areaTrafficCapUL;
-
-    @JsonProperty("area-traffic-cap-DL")
-    private int areaTrafficCapDL;
-
     @JsonProperty("activity-factor")
     private int activityFactor;
 
@@ -57,175 +49,35 @@ public class AAIServiceProfiles {
     @JsonProperty("survival-time")
     private int survivalTime;
 
-    @JsonProperty("cs-availability")
-    private int csAvailability;
-
     @JsonProperty("reliability")
     private int reliability;
 
-    @JsonProperty("exp-data-rate")
-    private int expDataRate;
+    @JsonProperty("availability")
+    private float availability;
 
-    @JsonProperty("traffic-density")
-    private int trafficDensity;
+    @JsonProperty("dLThptPerSlice")
+    private int dLThptPerSlice;
 
-    @JsonProperty("conn-density")
-    private int connDensity;
+    @JsonProperty("dLThptPerUE")
+    private int dLThptPerUE;
+
+    @JsonProperty("uLThptPerSlice")
+    private int uLThptPerSlice;
+
+    @JsonProperty("uLThptPerUE")
+    private int uLThptPerUE;
+
+    @JsonProperty("maxPktSize")
+    private int maxPktSize;
+
+    @JsonProperty("maxNumberofConns")
+    private int maxNumberofConns;
+
+    @JsonProperty("termDensity")
+    private int termDensity;
 
     @JsonProperty("resource-version")
     private String resourceVersion;
-
-    public String getProfileId() {
-        return profileId;
-    }
-
-    public void setProfileId(String profileId) {
-        this.profileId = profileId;
-    }
-
-    public int getLatency() {
-        return latency;
-    }
-
-    public void setLatency(int latency) {
-        this.latency = latency;
-    }
-
-    public int getMaxNumberOfUEs() {
-        return maxNumberOfUEs;
-    }
-
-    public void setMaxNumberOfUEs(int maxNumberOfUEs) {
-        this.maxNumberOfUEs = maxNumberOfUEs;
-    }
-
-    public String getCoverageAreaTAList() {
-        return coverageAreaTAList;
-    }
-
-    public void setCoverageAreaTAList(String coverageAreaTAList) {
-        this.coverageAreaTAList = coverageAreaTAList;
-    }
-
-    public String getUeMobilityLevel() {
-        return ueMobilityLevel;
-    }
-
-    public void setUeMobilityLevel(String ueMobilityLevel) {
-        this.ueMobilityLevel = ueMobilityLevel;
-    }
-
-    public String getResourceSharingLevel() {
-        return resourceSharingLevel;
-    }
-
-    public void setResourceSharingLevel(String resourceSharingLevel) {
-        this.resourceSharingLevel = resourceSharingLevel;
-    }
-
-    public int getExpDataRateUL() {
-        return expDataRateUL;
-    }
-
-    public void setExpDataRateUL(int expDataRateUL) {
-        this.expDataRateUL = expDataRateUL;
-    }
-
-    public int getExpDataRateDL() {
-        return expDataRateDL;
-    }
-
-    public void setExpDataRateDL(int expDataRateDL) {
-        this.expDataRateDL = expDataRateDL;
-    }
-
-    public int getAreaTrafficCapUL() {
-        return areaTrafficCapUL;
-    }
-
-    public void setAreaTrafficCapUL(int areaTrafficCapUL) {
-        this.areaTrafficCapUL = areaTrafficCapUL;
-    }
-
-    public int getAreaTrafficCapDL() {
-        return areaTrafficCapDL;
-    }
-
-    public void setAreaTrafficCapDL(int areaTrafficCapDL) {
-        this.areaTrafficCapDL = areaTrafficCapDL;
-    }
-
-    public int getActivityFactor() {
-        return activityFactor;
-    }
-
-    public void setActivityFactor(int activityFactor) {
-        this.activityFactor = activityFactor;
-    }
-
-    public int getJitter() {
-        return jitter;
-    }
-
-    public void setJitter(int jitter) {
-        this.jitter = jitter;
-    }
-
-    public int getSurvivalTime() {
-        return survivalTime;
-    }
-
-    public void setSurvivalTime(int survivalTime) {
-        this.survivalTime = survivalTime;
-    }
-
-    public int getCsAvailability() {
-        return csAvailability;
-    }
-
-    public void setCsAvailability(int csAvailability) {
-        this.csAvailability = csAvailability;
-    }
-
-    public int getReliability() {
-        return reliability;
-    }
-
-    public void setReliability(int reliability) {
-        this.reliability = reliability;
-    }
-
-    public int getExpDataRate() {
-        return expDataRate;
-    }
-
-    public void setExpDataRate(int expDataRate) {
-        this.expDataRate = expDataRate;
-    }
-
-    public int getTrafficDensity() {
-        return trafficDensity;
-    }
-
-    public void setTrafficDensity(int trafficDensity) {
-        this.trafficDensity = trafficDensity;
-    }
-
-    public int getConnDensity() {
-        return connDensity;
-    }
-
-    public void setConnDensity(int connDensity) {
-        this.connDensity = connDensity;
-    }
-
-    public String getResourceVersion() {
-        return resourceVersion;
-    }
-
-    public void setResourceVersion(String resourceVersion) {
-        this.resourceVersion = resourceVersion;
-    }
 
 
 }

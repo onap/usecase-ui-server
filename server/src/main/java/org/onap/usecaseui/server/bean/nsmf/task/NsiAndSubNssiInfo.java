@@ -48,6 +48,75 @@ public class NsiAndSubNssiInfo {
     @JsonProperty("an_script_name")
     String anScriptName;
 
+    @JsonProperty("an_enableNSSISelection")
+    String anEnableNSSISelection;
+
+    @JsonProperty("sliceProfile_AN_sNSSAI")
+    String sliceProfile_AN_sNSSAI;
+
+    @JsonProperty("sliceProfile_AN_pLMNIdList")
+    String sliceProfile_AN_pLMNIdList;
+
+    @JsonProperty("sliceProfile_AN_maxNumberofUEs")
+    String sliceProfile_AN_maxNumberofUEs;
+
+    @JsonProperty("sliceProfile_AN_maxNumberofPDUSession")
+    String sliceProfile_AN_maxNumberofPDUSession;
+
+    @JsonProperty("sliceProfile_AN_expDataRateDL")
+    String sliceProfile_AN_expDataRateDL;
+
+    @JsonProperty("sliceProfile_AN_expDataRateUL")
+    String sliceProfile_AN_expDataRateUL;
+
+    @JsonProperty("sliceProfile_AN_areaTrafficCapDL")
+    String sliceProfile_AN_areaTrafficCapDL;
+
+    @JsonProperty("sliceProfile_AN_areaTrafficCapUL")
+    String sliceProfile_AN_areaTrafficCapUL;
+
+    @JsonProperty("sliceProfile_AN_overallUserDensity")
+    String sliceProfile_AN_overallUserDensity;
+
+    @JsonProperty("sliceProfile_AN_activityFactor")
+    String sliceProfile_AN_activityFactor;
+
+    @JsonProperty("sliceProfile_AN_uEMobilityLevel")
+    String sliceProfile_AN_uEMobilityLevel;
+
+    @JsonProperty("sliceProfile_AN_resourceSharingLevel")
+    String sliceProfile_AN_resourceSharingLevel;
+
+    @JsonProperty("sliceProfile_AN_sST")
+    String sliceProfile_AN_sST;
+
+    @JsonProperty("sliceProfile_AN_cSAvailabilityTarget")
+    String sliceProfile_AN_cSAvailabilityTarget;
+
+    @JsonProperty("sliceProfile_AN_cSReliabilityMeanTime")
+    String sliceProfile_AN_cSReliabilityMeanTime;
+
+    @JsonProperty("sliceProfile_AN_expDataRate")
+    String sliceProfile_AN_expDataRate;
+
+    @JsonProperty("sliceProfile_AN_msgSizeByte")
+    String sliceProfile_AN_msgSizeByte;
+
+    @JsonProperty("sliceProfile_AN_transferIntervalTarget")
+    String sliceProfile_AN_transferIntervalTarget;
+
+    @JsonProperty("sliceProfile_AN_survivalTime")
+    String sliceProfile_AN_survivalTime;
+
+    @JsonProperty("sliceProfile_AN_ipAddress")
+    String sliceProfile_AN_ipAddress;
+
+    @JsonProperty("sliceProfile_AN_logicInterfaceId")
+    String sliceProfile_AN_logicInterfaceId;
+
+    @JsonProperty("sliceProfile_AN_nextHopInfo")
+    String sliceProfile_AN_nextHopInfo;
+
     @JsonProperty("tn_suggest_nssi_id")
     String tnSuggestNssiId;
 
@@ -62,6 +131,21 @@ public class NsiAndSubNssiInfo {
 
     @JsonProperty("tn_script_name")
     String tnScriptName;
+
+    @JsonProperty("sliceProfile_TN_jitte")
+    String sliceProfile_TN_jitte;
+
+    @JsonProperty("sliceProfile_TN_pLMNIdList")
+    String sliceProfile_TN_pLMNIdList;
+
+    @JsonProperty("sliceProfile_TN_sNSSAI")
+    String sliceProfile_TN_sNSSAI;
+
+    @JsonProperty("sliceProfile_TN_sST")
+    String sliceProfile_TN_sST;
+
+    @JsonProperty("tn_enableNSSISelection")
+    String tnEnableNSSISelection;
 
     @JsonProperty("cn_suggest_nssi_id")
     String cnSuggestNssiId;
@@ -101,4 +185,50 @@ public class NsiAndSubNssiInfo {
 
     @JsonProperty("cn_script_name")
     String cnScriptName;
+
+    @JsonProperty("cn_enableNSSISelection")
+    String cnEnableNSSISelection;
+
+    @JsonProperty("sliceProfile_CN_pLMNIdList")
+    String sliceProfile_CN_pLMNIdList;
+
+    @JsonProperty("sliceProfile_CN_maxNumberofPDUSession")
+    String sliceProfile_CN_maxNumberofPDUSession;
+
+    @JsonProperty("sliceProfile_CN_overallUserDensity")
+    String sliceProfile_CN_overallUserDensity;
+
+    @JsonProperty("sliceProfile_CN_coverageAreaTAList")
+    String sliceProfile_CN_coverageAreaTAList;
+
+    @JsonProperty("sliceProfile_CN_sST")
+    String sliceProfile_CN_sST;
+
+    @JsonProperty("sliceProfile_CN_cSAvailabilityTarget")
+    String sliceProfile_CN_cSAvailabilityTarget;
+
+    @JsonProperty("sliceProfile_CN_cSReliabilityMeanTime")
+    String sliceProfile_CN_cSReliabilityMeanTime;
+
+    @JsonProperty("sliceProfile_CN_expDataRate")
+    String sliceProfile_CN_expDataRate;
+
+    @JsonProperty("sliceProfile_CN_msgSizeByte")
+    String sliceProfile_CN_msgSizeByte;
+
+    @JsonProperty("sliceProfile_CN_logicInterfaceId")
+    String sliceProfile_CN_logicInterfaceId;
+
+    @JsonProperty("sliceProfile_CN_transferIntervalTarget")
+    String sliceProfile_CN_transferIntervalTarget;
+
+    @JsonProperty("sliceProfile_CN_survivalTime")
+    String sliceProfile_CN_survivalTime;
+
+    @JsonProperty("sliceProfile_CN_ipAddress")
+    String sliceProfile_CN_ipAddress;
+
+    @JsonProperty("sliceProfile_CN_nextHopInfo")
+    String sliceProfile_CN_nextHopInfo;
+
 }
