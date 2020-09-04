@@ -16,29 +16,22 @@
 package org.onap.usecaseui.server.service.slicingdomain.kpi.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import org.onap.usecaseui.server.bean.nsmf.monitor.TrafficReqInfo;
 
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class KpiTotalTraffic {
 
-    private String id;
-    
-    private int totalTraffic;
+    private List<TotalTraffic> result;
 
-	public String getId() {
-		return id;
-	}
+    private TrafficReqInfo request;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+	private int result_count;
 
-	public int getTotalTraffic() {
-		return totalTraffic;
-	}
-
-	public void setTotalTraffic(int totalTraffic) {
-		this.totalTraffic = totalTraffic;
-	}
-    
-    
 }
+
+

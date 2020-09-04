@@ -29,10 +29,10 @@ import org.onap.usecaseui.server.bean.nsmf.monitor.UsageTrafficInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.UserNumberInfo;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth.TotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber.UserNumbers;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.TotalBandwidth;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.UserNumbers;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +54,8 @@ public class ResourceMonitorServiceConvert {
     }
 
     void convertUsageTrafficInfo(UsageTrafficInfo usageTrafficInfo, KpiTotalTraffic kpiTotalTraffic) {
-        usageTrafficInfo.setServiceId(kpiTotalTraffic.getId());
-        usageTrafficInfo.setTrafficData(String.valueOf(kpiTotalTraffic.getTotalTraffic()));
+        usageTrafficInfo.setServiceId(kpiTotalTraffic.getRequest().getId());
+        usageTrafficInfo.setTrafficData(String.valueOf(kpiTotalTraffic.getResult().get(0)));
     }
 
     SlicingKpiReqInfo buildSlicingKpiReqInfo(ServiceInfo serviceInfo, String queryTimestamp, int kpiHours) {
@@ -70,10 +70,10 @@ public class ResourceMonitorServiceConvert {
         throws InvocationTargetException, IllegalAccessException, ParseException {
 
         List<UserNumberInfo> userNumberInfoList = new ArrayList<>();
-        serviceOnlineUserInfo.setId(kpiUserNumber.getId());
+        serviceOnlineUserInfo.setId(kpiUserNumber.getRequest().getId());
 
-        if (kpiUserNumber.getUserNumbers() != null) {
-            for (UserNumbers userNumbers : kpiUserNumber.getUserNumbers()) {
+        if (kpiUserNumber.getResult() != null) {
+            for (UserNumbers userNumbers : kpiUserNumber.getResult()) {
                 String newTimeStamp = NsmfCommonUtil
                     .timestamp2Time(userNumbers.getTimeStamp().replace("T", NsmfParamConstant.SPACE));
                 UserNumberInfo userNumberInfo = new UserNumberInfo();
@@ -91,9 +91,9 @@ public class ResourceMonitorServiceConvert {
         throws InvocationTargetException, IllegalAccessException, ParseException {
 
         List<TotalBandwidthInfo> totalBandwidthInfoList = new ArrayList<>();
-        serviceTotalBandwidthInfo.setId(kpiTotalBandwidth.getId());
-        if (kpiTotalBandwidth.getTotalBandwidth() != null) {
-            for (TotalBandwidth totalBandwidth : kpiTotalBandwidth.getTotalBandwidth()) {
+        serviceTotalBandwidthInfo.setId(kpiTotalBandwidth.getRequest().getId());
+        if (kpiTotalBandwidth.getResult() != null) {
+            for (TotalBandwidth totalBandwidth : kpiTotalBandwidth.getResult()) {
                 String newTimeStamp = NsmfCommonUtil
                     .timestamp2Time(totalBandwidth.getTimeStamp().replace("T", NsmfParamConstant.SPACE));
                 TotalBandwidthInfo totalBandwidthInfo = new TotalBandwidthInfo();

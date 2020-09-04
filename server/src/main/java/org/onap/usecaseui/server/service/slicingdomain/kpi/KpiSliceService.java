@@ -28,15 +28,15 @@ import retrofit2.http.POST;
 public interface KpiSliceService {
 
     @Headers({"Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==", "Accept: application/json"})
-    @POST("/api/kpi-service/v1/userNumber")
+    @POST("/api/datalake/v1/exposure/userNumber")
     Call<KpiUserNumber> listUserNumber(@Body RequestBody body);
 
     @Headers({"Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==", "Accept: application/json"})
-    @POST("/api/kpi-service/v1/totalBandwidth")
+    @POST("/api/datalake/v1/exposure/totalBandwidth")
     Call<KpiTotalBandwidth> listTotalBandwidth(@Body RequestBody body);
 
     @Headers({"Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==", "Accept: application/json"})
-    @POST("/api/kpi-service/v1/totalTraffic")
+    @POST("/api/datalake/v1/exposure/totalTraffic")
     Call<KpiTotalTraffic> listTotalTraffic(@Body RequestBody body);
 
 }

@@ -16,54 +16,20 @@ package org.onap.usecaseui.server.service.slicingdomain.kpi.bean;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
+import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
+import org.onap.usecaseui.server.bean.nsmf.monitor.TrafficReqInfo;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@Setter
 public class KpiUserNumber {
 
-    private String id;
+    private List<UserNumbers> result;
 
-    private List<UserNumbers> userNumbers;
+    private SlicingKpiReqInfo request;
 
-    public static class UserNumbers {
-
-        private String timeStamp;
-
-        private int userNumber;
-
-        public String getTimeStamp() {
-            return timeStamp;
-        }
-
-        public void setTimeStamp(String timeStamp) {
-            this.timeStamp = timeStamp;
-        }
-
-        public int getUserNumber() {
-            return userNumber;
-        }
-
-        public void setUserNumber(int userNumber) {
-            this.userNumber = userNumber;
-        }
-
-
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public List<UserNumbers> getUserNumbers() {
-        return userNumbers;
-    }
-
-    public void setUserNumbers(List<UserNumbers> userNumbers) {
-        this.userNumbers = userNumbers;
-    }
-
+    private int result_count;
 
 }

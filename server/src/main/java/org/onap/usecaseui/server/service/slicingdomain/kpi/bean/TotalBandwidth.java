@@ -1,5 +1,5 @@
-/**
- * Copyright 2016-2017 ZTE Corporation.
+/*
+ * Copyright (C) 2020 CMCC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,24 @@
  */
 package org.onap.usecaseui.server.service.slicingdomain.kpi.bean;
 
+public class TotalBandwidth {
+    private String timeStamp;
 
-import java.util.List;
+    private int bandwidth;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
-import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
+    public String getTimeStamp() {
+        return timeStamp;
+    }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Getter
-@Setter
-public class KpiTotalBandwidth {
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
-	private List<TotalBandwidth> result;
+    public int getBandwidth() {
+        return bandwidth;
+    }
 
-	private SlicingKpiReqInfo request;
-
-	private int result_count;
-
+    public void setBandwidth(int bandwidth) {
+        this.bandwidth = bandwidth;
+    }
 }

@@ -158,7 +158,7 @@ public class TaskMgtServiceConvert {
         nsiAndSubNssiInfo.setAnCoverageAreaTaList(generalConvert.getAreaTaList(anCoverageAreaTA));
         nsiAndSubNssiInfo.setAnLatency(paramsObject.getString("SliceProfile.AN.latency"));
         nsiAndSubNssiInfo.setAnScriptName(paramsObject.getString("AN.ScriptName"));
-        nsiAndSubNssiInfo.setAnEnableNSSISelection(paramsObject.getString("AN.enableNSSISelection"));
+        nsiAndSubNssiInfo.setAnEnableNSSISelection(paramsObject.getBoolean("AN.enableNSSISelection"));
         nsiAndSubNssiInfo.setSliceProfile_AN_sNSSAI(paramsObject.getString("SliceProfile.AN.sNSSAI"));
         nsiAndSubNssiInfo.setSliceProfile_AN_maxNumberofUEs(paramsObject.getString("SliceProfile.AN.maxNumberofUEs"));
         nsiAndSubNssiInfo.setSliceProfile_AN_maxNumberofPDUSession(paramsObject.getString("SliceProfile.AN.maxNumberofPDUSession"));
@@ -186,7 +186,7 @@ public class TaskMgtServiceConvert {
         nsiAndSubNssiInfo.setTnLatency(paramsObject.getString("SliceProfile.TN.latency"));
         nsiAndSubNssiInfo.setTnBandwidth(paramsObject.getString("SliceProfile.TN.maxBandwidth"));
         nsiAndSubNssiInfo.setTnScriptName(paramsObject.getString("TN.ScriptName"));
-        nsiAndSubNssiInfo.setTnEnableNSSISelection(paramsObject.getString("TN.enableNSSISelection"));
+        nsiAndSubNssiInfo.setTnEnableNSSISelection(paramsObject.getBoolean("TN.enableNSSISelection"));
         nsiAndSubNssiInfo.setSliceProfile_TN_jitte(paramsObject.getString("SliceProfile.TN.jitte"));
         nsiAndSubNssiInfo.setSliceProfile_TN_pLMNIdList(paramsObject.getString("SliceProfile.TN.pLMNIdList"));
         nsiAndSubNssiInfo.setSliceProfile_TN_sNSSAI(paramsObject.getString("SliceProfile.TN.sNSSAI"));
@@ -205,7 +205,7 @@ public class TaskMgtServiceConvert {
         nsiAndSubNssiInfo.setCnAreaTrafficCapDl(paramsObject.getString("SliceProfile.CN.areaTrafficCapDL"));
         nsiAndSubNssiInfo.setCnAreaTrafficCapUl(paramsObject.getString("SliceProfile.CN.areaTrafficCapUL"));
         nsiAndSubNssiInfo.setCnScriptName(paramsObject.getString("CN.ScriptName"));
-        nsiAndSubNssiInfo.setCnEnableNSSISelection(paramsObject.getString("CN.enableNSSISelection"));
+        nsiAndSubNssiInfo.setCnEnableNSSISelection(paramsObject.getBoolean("CN.enableNSSISelection"));
         nsiAndSubNssiInfo.setSliceProfile_CN_maxNumberofPDUSession(paramsObject.getString("SliceProfile.CN.maxNumberofPDUSession"));
         nsiAndSubNssiInfo.setSliceProfile_CN_overallUserDensity(paramsObject.getString("SliceProfile.CN.overallUserDensity"));
         nsiAndSubNssiInfo.setSliceProfile_CN_coverageAreaTAList(paramsObject.getString("SliceProfile.CN.coverageAreaTAList"));
