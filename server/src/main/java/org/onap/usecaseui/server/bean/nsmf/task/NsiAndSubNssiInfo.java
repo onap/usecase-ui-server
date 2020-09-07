@@ -49,7 +49,7 @@ public class NsiAndSubNssiInfo {
     String anScriptName;
 
     @JsonProperty("an_enableNSSISelection")
-    String anEnableNSSISelection;
+    Boolean anEnableNSSISelection;
 
     @JsonProperty("sliceProfile_AN_sNSSAI")
     String sliceProfile_AN_sNSSAI;
@@ -145,7 +145,7 @@ public class NsiAndSubNssiInfo {
     String sliceProfile_TN_sST;
 
     @JsonProperty("tn_enableNSSISelection")
-    String tnEnableNSSISelection;
+    Boolean tnEnableNSSISelection;
 
     @JsonProperty("cn_suggest_nssi_id")
     String cnSuggestNssiId;
@@ -187,7 +187,7 @@ public class NsiAndSubNssiInfo {
     String cnScriptName;
 
     @JsonProperty("cn_enableNSSISelection")
-    String cnEnableNSSISelection;
+    Boolean cnEnableNSSISelection;
 
     @JsonProperty("sliceProfile_CN_pLMNIdList")
     String sliceProfile_CN_pLMNIdList;
