@@ -20,7 +20,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth.TotalBandwidth;
+import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
 
 public class KpiTotalBandwidthTest {
 
@@ -43,11 +43,14 @@ public class KpiTotalBandwidthTest {
         totalBandwidth.getTimeStamp();
         totalBandwidth.getBandwidth();
         totalBandwidthList.add(totalBandwidth);
-        kpiTotalBandwidth.setTotalBandwidth(totalBandwidthList);
-        kpiTotalBandwidth.setId("id001");
+        kpiTotalBandwidth.setResult(totalBandwidthList);
+        SlicingKpiReqInfo slicingKpiReqInfo = new SlicingKpiReqInfo();
+        kpiTotalBandwidth.setRequest(slicingKpiReqInfo);
+        kpiTotalBandwidth.setResult_count(1);
 
-        kpiTotalBandwidth.getTotalBandwidth();
-        kpiTotalBandwidth.getId();
+        kpiTotalBandwidth.getResult();
+        kpiTotalBandwidth.getRequest();
+        kpiTotalBandwidth.getResult_count();
 
     }
 

@@ -20,7 +20,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth.TotalBandwidth;
+import org.onap.usecaseui.server.bean.nsmf.monitor.TrafficReqInfo;
 
 public class KpiTotalTrafficTest {
 
@@ -35,11 +35,18 @@ public class KpiTotalTrafficTest {
     @Test
     public void testSetAndGetKpiTotalTraffic() throws Exception {
         KpiTotalTraffic kpiTotalTraffic = new KpiTotalTraffic();
-        kpiTotalTraffic.setId("id001");
-        kpiTotalTraffic.setTotalTraffic(1024);
 
-        kpiTotalTraffic.getId();
-        kpiTotalTraffic.getTotalTraffic();
+        List<TotalTraffic> totalTrafficList = new ArrayList<>();
+        kpiTotalTraffic.setResult(totalTrafficList);
+
+        TrafficReqInfo trafficReqInfo = new TrafficReqInfo();
+        kpiTotalTraffic.setRequest(trafficReqInfo);
+
+        kpiTotalTraffic.setResult_count(3);
+
+        kpiTotalTraffic.getRequest();
+        kpiTotalTraffic.getResult();
+        kpiTotalTraffic.getResult_count();
     }
 
 }

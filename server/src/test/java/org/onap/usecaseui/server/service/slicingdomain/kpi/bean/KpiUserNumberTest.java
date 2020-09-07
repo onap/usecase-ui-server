@@ -20,8 +20,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth.TotalBandwidth;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber.UserNumbers;
+import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
 
 public class KpiUserNumberTest {
 
@@ -37,11 +36,15 @@ public class KpiUserNumberTest {
     public void testSetAndGetKpiUserNumber() throws Exception {
         KpiUserNumber kpiUserNumber = new KpiUserNumber();
         List<UserNumbers> userNumbersList = new ArrayList<>();
-        kpiUserNumber.setUserNumbers(userNumbersList);
-        kpiUserNumber.setId("id001");
+        kpiUserNumber.setResult(userNumbersList);
 
-        kpiUserNumber.getUserNumbers();
-        kpiUserNumber.getId();
+        SlicingKpiReqInfo slicingKpiReqInfo = new SlicingKpiReqInfo();
+        kpiUserNumber.setRequest(slicingKpiReqInfo);
+        kpiUserNumber.setResult_count(3);
+
+        kpiUserNumber.getResult();
+        kpiUserNumber.getRequest();
+        kpiUserNumber.getResult_count();
 
     }
 
