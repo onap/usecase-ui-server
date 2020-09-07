@@ -24,12 +24,14 @@ import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceOnlineUserInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceTotalBandwidthInfo;
+import org.onap.usecaseui.server.bean.nsmf.monitor.TrafficReqInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.UsageTrafficInfo;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth.TotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber.UserNumbers;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.TotalBandwidth;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.TotalTraffic;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.UserNumbers;
 
 public class ResourceMonitorServiceConvertTest {
 
@@ -55,7 +57,12 @@ public class ResourceMonitorServiceConvertTest {
         usageTrafficInfo.setTrafficData("600");
 
         KpiTotalTraffic kpiTotalTraffic = new KpiTotalTraffic();
-        kpiTotalTraffic.setId("1234-5678-rt45-3456");
+        List<TotalTraffic> totalTrafficList = new ArrayList<>();
+        kpiTotalTraffic.setResult(totalTrafficList);
+
+        TrafficReqInfo trafficReqInfo = new TrafficReqInfo();
+        trafficReqInfo.setId("1234-5678-rt45-3456");
+        kpiTotalTraffic.setRequest(trafficReqInfo);
 
         resourceMonitorServiceConvert.convertUsageTrafficInfo(usageTrafficInfo, kpiTotalTraffic);
     }
@@ -78,7 +85,7 @@ public class ResourceMonitorServiceConvertTest {
         userNumbers.setUserNumber(1);
         userNumbers.setTimeStamp("2019-12-23 11:31:19");
         userNumbersList.add(userNumbers);
-        kpiUserNumber.setUserNumbers(userNumbersList);
+        kpiUserNumber.setResult(userNumbersList);
 
         try {
             resourceMonitorServiceConvert.convertServiceOnlineUserInfo(serviceOnlineUserInfo, kpiUserNumber);
@@ -101,7 +108,7 @@ public class ResourceMonitorServiceConvertTest {
         totalBandwidth.setBandwidth(100);
         totalBandwidth.setTimeStamp("2019-12-23 11:31:19");
         totalBandwidthList.add(totalBandwidth);
-        kpiTotalBandwidth.setTotalBandwidth(totalBandwidthList);
+        kpiTotalBandwidth.setResult(totalBandwidthList);
 
         try {
             resourceMonitorServiceConvert
