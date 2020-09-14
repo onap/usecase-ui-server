@@ -17,8 +17,9 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
 # Update the Ubuntu and install tools
+add-apt-repository ppa:openjdk-r/ppa \
 RUN apt-get update && \
-    apt-get install -y openjdk-8-jdk && \
+    apt-get install -y openjdk-11-jdk && \
     apt-get install -y gcc && \
     apt-get install -y curl && \
     apt-get install -y vim && \
@@ -38,9 +39,9 @@ VOLUME ["${PG_HOME}", "${PG_VAR_LIB}", "${PG_LOGDIR}"]
 # CMD ["${PG_USR_LIB}/${PG_VERSION}/bin/postgres", "-D", "${PG_VAR_LIB}/${PG_VERSION}/main", "-c", "config_file=${PG_HOME}/${PG_VERSION}/main/postgresql.conf"]
 
 #Configure Java SDK
-RUN sed -i 's|#networkaddress.cache.ttl=-1|networkaddress.cache.ttl=10|' /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/java.security
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
-ENV PATH $PATH:/usr/lib/jvm/java-8-openjdk-amd64/jre/bin:/usr/lib/jvm/java-8-openjdk-amd64/bin
+RUN sed -i 's|#networkaddress.cache.ttl=-1|networkaddress.cache.ttl=10|' /usr/lib/jvm/java-11-openjdk-amd64/jre/lib/security/java.security
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH $PATH:/usr/lib/jvm/java-11-openjdk-amd64/jre/bin:/usr/lib/jvm/java-11-openjdk-amd64/bin
 ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 ENV JRE_HOME ${JAVA_HOME}/jre
 
