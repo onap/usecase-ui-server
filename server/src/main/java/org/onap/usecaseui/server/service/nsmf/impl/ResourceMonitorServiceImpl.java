@@ -80,8 +80,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
     public void initConfig() {
         String slicingPath = System.getProperty("user.dir") + File.separator + "config" + File.separator + "slicing.properties";
         Properties p = new Properties();
-        try {
-            InputStream inputStream = new FileInputStream(new File(slicingPath));
+        try(InputStream inputStream = new FileInputStream(new File(slicingPath));) {
             p.load(inputStream);
             String strKpiHours = p.getProperty("slicing.kpi.hours");
             this.kpiHours = Integer.parseInt(strKpiHours);
