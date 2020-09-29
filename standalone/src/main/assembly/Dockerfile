@@ -44,7 +44,7 @@ VOLUME ["${PG_HOME}", "${PG_VAR_LIB}", "${PG_LOGDIR}"]
 #Configure Java SDK
 RUN sed -i 's|#networkaddress.cache.ttl=-1|networkaddress.cache.ttl=10|' /usr/lib/jvm/java-11-*/conf/security/java.security
 ENV JAVA_HOME /usr/lib/jvm/java-11-*
-ENV PATH $PATH:/usr/lib/jvm/java-11-*/jre/bin
+ENV PATH $PATH:/usr/lib/jvm/java-11-*/bin
 ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 ENV JRE_HOME ${JAVA_HOME}/jre
 
