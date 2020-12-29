@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -42,15 +43,15 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	private static final Logger logger = LoggerFactory.getLogger(AlarmsInformationServiceImpl.class);
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	private EntityManagerFactory entityManagerFactory;
 
-	private Session getSession() {
-		return sessionFactory.openSession();
-	}
+	public Session getSession() {
+		return entityManagerFactory.unwrap(SessionFactory.class).getCurrentSession();}
 
 	@Override
 	public String saveAlarmsInformation(AlarmsInformation alarmsInformation) {
-		 try(Session session = getSession()){
+		  Session session = getSession();
+		  try{
 				if (null == alarmsInformation) {
 					logger.error("alarmsInformation saveAlarmsInformation alarmsInformation is null!");
 				}
@@ -68,7 +69,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public String updateAlarmsInformation(AlarmsInformation alarmsInformation) {
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			if (null == alarmsInformation) {
 				logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
 			}
@@ -85,7 +87,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	
 
 	public int getAllCount(AlarmsInformation alarmsInformation, int currentPage, int pageSize) {
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			StringBuilder hql = new StringBuilder("select count(*) from AlarmsInformation a where 1=1");
 			if (null == alarmsInformation) {
 			}else {
@@ -122,14 +125,14 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<AlarmsInformation> queryId(String[] id) {
+		Session session = getSession();
 		try {
 			if(id.length==0) {
 			}
 			List<AlarmsInformation> list = new ArrayList<AlarmsInformation>();
-			Session session = getSession();
+
 			Query query = session.createQuery("from AlarmsInformation a where a.sourceId IN (:alist)");
 			list = query.setParameterList("alist", id).list();
-			session.close();
 			return list;
 		} catch (Exception e) {
 			logger.error("exception occurred while performing AlarmsInformationServiceImpl queryId. Details:" + e.getMessage());
@@ -143,7 +146,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 		if("1526554800000".equals(startTime)){
 			System.out.print(startTime);
 		}
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			String hql = "select count(*) from AlarmsHeader a where 1=1 ";
 			if (sourceName != null && !"".equals(sourceName)){
 				hql += " and a.sourceName = :sourceName";
@@ -151,10 +155,12 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			if (UuiCommonUtil.isNotNullOrEmpty(status)){
 				hql += " and a.status = :status";
 			}
+			String zero = "0";
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
-				hql += " and (CASE WHEN a.startEpochMicrosec=0 THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ";
+				hql += " and (CASE WHEN a.startEpochMicrosec=:zero THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ";
 			}
 			Query query = session.createQuery(hql);
+			query.setString("zero",zero);
 			if (sourceName != null && !"".equals(sourceName)){
 				query.setString("sourceName",sourceName);
 			}
@@ -175,7 +181,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 	@Override
 	public List<maxAndMinTimeBean> queryMaxAndMinTime(){
 		List<maxAndMinTimeBean> list = new ArrayList<>();
-		try (Session session = getSession()){
+		Session session = getSession();
+		try {
 			String sql = "select MAX(startEpochMicrosec),MIN(startEpochMicrosec) FROM alarms_commoneventheader";
 			Query query = session.createSQLQuery(sql);
 			list = query.list();
@@ -191,7 +198,8 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 
 	@Override
 	public List<AlarmsInformation> getAllAlarmsInformationByHeaderId(String headerId) {
-		try (Session session = getSession()){
+		Session session = getSession();
+		try {
 			String string = "from AlarmsInformation a where 1=1 and a.headerId=:headerId";
 			Query query = session.createQuery(string);
 			query.setString("headerId",headerId);

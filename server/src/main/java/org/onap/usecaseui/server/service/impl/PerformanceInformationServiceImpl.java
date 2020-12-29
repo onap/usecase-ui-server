@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 
 import com.google.common.base.Throwables;
@@ -47,15 +48,15 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	private static final Logger logger = LoggerFactory.getLogger(PerformanceInformationServiceImpl.class);
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	private EntityManagerFactory entityManagerFactory;
 
-	private Session getSession() {
-		return sessionFactory.openSession();
-	}
+	public Session getSession() {
+		return entityManagerFactory.unwrap(SessionFactory.class).getCurrentSession();}
 
 	@Override
 	public String savePerformanceInformation(PerformanceInformation performanceInformation) {
-	try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			if (null == performanceInformation) {
 			}
 			Transaction tx = session.beginTransaction();
@@ -71,7 +72,8 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 	@Override
 	public String updatePerformanceInformation(PerformanceInformation performanceInformation) {
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			if (null == performanceInformation) {
 			}
 			logger.info("PerformanceInformationServiceImpl updatePerformanceInformation: performanceInformation={}", performanceInformation);
@@ -89,7 +91,8 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceInformation> queryId(String[] id) {
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			if(id.length==0) {
 			}
 			List<PerformanceInformation> list = new ArrayList<>();
@@ -106,7 +109,8 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceInformation> queryDateBetween(String sourceId, Date startDate, Date endDate) {
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			List<PerformanceInformation> list = new ArrayList<>();
 			Query query = session.createQuery("from PerformanceInformation a where a.sourceId = :sourceId and a.createTime BETWEEN :startDate and :endDate");
 			list = query.setParameter("sourceId",sourceId).setParameter("startDate", startDate).setParameter("endDate",endDate).list();
@@ -120,7 +124,8 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	@SuppressWarnings("unchecked")
 	@Override
 	public int queryDataBetweenSum(String sourceId, String name, Date startDate, Date endDate){
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			int sum = 0;
 			Query query = session.createQuery("select sum(a.value) from PerformanceInformation a where a.sourceId = :sourceId and a.name = :name and a.createTime BETWEEN :startDate and :endDate");
 			sum = Integer.parseInt(query.setParameter("sourceId",sourceId).setParameter("name",name).setParameter("startDate", startDate).setParameter("endDate",endDate).uniqueResult().toString());
@@ -133,7 +138,8 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 
 	@Override
 	public List<PerformanceInformation> queryDateBetween(String resourceId, String name, String startTime, String endTime) {
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			String hql = "from PerformanceInformation a where 1=1 ";
 			if (resourceId != null && !"".equals(resourceId)){
 				hql += " and a.sourceId = :resourceId";
@@ -164,7 +170,8 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	
 	@Override
 	public List<PerformanceInformation> getAllPerformanceInformationByHeaderId(String headerId) {
-		try (Session session = getSession()){
+		Session session = getSession();
+		try {
 			String string = "from PerformanceInformation a where 1=1 and a.headerId=:headerId";
 			Query query = session.createQuery(string);
 			query.setString("headerId",headerId);
@@ -180,7 +187,8 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 	
     @Override
     public String queryMaxValueByBetweenDate(String sourceId, String name, String startTime, String endTime) {
-        try(Session session = getSession()) {
+			Session session = getSession();
+		     try {
             String hql = "select max(a.value) from PerformanceInformation a where 1=1 ";
             if (sourceId != null && !"".equals(sourceId)){
                 hql += " and a.sourceId = :resourceId";
