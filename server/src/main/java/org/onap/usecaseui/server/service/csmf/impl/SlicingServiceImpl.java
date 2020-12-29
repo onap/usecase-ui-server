@@ -137,7 +137,7 @@ public class SlicingServiceImpl implements SlicingService {
             if (updateResponse.isSuccessful()) {
                 CreateResponse createResponse = updateResponse.body();
                 logger.info("createSlicingService: submitOrders reponse is:{}",
-                    gson.toJson(updateResponse).toString());
+                    gson.toJson(createResponse).toString());
 
                 // set create operation result
                 createResult.setService_id(createResponse.getService().getServiceId());

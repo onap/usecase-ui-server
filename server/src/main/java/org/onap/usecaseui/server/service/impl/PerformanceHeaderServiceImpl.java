@@ -19,6 +19,7 @@ package org.onap.usecaseui.server.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 
 import org.hibernate.Query;
@@ -45,15 +46,15 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	private static final Logger logger = LoggerFactory.getLogger(PerformanceHeaderServiceImpl.class);
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	private EntityManagerFactory entityManagerFactory;
 
-	private Session getSession() {
-		return sessionFactory.openSession();
-	}
+	public Session getSession() {
+		return entityManagerFactory.unwrap(SessionFactory.class).getCurrentSession();}
 
 	@Override
 	public String savePerformanceHeader(PerformanceHeader performanceHeder) {
-		 try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			if (null == performanceHeder){
 				logger.error("PerformanceHeaderServiceImpl savePerformanceHeader performanceHeder is null!");
 				return "0";
@@ -71,7 +72,8 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public String updatePerformanceHeader(PerformanceHeader performanceHeder) {
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			if (null == performanceHeder){
 				logger.error("PerformanceHeaderServiceImpl updatePerformanceHeader performanceHeder is null!");
 				return "0";
@@ -88,7 +90,8 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	}
 
 	public int getAllCount(PerformanceHeader performanceHeder, int currentPage, int pageSize) {
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			StringBuffer hql = new StringBuffer("select count(*) from PerformanceHeader a where 1=1");
 			if (null == performanceHeder) {
 				return 0;
@@ -120,8 +123,8 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 		Page<PerformanceHeader> page = new Page<PerformanceHeader>();
 		int allRow =this.getAllCount(performanceHeder,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
-
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			StringBuffer hql =new StringBuffer("from PerformanceHeader a where 1=1");
 				if(UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getSourceName())) {
 					String ver =performanceHeder.getSourceName();
@@ -152,7 +155,8 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PerformanceHeader> queryId(String[] id) {
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			List<PerformanceHeader> list = new ArrayList<PerformanceHeader>();
 			if(id.length==0) {
 				return list;
@@ -168,7 +172,8 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 	@Override
 	public List<String> queryAllSourceNames() {
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 			Query query = session.createQuery("select distinct a.sourceName from PerformanceHeader a");
 			return query.list();
 		} catch (Exception e) {
@@ -179,7 +184,8 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 	
 	@Override
 	public PerformanceHeader getPerformanceHeaderById(String id) {
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 
 			String string = "from PerformanceHeader a where 1=1 and a.id=:id";
 			Query q = session.createQuery(string);

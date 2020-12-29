@@ -22,9 +22,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Throwables;
+import javax.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -48,16 +52,16 @@ import okhttp3.RequestBody;
 import retrofit2.Response;
 
 @Service("ServiceLcmService")
+@Transactional
 public class DefaultServiceLcmService implements ServiceLcmService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultServiceLcmService.class);
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
-    private Session getSession() {
-        return sessionFactory.openSession();
-    }
+    public Session getSession() {
+        return entityManagerFactory.unwrap(SessionFactory.class).getCurrentSession();}
 
     private SOService soService;
 
@@ -165,7 +169,8 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 
     @Override
     public void saveOrUpdateServiceBean(ServiceBean serviceBean) {
-        try (Session session = getSession()) {
+        Session session = getSession();
+        try  {
             if (null == serviceBean) {
                 logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceBean is null!");
             }
@@ -182,15 +187,14 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 
     @Override
     public void updateServiceInstanceStatusById(String status, String serviceInstanceId) {
-        try (Session session = getSession()) {
-
+        Session session = getSession();
+        try  {
             String string = "update ServiceBean set status=:status where 1=1 and serviceInstanceId=:serviceInstanceId";
             Query q = session.createQuery(string);
             q.setString("status", status);
             q.setString("serviceInstanceId", serviceInstanceId);
             q.executeUpdate();
             session.flush();
-
         } catch (Exception e) {
             logger.error(
                     "exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusById.Detail."
@@ -201,7 +205,8 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public ServiceBean getServiceBeanByServiceInStanceId(String serviceInstanceId) {
         ServiceBean serviceBean = null;
-        try (Session session = getSession()) {
+        Session session = getSession();
+        try  {
 
             String string = "from ServiceBean  where 1=1 and serviceInstanceId=:serviceInstanceId";
             Query q = session.createQuery(string);
@@ -224,7 +229,8 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public List<String> getServiceInstanceIdByParentId(String parentServiceInstanceId) {
         List<String> list = new ArrayList<>();
-        try (Session session = getSession()) {
+        Session session = getSession();
+        try  {
 
             String string = "from ServiceBean  where 1=1 and parentServiceInstanceId=:parentServiceInstanceId";
             Query q = session.createQuery(string);
@@ -243,7 +249,8 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 
     @Override
     public void saveOrUpdateServiceInstanceOperation(ServiceInstanceOperations serviceOperation) {
-        try (Session session = getSession()) {
+        Session session = getSession();
+        try  {
             if (null == serviceOperation) {
                 logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceOperation is null!");
             }
@@ -263,7 +270,8 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     public void updateServiceInstanceOperation(String serviceInstanceId, String operationType, String progress,
             String operationResult) {
         List<ServiceInstanceOperations> list = new ArrayList<>();
-        try (Session session = getSession()) {
+        Session session = getSession();
+        try {
             String hql =
                     "select a.* from service_instance_operations a where service_instance_id =:serviceId and operation_type =:operationType and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId )";
             Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
@@ -291,7 +299,8 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     public ServiceInstanceOperations getServiceInstanceOperationById(String serviceId) {
         ServiceInstanceOperations serviceOperation = null;
         List<ServiceInstanceOperations> list = new ArrayList<>();
-        try (Session session = getSession()) {
+        Session session = getSession();
+        try  {
             String hql =
                     "select a.* from service_instance_operations a where service_instance_id =:serviceId and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId)";
             Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
@@ -304,7 +313,6 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             } else {
                 serviceOperation = new ServiceInstanceOperations();
             }
-
             session.flush();
 
         } catch (Exception e) {
@@ -320,7 +328,8 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         @Override
 	public List<ServiceBean> getAllServiceBean() {
         List<ServiceBean> list = new ArrayList<ServiceBean>();
-        try (Session session = getSession()) {
+        Session session = getSession();
+        try  {
 
             String string = "from ServiceBean";
             Query q = session.createQuery(string);

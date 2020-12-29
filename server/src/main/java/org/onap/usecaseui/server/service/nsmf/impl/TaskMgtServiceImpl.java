@@ -203,6 +203,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 taskMgtServiceConvert.convertTaskAuditToSoTask(soTaskInfo, slicingTaskAuditInfo);
 
                 String jsonstr = JSON.toJSONString(soTaskInfo);
+                logger.info("updateTaskAuditInfo: the requestBody body is:{}", jsonstr);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
                 Response<ResponseBody> updateResponse = soSliceService
                     .updateService(slicingTaskAuditInfo.getTaskId(), requestBody).execute();
