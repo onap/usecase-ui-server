@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 
 import org.hibernate.Query;
@@ -48,14 +49,14 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	private static final Logger logger = LoggerFactory.getLogger(AlarmsHeaderServiceImpl.class);
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	private EntityManagerFactory entityManagerFactory;
 
-	private Session getSession() {
-		return sessionFactory.openSession();
-	}
+	public Session getSession() {
+		return entityManagerFactory.unwrap(SessionFactory.class).getCurrentSession();}
 
 	public String saveAlarmsHeader(AlarmsHeader alarmsHeader) {
-		 try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			if (null == alarmsHeader) {
 				logger.error("AlarmsHeaderServiceImpl saveAlarmsHeader alarmsHeader is null!");
 				return "0";
@@ -74,7 +75,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 
 	@Override
 	public String updateAlarmsHeader(AlarmsHeader alarmsHeader) {
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			if (null == alarmsHeader){
 				logger.error("AlarmsHeaderServiceImpl updateAlarmsHeader alarmsHeader is null!");
 				return "0";
@@ -92,7 +94,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	}
 
 	public int getAllCount(AlarmsHeader alarmsHeader,int currentPage,int pageSize) {
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			StringBuffer count=new StringBuffer("select count(*) from AlarmsHeader a where 1=1");
 			if (null == alarmsHeader) {
 				logger.error("AlarmsHeaderServiceImpl getAllCount alarmsHeader is null!");
@@ -134,8 +137,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		Page<AlarmsHeader> page = new Page<AlarmsHeader>();
 		int allRow =this.getAllCount(alarmsHeader,currentPage,pageSize);
 		int offset = page.countOffset(currentPage, pageSize);
-
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			StringBuffer hql =new StringBuffer("from AlarmsHeader a where 1=1");
 			if (null == alarmsHeader) {
 				logger.error("AlarmsHeaderServiceImpl queryAlarmsHeader alarmsHeader is null!");
@@ -181,7 +184,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<AlarmsHeader> queryId(String[] id) {
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			List<AlarmsHeader> list = new ArrayList<AlarmsHeader>();
 			if(id.length==0) {
 				logger.error("AlarmsHeaderServiceImpl queryId is null!");
@@ -198,8 +202,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 	
 	@Override
 	public String updateAlarmsHeader2018(String status, Timestamp date, String startEpochMicrosecCleared, String lastEpochMicroSecCleared, String eventName, String reportingEntityName, String specificProblem) {
-
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			//try(Session session = sessionFactory.getCurrentSession();){
 			session.beginTransaction();
 
@@ -227,7 +231,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 
     @Override
     public String queryStatusCount(String status) {
-        try(Session session = getSession()){
+        Session session = getSession();
+        try{
             String hql = "select count(status) from AlarmsHeader a";
             if (!status.equals("0"))
                 hql+=" where a.status = :status";
@@ -243,7 +248,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
     
 	@Override
 	public AlarmsHeader getAlarmsHeaderById(String id) {
-		try(Session session = getSession()) {
+		Session session = getSession();
+		try {
 
 			String string = "from AlarmsHeader a where 1=1 and a.id=:id";
 			Query q = session.createQuery(string);
@@ -259,8 +265,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 
 	@Override
 	public List<SortMaster> listSortMasters(String sortType) {
-		
-		try(Session session = getSession()){
+		Session session = getSession();
+		try{
 			StringBuffer hql =new StringBuffer("from SortMaster a where 1=1 and a.sortType=:sortType");
 			Query query = session.createQuery(hql.toString());
 			query.setString("sortType",sortType);
