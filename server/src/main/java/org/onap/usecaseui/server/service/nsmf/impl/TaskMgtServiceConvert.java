@@ -181,16 +181,16 @@ public class TaskMgtServiceConvert {
         nsiAndSubNssiInfo.setSliceProfile_AN_logicInterfaceId(paramsObject.getString("SliceProfile.AN.logicInterfaceId"));
         nsiAndSubNssiInfo.setSliceProfile_AN_nextHopInfo(paramsObject.getString("SliceProfile.AN.nextHopInfo"));
 
-        nsiAndSubNssiInfo.setTnSuggestNssiId(paramsObject.getString("TN.suggestNSSIId"));
-        nsiAndSubNssiInfo.setTnSuggestNssiName(paramsObject.getString("TN.suggestNSSIName"));
-        nsiAndSubNssiInfo.setTnLatency(paramsObject.getString("SliceProfile.TN.latency"));
-        nsiAndSubNssiInfo.setTnBandwidth(paramsObject.getString("SliceProfile.TN.maxBandwidth"));
-        nsiAndSubNssiInfo.setTnScriptName(paramsObject.getString("TN.ScriptName"));
-        nsiAndSubNssiInfo.setTnEnableNSSISelection(paramsObject.getBoolean("TN.enableNSSISelection"));
-        nsiAndSubNssiInfo.setSliceProfile_TN_jitte(paramsObject.getString("SliceProfile.TN.jitte"));
-        nsiAndSubNssiInfo.setSliceProfile_TN_pLMNIdList(paramsObject.getString("SliceProfile.TN.pLMNIdList"));
-        nsiAndSubNssiInfo.setSliceProfile_TN_sNSSAI(paramsObject.getString("SliceProfile.TN.sNSSAI"));
-        nsiAndSubNssiInfo.setSliceProfile_TN_sST(paramsObject.getString("SliceProfile.TN.sST"));
+        nsiAndSubNssiInfo.setTnBhSuggestNssiId(paramsObject.getString("TN.BH.suggestNSSIId"));
+        nsiAndSubNssiInfo.setTnBhSuggestNssiName(paramsObject.getString("TN.BH.suggestNSSIName"));
+        nsiAndSubNssiInfo.setTnBhLatency(paramsObject.getString("SliceProfile.TN.BH.latency"));
+        nsiAndSubNssiInfo.setTnBhBandwidth(paramsObject.getString("SliceProfile.TN.BH.maxBandwidth"));
+        nsiAndSubNssiInfo.setTnBhScriptName(paramsObject.getString("TN.BH.ScriptName"));
+        nsiAndSubNssiInfo.setTnEnableNSSISelection(paramsObject.getBoolean("TN.BH.enableNSSISelection"));
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_jitte(paramsObject.getString("SliceProfile.TN.BH.jitter"));
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_pLMNIdList(paramsObject.getString("SliceProfile.TN.BH.pLMNIdList"));
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_sNSSAI(paramsObject.getString("SliceProfile.TN.BH.sNSSAI"));
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_sST(paramsObject.getString("SliceProfile.TN.BH.sST"));
 
         nsiAndSubNssiInfo.setCnSuggestNssiId(paramsObject.getString("CN.suggestNSSIId"));
         nsiAndSubNssiInfo.setCnSuggestNssiName(paramsObject.getString("CN.suggestNSSIName"));
@@ -263,16 +263,16 @@ public class TaskMgtServiceConvert {
         jsonObject.put("SliceProfile.AN.logicInterfaceId", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_logicInterfaceId());
         jsonObject.put("SliceProfile.AN.nextHopInfo", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_nextHopInfo());
 
-        jsonObject.put("TN.suggestNSSIId", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnSuggestNssiId());
-        jsonObject.put("TN.suggestNSSIName", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnSuggestNssiName());
-        jsonObject.put("SliceProfile.TN.maxBandwidth", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnBandwidth());
-        jsonObject.put("SliceProfile.TN.latency", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnLatency());
-        jsonObject.put("TN.ScriptName", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnScriptName());
-        jsonObject.put("TN.enableNSSISelection", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnEnableNSSISelection());
-        jsonObject.put("SliceProfile.TN.jitte", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_jitte());
-        jsonObject.put("SliceProfile.TN.pLMNIdList", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_pLMNIdList());
-        jsonObject.put("SliceProfile.TN.sNSSAI", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_sNSSAI());
-        jsonObject.put("SliceProfile.TN.sST", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_sST());
+        jsonObject.put("TN.BH.suggestNSSIId", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnBhSuggestNssiId());
+        jsonObject.put("TN.BH.suggestNSSIName", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnBhSuggestNssiName());
+        jsonObject.put("SliceProfile.TN.BH.maxBandwidth", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnBhBandwidth());
+        jsonObject.put("SliceProfile.TN.BH.latency", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnBhLatency());
+        jsonObject.put("TN.BH.ScriptName", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnBhScriptName());
+        jsonObject.put("TN.BH.enableNSSISelection", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getTnEnableNSSISelection());
+        jsonObject.put("SliceProfile.TN.BH.jitter", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_jitte());
+        jsonObject.put("SliceProfile.TN.BH.pLMNIdList", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_pLMNIdList());
+        jsonObject.put("SliceProfile.TN.BH.sNSSAI", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_sNSSAI());
+        jsonObject.put("SliceProfile.TN.BH.sST", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_sST());
 
         jsonObject.put("CN.suggestNSSIId", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getCnSuggestNssiId());
         jsonObject.put("CN.suggestNSSIName", sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getCnSuggestNssiName());
@@ -374,7 +374,7 @@ public class TaskMgtServiceConvert {
         String anProgress = paramsObject.getString("AN.progress");
         slicingTaskCreationProgress.setAnProgress(anProgress);
 
-        String tnProgress = paramsObject.getString("TN.progress");
+        String tnProgress = paramsObject.getString("TN.BH.progress");
         slicingTaskCreationProgress.setTnProgress(tnProgress);
 
         String cnProgress = paramsObject.getString("CN.progress");
@@ -383,7 +383,7 @@ public class TaskMgtServiceConvert {
         String anStatus = paramsObject.getString("AN.status");
         slicingTaskCreationProgress.setAnStatus(anStatus);
 
-        String tnStatus = paramsObject.getString("TN.status");
+        String tnStatus = paramsObject.getString("TN.BH.status");
         slicingTaskCreationProgress.setTnStatus(tnStatus);
 
         String cnStatus = paramsObject.getString("CN.status");
@@ -392,7 +392,7 @@ public class TaskMgtServiceConvert {
         String anStatusDescription = paramsObject.getString("AN.statusDescription");
         slicingTaskCreationProgress.setAnStatusDescription(anStatusDescription);
 
-        String tnStatusDescription = paramsObject.getString("TN.statusDescription");
+        String tnStatusDescription = paramsObject.getString("TN.BH.statusDescription");
         slicingTaskCreationProgress.setTnStatusDescription(tnStatusDescription);
 
         String cnStatusDescription = paramsObject.getString("CN.statusDescription");

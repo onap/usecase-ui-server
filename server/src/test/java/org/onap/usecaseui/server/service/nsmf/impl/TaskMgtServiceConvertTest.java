@@ -113,11 +113,11 @@ public class TaskMgtServiceConvertTest {
         nsiAndSubNssiInfo.setSuggestNsiName("nsi01");
         nsiAndSubNssiInfo.setSuggestNsiId("nsi01-0090-0987");
 
-        nsiAndSubNssiInfo.setTnSuggestNssiName("tn-nsi-01");
-        nsiAndSubNssiInfo.setTnSuggestNssiId("tn01-0987-iu87");
-        nsiAndSubNssiInfo.setTnLatency("60");
-        nsiAndSubNssiInfo.setTnBandwidth("1000");
-        nsiAndSubNssiInfo.setTnScriptName("scriptTest");
+        nsiAndSubNssiInfo.setTnBhSuggestNssiName("tn-nsi-01");
+        nsiAndSubNssiInfo.setTnBhSuggestNssiId("tn01-0987-iu87");
+        nsiAndSubNssiInfo.setTnBhLatency("60");
+        nsiAndSubNssiInfo.setTnBhBandwidth("1000");
+        nsiAndSubNssiInfo.setTnBhScriptName("scriptTest");
 
         nsiAndSubNssiInfo.setCnUeMobilityLevel("stationary");
         nsiAndSubNssiInfo.setCnServiceSnssai("1-10101");
