@@ -117,34 +117,34 @@ public class NsiAndSubNssiInfo {
     @JsonProperty("sliceProfile_AN_nextHopInfo")
     String sliceProfile_AN_nextHopInfo;
 
-    @JsonProperty("tn_suggest_nssi_id")
-    String tnSuggestNssiId;
+    @JsonProperty("tn_bh_suggest_nssi_id")
+    String tnBhSuggestNssiId;
 
-    @JsonProperty("tn_suggest_nssi_name")
-    String tnSuggestNssiName;
+    @JsonProperty("tn_bh_suggest_nssi_name")
+    String tnBhSuggestNssiName;
 
-    @JsonProperty("tn_latency")
-    String tnLatency;
+    @JsonProperty("tn_bh_latency")
+    String tnBhLatency;
 
-    @JsonProperty("tn_bandwidth")
-    String tnBandwidth;
+    @JsonProperty("tn_bh_bandwidth")
+    String tnBhBandwidth;
 
-    @JsonProperty("tn_script_name")
-    String tnScriptName;
+    @JsonProperty("tn_bh_script_name")
+    String tnBhScriptName;
 
-    @JsonProperty("sliceProfile_TN_jitte")
-    String sliceProfile_TN_jitte;
+    @JsonProperty("sliceProfile_TN_BH_jitte")
+    String sliceProfile_TN_BH_jitte;
 
-    @JsonProperty("sliceProfile_TN_pLMNIdList")
-    String sliceProfile_TN_pLMNIdList;
+    @JsonProperty("sliceProfile_TN_BH_pLMNIdList")
+    String sliceProfile_TN_BH_pLMNIdList;
 
-    @JsonProperty("sliceProfile_TN_sNSSAI")
-    String sliceProfile_TN_sNSSAI;
+    @JsonProperty("sliceProfile_TN_BH_sNSSAI")
+    String sliceProfile_TN_BH_sNSSAI;
 
-    @JsonProperty("sliceProfile_TN_sST")
-    String sliceProfile_TN_sST;
+    @JsonProperty("sliceProfile_TN_BH_sST")
+    String sliceProfile_TN_BH_sST;
 
-    @JsonProperty("tn_enableNSSISelection")
+    @JsonProperty("tn_bh_enableNSSISelection")
     Boolean tnEnableNSSISelection;
 
     @JsonProperty("cn_suggest_nssi_id")
