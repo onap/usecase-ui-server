@@ -59,9 +59,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 		try {
 			if (null == performanceInformation) {
 			}
-			Transaction tx = session.beginTransaction();
 			session.save(performanceInformation);
-			tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {
@@ -77,9 +75,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 			if (null == performanceInformation) {
 			}
 			logger.info("PerformanceInformationServiceImpl updatePerformanceInformation: performanceInformation={}", performanceInformation);
-			Transaction tx = session.beginTransaction();
 			session.update(performanceInformation);
-			tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {

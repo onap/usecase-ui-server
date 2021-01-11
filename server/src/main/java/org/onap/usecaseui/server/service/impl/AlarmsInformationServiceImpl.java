@@ -55,9 +55,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 				if (null == alarmsInformation) {
 					logger.error("alarmsInformation saveAlarmsInformation alarmsInformation is null!");
 				}
-				Transaction tx = session.beginTransaction();
 				session.save(alarmsInformation);
-				tx.commit();
 				session.flush();
 				return "1";
 			} catch (Exception e) {
@@ -74,9 +72,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 			if (null == alarmsInformation) {
 				logger.error("alarmsInformation updateAlarmsInformation alarmsInformation is null!");
 			}
-			Transaction tx = session.beginTransaction();
 			session.update(alarmsInformation);
-			tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {

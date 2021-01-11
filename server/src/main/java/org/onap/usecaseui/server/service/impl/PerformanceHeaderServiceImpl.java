@@ -59,9 +59,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 				logger.error("PerformanceHeaderServiceImpl savePerformanceHeader performanceHeder is null!");
 				return "0";
 			}
-			Transaction tx = session.beginTransaction();
 			session.save(performanceHeder);
-			tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {
@@ -78,9 +76,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 				logger.error("PerformanceHeaderServiceImpl updatePerformanceHeader performanceHeder is null!");
 				return "0";
 			}
-			Transaction tx = session.beginTransaction();
 			session.update(performanceHeder);
-			tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {

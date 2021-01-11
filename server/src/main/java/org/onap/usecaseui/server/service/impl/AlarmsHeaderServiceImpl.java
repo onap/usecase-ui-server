@@ -62,9 +62,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 				return "0";
 			}
 			logger.info("AlarmsHeaderServiceImpl saveAlarmsHeader: alarmsHeader={}", alarmsHeader);
-			Transaction tx = session.beginTransaction();     
 			session.save(alarmsHeader);
-			tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {
@@ -82,9 +80,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 				return "0";
 			}
 			logger.info("AlarmsHeaderServiceImpl updateAlarmsHeader: alarmsHeader={}", alarmsHeader);
-			Transaction tx = session.beginTransaction();     
 			session.update(alarmsHeader);
-			tx.commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {
@@ -205,7 +201,6 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		Session session = getSession();
 		try{
 			//try(Session session = sessionFactory.getCurrentSession();){
-			session.beginTransaction();
 
 			//Query q=session.createQuery("update AlarmsHeader set status='"+status+"', updateTime='"+date+"' , startEpochMicrosecCleared='"+startEpochMicrosecCleared+"'  ,lastEpochMicroSecCleared='"+lastEpochMicroSecCleared+"'    where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"'");
             Query q=session.createQuery("update AlarmsHeader set status=:status, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
@@ -220,7 +215,6 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 
 
             q.executeUpdate();
-			session.getTransaction().commit();
 			session.flush();
 			return "1";
 		} catch (Exception e) {
