@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d8d3e96_b8acc1e0",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/lcm/impl/SotnServiceTemplateServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-01-27T09:09:51Z",
+      "side": 1,
+      "message": "Hello, only update your modified parts, other parts without modification do not change, thank you!",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 21
+      },
+      "revId": "68a6ec0f507cd64a2ce2102d681e9a375d42b62a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bffc67cf_991f00aa",
+        "filename": "server/src/test/java/org/onap/usecaseui/server/service/lcm/impl/DefaultCustomerServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-01-27T09:09:51Z",
+      "side": 1,
+      "message": "Hello, only update your modified parts, other parts without modification do not change, thank you!",
+      "range": {
+        "startLine": 28,
+        "startChar": 1,
+        "endLine": 40,
+        "endChar": 69
+      },
+      "revId": "68a6ec0f507cd64a2ce2102d681e9a375d42b62a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e2bb426_2970082d",
+        "filename": "server/src/test/java/org/onap/usecaseui/server/service/lcm/impl/DefaultServiceLcmServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-01-27T09:09:51Z",
+      "side": 1,
+      "message": "Hello, only update your modified parts, other parts without modification do not change, thank you!",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 21
+      },
+      "revId": "68a6ec0f507cd64a2ce2102d681e9a375d42b62a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6fa6101f_50c3163e",
+        "filename": "server/src/test/java/org/onap/usecaseui/server/service/lcm/impl/SotnServiceTemplateServiceImplTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-01-27T09:09:51Z",
+      "side": 1,
+      "message": "Hello, only update your modified parts, other parts without modification do not change, thank you!",
+      "revId": "68a6ec0f507cd64a2ce2102d681e9a375d42b62a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
