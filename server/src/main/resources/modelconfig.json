@@ -2,6 +2,7 @@
 	"subscriberId":"SOTN-CUST",
 	"subscriptionType":"SOTN",
 	"status":1,
+	"deleteSleepTime":"1000",
 	"modelInformation":[
 			{
 				"modelType":"sotnservice",

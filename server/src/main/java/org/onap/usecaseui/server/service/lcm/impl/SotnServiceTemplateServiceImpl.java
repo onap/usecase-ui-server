@@ -20,53 +20,71 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Setter;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-//import org.onap.usecaseui.server.bean.lcm.sotne2eservice.*;
-//import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Connectivity;
-//import org.onap.usecaseui.server.bean.sotn.Pinterface;
+import org.onap.usecaseui.server.bean.activateEdge.ComplexObj;
+import org.onap.usecaseui.server.bean.activateEdge.ServiceInstance;
+import org.onap.usecaseui.server.bean.activateEdge.ServiceInstantiationResponse;
+import org.onap.usecaseui.server.bean.activateEdge.SiteResource;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.AllottedResource;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Connectivity;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.E2EParameters;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.E2EService;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.E2EServiceDelete;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.E2EServiceInstanceRequest;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Edge;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.LogicalLink;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Model;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ModelConfig;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ModelInfor;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Node;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Pinterface;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Pnf;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ResourceRequest;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ResourceResponse;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Uni;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Vnfs;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.VpnBinding;
+import org.onap.usecaseui.server.bean.lcm.sotne2eservice.VpnInformation;
 import org.onap.usecaseui.server.bean.orderservice.ServiceEstimationBean;
 import org.onap.usecaseui.server.service.lcm.SotnServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.Relationship;
-//import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
+import org.onap.usecaseui.server.service.lcm.domain.aai.bean.RelationshipData;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.Operation;
+import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
-import org.onap.usecaseui.server.bean.lcm.sotne2eservice.*;
-import org.onap.usecaseui.server.bean.activateEdge.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
 import retrofit2.Response;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.RelationshipData;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.stereotype.Service;
 
 @Service("SotnLcmService")
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
+@Setter
 public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateService {
 
     private static final Logger logger = LoggerFactory.getLogger(SotnServiceTemplateServiceImpl.class);
-    
+
     private SOService soService;
     private AAIService aaiService;
 
@@ -143,7 +161,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         Operation result = new Operation();
         try {
               logger.info("SO instantiate SOTN service is starting");
-              Response<ServiceOperation> sotnserviceresponse = soService.instantiateSOTNService(requestBody).execute();
+            Response<ServiceOperation> sotnserviceresponse = soService.instantiateSOTNService(requestBody).execute();
               logger.info("SO instantiate SOTN service has finished");
             if (sotnserviceresponse.isSuccessful()) {
                 logger.info("SO instantiate SOTN service is successful");
@@ -224,7 +242,6 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     public ServiceInstance getServiceInstancesInfo(String customerId, String serviceType, String serviceInstanceId) throws Exception {
         logger.info("Fire getServiceInstances : Begin");
         ObjectMapper mapper = new ObjectMapper();
-
         Response<ResponseBody> response = this.aaiService.getServiceInstancesForEdge(customerId, serviceType, serviceInstanceId).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getServiceInstances : End");
