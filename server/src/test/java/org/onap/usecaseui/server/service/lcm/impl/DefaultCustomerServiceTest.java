@@ -107,7 +107,6 @@ public class DefaultCustomerServiceTest {
 
     @Test
     public void itWillRetrieveEmptyListWhenNoServiceSubscriptionsInAAI() {
-    	DefaultCustomerService dc = new DefaultCustomerService();
         AAIService aaiService = mock(AAIService.class);
         Call<ServiceSubscriptionRsp> call = emptyBodyCall();
         when(aaiService.listServiceSubscriptions("1")).thenReturn(call);
