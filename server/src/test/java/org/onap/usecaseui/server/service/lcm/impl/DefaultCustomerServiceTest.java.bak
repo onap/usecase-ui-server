@@ -15,19 +15,7 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
-import static java.util.Collections.singletonList;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
-import static org.onap.usecaseui.server.util.CallStub.failedCall;
-import static org.onap.usecaseui.server.util.CallStub.successfulCall;
-
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import okhttp3.ResponseBody;
 import org.junit.Assert;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
@@ -37,11 +25,19 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
-
-import com.alibaba.fastjson.JSONObject;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
+import static org.onap.usecaseui.server.util.CallStub.failedCall;
+import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class DefaultCustomerServiceTest {
 	

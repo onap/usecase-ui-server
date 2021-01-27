@@ -15,6 +15,8 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import mockit.Mock;
+import mockit.MockUp;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,9 +24,7 @@ import org.hibernate.Transaction;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.ServiceBean;
-import org.onap.usecaseui.server.service.impl.AlarmsHeaderServiceImpl;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
@@ -33,9 +33,6 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInf
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
-
-import mockit.Mock;
-import mockit.MockUp;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -102,8 +99,8 @@ public class DefaultServiceLcmServiceTest {
 				return mockUpQuery.getMockInstance();
 			}
 			@Mock
-			public List<AlarmsHeader> list() {
-				AlarmsHeader ah = new AlarmsHeader();
+			public List<ServiceBean> list() {
+                ServiceBean ah = new ServiceBean();
 				return Arrays.asList(ah);
 			}
 			@Mock
@@ -141,7 +138,7 @@ public class DefaultServiceLcmServiceTest {
 				return mockedSession.getMockInstance();
 			}
 		};
-		new MockUp<AlarmsHeaderServiceImpl>() {
+		new MockUp<DefaultServiceLcmService>() {
 			@Mock
 			private Session getSession() {
 				return mockedSession.getMockInstance();

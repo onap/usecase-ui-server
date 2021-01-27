@@ -59,14 +59,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import lombok.Setter;
+
 
 @Service("SotnLcmService")
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
+@Setter
 public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateService {
 
     private static final Logger logger = LoggerFactory.getLogger(SotnServiceTemplateServiceImpl.class);
-    
+
     private SOService soService;
     private AAIService aaiService;
 
@@ -143,7 +146,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         Operation result = new Operation();
         try {
               logger.info("SO instantiate SOTN service is starting");
-              Response<ServiceOperation> sotnserviceresponse = soService.instantiateSOTNService(requestBody).execute();
+            Response<ServiceOperation> sotnserviceresponse = soService.instantiateSOTNService(requestBody).execute();
               logger.info("SO instantiate SOTN service has finished");
             if (sotnserviceresponse.isSuccessful()) {
                 logger.info("SO instantiate SOTN service is successful");
@@ -224,7 +227,6 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     public ServiceInstance getServiceInstancesInfo(String customerId, String serviceType, String serviceInstanceId) throws Exception {
         logger.info("Fire getServiceInstances : Begin");
         ObjectMapper mapper = new ObjectMapper();
-
         Response<ResponseBody> response = this.aaiService.getServiceInstancesForEdge(customerId, serviceType, serviceInstanceId).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getServiceInstances : End");
