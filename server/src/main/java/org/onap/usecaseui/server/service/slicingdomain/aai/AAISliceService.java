@@ -18,6 +18,11 @@ package org.onap.usecaseui.server.service.slicingdomain.aai;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
 
 import com.alibaba.fastjson.JSONObject;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPointInfoList;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkPolicy;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -167,11 +172,65 @@ public interface AAISliceService {
 			@Path("model-version-id") String modelVersionId);
 
 	@Headers({
-		"X-TransactionId: 9999",
-		"X-FromAppId: MSO",
-		"Authorization: Basic QUFJOkFBSQ==",
-		"Accept: application/json"
+        "X-TransactionId: 9999",
+        "X-FromAppId: MSO",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
 	})
 	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=communication-service")
 	Call<JSONObject> listOrders(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType);
+
+	@Headers({
+        "X-TransactionId: 9999",
+        "X-FromAppId: MSO",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	@GET("/api/aai-network/v21/logical-links")
+	Call<ConnectionLinkList> getConnectionLinks();
+
+	@Headers({
+        "X-TransactionId: 9999",
+        "X-FromAppId: MSO",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	@GET("/api/aai-network/v21/network-routes/network-route/{route-id}")
+	Call<EndPointInfoList> getEndpointByLinkName(@Path("route-id") String linkName);
+
+	@Headers({
+        "X-TransactionId: 9999",
+        "X-FromAppId: MSO",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	@GET("/api/aai-network/v21/network-routes/network-route/{route-id}")
+	Call<EndPointInfoList> getEndpointByLinkName2(@Path("route-id") String linkName2);
+
+	@Headers({
+        "X-TransactionId: 9999",
+        "X-FromAppId: MSO",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	@GET("/api/aai-business/v21/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}/allotted-resources/allotted-resource/{allotted-resource-id}")
+	Call<ConnectionLink> getAllottedResource(@Path("service-instance-id") String serviceInstancesId,@Path("allotted-resource-id") String allottedResourceId);
+
+	@Headers({
+        "X-TransactionId: 9999",
+        "X-FromAppId: MSO",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	@GET("/api/aai-business/v21/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}")
+	Call<ConnectionLink> getServiceInstance(@Path("service-instance-id") String serviceInstancesId);
+
+	@Headers({
+        "X-TransactionId: 9999",
+        "X-FromAppId: MSO",
+        "Authorization: Basic QUFJOkFBSQ==",
+        "Accept: application/json"
+	})
+	@GET("/api/aai-network/v21/network-policies/network-policy/{network-policy-id}")
+	Call<NetworkPolicy> getNetworkPolicy(@Path("network-policy-id")String relationshipValue);
 }
