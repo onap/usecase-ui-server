@@ -39,12 +39,31 @@ import org.onap.usecaseui.server.service.nsmf.TaskMgtService;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTaskRsp;
+import org.onap.usecaseui.server.service.slicingdomain.so.bean.SliceTaskParams;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPointInfoList;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkPolicy;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Relationship;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipData;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.ConnectionListVo;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.ConnectionVo;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.EndPointInfoListVo;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.PropertiesVo;
+
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
+
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("TaskMgtService")
 @org.springframework.context.annotation.Configuration
@@ -58,12 +77,18 @@ public class TaskMgtServiceImpl implements TaskMgtService {
 
     private SOSliceService soSliceService;
 
+    private AAISliceService aaiSliceService;
+
+
     public TaskMgtServiceImpl() {
-        this(RestfulServices.create(SOSliceService.class));
+        this(RestfulServices.create(SOSliceService.class),RestfulServices.create(AAISliceService.class));
+
     }
 
-    public TaskMgtServiceImpl(SOSliceService soSliceService) {
+    public TaskMgtServiceImpl(SOSliceService soSliceService,AAISliceService aaiSliceService) {
         this.soSliceService = soSliceService;
+        this.aaiSliceService = aaiSliceService;
+
     }
 
     @Override
@@ -194,12 +219,13 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         ResultHeader resultHeader = new ResultHeader();
         String resultMsg;
         try {
-            // TODO
             Response<SOTask> response = this.soSliceService.getTaskById(slicingTaskAuditInfo.getTaskId()).execute();
             if (response.isSuccessful()) {
                 SOTask soTaskInfo = response.body();
                 Gson gson = new Gson();
                 logger.info("updateTaskAuditInfo: getTaskById response is:{}", gson.toJson(soTaskInfo));
+                SliceTaskParams sliceTaskParams = soTaskInfo.getSliceTaskParams();
+                BeanUtils.copyProperties(sliceTaskParams,slicingTaskAuditInfo);
                 taskMgtServiceConvert.convertTaskAuditToSoTask(soTaskInfo, slicingTaskAuditInfo);
 
                 String jsonstr = JSON.toJSONString(soTaskInfo);
@@ -257,12 +283,12 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         String resultMsg;
 
         try {
-            // TODO
             Response<SOTask> response = this.soSliceService.getTaskByIdD(taskId).execute();
             if (response.isSuccessful()) {
                 Gson gson = new Gson();
                 SOTask soTask = response.body();
                 logger.info("updateTaskAuditInfo: getTaskById response is:{}", gson.toJson(soTask));
+
                 taskMgtServiceConvert.convertTaskCreationInfo(slicingTaskCreationInfo, soTask);
                 // return normal result code
                 resultMsg = "5G slicing task creation infomation query result.";
@@ -298,7 +324,6 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         String resultMsg;
 
         try {
-            // TODO
             Response<SOTask> response = this.soSliceService.getTaskByIdD(taskId).execute();
             if (response.isSuccessful()) {
                 SOTask soTask = response.body();
@@ -325,6 +350,75 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         resultHeader.setResult_message(resultMsg);
         serviceResult.setResult_header(resultHeader);
         serviceResult.setResult_body(slicingTaskCreationProgress);
+        return serviceResult;
+    }
+
+    @Override
+    public ServiceResult queryConnectionLinks() {
+        ServiceResult serviceResult = new ServiceResult();
+        ResultHeader resultHeader = new ResultHeader();
+        String resultMsg ="";
+
+        ConnectionLinkList connectionLinkList = new ConnectionLinkList();
+        ConnectionVo connectionVo = new ConnectionVo();
+        ConnectionListVo connectionListVo = new ConnectionListVo();
+        try {
+            Response<ConnectionLinkList> response = this.aaiSliceService.getConnectionLinks().execute();
+            if(response.isSuccessful()){
+                connectionLinkList = response.body();
+                logger.info(connectionLinkList.toString());
+                List<ConnectionLink> connectionLinks = connectionLinkList.getLogicalLink();
+                List<ConnectionLink> tsciConnectionLink = connectionLinks.stream().filter(e -> e.getLinkType().equals("TsciConnectionLink") && e.getRelationshipList()!=null).collect(Collectors.toList());
+                for (ConnectionLink connectionLink : tsciConnectionLink) {
+                    Response<EndPointInfoList> anInfo = this.aaiSliceService.getEndpointByLinkName(connectionLink.getLinkName()).execute();
+                    Response<EndPointInfoList> cnInfo = this.aaiSliceService.getEndpointByLinkName2(connectionLink.getLinkName2()).execute();
+
+                    PropertiesVo propertiesVo = new PropertiesVo();
+                    List<RelationshipData> relationshipDataList = connectionLink.getRelationshipList().getRelationship().get(0).getRelationshipDataList();
+                    List<RelationshipData> allottedResourceId = relationshipDataList.stream().filter(e -> e.getRelationshipKey().equals("allotted-resource.id")).collect(Collectors.toList());
+                    List<RelationshipData> serviceInstanceId = relationshipDataList.stream().filter(e -> e.getRelationshipKey().equals("service-instance.service-instance-id")).collect(Collectors.toList());
+                    Response<ConnectionLink> AllottedResource=this.aaiSliceService.getAllottedResource(serviceInstanceId.get(0).getRelationshipValue(),allottedResourceId.get(0).getRelationshipValue()).execute();
+                    List<Relationship> relationships= AllottedResource.body().getRelationshipList().getRelationship().stream().filter(a-> a.getRelatedTo().equals("network-policy")).collect(Collectors.toList());
+                    List<RelationshipData> networkPolicyId=relationships.get(0).getRelationshipDataList().stream().filter(e -> e.getRelationshipKey().equals("network-policy.network-policy-id")).collect(Collectors.toList());
+                    Response<NetworkPolicy> networkPolicy=this.aaiSliceService.getNetworkPolicy(networkPolicyId.get(0).getRelationshipValue()).execute();
+                    propertiesVo.setJitter(networkPolicy.body().getJitter());
+                    propertiesVo.setLatency(networkPolicy.body().getLatency());
+                    propertiesVo.setMaxBandwidth(networkPolicy.body().getMaxBandwidth());
+                    Response<ConnectionLink> serviceInstance=this.aaiSliceService.getServiceInstance(serviceInstanceId.get(0).getRelationshipValue()).execute();
+                    propertiesVo.setResourceSharingLevel(serviceInstance.body().getServiceFunction());
+
+                    connectionListVo.setLinkId(connectionLink.getLinkId());
+                    EndPointInfoListVo anInfoVo = new EndPointInfoListVo();
+                    EndPointInfoListVo cnInfoVo = new EndPointInfoListVo();
+                    BeanUtils.copyProperties(anInfoVo,anInfo.body());
+                    BeanUtils.copyProperties(cnInfoVo,cnInfo.body());
+                    connectionListVo.setAnInfo(anInfoVo);
+                    connectionListVo.setCnInfo(cnInfoVo);
+                    connectionListVo.setProperties(propertiesVo);
+
+
+                }
+                connectionVo.setRecord_number(tsciConnectionLink.size()+"");
+                connectionVo.setConnection_links_list(connectionListVo);
+                resultMsg = "ConnectionLinks query result.";
+                resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
+            }else {
+                logger.error(String
+                        .format("queryConnectionLinks: Can not get ConnectionLinks[code={}, message={}]",
+                                response.code(), response.message()));
+                resultMsg = "ConnectionLinks progress query failed.";
+                resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
+            }
+        } catch (Exception e) {
+            resultMsg = "ConnectionLinks progress query failed. Unknown exception occurred!";
+            resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
+            logger.error(e.getMessage());
+        } 
+        logger.info(resultMsg);
+        logger.info("queryConnectionLinks: ConnectionLinks progress has been finished.");
+        resultHeader.setResult_message(resultMsg);
+        serviceResult.setResult_header(resultHeader);
+        serviceResult.setResult_body(connectionVo);
         return serviceResult;
     }
 }

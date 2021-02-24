@@ -83,4 +83,11 @@ public class TaskMgtController {
         return taskMgtService.queryTaskCreationProgress(taskId);
     }
 
+	@ResponseBody
+    @GetMapping(value = {
+            "/connectionLinks/pageNo/{pageNo}/pageSize/{pageSize}"}, produces = "application/json")
+    public ServiceResult queryConnectionLinks(@PathVariable int pageNo, @PathVariable int pageSize) {
+        return taskMgtService.queryConnectionLinks();
+    }
+
 }
