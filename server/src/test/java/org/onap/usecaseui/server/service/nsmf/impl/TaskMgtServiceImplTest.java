@@ -38,16 +38,20 @@ import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
 
 public class TaskMgtServiceImplTest {
 
     TaskMgtServiceImpl taskMgtService = null;
     SOSliceService soSliceService = null;
+    AAISliceService aaiSliceService = null;
 
     @Before
     public void before() throws Exception {
         soSliceService = mock(SOSliceService.class);
-        taskMgtService = new TaskMgtServiceImpl(soSliceService);
+        aaiSliceService = mock(AAISliceService.class);
+        taskMgtService = new TaskMgtServiceImpl(soSliceService,aaiSliceService);
     }
 
     @Test
@@ -164,6 +168,21 @@ public class TaskMgtServiceImplTest {
         String taskId = "we23-345r-45ty-5687";
         when(soSliceService.getTaskByIdD(taskId)).thenReturn(failedCall("so is not exist!"));
         taskMgtService.queryTaskCreationProgress(taskId);
+    }
+
+    @Test
+    public void queryConnectionLinksWithThrowsException() {
+        String taskId = "we23-345r-45ty-5687";
+        when(aaiSliceService.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
+        taskMgtService.queryConnectionLinks();
+    }
+
+    @Test
+    public void itCanqueryConnectionLinks() {
+        String taskId = "we23-345r-45ty-5687";
+        ConnectionLinkList connectionLinkList = new ConnectionLinkList();
+        when(aaiSliceService.getConnectionLinks()).thenReturn(successfulCall(connectionLinkList));
+        taskMgtService.queryConnectionLinks();
     }
 
 
