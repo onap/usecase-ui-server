@@ -32,4 +32,6 @@ public interface TaskMgtService {
 
     ServiceResult queryTaskCreationProgress(String taskId);
 
+    ServiceResult queryConnectionLinks();
+
 }
