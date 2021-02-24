@@ -33,7 +33,6 @@ public class SOTaskTest {
     @Test
     public void testSetAndGetSOTask() throws Exception {
         SOTask soTask = new SOTask();
-        soTask.setParams("params");
         soTask.setStatus("activate");
         soTask.setTaskId("id001");
         soTask.setRequestId("id001");
@@ -41,7 +40,6 @@ public class SOTaskTest {
         soTask.setCreatedTime("182930493");
         soTask.setIsManual("Manual");
 
-        soTask.getParams();
         soTask.getCreatedTime();
         soTask.getIsManual();
         soTask.getName();
