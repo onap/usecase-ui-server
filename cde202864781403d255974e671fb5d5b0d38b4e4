@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2bf992b0_7e7b9b3b",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/nsmf/TaskMgtController.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 7561
+      },
+      "writtenOn": "2021-02-25T09:00:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b02eb2ed_2143e5cf",
+      "range": {
+        "startLine": 86,
+        "startChar": 1,
+        "endLine": 86,
+        "endChar": 14
+      },
+      "revId": "cde202864781403d255974e671fb5d5b0d38b4e4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "acbbd7dc_1e02e43e",
         "filename": "server/src/main/java/org/onap/usecaseui/server/controller/nsmf/TaskMgtController.java",
         "patchSetId": 7
@@ -45,6 +69,30 @@
       "revId": "cde202864781403d255974e671fb5d5b0d38b4e4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b54cb354_3285d32c",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/nsmf/TaskMgtController.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 7561
+      },
+      "writtenOn": "2021-02-25T09:00:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "acbbd7dc_1e02e43e",
+      "range": {
+        "startLine": 89,
+        "startChar": 100,
+        "endLine": 89,
+        "endChar": 101
+      },
+      "revId": "cde202864781403d255974e671fb5d5b0d38b4e4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "3eb55806_54eecfb1",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/slicingdomain/aai/AAISliceService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 7561
+      },
+      "writtenOn": "2021-02-25T09:00:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "89686d08_204fad07",
+      "range": {
+        "startLine": 217,
+        "startChar": 1,
+        "endLine": 217,
+        "endChar": 41
+      },
+      "revId": "cde202864781403d255974e671fb5d5b0d38b4e4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a6618193_bb88fcb2",
         "filename": "server/src/main/java/org/onap/usecaseui/server/service/slicingdomain/aai/AAISliceService.java",
         "patchSetId": 7
@@ -91,6 +163,30 @@
       "revId": "cde202864781403d255974e671fb5d5b0d38b4e4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ac19f06_d0df2cd8",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/slicingdomain/aai/AAISliceService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 7561
+      },
+      "writtenOn": "2021-02-25T09:00:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a6618193_bb88fcb2",
+      "range": {
+        "startLine": 226,
+        "startChar": 1,
+        "endLine": 226,
+        "endChar": 97
+      },
+      "revId": "cde202864781403d255974e671fb5d5b0d38b4e4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
