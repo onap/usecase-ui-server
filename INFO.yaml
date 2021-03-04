@@ -75,4 +75,7 @@ tsc:
       name: 'He Keguang'
       link: 'https://wiki.onap.org/display/DW/
         He+Keguang+-+Committer+Promotion+Request'
-
+    - type: 'Removal'
+      name: 'Huabing Zhao'
+      link: 'https://wiki.onap.org/display/DW/
+        Huabing+Zhao+-+Committer+Removal+Request'
