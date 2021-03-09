@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4387886b_66a9b759",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/IntentController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-09T12:25:37Z",
+      "side": 1,
+      "message": "Please remove the useless code",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 82,
+        "endChar": 49
+      },
+      "revId": "10964526a0738af422224ed1fbaf9cd119efaca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c830348_af644f1a",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/IntentController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-09T12:25:37Z",
+      "side": 1,
+      "message": "Exception needs to be wrapped as error code",
+      "range": {
+        "startLine": 116,
+        "startChar": 10,
+        "endLine": 118,
+        "endChar": 9
+      },
+      "revId": "10964526a0738af422224ed1fbaf9cd119efaca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b56f0630_b8c87da4",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/IntentController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-09T12:25:37Z",
+      "side": 1,
+      "message": "Exception needs to be wrapped as error code",
+      "range": {
+        "startLine": 148,
+        "startChar": 9,
+        "endLine": 150,
+        "endChar": 9
+      },
+      "revId": "10964526a0738af422224ed1fbaf9cd119efaca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a60c280_fc47a2de",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/IntentController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-09T12:25:37Z",
+      "side": 1,
+      "message": "Exception needs to be wrapped as error code",
+      "range": {
+        "startLine": 170,
+        "startChar": 9,
+        "endLine": 172,
+        "endChar": 9
+      },
+      "revId": "10964526a0738af422224ed1fbaf9cd119efaca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1048dda1_5755cf57",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/IntentController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-09T12:25:37Z",
+      "side": 1,
+      "message": "Exception needs to be wrapped as error code",
+      "range": {
+        "startLine": 206,
+        "startChar": 9,
+        "endLine": 208,
+        "endChar": 9
+      },
+      "revId": "10964526a0738af422224ed1fbaf9cd119efaca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12f2ee40_d766b412",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/IntentController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-09T12:25:37Z",
+      "side": 1,
+      "message": "No Chinese characters",
+      "range": {
+        "startLine": 261,
+        "startChar": 24,
+        "endLine": 261,
+        "endChar": 26
+      },
+      "revId": "10964526a0738af422224ed1fbaf9cd119efaca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7218ba84_8636a05e",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/IntentController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-09T12:25:37Z",
+      "side": 1,
+      "message": "1. Don\u0027t write business code in controller\n\n2. Using design pattern instead of if else judgment",
+      "range": {
+        "startLine": 258,
+        "startChar": 7,
+        "endLine": 386,
+        "endChar": 5
+      },
+      "revId": "10964526a0738af422224ed1fbaf9cd119efaca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0f8dd92_aeb2f9c2",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/intent/impl/IntentServiceImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-09T12:25:37Z",
+      "side": 1,
+      "message": "Is it appropriate to use the absolute address under windows here?",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 66
+      },
+      "revId": "10964526a0738af422224ed1fbaf9cd119efaca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
