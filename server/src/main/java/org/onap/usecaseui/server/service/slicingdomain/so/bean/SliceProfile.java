@@ -32,6 +32,7 @@ public class SliceProfile {
     private String  latency;
     private String  ueMobilityLevel;
     private String  resourceSharingLevel;
+    private String  connectionLinkId;
     private String  maxBandwidth;
     private String  sST;
     private String  activityFactor;

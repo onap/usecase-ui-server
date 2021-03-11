@@ -32,6 +32,8 @@ public class SOTask {
 
 	private String isManual;
 
+	private String params;
+
 	private SliceTaskParams sliceTaskParams;
 
 
@@ -83,6 +85,14 @@ public class SOTask {
 
 	public void setIsManual(String isManual) {
 		this.isManual = isManual;
+	}
+
+	public String getParams() {
+		return params;
+	}
+
+	public void setParams(String params) {
+		this.params = params;
 	}
 
 	public SliceTaskParams getSliceTaskParams() {

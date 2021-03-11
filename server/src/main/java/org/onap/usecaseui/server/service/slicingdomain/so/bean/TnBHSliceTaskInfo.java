@@ -17,6 +17,7 @@
 package org.onap.usecaseui.server.service.slicingdomain.so.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -27,8 +28,15 @@ public class TnBHSliceTaskInfo {
     private String progress;
     private String status;
     private String statusDescription;
-    private SliceProfile sliceProfile ;
+    @JsonProperty("sliceProfile")
+    private SliceProfile sliceProfile;
     private String scriptName ;
     private Boolean enableNSSISelection ;
+    @JsonProperty("lantency")
+    private String lantency ;
+    @JsonProperty("max_bandWidth")
+    private String maxBandWidth ;
+    @JsonProperty("link_type")
+    private String linkType ;
 
 }
