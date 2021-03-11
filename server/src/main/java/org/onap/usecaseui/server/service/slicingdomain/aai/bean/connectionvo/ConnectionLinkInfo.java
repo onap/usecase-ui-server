@@ -13,31 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection;
+package org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
+import org.onap.usecaseui.server.service.slicingdomain.so.bean.AnSliceTaskInfo;
+import org.onap.usecaseui.server.service.slicingdomain.so.bean.CnSliceTaskInfo;
+import org.onap.usecaseui.server.service.slicingdomain.so.bean.TnBHSliceTaskInfo;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Relationship {
-    @JsonProperty("related-to")
-    private String relatedTo;
-    @JsonProperty("relationship-label")
-    private String relationshipLabel;
-    @JsonProperty("related-link")
-    private String relatedLink;
-    @JsonProperty("relationship-data")
-    private List<RelationshipData> relationshipDataList;
-    @JsonProperty("related-to-property")
-    private List<RelatedToProperty> relatedToProperties;
-
-
+public class ConnectionLinkInfo {
+    @JsonProperty("an_slice_task_info")
+    private AnSliceTaskInfo anSliceTaskInfo;
+    @JsonProperty("cn_slice_task_info")
+    private CnSliceTaskInfo cnSliceTaskInfo;
+    @JsonProperty("tn_bh_slice_task_info")
+    private TnBHSliceTaskInfo tnBHSliceTaskInfo;
 
 }

@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -27,5 +29,5 @@ import lombok.Setter;
 public class ConnectionVo {
     private String record_number;
 
-    private ConnectionListVo connection_links_list;
+    private List<ConnectionListVo> connection_links_list;
 }
