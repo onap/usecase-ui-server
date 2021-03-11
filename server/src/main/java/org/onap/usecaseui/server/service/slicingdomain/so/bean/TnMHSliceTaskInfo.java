@@ -17,11 +17,13 @@
 package org.onap.usecaseui.server.service.slicingdomain.so.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TnMHSliceTaskInfo {
+    @JsonProperty("sliceProfile")
     private SliceProfile sliceProfile ;
 
 }
