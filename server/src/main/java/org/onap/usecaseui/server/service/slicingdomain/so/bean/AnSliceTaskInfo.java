@@ -17,6 +17,7 @@
 package org.onap.usecaseui.server.service.slicingdomain.so.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -30,4 +31,12 @@ public class AnSliceTaskInfo {
     private SliceProfile sliceProfile ;
     private String scriptName ;
     private Boolean enableNSSISelection ;
+    @JsonProperty("ip_adrress")
+    private String ipAdrress ;
+    @JsonProperty("interface_id")
+    private String interfaceId ;
+    @JsonProperty("nextHop_info")
+    private String nextHopInfo ;
+
+
 }
