@@ -15,15 +15,10 @@
  */
 package org.onap.usecaseui.server.service.nsmf.impl;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import javax.annotation.Resource;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -35,12 +30,7 @@ import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationProgress;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskList;
 import org.onap.usecaseui.server.constant.nsmf.NsmfCodeConstant;
-
 import org.onap.usecaseui.server.service.nsmf.TaskMgtService;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTaskRsp;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.SliceTaskParams;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
@@ -52,18 +42,20 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.Con
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.ConnectionVo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.EndPointInfoListVo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.PropertiesVo;
-
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
+import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTaskRsp;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import retrofit2.Response;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -363,6 +355,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         ConnectionLinkList connectionLinkList = new ConnectionLinkList();
         ConnectionVo connectionVo = new ConnectionVo();
         ConnectionListVo connectionListVo = new ConnectionListVo();
+        List<ConnectionListVo> list = new ArrayList<>();
         try {
             Response<ConnectionLinkList> response = this.aaiSliceService.getConnectionLinks().execute();
             if(response.isSuccessful()){
@@ -370,37 +363,38 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 logger.info(connectionLinkList.toString());
                 List<ConnectionLink> connectionLinks = connectionLinkList.getLogicalLink();
                 List<ConnectionLink> tsciConnectionLink = connectionLinks.stream().filter(e -> e.getLinkType().equals("TsciConnectionLink") && e.getRelationshipList()!=null).collect(Collectors.toList());
-                for (ConnectionLink connectionLink : tsciConnectionLink) {
-                    Response<EndPointInfoList> anInfo = this.aaiSliceService.getEndpointByLinkName(connectionLink.getLinkName()).execute();
-                    Response<EndPointInfoList> cnInfo = this.aaiSliceService.getEndpointByLinkName2(connectionLink.getLinkName2()).execute();
+                if(!ObjectUtils.isEmpty(tsciConnectionLink)){
+                    for (ConnectionLink connectionLink : tsciConnectionLink) {
+                        Response<EndPointInfoList> anInfo = this.aaiSliceService.getEndpointByLinkName(connectionLink.getLinkName()).execute();
+                        Response<EndPointInfoList> cnInfo = this.aaiSliceService.getEndpointByLinkName2(connectionLink.getLinkName2()).execute();
 
-                    PropertiesVo propertiesVo = new PropertiesVo();
-                    List<RelationshipData> relationshipDataList = connectionLink.getRelationshipList().getRelationship().get(0).getRelationshipDataList();
-                    List<RelationshipData> allottedResourceId = relationshipDataList.stream().filter(e -> e.getRelationshipKey().equals("allotted-resource.id")).collect(Collectors.toList());
-                    List<RelationshipData> serviceInstanceId = relationshipDataList.stream().filter(e -> e.getRelationshipKey().equals("service-instance.service-instance-id")).collect(Collectors.toList());
-                    Response<ConnectionLink> AllottedResource=this.aaiSliceService.getAllottedResource(serviceInstanceId.get(0).getRelationshipValue(),allottedResourceId.get(0).getRelationshipValue()).execute();
-                    List<Relationship> relationships= AllottedResource.body().getRelationshipList().getRelationship().stream().filter(a-> a.getRelatedTo().equals("network-policy")).collect(Collectors.toList());
-                    List<RelationshipData> networkPolicyId=relationships.get(0).getRelationshipDataList().stream().filter(e -> e.getRelationshipKey().equals("network-policy.network-policy-id")).collect(Collectors.toList());
-                    Response<NetworkPolicy> networkPolicy=this.aaiSliceService.getNetworkPolicy(networkPolicyId.get(0).getRelationshipValue()).execute();
-                    propertiesVo.setJitter(networkPolicy.body().getJitter());
-                    propertiesVo.setLatency(networkPolicy.body().getLatency());
-                    propertiesVo.setMaxBandwidth(networkPolicy.body().getMaxBandwidth());
-                    Response<ConnectionLink> serviceInstance=this.aaiSliceService.getServiceInstance(serviceInstanceId.get(0).getRelationshipValue()).execute();
-                    propertiesVo.setResourceSharingLevel(serviceInstance.body().getServiceFunction());
+                        PropertiesVo propertiesVo = new PropertiesVo();
+                        List<RelationshipData> relationshipDataList = connectionLink.getRelationshipList().getRelationship().get(0).getRelationshipDataList();
+                        List<RelationshipData> allottedResourceId = relationshipDataList.stream().filter(e -> e.getRelationshipKey().equals("allotted-resource.id")).collect(Collectors.toList());
+                        List<RelationshipData> serviceInstanceId = relationshipDataList.stream().filter(e -> e.getRelationshipKey().equals("service-instance.service-instance-id")).collect(Collectors.toList());
+                        Response<ConnectionLink> AllottedResource=this.aaiSliceService.getAllottedResource(serviceInstanceId.get(0).getRelationshipValue(),allottedResourceId.get(0).getRelationshipValue()).execute();
+                        List<Relationship> relationships= AllottedResource.body().getRelationshipList().getRelationship().stream().filter(a-> a.getRelatedTo().equals("network-policy")).collect(Collectors.toList());
+                        List<RelationshipData> networkPolicyId=relationships.get(0).getRelationshipDataList().stream().filter(e -> e.getRelationshipKey().equals("network-policy.network-policy-id")).collect(Collectors.toList());
+                        Response<NetworkPolicy> networkPolicy=this.aaiSliceService.getNetworkPolicy(networkPolicyId.get(0).getRelationshipValue()).execute();
+                        propertiesVo.setJitter(networkPolicy.body().getJitter());
+                        propertiesVo.setLatency(networkPolicy.body().getLatency());
+                        propertiesVo.setMaxBandwidth(networkPolicy.body().getMaxBandwidth());
+                        Response<ConnectionLink> serviceInstance=this.aaiSliceService.getServiceInstance(serviceInstanceId.get(0).getRelationshipValue()).execute();
+                        propertiesVo.setResourceSharingLevel(serviceInstance.body().getServiceFunction());
 
-                    connectionListVo.setLinkId(connectionLink.getLinkId());
-                    EndPointInfoListVo anInfoVo = new EndPointInfoListVo();
-                    EndPointInfoListVo cnInfoVo = new EndPointInfoListVo();
-                    BeanUtils.copyProperties(anInfoVo,anInfo.body());
-                    BeanUtils.copyProperties(cnInfoVo,cnInfo.body());
-                    connectionListVo.setAnInfo(anInfoVo);
-                    connectionListVo.setCnInfo(cnInfoVo);
-                    connectionListVo.setProperties(propertiesVo);
-
-
+                        connectionListVo.setLinkId(connectionLink.getLinkId());
+                        EndPointInfoListVo anInfoVo = new EndPointInfoListVo();
+                        EndPointInfoListVo cnInfoVo = new EndPointInfoListVo();
+                        BeanUtils.copyProperties(anInfoVo,anInfo.body());
+                        BeanUtils.copyProperties(cnInfoVo,cnInfo.body());
+                        connectionListVo.setAnInfo(anInfoVo);
+                        connectionListVo.setCnInfo(cnInfoVo);
+                        connectionListVo.setProperties(propertiesVo);
+                        list.add(connectionListVo);
+                    }
                 }
                 connectionVo.setRecord_number(tsciConnectionLink.size()+"");
-                connectionVo.setConnection_links_list(connectionListVo);
+                connectionVo.setConnection_links_list(list);
                 resultMsg = "ConnectionLinks query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             }else {
@@ -414,7 +408,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
             resultMsg = "ConnectionLinks progress query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             logger.error(e.getMessage());
-        } 
+        }
         logger.info(resultMsg);
         logger.info("queryConnectionLinks: ConnectionLinks progress has been finished.");
         resultHeader.setResult_message(resultMsg);
