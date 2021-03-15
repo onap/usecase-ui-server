@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3d0e369a_5bb0dc3d",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/nsmf/impl/ResourceMgtServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-15T01:15:33Z",
+      "side": 1,
+      "message": "Function is too long, please break it into small function",
+      "range": {
+        "startLine": 286,
+        "startChar": 12,
+        "endLine": 286,
+        "endChar": 20
+      },
+      "revId": "2361b7d95897d85a98d04cc20b229475d9efab18",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95cf786c_0003c548",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/nsmf/impl/TaskMgtServiceConvert.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-03-15T01:15:33Z",
+      "side": 1,
+      "message": "The code format needs to be adjusted",
+      "range": {
+        "startLine": 366,
+        "startChar": 78,
+        "endLine": 368,
+        "endChar": 19
+      },
+      "revId": "2361b7d95897d85a98d04cc20b229475d9efab18",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
