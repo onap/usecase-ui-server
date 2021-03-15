@@ -33,4 +33,10 @@ public class EndPointInfoList {
     private String logicId;
     @JsonProperty("next-hop")
     private String nextHop;
+    @JsonProperty("lantency")
+    private String lantency ;
+    @JsonProperty("max_bandWidth")
+    private String maxBandWidth ;
+    @JsonProperty("link_type")
+    private String linkType ;
 }

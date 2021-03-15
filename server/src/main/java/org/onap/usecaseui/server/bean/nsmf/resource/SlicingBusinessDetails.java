@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.onap.usecaseui.server.bean.nsmf.task.BusinessDemandInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.NstInfo;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.ConnectionLinkInfo;
 
 @Getter
 @Setter
@@ -32,4 +33,7 @@ public class SlicingBusinessDetails {
 
     @JsonProperty("nsi_info")
     private NsiInfo nsiInfo;
+
+    @JsonProperty("connection_link")
+    private ConnectionLinkInfo connectionLinkInfo;
 }

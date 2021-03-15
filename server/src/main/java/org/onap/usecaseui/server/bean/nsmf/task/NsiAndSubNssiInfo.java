@@ -16,9 +16,10 @@
 package org.onap.usecaseui.server.bean.nsmf.task;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -143,6 +144,12 @@ public class NsiAndSubNssiInfo {
 
     @JsonProperty("sliceProfile_TN_BH_sST")
     String sliceProfile_TN_BH_sST;
+
+    @JsonProperty("sliceProfile_TN_BH_resourceSharingLevel")
+    String sliceProfile_TN_BH_resourceSharingLevel;
+
+    @JsonProperty("sliceProfile_TN_BH_connection_links")
+    String sliceProfile_TN_BH_connectionLinkId;
 
     @JsonProperty("tn_bh_enableNSSISelection")
     Boolean tnEnableNSSISelection;

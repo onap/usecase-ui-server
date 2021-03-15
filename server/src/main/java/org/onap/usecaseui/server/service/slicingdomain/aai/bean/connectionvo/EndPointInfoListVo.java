@@ -25,7 +25,6 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EndPointInfoListVo {
 
-
     private String ipAddress;
     private String logicId;
     private String nextHop;
