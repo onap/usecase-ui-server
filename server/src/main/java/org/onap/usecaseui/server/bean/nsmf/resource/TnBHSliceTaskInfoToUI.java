@@ -13,35 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.onap.usecaseui.server.service.slicingdomain.so.bean;
+package org.onap.usecaseui.server.bean.nsmf.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TnBHSliceTaskInfo {
-    private String suggestNssiId;
-    private String suggestNssiName;
-    private String progress;
-    private String status;
-    private String statusDescription;
-    @JsonProperty("sliceProfile")
-    private SliceProfile sliceProfile;
-    private String sliceInstanceId;
-    private String scriptName;
-    private String vendor;
-    private String networkType;
-    private String subnetType;
-    private String endPointId;
-    private Boolean enableNSSISelection ;
+public class TnBHSliceTaskInfoToUI {
+
     @JsonProperty("lantency")
-    private String lantency ;
+    private String lantency;
+
     @JsonProperty("max_bandWidth")
-    private String maxBandWidth ;
-    @JsonProperty("link_type")
-    private String linkType ;
-    private NstInfo nsstinfo;
+    private String maxBandWidth;
 }
