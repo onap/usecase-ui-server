@@ -99,7 +99,7 @@ public class TaskMgtServiceConvertTest {
         sliceTaskParams.setTnBHSliceTaskInfo(tnBHSliceTaskInfo);
         sliceTaskParams.setCnSliceTaskInfo(cnSliceTaskInfo);
         sliceTaskParams.setServiceProfile(serviceProfile);
-        sliceTaskParams.setSuggestNSIName("123");
+        sliceTaskParams.setSuggestNsiName("123");
         sourceSoTaskInfo.setSliceTaskParams(sliceTaskParams);
 
         taskMgtServiceConvert.convertTaskAuditInfo(targetSlicingTaskAuditInfo, sourceSoTaskInfo);

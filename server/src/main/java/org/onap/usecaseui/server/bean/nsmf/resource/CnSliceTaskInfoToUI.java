@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection;
+package org.onap.usecaseui.server.bean.nsmf.resource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,12 +23,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EndPointInfoList {
+public class CnSliceTaskInfoToUI {
 
-    @JsonProperty("ip-address")
-    private String ipAddress;
-    @JsonProperty("logic-id")
-    private String logicId;
-    @JsonProperty("next-hop")
-    private String nextHop;
+    @JsonProperty("ip_adrress")
+    private String ipAdrress;
+
+    @JsonProperty("interface_id")
+    private String interfaceId;
+
+    @JsonProperty("nextHop_info")
+    private String nextHopInfo;
 }

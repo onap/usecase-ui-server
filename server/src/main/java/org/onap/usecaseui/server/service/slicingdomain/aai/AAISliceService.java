@@ -15,6 +15,8 @@
  */
 package org.onap.usecaseui.server.service.slicingdomain.aai;
 
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkInfo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
 
 import com.alibaba.fastjson.JSONObject;
@@ -24,6 +26,7 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Conne
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPointInfoList;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkPolicy;
 
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.SliceProfileList;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -226,6 +229,15 @@ public interface AAISliceService {
 	Call<ConnectionLink> getServiceInstance(@Path("service-instance-id") String serviceInstancesId);
 
 	@Headers({
+		"X-TransactionId: 9999",
+		"X-FromAppId: MSO",
+		"Authorization: Basic QUFJOkFBSQ==",
+		"Accept: application/json"
+	})
+	@GET("/api/aai-business/v21/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}")
+	Call<NetworkInfo> getServiceNetworkInstance(@Path("service-instance-id") String serviceInstancesId);
+
+	@Headers({
         "X-TransactionId: 9999",
         "X-FromAppId: MSO",
         "Authorization: Basic QUFJOkFBSQ==",
@@ -233,4 +245,14 @@ public interface AAISliceService {
 	})
 	@GET("/api/aai-network/v21/network-policies/network-policy/{network-policy-id}")
 	Call<NetworkPolicy> getNetworkPolicy(@Path("network-policy-id")String relationshipValue);
+
+	@Headers({
+		"X-TransactionId: 9999",
+		"X-FromAppId: MSO",
+		"Authorization: Basic QUFJOkFBSQ==",
+		"Accept: application/json"
+	})
+	@GET("/api/aai-business/v21/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}/slice-profiles")
+	Call<SliceProfileList> getSliceProfiles(@Path("service-instance-id") String serviceInstancesId);
+
 }
