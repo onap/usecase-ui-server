@@ -27,7 +27,11 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.bean.nsmf.common.ResultHeader;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
+import org.onap.usecaseui.server.bean.nsmf.resource.AnSliceTaskInfoToUI;
+import org.onap.usecaseui.server.bean.nsmf.resource.CnSliceTaskInfoToUI;
 import org.onap.usecaseui.server.bean.nsmf.resource.HostedNsiList;
+import org.onap.usecaseui.server.bean.nsmf.resource.TnBHSliceTaskInfoToUI;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkInfo;
 import org.onap.usecaseui.server.bean.nsmf.resource.NsiDetailList;
 import org.onap.usecaseui.server.bean.nsmf.resource.NsiRelatedNssiInfo;
 import org.onap.usecaseui.server.bean.nsmf.resource.NsiServiceInstanceList;
@@ -47,11 +51,12 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceRsp;
-import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPointInfoList;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipData;
-import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.ConnectionLinkInfo;
+import org.onap.usecaseui.server.bean.nsmf.resource.ConnectionLinkInfo;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.SliceProfileInfo;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.SliceProfileList;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.AnSliceTaskInfo;
@@ -257,9 +262,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         ResultHeader resultHeader = new ResultHeader();
         AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
         SlicingBusinessDetails slicingBusinessDetails = new SlicingBusinessDetails();
-        CnSliceTaskInfo cnSliceTaskInfo = new CnSliceTaskInfo();
-        TnBHSliceTaskInfo tnBHSliceTaskInfo = new TnBHSliceTaskInfo();
-        AnSliceTaskInfo anSliceTaskInfo = new AnSliceTaskInfo();
+        CnSliceTaskInfoToUI cnSliceTaskInfo = new CnSliceTaskInfoToUI();
+        TnBHSliceTaskInfoToUI tnBHSliceTaskInfo = new TnBHSliceTaskInfoToUI();
+        AnSliceTaskInfoToUI anSliceTaskInfo = new AnSliceTaskInfoToUI();
         ConnectionLinkInfo connectionLinkInfo = new ConnectionLinkInfo();
         String resultMsg;
 
@@ -283,12 +288,12 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing business details query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
-            Response<ConnectionLink> connectionLinkResponse = this.aaiSliceService
-                .getServiceInstance(businessId).execute();
-            if (connectionLinkResponse.isSuccessful()) {
-                ConnectionLink connectionLink = connectionLinkResponse.body();
-                logger.info("ConnectionLink", connectionLink);
-                List<Relationship> relationship = connectionLink.getRelationshipList().getRelationship();
+            Response<NetworkInfo> networkInfoResponse = this.aaiSliceService
+                .getServiceNetworkInstance(businessId).execute();
+            if (networkInfoResponse.isSuccessful()) {
+                NetworkInfo networkInfo = networkInfoResponse.body();
+                logger.info("networkInfo: {}", networkInfo);
+                List<Relationship> relationship = networkInfo.getRelationshipList().getRelationship();
                 List<Relationship> embbCnExternal = relationship.stream().filter(e -> e.getRelatedToProperties()
                         .get(0).getPropertyValue().equals("EmbbCn_External")).collect(Collectors.toList());
                 List<Relationship> TnONAPInternalBH = relationship.stream().filter(e -> e.getRelatedToProperties()
@@ -300,10 +305,10 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                     List<RelationshipData> relationshipDataCn = embbCnExternal.get(0).getRelationshipDataList();
                     List<RelationshipData> cn = relationshipDataCn.stream().filter(e -> e.getRelationshipKey()
                             .equals("service-instance.service-instance-id")).collect(Collectors.toList());
-                    Response<ConnectionLink> executeCn = this.aaiSliceService.getServiceInstance(cn.get(0)
+                    Response<NetworkInfo> executeCn = this.aaiSliceService.getServiceNetworkInstance(cn.get(0)
                             .getRelationshipValue()).execute();
                     if (executeCn.isSuccessful()) {
-                        ConnectionLink body = executeCn.body();
+                        NetworkInfo body = executeCn.body();
                         List<Relationship> relationshipCn = body.getRelationshipList().getRelationship();
                         List<Relationship> networkRouteCn = relationshipCn.stream().filter(e -> e.getRelatedTo()
                                 .equals("network-route")).collect(Collectors.toList());
@@ -313,15 +318,17 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                                 .getEndpointByLinkName(networkRouteCnId).execute();
                         if (endPointInfoListCn.isSuccessful()) {
                             EndPointInfoList endPointInfoList = endPointInfoListCn.body();
-                            BeanUtils.copyProperties(cnSliceTaskInfo, endPointInfoList);
+                            cnSliceTaskInfo.setInterfaceId(endPointInfoList.getLogicId());
+                            cnSliceTaskInfo.setIpAdrress(endPointInfoList.getIpAddress());
+                            cnSliceTaskInfo.setNextHopInfo(endPointInfoList.getNextHop());
                         } else {
-                            logger.error(String.format("Can not get SOOperation[code={}, message={}]", response.code(),
+                            logger.error(String.format("Can not get getEndpointByLinkName[code={}, message={}]", response.code(),
                                     response.message()));
                             resultMsg = "5G slicing service operation progress query failed!";
                             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                         }
                     } else {
-                        logger.error(String.format("Can not get SOOperation[code={}, message={}]", response.code(),
+                        logger.error(String.format("Can not get getServiceNetworkInstance[code={}, message={}]", response.code(),
                                 response.message()));
                         resultMsg = "5G slicing service operation progress query failed!";
                         resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
@@ -332,29 +339,15 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                     List<RelationshipData> relationshipDataTn = TnONAPInternalBH.get(0).getRelationshipDataList();
                     List<RelationshipData> tn = relationshipDataTn.stream().filter(e -> e.getRelationshipKey()
                             .equals("service-instance.service-instance-id")).collect(Collectors.toList());
-                    Response<ConnectionLink> executeTn = this.aaiSliceService
-                            .getServiceInstance(tn.get(0).getRelationshipValue()).execute();
+                    Response<SliceProfileList> executeTn = this.aaiSliceService
+                            .getSliceProfiles(tn.get(0).getRelationshipValue()).execute();
                     if (executeTn.isSuccessful()) {
-                        ConnectionLink body = executeTn.body();
-                        List<Relationship> relationshipTn = body.getRelationshipList().getRelationship();
-                        List<Relationship> networkRouteTn = relationshipTn.stream().filter(e -> e.getRelatedTo()
-                                .equals("network-route")).collect(Collectors.toList());
-                        List<RelationshipData> relationshipDataListTn = networkRouteTn.get(0).getRelationshipDataList();
-                        String networkRouteTnId = relationshipDataListTn.get(0).getRelationshipValue();
-                        Response<EndPointInfoList> endPointInfoListTn = this.aaiSliceService
-                                .getEndpointByLinkName(networkRouteTnId).execute();
-                        if (endPointInfoListTn.isSuccessful()) {
-                            EndPointInfoList endPointInfoList = endPointInfoListTn.body();
-                            BeanUtils.copyProperties(tnBHSliceTaskInfo, endPointInfoList);
-
-                             } else {
-                            logger.error(String.format("Can not get SOOperation[code={}, message={}]", response.code(),
-                                    response.message()));
-                            resultMsg = "5G slicing service operation progress query failed!";
-                            resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-                        }
+                        SliceProfileList body = executeTn.body();
+                        SliceProfileInfo sliceProfileInfo = body.getSliceProfileInfoList().get(0);
+                        tnBHSliceTaskInfo.setLantency(sliceProfileInfo.getLatency());
+                        tnBHSliceTaskInfo.setMaxBandWidth(sliceProfileInfo.getMaxBandwidth());
                     } else {
-                        logger.error(String.format("Can not get SOOperation[code={}, message={}]", response.code(),
+                        logger.error(String.format("Can not getSliceProfiles [code={}, message={}]", response.code(),
                                 response.message()));
                         resultMsg = "5G slicing service operation progress query failed!";
                         resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
@@ -365,10 +358,10 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                     List<RelationshipData> relationshipDataAn = EmbbAnNF.get(0).getRelationshipDataList();
                     List<RelationshipData> an = relationshipDataAn.stream().filter(e -> e.getRelationshipKey()
                             .equals("service-instance.service-instance-id")).collect(Collectors.toList());
-                    Response<ConnectionLink> executeAn = this.aaiSliceService
-                            .getServiceInstance(an.get(0).getRelationshipValue()).execute();
+                    Response<NetworkInfo> executeAn = this.aaiSliceService
+                            .getServiceNetworkInstance(an.get(0).getRelationshipValue()).execute();
                     if (executeAn.isSuccessful()) {
-                        ConnectionLink body = executeAn.body();
+                        NetworkInfo body = executeAn.body();
                         List<Relationship> relationshipAn = body.getRelationshipList().getRelationship();
                         List<Relationship> networkRouteAn = relationshipAn.stream().filter(e -> e.getRelatedTo()
                                 .equals("network-route")).collect(Collectors.toList());
@@ -378,15 +371,17 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                                 .getEndpointByLinkName(networkRouteAnId).execute();
                         if (endPointInfoListAn.isSuccessful()) {
                             EndPointInfoList endPointInfoList = endPointInfoListAn.body();
-                            BeanUtils.copyProperties(anSliceTaskInfo, endPointInfoList);
+                            anSliceTaskInfo.setInterfaceId(endPointInfoList.getLogicId());
+                            anSliceTaskInfo.setIpAdrress(endPointInfoList.getIpAddress());
+                            anSliceTaskInfo.setNextHopInfo(endPointInfoList.getNextHop());
                         } else {
-                            logger.error(String.format("Can not get SOOperation[code={}, message={}]", response.code(),
+                            logger.error(String.format("Can not get getEndpointByLinkName[code={}, message={}]", response.code(),
                                     response.message()));
                             resultMsg = "5G slicing service operation progress query failed!";
                             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                         }
                     } else {
-                        logger.error(String.format("Can not get SOOperation[code={}, message={}]", response.code(),
+                        logger.error(String.format("Can not get getEndpointByLinkName[code={}, message={}]", response.code(),
                                 response.message()));
                         resultMsg = "5G slicing service operation progress query failed!";
                         resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
@@ -403,9 +398,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             logger.error("Exception in querySlicingBusinessDetails response",e);
         }
-        connectionLinkInfo.setCnSliceTaskInfo(cnSliceTaskInfo);
-        connectionLinkInfo.setTnBHSliceTaskInfo(tnBHSliceTaskInfo);
-        connectionLinkInfo.setAnSliceTaskInfo(anSliceTaskInfo);
+        connectionLinkInfo.setCnSliceTaskInfoToUI(cnSliceTaskInfo);
+        connectionLinkInfo.setTnBHSliceTaskInfoToUI(tnBHSliceTaskInfo);
+        connectionLinkInfo.setAnSliceTaskInfoToUI(anSliceTaskInfo);
         slicingBusinessDetails.setConnectionLinkInfo(connectionLinkInfo);
 
         logger.info(resultMsg);

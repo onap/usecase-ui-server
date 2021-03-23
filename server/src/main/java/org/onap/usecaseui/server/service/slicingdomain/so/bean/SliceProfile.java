@@ -25,12 +25,12 @@ import lombok.Data;
 public class SliceProfile {
 
     private String  sliceProfileId;
-    private String  sNSSAIList;
+    private String  sNSSAI;
     private String  pLMNIdList;
-    private String  maxNumberOfUEs;
+    private String  maxNumberofUEs;
     private String  coverageAreaTAList;
     private String  latency;
-    private String  ueMobilityLevel;
+    private String  uEMobilityLevel;
     private String  resourceSharingLevel;
     private String  connectionLinkId;
     private String  maxBandwidth;
@@ -44,9 +44,9 @@ public class SliceProfile {
     private String  jitter;
     private String  csAvailabilityTarget;
     private String  expDataRate;
-    private String  maxNumberOfPDUSession;
+    private String  maxNumberofPDUSession;
     private String  overallUserDensity;
-    private String  csReliabilityMeanTime;
+    private String  cSReliabilityMeanTime;
     private String  msgSizeByte;
     private String  transferIntervalTarget;
     private String  ipAddress;

@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo;
+package org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.AnSliceTaskInfo;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.CnSliceTaskInfo;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.TnBHSliceTaskInfo;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ConnectionLinkInfo {
-    @JsonProperty("an_slice_task_info")
-    private AnSliceTaskInfo anSliceTaskInfo;
-    @JsonProperty("cn_slice_task_info")
-    private CnSliceTaskInfo cnSliceTaskInfo;
-    @JsonProperty("tn_bh_slice_task_info")
-    private TnBHSliceTaskInfo tnBHSliceTaskInfo;
+public class SliceProfileInfo {
 
+    @JsonProperty("profile-id")
+    private String profileId;
+
+    @JsonProperty("latency")
+    private String latency;
+
+    @JsonProperty("jitter")
+    private String jitter;
+
+    @JsonProperty("max-bandwidth")
+    private String maxBandwidth;
 }

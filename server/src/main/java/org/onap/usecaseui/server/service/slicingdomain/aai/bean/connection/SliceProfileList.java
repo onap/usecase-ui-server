@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EndPointInfoList {
+public class SliceProfileList {
 
-    @JsonProperty("ip-address")
-    private String ipAddress;
-    @JsonProperty("logic-id")
-    private String logicId;
-    @JsonProperty("next-hop")
-    private String nextHop;
+    @JsonProperty("slice-profile")
+    private List<SliceProfileInfo> sliceProfileInfoList;
 }

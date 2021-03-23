@@ -17,8 +17,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Getter
+@Setter
 public class AAIServiceInstance implements Serializable {
 
     private static final long serialVersionUID = -2847142014162429886L;
@@ -37,6 +41,12 @@ public class AAIServiceInstance implements Serializable {
 
     @JsonProperty("environment-context")
     private String environmentContext;
+
+    @JsonProperty("workload-context")
+    private String workloadContext;
+
+    @JsonProperty("created-at")
+    private String createdAt;
 
     @JsonProperty("description")
     private String description;

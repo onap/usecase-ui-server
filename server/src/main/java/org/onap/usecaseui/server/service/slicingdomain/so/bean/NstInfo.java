@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 CMCC, Inc. and others. All rights reserved.
+ * Copyright (C) 2020 CMCC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection;
+package org.onap.usecaseui.server.service.slicingdomain.so.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EndPointInfoList {
+public class NstInfo {
 
-    @JsonProperty("ip-address")
-    private String ipAddress;
-    @JsonProperty("logic-id")
-    private String logicId;
-    @JsonProperty("next-hop")
-    private String nextHop;
+    private String invariantUUID;
+    private String name;
+    private String uuid;
 }
