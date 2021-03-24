@@ -37,6 +37,11 @@ public class AnSliceTaskInfo {
     private String interfaceId ;
     @JsonProperty("nextHop_info")
     private String nextHopInfo ;
-
+    private String sliceInstanceId;
+    private String vendor;
+    private String networkType;
+    private String subnetType;
+    private String endPointId;
+    private NstInfo nsstinfo;
 
 }

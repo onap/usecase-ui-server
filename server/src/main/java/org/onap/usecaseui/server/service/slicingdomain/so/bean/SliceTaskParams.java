@@ -29,7 +29,7 @@ public class SliceTaskParams {
     private String nstName;
     private ServiceProfile serviceProfile;
     private String suggestNsiId;
-    private String suggestNSIName;
+    private String suggestNsiName;
     @JsonProperty("tnBHSliceTaskInfo")
     private TnBHSliceTaskInfo tnBHSliceTaskInfo;
     @JsonProperty("tnMHSliceTaskInfo")
@@ -37,4 +37,5 @@ public class SliceTaskParams {
     private TnFHSliceTaskInfo tnFHSliceTaskInfo;
     private CnSliceTaskInfo cnSliceTaskInfo;
     private AnSliceTaskInfo anSliceTaskInfo;
+    private NstInfo nstinfo;
 }

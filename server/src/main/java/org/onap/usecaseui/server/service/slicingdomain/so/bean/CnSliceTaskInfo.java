@@ -24,7 +24,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CnSliceTaskInfo {
     private String suggestNssiId;
-    private String suggestNSSIName;
+    private String suggestNssiName;
     private String progress;
     private String status;
     private String statusDescription;
@@ -37,4 +37,10 @@ public class CnSliceTaskInfo {
     private String interfaceId ;
     @JsonProperty("nextHop_info")
     private String nextHopInfo ;
+    private String sliceInstanceId;
+    private String vendor;
+    private String networkType;
+    private String subnetType;
+    private String endPointId;
+    private NstInfo nsstinfo;
 }
