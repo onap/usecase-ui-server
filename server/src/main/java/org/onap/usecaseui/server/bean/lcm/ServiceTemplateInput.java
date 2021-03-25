@@ -134,11 +134,11 @@ public class ServiceTemplateInput {
         if (this == o)
         {
             return true;
-	}
+        }
         if (o == null || getClass() != o.getClass())
-	{	
-	    return false;
-	}
+        {	
+            return false;
+        }
         ServiceTemplateInput that = (ServiceTemplateInput) o;
         return Objects.equals(invariantUUID, that.invariantUUID) &&
                 Objects.equals(uuid, that.uuid) &&
