@@ -34,6 +34,8 @@ public class NetworkInfo {
     private String serviceType;
     @JsonProperty("service-role")
     private String serviceRole;
+    @JsonProperty("workload-context")
+    private String workloadContext;
     @JsonProperty("environment-context")
     private String environmentContext;
     @JsonProperty("model-invariant-id")

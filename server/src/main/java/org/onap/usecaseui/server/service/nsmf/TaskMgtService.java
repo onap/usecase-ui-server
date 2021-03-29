@@ -17,6 +17,7 @@ package org.onap.usecaseui.server.service.nsmf;
 
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskAuditInfo;
+import org.springframework.web.bind.annotation.PathVariable;
 
 public interface TaskMgtService {
 
@@ -32,6 +33,6 @@ public interface TaskMgtService {
 
     ServiceResult queryTaskCreationProgress(String taskId);
 
-    ServiceResult queryConnectionLinks();
+    ServiceResult queryConnectionLinks(int pageNo, int pageSize);
 
 }

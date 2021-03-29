@@ -20,7 +20,6 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Netwo
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
 
 import com.alibaba.fastjson.JSONObject;
-import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPointInfoList;

@@ -23,6 +23,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import org.apache.commons.beanutils.BeanUtils;
+import org.onap.usecaseui.server.bean.nsmf.common.PagedResult;
 import org.onap.usecaseui.server.bean.nsmf.common.ResultHeader;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskAuditInfo;
@@ -46,6 +47,7 @@ import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTaskRsp;
 import org.onap.usecaseui.server.util.RestfulServices;
+import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -347,7 +349,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
     }
 
     @Override
-    public ServiceResult queryConnectionLinks() {
+    public ServiceResult queryConnectionLinks(int pageNo, int pageSize) {
         ServiceResult serviceResult = new ServiceResult();
         ResultHeader resultHeader = new ResultHeader();
         String resultMsg ="";
@@ -393,8 +395,9 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                         list.add(connectionListVo);
                     }
                 }
-                connectionVo.setRecord_number(tsciConnectionLink.size()+"");
-                connectionVo.setConnection_links_list(list);
+                PagedResult pagedOrderList = NsmfCommonUtil.getPagedList(list, pageNo, pageSize);
+                connectionVo.setRecord_number(list.size());
+                connectionVo.setConnection_links_list(pagedOrderList.getPagedList());
                 resultMsg = "ConnectionLinks query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             }else {

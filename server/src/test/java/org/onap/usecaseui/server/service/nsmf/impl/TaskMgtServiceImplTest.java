@@ -174,7 +174,7 @@ public class TaskMgtServiceImplTest {
     public void queryConnectionLinksWithThrowsException() {
         String taskId = "we23-345r-45ty-5687";
         when(aaiSliceService.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
-        taskMgtService.queryConnectionLinks();
+        taskMgtService.queryConnectionLinks(3,5);
     }
 
     @Test
@@ -182,7 +182,7 @@ public class TaskMgtServiceImplTest {
         String taskId = "we23-345r-45ty-5687";
         ConnectionLinkList connectionLinkList = new ConnectionLinkList();
         when(aaiSliceService.getConnectionLinks()).thenReturn(successfulCall(connectionLinkList));
-        taskMgtService.queryConnectionLinks();
+        taskMgtService.queryConnectionLinks(3,5);
     }
 
 

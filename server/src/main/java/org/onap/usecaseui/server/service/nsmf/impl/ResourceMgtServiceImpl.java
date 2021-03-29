@@ -293,103 +293,88 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
             if (networkInfoResponse.isSuccessful()) {
                 NetworkInfo networkInfo = networkInfoResponse.body();
                 logger.info("networkInfo: {}", networkInfo);
-                List<Relationship> relationship = networkInfo.getRelationshipList().getRelationship();
-                List<Relationship> embbCnExternal = relationship.stream().filter(e -> e.getRelatedToProperties()
-                        .get(0).getPropertyValue().equals("EmbbCn_External")).collect(Collectors.toList());
-                List<Relationship> TnONAPInternalBH = relationship.stream().filter(e -> e.getRelatedToProperties()
-                        .get(0).getPropertyValue().equals("Tn_ONAP_internal_BH")).collect(Collectors.toList());
-                List<Relationship> EmbbAnNF = relationship.stream().filter(e -> e.getRelatedToProperties()
-                        .get(0).getPropertyValue().equals("EmbbAn_NF")).collect(Collectors.toList());
-                if(!ObjectUtils.isEmpty(embbCnExternal)) {
-                    // TODO: 2021/3/3 Cn的参数
-                    List<RelationshipData> relationshipDataCn = embbCnExternal.get(0).getRelationshipDataList();
-                    List<RelationshipData> cn = relationshipDataCn.stream().filter(e -> e.getRelationshipKey()
-                            .equals("service-instance.service-instance-id")).collect(Collectors.toList());
-                    Response<NetworkInfo> executeCn = this.aaiSliceService.getServiceNetworkInstance(cn.get(0)
-                            .getRelationshipValue()).execute();
-                    if (executeCn.isSuccessful()) {
-                        NetworkInfo body = executeCn.body();
-                        List<Relationship> relationshipCn = body.getRelationshipList().getRelationship();
-                        List<Relationship> networkRouteCn = relationshipCn.stream().filter(e -> e.getRelatedTo()
-                                .equals("network-route")).collect(Collectors.toList());
-                        List<RelationshipData> relationshipDataListCn = networkRouteCn.get(0).getRelationshipDataList();
-                        String networkRouteCnId = relationshipDataListCn.get(0).getRelationshipValue();
-                        Response<EndPointInfoList> endPointInfoListCn = this.aaiSliceService
-                                .getEndpointByLinkName(networkRouteCnId).execute();
-                        if (endPointInfoListCn.isSuccessful()) {
-                            EndPointInfoList endPointInfoList = endPointInfoListCn.body();
-                            cnSliceTaskInfo.setInterfaceId(endPointInfoList.getLogicId());
-                            cnSliceTaskInfo.setIpAdrress(endPointInfoList.getIpAddress());
-                            cnSliceTaskInfo.setNextHopInfo(endPointInfoList.getNextHop());
-                        } else {
-                            logger.error(String.format("Can not get getEndpointByLinkName[code={}, message={}]", response.code(),
-                                    response.message()));
-                            resultMsg = "5G slicing service operation progress query failed!";
-                            resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-                        }
-                    } else {
-                        logger.error(String.format("Can not get getServiceNetworkInstance[code={}, message={}]", response.code(),
-                                response.message()));
-                        resultMsg = "5G slicing service operation progress query failed!";
-                        resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-                    }
-                }
-                if(!ObjectUtils.isEmpty(TnONAPInternalBH)) {
-                    // TODO: 2021/3/3 Tn的参数
-                    List<RelationshipData> relationshipDataTn = TnONAPInternalBH.get(0).getRelationshipDataList();
-                    List<RelationshipData> tn = relationshipDataTn.stream().filter(e -> e.getRelationshipKey()
-                            .equals("service-instance.service-instance-id")).collect(Collectors.toList());
-                    Response<SliceProfileList> executeTn = this.aaiSliceService
-                            .getSliceProfiles(tn.get(0).getRelationshipValue()).execute();
-                    if (executeTn.isSuccessful()) {
-                        SliceProfileList body = executeTn.body();
-                        SliceProfileInfo sliceProfileInfo = body.getSliceProfileInfoList().get(0);
-                        tnBHSliceTaskInfo.setLantency(sliceProfileInfo.getLatency());
-                        tnBHSliceTaskInfo.setMaxBandWidth(sliceProfileInfo.getMaxBandwidth());
-                    } else {
-                        logger.error(String.format("Can not getSliceProfiles [code={}, message={}]", response.code(),
-                                response.message()));
-                        resultMsg = "5G slicing service operation progress query failed!";
-                        resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-                    }
-                }
-                if(!ObjectUtils.isEmpty(EmbbAnNF)) {
-                    // TODO: 2021/3/3 an的参数
-                    List<RelationshipData> relationshipDataAn = EmbbAnNF.get(0).getRelationshipDataList();
-                    List<RelationshipData> an = relationshipDataAn.stream().filter(e -> e.getRelationshipKey()
-                            .equals("service-instance.service-instance-id")).collect(Collectors.toList());
-                    Response<NetworkInfo> executeAn = this.aaiSliceService
-                            .getServiceNetworkInstance(an.get(0).getRelationshipValue()).execute();
-                    if (executeAn.isSuccessful()) {
-                        NetworkInfo body = executeAn.body();
-                        List<Relationship> relationshipAn = body.getRelationshipList().getRelationship();
-                        List<Relationship> networkRouteAn = relationshipAn.stream().filter(e -> e.getRelatedTo()
-                                .equals("network-route")).collect(Collectors.toList());
-                        List<RelationshipData> relationshipDataListAn = networkRouteAn.get(0).getRelationshipDataList();
-                        String networkRouteAnId = relationshipDataListAn.get(0).getRelationshipValue();
-                        Response<EndPointInfoList> endPointInfoListAn = this.aaiSliceService
-                                .getEndpointByLinkName(networkRouteAnId).execute();
-                        if (endPointInfoListAn.isSuccessful()) {
-                            EndPointInfoList endPointInfoList = endPointInfoListAn.body();
-                            anSliceTaskInfo.setInterfaceId(endPointInfoList.getLogicId());
-                            anSliceTaskInfo.setIpAdrress(endPointInfoList.getIpAddress());
-                            anSliceTaskInfo.setNextHopInfo(endPointInfoList.getNextHop());
-                        } else {
-                            logger.error(String.format("Can not get getEndpointByLinkName[code={}, message={}]", response.code(),
-                                    response.message()));
-                            resultMsg = "5G slicing service operation progress query failed!";
-                            resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-                        }
-                    } else {
-                        logger.error(String.format("Can not get getEndpointByLinkName[code={}, message={}]", response.code(),
-                                response.message()));
-                        resultMsg = "5G slicing service operation progress query failed!";
-                        resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-                    }
-                }
+                List<Relationship> relationshipList = networkInfo.getRelationshipList().getRelationship();
 
+                for (Relationship relationshipInfo : relationshipList) {
+                    List<RelationshipData> relationshipDataList = relationshipInfo.getRelationshipDataList();
+                    List<RelationshipData> serviceInstanceInfo = relationshipDataList.stream()
+                        .filter(e -> e.getRelationshipKey()
+                            .equals("service-instance.service-instance-id")).collect(Collectors.toList());
+                    String networkRouteCnId = serviceInstanceInfo.get(0).getRelationshipValue();
+                    Response<NetworkInfo> networkInfoResponse1 = this.aaiSliceService
+                        .getServiceNetworkInstance(networkRouteCnId).execute();
+                    if (networkInfoResponse1.isSuccessful()) {
+                        NetworkInfo networkInfo1 = networkInfoResponse1.body();
+                        String networkType = networkInfo1.getWorkloadContext();
+                        if (networkType.equals("AN") || networkType.equals("CN")) {
+                            List<Relationship> networkInfoRelationship = networkInfo1.getRelationshipList()
+                                .getRelationship();
+                            List<Relationship> networkRouteCn = networkInfoRelationship.stream()
+                                .filter(e -> e.getRelatedTo()
+                                    .equals("network-route")).collect(Collectors.toList());
+                            List<RelationshipData> networkInfoRelationshipDataList = networkRouteCn.get(0)
+                                .getRelationshipDataList();
+                            String networkRouteId = networkInfoRelationshipDataList.get(0).getRelationshipValue();
+                            Response<EndPointInfoList> networkInfoEndPointInfoList = this.aaiSliceService
+                                .getEndpointByLinkName(networkRouteId).execute();
+                            if (networkInfoEndPointInfoList.isSuccessful()) {
+                                EndPointInfoList endPointInfoList = networkInfoEndPointInfoList.body();
+                                if (networkType.equals("CN")) {
+                                    cnSliceTaskInfo.setInterfaceId(endPointInfoList.getLogicId());
+                                    cnSliceTaskInfo.setIpAdrress(endPointInfoList.getIpAddress());
+                                    cnSliceTaskInfo.setNextHopInfo(endPointInfoList.getNextHop());
+                                }
+                                if (networkType.equals("AN")) {
+                                    anSliceTaskInfo.setInterfaceId(endPointInfoList.getLogicId());
+                                    anSliceTaskInfo.setIpAdrress(endPointInfoList.getIpAddress());
+                                    anSliceTaskInfo.setNextHopInfo(endPointInfoList.getNextHop());
+                                }
+                            } else {
+                                logger.error(String.format(
+                                    "querySlicingBusinessDetails: Can not get getEndpointByLinkName[code={}, message={}]",
+                                    response.code(),
+                                    response.message()));
+                                resultMsg = "5G slicing business details query failed!";
+                                resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
+                            }
+                        }
+                        if (networkType.equals("TN_BH")) {
+                            List<RelationshipData> tnRelationshipDataList = relationshipInfo.getRelationshipDataList();
+                            List<RelationshipData> tnServiceInstanceInfo = tnRelationshipDataList.stream()
+                                .filter(e -> e.getRelationshipKey()
+                                    .equals("service-instance.service-instance-id")).collect(Collectors.toList());
+
+                            Response<SliceProfileList> executeTn = this.aaiSliceService
+                                .getSliceProfiles(tnServiceInstanceInfo.get(0).getRelationshipValue()).execute();
+                            if (executeTn.isSuccessful()) {
+                                SliceProfileList body = executeTn.body();
+                                SliceProfileInfo sliceProfileInfo = body.getSliceProfileInfoList().get(0);
+                                tnBHSliceTaskInfo.setLantency(sliceProfileInfo.getLatency());
+                                tnBHSliceTaskInfo.setMaxBandWidth(sliceProfileInfo.getMaxBandwidth());
+                                tnBHSliceTaskInfo.setLinkType("P2P");
+                            } else {
+                                logger.error(String.format(
+                                    "querySlicingBusinessDetails: Can not getSliceProfiles [code={}, message={}]",
+                                    response.code(),
+                                    response.message()));
+                                resultMsg = "5G slicing business details query failed!";
+                                resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
+                            }
+                        }
+                    } else {
+                        logger.error(String.format(
+                            "querySlicingBusinessDetails: Can not get getServiceNetworkInstance [code={}, message={}]",
+                            response.code(),
+                            response.message()));
+                        resultMsg = "5G slicing business details query failed!";
+                        resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
+                    }
+                }
             } else {
-                logger.error("queryOperationProgress: serviceInstanceOperations is null!");
+                logger.error(String.format(
+                    "querySlicingBusinessDetails: Can not init getServiceNetworkInstance [code={}, message={}]",
+                    response.code(),
+                    response.message()));
                 resultMsg = "5G slicing service operation progress query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }

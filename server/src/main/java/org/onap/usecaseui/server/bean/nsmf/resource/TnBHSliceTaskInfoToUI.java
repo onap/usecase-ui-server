@@ -30,4 +30,7 @@ public class TnBHSliceTaskInfoToUI {
 
     @JsonProperty("max_bandWidth")
     private String maxBandWidth;
+
+    @JsonProperty("link_type")
+    private String linkType;//point-to-point
 }

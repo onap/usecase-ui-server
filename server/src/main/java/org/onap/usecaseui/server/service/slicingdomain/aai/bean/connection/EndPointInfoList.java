@@ -28,7 +28,7 @@ public class EndPointInfoList {
 
     @JsonProperty("ip-address")
     private String ipAddress;
-    @JsonProperty("logic-id")
+    @JsonProperty("logical-interface-id")
     private String logicId;
     @JsonProperty("next-hop")
     private String nextHop;

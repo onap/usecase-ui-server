@@ -27,7 +27,7 @@ import java.util.List;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConnectionVo {
-    private String record_number;
+    private int record_number;
 
     private List<ConnectionListVo> connection_links_list;
 }

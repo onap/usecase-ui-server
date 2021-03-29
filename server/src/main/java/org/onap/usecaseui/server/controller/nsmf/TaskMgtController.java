@@ -87,7 +87,7 @@ public class TaskMgtController {
     @GetMapping(value = {
             "/connectionLinks/pageNo/{pageNo}/pageSize/{pageSize}"}, produces = "application/json")
     public ServiceResult queryConnectionLinks(@PathVariable int pageNo, @PathVariable int pageSize) {
-        return taskMgtService.queryConnectionLinks();
+        return taskMgtService.queryConnectionLinks(pageNo, pageSize);
     }
 
 }
