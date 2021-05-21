@@ -39,6 +39,9 @@ public class SlicingTaskCreationProgressTest {
         slicingTaskCreationProgress.setCnStatus("error");
         slicingTaskCreationProgress.setTnStatus("error");
         slicingTaskCreationProgress.setAnStatus("error");
+        slicingTaskCreationProgress.setAnStatusDescription("error");
+        slicingTaskCreationProgress.setTnStatusDescription("error");
+        slicingTaskCreationProgress.setCnStatusDescription("error");
 
         slicingTaskCreationProgress.getAnProgress();
         slicingTaskCreationProgress.getCnProgress();
@@ -46,5 +49,8 @@ public class SlicingTaskCreationProgressTest {
         slicingTaskCreationProgress.getAnStatus();
         slicingTaskCreationProgress.getCnStatus();
         slicingTaskCreationProgress.getTnStatus();
+        slicingTaskCreationProgress.getAnStatusDescription();
+        slicingTaskCreationProgress.getTnStatusDescription();
+        slicingTaskCreationProgress.getCnStatusDescription();
     }
 }

@@ -64,6 +64,55 @@ public class NsiAndSubNssiInfoTest {
         nsiAndSubNssiInfo.setAn5qi("er4");
         nsiAndSubNssiInfo.setAnScriptName("scriptTest");
 
+        nsiAndSubNssiInfo.setAnEnableNSSISelection(true);
+        nsiAndSubNssiInfo.setSliceProfile_AN_sNSSAI("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_pLMNIdList("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_maxNumberofUEs("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_maxNumberofPDUSession("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_expDataRateDL("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_expDataRateUL("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_areaTrafficCapDL("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_areaTrafficCapUL("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_overallUserDensity("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_activityFactor("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_uEMobilityLevel("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_resourceSharingLevel("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_sST("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_cSAvailabilityTarget("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_cSReliabilityMeanTime("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_expDataRate("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_msgSizeByte("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_transferIntervalTarget("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_survivalTime("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_ipAddress("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_logicInterfaceId("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_AN_nextHopInfo("scriptTest");
+
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_jitte("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_pLMNIdList("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_sNSSAI("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_sST("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_resourceSharingLevel("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_TN_BH_connectionLinkId("scriptTest");
+        nsiAndSubNssiInfo.setTnEnableNSSISelection(true);
+
+
+        nsiAndSubNssiInfo.setCnEnableNSSISelection(true);
+        nsiAndSubNssiInfo.setSliceProfile_CN_pLMNIdList("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_maxNumberofPDUSession("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_overallUserDensity("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_coverageAreaTAList("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_sST("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_cSAvailabilityTarget("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_cSReliabilityMeanTime("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_expDataRate("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_msgSizeByte("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_logicInterfaceId("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_transferIntervalTarget("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_survivalTime("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_ipAddress("scriptTest");
+        nsiAndSubNssiInfo.setSliceProfile_CN_nextHopInfo("scriptTest");
+
         nsiAndSubNssiInfo.getAn5qi();
         nsiAndSubNssiInfo.getAnCoverageAreaTaList();
         nsiAndSubNssiInfo.getAnLatency();
@@ -93,6 +142,55 @@ public class NsiAndSubNssiInfoTest {
 
         nsiAndSubNssiInfo.getSuggestNsiId();
         nsiAndSubNssiInfo.getSuggestNsiName();
+
+        nsiAndSubNssiInfo.getAnEnableNSSISelection();
+        nsiAndSubNssiInfo.getSliceProfile_AN_sNSSAI();
+        nsiAndSubNssiInfo.getSliceProfile_AN_pLMNIdList();
+        nsiAndSubNssiInfo.getSliceProfile_AN_maxNumberofUEs();
+        nsiAndSubNssiInfo.getSliceProfile_AN_maxNumberofPDUSession();
+        nsiAndSubNssiInfo.getSliceProfile_AN_expDataRateDL();
+        nsiAndSubNssiInfo.getSliceProfile_AN_expDataRateUL();
+        nsiAndSubNssiInfo.getSliceProfile_AN_areaTrafficCapDL();
+        nsiAndSubNssiInfo.getSliceProfile_AN_areaTrafficCapUL();
+        nsiAndSubNssiInfo.getSliceProfile_AN_overallUserDensity();
+        nsiAndSubNssiInfo.getSliceProfile_AN_activityFactor();
+        nsiAndSubNssiInfo.getSliceProfile_AN_uEMobilityLevel();
+        nsiAndSubNssiInfo.getSliceProfile_AN_resourceSharingLevel();
+        nsiAndSubNssiInfo.getSliceProfile_AN_sST();
+        nsiAndSubNssiInfo.getSliceProfile_AN_cSAvailabilityTarget();
+        nsiAndSubNssiInfo.getSliceProfile_AN_cSReliabilityMeanTime();
+        nsiAndSubNssiInfo.getSliceProfile_AN_expDataRate();
+        nsiAndSubNssiInfo.getSliceProfile_AN_msgSizeByte();
+        nsiAndSubNssiInfo.getSliceProfile_AN_transferIntervalTarget();
+        nsiAndSubNssiInfo.getSliceProfile_AN_survivalTime();
+        nsiAndSubNssiInfo.getSliceProfile_AN_ipAddress();
+        nsiAndSubNssiInfo.getSliceProfile_AN_logicInterfaceId();
+        nsiAndSubNssiInfo.getSliceProfile_AN_nextHopInfo();
+
+        nsiAndSubNssiInfo.getSliceProfile_TN_BH_jitte();
+        nsiAndSubNssiInfo.getSliceProfile_TN_BH_pLMNIdList();
+        nsiAndSubNssiInfo.getSliceProfile_TN_BH_sNSSAI();
+        nsiAndSubNssiInfo.getSliceProfile_TN_BH_sST();
+        nsiAndSubNssiInfo.getSliceProfile_TN_BH_resourceSharingLevel();
+        nsiAndSubNssiInfo.getSliceProfile_TN_BH_connectionLinkId();
+        nsiAndSubNssiInfo.getTnEnableNSSISelection();
+
+
+        nsiAndSubNssiInfo.getCnEnableNSSISelection();
+        nsiAndSubNssiInfo.getSliceProfile_CN_pLMNIdList();
+        nsiAndSubNssiInfo.getSliceProfile_CN_maxNumberofPDUSession();
+        nsiAndSubNssiInfo.getSliceProfile_CN_overallUserDensity();
+        nsiAndSubNssiInfo.getSliceProfile_CN_coverageAreaTAList();
+        nsiAndSubNssiInfo.getSliceProfile_CN_sST();
+        nsiAndSubNssiInfo.getSliceProfile_CN_cSAvailabilityTarget();
+        nsiAndSubNssiInfo.getSliceProfile_CN_cSReliabilityMeanTime();
+        nsiAndSubNssiInfo.getSliceProfile_CN_expDataRate();
+        nsiAndSubNssiInfo.getSliceProfile_CN_msgSizeByte();
+        nsiAndSubNssiInfo.getSliceProfile_CN_logicInterfaceId();
+        nsiAndSubNssiInfo.getSliceProfile_CN_transferIntervalTarget();
+        nsiAndSubNssiInfo.getSliceProfile_CN_survivalTime();
+        nsiAndSubNssiInfo.getSliceProfile_CN_ipAddress();
+        nsiAndSubNssiInfo.getSliceProfile_CN_nextHopInfo();
 
     }
 }
