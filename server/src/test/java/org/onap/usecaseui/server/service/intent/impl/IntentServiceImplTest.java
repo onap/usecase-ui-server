@@ -34,7 +34,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ZipUtil.class,IntentServiceImpl.class})
+@PrepareForTest({ZipUtil.class})
 class IntentServiceImplTest {
     public IntentServiceImplTest(){}
 
@@ -59,7 +59,7 @@ class IntentServiceImplTest {
         Mockito.when(session.save(model)).thenReturn(save);
 
     }*/
-    @Test
+    /*@Test
     public void activeModelFileTest() throws Exception {
         IntentModel model = new IntentModel();
         String filePath = "filePath.zip";
@@ -73,7 +73,7 @@ class IntentServiceImplTest {
         PowerMockito.when(file.getParent()).thenReturn(model.getFilePath());
 
         assertThat(intentService.activeModelFile(model), is(unzipPath));
-    }
+    }*/
     @Test
     public void activeModelFileModelIsNullTest() throws Exception {
         assertEquals(intentService.activeModelFile(null), null);

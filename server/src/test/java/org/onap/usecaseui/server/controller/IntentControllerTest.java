@@ -46,7 +46,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({IntentController.class, HttpUtil.class})
+@PrepareForTest({HttpUtil.class})
 class IntentControllerTest {
 
     public IntentControllerTest(){}
