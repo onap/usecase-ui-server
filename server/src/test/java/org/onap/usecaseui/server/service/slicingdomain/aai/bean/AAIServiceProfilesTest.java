@@ -43,6 +43,15 @@ public class AAIServiceProfilesTest {
         aaiServiceProfiles.setResourceVersion("ver123");
         aaiServiceProfiles.setSurvivalTime(200);
         aaiServiceProfiles.setUeMobilityLevel("mobile");
+        aaiServiceProfiles.setAvailability(6);
+        aaiServiceProfiles.setDLThptPerSlice(200);
+        aaiServiceProfiles.setDLThptPerUE(300);
+        aaiServiceProfiles.setULThptPerSlice(200);
+        aaiServiceProfiles.setULThptPerUE(100);
+        aaiServiceProfiles.setMaxPktSize(200);
+        aaiServiceProfiles.setMaxNumberofConns(200);
+        aaiServiceProfiles.setTermDensity(300);
+
         aaiServiceProfiles.getActivityFactor();
         aaiServiceProfiles.getCoverageAreaTAList();
         aaiServiceProfiles.getJitter();
@@ -54,5 +63,14 @@ public class AAIServiceProfilesTest {
         aaiServiceProfiles.getResourceVersion();
         aaiServiceProfiles.getSurvivalTime();
         aaiServiceProfiles.getUeMobilityLevel();
+
+        aaiServiceProfiles.getAvailability();
+        aaiServiceProfiles.getDLThptPerSlice();
+        aaiServiceProfiles.getDLThptPerUE();
+        aaiServiceProfiles.getULThptPerSlice();
+        aaiServiceProfiles.getULThptPerUE();
+        aaiServiceProfiles.getMaxPktSize();
+        aaiServiceProfiles.getMaxNumberofConns();
+        aaiServiceProfiles.getTermDensity();
     }
 }

@@ -52,6 +52,15 @@ public class BusinessDemandInfoTest {
         businessDemandInfo.setActivityFactor("600");
         businessDemandInfo.setServiceSnssai("1-10101");
         businessDemandInfo.setServiceName("aer-001");
+        businessDemandInfo.setServiceProfileAvailability("001");
+        businessDemandInfo.setServiceProfilePLMNIdList("001");
+        businessDemandInfo.setServiceProfileReliability("001");
+        businessDemandInfo.setServiceProfileDLThptPerSlice("001");
+        businessDemandInfo.setServiceProfileDLThptPerUE("001");
+        businessDemandInfo.setServiceProfileULThptPerSlice("001");
+        businessDemandInfo.setServiceProfileULThptPerUE("001");
+        businessDemandInfo.setServiceProfileMaxPktSize("001");
+        businessDemandInfo.setServiceProfileSurvivalTime("001");
 
         businessDemandInfo.getActivityFactor();
         businessDemandInfo.getAreaTrafficCapDL();
@@ -66,6 +75,14 @@ public class BusinessDemandInfoTest {
         businessDemandInfo.getServiceSnssai();
         businessDemandInfo.getUeMobilityLevel();
         businessDemandInfo.getUseInterval();
-
+        businessDemandInfo.getServiceProfileAvailability();
+        businessDemandInfo.getServiceProfilePLMNIdList();
+        businessDemandInfo.getServiceProfileReliability();
+        businessDemandInfo.getServiceProfileDLThptPerSlice();
+        businessDemandInfo.getServiceProfileDLThptPerUE();
+        businessDemandInfo.getServiceProfileULThptPerSlice();
+        businessDemandInfo.getServiceProfileULThptPerUE();
+        businessDemandInfo.getServiceProfileMaxPktSize();
+        businessDemandInfo.getServiceProfileSurvivalTime();
     }
 }
