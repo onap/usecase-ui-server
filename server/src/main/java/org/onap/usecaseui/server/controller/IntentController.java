@@ -16,38 +16,38 @@
 package org.onap.usecaseui.server.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.MapUtils;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
+import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
+import org.onap.usecaseui.server.bean.csmf.SlicingOrderDetail;
+import org.onap.usecaseui.server.bean.intent.IntentInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
+import org.onap.usecaseui.server.bean.intent.IntentResponseBody;
+import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
+import org.onap.usecaseui.server.controller.csmf.SlicingController;
+import org.onap.usecaseui.server.service.csmf.SlicingService;
+import org.onap.usecaseui.server.service.intent.IntentApiService;
+import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.intent.IntentService;
-import org.onap.usecaseui.server.util.DateUtils;
-import org.onap.usecaseui.server.util.HttpUtil;
+import org.onap.usecaseui.server.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import retrofit2.Call;
+import retrofit2.Response;
 
 @RestController
 @org.springframework.context.annotation.Configuration
@@ -62,7 +62,22 @@ public class IntentController {
     @Resource(name = "IntentService")
     private IntentService intentService;
 
+    @Resource(name = "IntentInstanceService")
+    private IntentInstanceService intentInstanceService;
+
+    private IntentApiService intentApiService;
+
     private ObjectMapper omAlarm = new ObjectMapper();
+
+    @Resource(name = "SlicingService")
+    private SlicingService slicingService;
+
+    public IntentController() {
+        this(RestfulServices.create(IntentApiService.class));
+    }
+    public IntentController(IntentApiService intentApiService) {
+        this.intentApiService = intentApiService;
+    }
 
     @GetMapping(value="/listModel",produces = "application/json;charset=utf8")
     public String getModels() throws JsonProcessingException {
@@ -254,5 +269,109 @@ public class IntentController {
 
         ret = map.get(key.trim());
         return ret;
+    }
+
+    @IntentResponseBody
+    @ResponseBody
+    @GetMapping(value = {"/getInstanceId"},
+            produces = "application/json")
+    public JSONObject getInstanceId() {
+        int first = new Random(10).nextInt(8) + 1;
+        System.out.println(first);
+        int hashCodeV = UUID.randomUUID().toString().hashCode();
+        if (hashCodeV < 0) {//有可能是负数
+            hashCodeV = -hashCodeV;
+        }
+        String instanceId = first + String.format("%015d", hashCodeV);
+        JSONObject result = new JSONObject();
+        result.put("instanceId", instanceId);
+        return result;
+    }
+    @IntentResponseBody
+    @GetMapping(value = {"/getInstanceList/{currentPage}/{pageSize}"},
+            produces = "application/json")
+    public Object getInstanceList(@PathVariable String currentPage, @PathVariable String pageSize) {
+        return intentInstanceService.queryIntentInstance(null, Integer.parseInt(currentPage), Integer.parseInt(pageSize));
+    }
+    @IntentResponseBody
+    @ResponseBody
+    @PostMapping(value = {"/createIntentInstance"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object createIntentInstance(@RequestBody Object body) throws IOException {
+        String intentInstanceId = (String) ((Map)body).get("instanceId");
+        String name = (String) ((Map)body).get("name");
+        String lineNum = (String) ((Map)body).get("lineNum");
+        String cloudPointName = (String) ((Map)body).get("cloudPointName");
+        Map<String, Object> accessPointOne = (Map) ((Map)body).get("accessPointOne");
+        String accessPointOneName = MapUtils.getString(accessPointOne, "name");
+        int accessPointOneBandWidth = MapUtils.getIntValue(accessPointOne, "bandwidth");
+
+        IntentInstance intentInstance = new IntentInstance();
+        intentInstance.setInstanceId(intentInstanceId);
+        intentInstance.setName(name);
+        intentInstance.setLineNum(lineNum);
+        intentInstance.setCloudPointName(cloudPointName);
+        intentInstance.setAccessPointOneName(accessPointOneName);
+        intentInstance.setAccessPointOneBandWidth(accessPointOneBandWidth);
+
+        int flag = intentInstanceService.createIntentInstance(intentInstance);
+
+        if(flag == 1) {
+            return "OK";
+        }
+        else {
+            throw new RuntimeException("create Instance error");
+        }
+    }
+
+    @IntentResponseBody
+    @GetMapping(value = {"/getFinishedInstanceInfo"},
+            produces = "application/json")
+    public Object getFinishedInstanceInfo() {
+        List<IntentInstance> instanceList = intentInstanceService.getFinishedInstanceInfo();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (IntentInstance instance : instanceList) {
+            Map<String, Object> instanceInfo = new HashMap<>();
+            instanceInfo.put("instanceId", instance.getInstanceId());
+            instanceInfo.put("name", instance.getName());
+            result.add(instanceInfo);
+        }
+        return result;
+    }
+
+    @IntentResponseBody
+    @DeleteMapping(value = {"/deleteIntentInstance"},
+            produces = "application/json")
+    public Object deleteIntentInstance(@RequestParam(value = "instanceId") String instanceId) {
+        intentInstanceService.deleteIntentInstance(instanceId);
+        return "ok";
+    }
+    @IntentResponseBody
+    @PutMapping(value = {"/activeIntentInstance"},
+            produces = "application/json")
+    public Object activeIntentInstance(@RequestParam(value = "instanceId") String instanceId) {
+        intentInstanceService.activeIntentInstance(instanceId);
+        return "ok";
+    }
+    @IntentResponseBody
+    @PutMapping(value = {"/invalidIntentInstance"},
+            produces = "application/json")
+    public Object invalidIntentInstance(@RequestParam(value = "instanceId") String instanceId) {
+        intentInstanceService.invalidIntentInstance(instanceId);
+        return "ok";
+    }
+
+    @IntentResponseBody
+    @PutMapping(value = {"/queryInstancePerformanceData"},
+            produces = "application/json")
+    public Object queryInstancePerformanceData(@RequestParam(value = "instanceId") String instanceId) {
+        return intentInstanceService.queryInstancePerformanceData(instanceId);
+    }
+
+    @IntentResponseBody
+    @GetMapping(value = {"/queryAccessNodeInfo"},
+            produces = "application/json")
+    public Object queryAccessNodeInfo() throws IOException{
+        return intentInstanceService.queryAccessNodeInfo();
     }
 }
