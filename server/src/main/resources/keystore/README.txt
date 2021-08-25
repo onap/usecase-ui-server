@@ -1,4 +1,4 @@
-keytool -genkeypair -keystore uuiServer.jks -alias uuiServer -keypass Aa123456 -storepass Aa123456  -keyalg RSA -keysize 2048  -validity 3650 -dname "CN=Usecaseui Server, OU=Development, O=ChinaMobile, L=Beijing, C=cn"
+keytool -genkeypair -keystore uuiServer.jks -alias uuiServer -keypass Aa123456 -storepass Aa123456  -keyalg RSA -keysize 2048  -validity 365 -dname  "C=US; O=ONAP; OU=OSAAF;  CN=intermediateCA_9"
 
 
 3650 – 10 years validity
