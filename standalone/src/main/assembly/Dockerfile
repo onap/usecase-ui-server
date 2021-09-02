@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM nexus3.onap.org:10001/ubuntu:20.04
 MAINTAINER "Lu Ji" <lu.ji3@zte.com.cn>
 
 # Expose the Usecase-UI backend port and postgreSQL port
@@ -12,7 +12,7 @@ ENV PG_HOME=/etc/postgresql \
     PG_LOGDIR=/var/log/postgresql
 
 # Add the PostgreSQL PGP key to verify their Debian packages
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+RUN apt -y update && apt -y install gnupg && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 # Add PostgreSQL's repository
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
