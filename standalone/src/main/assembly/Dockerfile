@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 MAINTAINER "Lu Ji" <lu.ji3@zte.com.cn>
 
 # Expose the Usecase-UI backend port and postgreSQL port
@@ -14,11 +14,11 @@ ENV PG_HOME=/etc/postgresql \
 # Add the PostgreSQL PGP key to verify their Debian packages
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 # Add PostgreSQL's repository
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
 # Update the Ubuntu and install tools
 RUN apt-get update && \
-    apt-get install -y python-software-properties && \
+#   apt-get install -y python-software-properties && \
     apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:openjdk-r/ppa && \
     apt-get update && \
