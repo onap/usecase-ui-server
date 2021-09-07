@@ -309,12 +309,11 @@ public class TaskMgtServiceConvert {
         sliceProfile.setExpDataRateDL(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_expDataRateDL());
         sliceProfile.setExpDataRateUL(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_expDataRateUL());
         sliceProfile.setAreaTrafficCapDL(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_areaTrafficCapDL());
-        sliceProfile.setExpDataRateUL(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_areaTrafficCapUL());
+        sliceProfile.setAreaTrafficCapUL(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_areaTrafficCapUL());
         sliceProfile.setOverallUserDensity(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_overallUserDensity());
         sliceProfile.setActivityFactor(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_activityFactor());
         sliceProfile.setUEMobilityLevel(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_uEMobilityLevel());
         sliceProfile.setResourceSharingLevel(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_resourceSharingLevel());
-        sliceProfile.setSST(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_sST());
         sliceProfile.setCsAvailabilityTarget(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_cSAvailabilityTarget());
         sliceProfile.setCSReliabilityMeanTime(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_cSReliabilityMeanTime());
         sliceProfile.setExpDataRate(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_AN_expDataRate());
@@ -338,7 +337,6 @@ public class TaskMgtServiceConvert {
         tnSliceProfile.setJitter(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_jitte());
         tnSliceProfile.setPLMNIdList(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_pLMNIdList());
         tnSliceProfile.setSNSSAI(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_sNSSAI());
-        tnSliceProfile.setSST(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_sST());
         tnSliceProfile.setConnectionLinkId(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_connectionLinkId());
         tnSliceProfile.setResourceSharingLevel(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_TN_BH_resourceSharingLevel());
         tnBHSliceTaskInfo.setSliceProfile(tnSliceProfile);
@@ -362,7 +360,6 @@ public class TaskMgtServiceConvert {
         cnSliceProfile.setMaxNumberofPDUSession(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_CN_maxNumberofPDUSession());
         cnSliceProfile.setOverallUserDensity(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_CN_overallUserDensity());
         cnSliceProfile.setCoverageAreaTAList(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_CN_coverageAreaTAList());
-        cnSliceProfile.setSST(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_CN_sST());
         cnSliceProfile.setCsAvailabilityTarget(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_CN_cSAvailabilityTarget());
         cnSliceProfile.setCSReliabilityMeanTime(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_CN_cSReliabilityMeanTime());
         cnSliceProfile.setExpDataRate(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getSliceProfile_CN_expDataRate());
