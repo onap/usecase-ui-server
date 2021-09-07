@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Copyright 2016-2017 ZTE Corporation.
 #
@@ -19,7 +19,8 @@ main_path="/home/uui"
 echo @main_path@ $main_path
 
 echo "Starting postgreSQL..."
-service postgresql start
+#service postgresql start
+postmaster -D /usr/share/postgresql/data &
 sleep 10
 
 echo "usecase-ui database init script start..."

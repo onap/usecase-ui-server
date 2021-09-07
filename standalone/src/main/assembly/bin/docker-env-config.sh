@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Copyright 2020 CMCC Corporation.
 #
@@ -31,6 +31,7 @@ modify_owner() {
   chown -R postgres:postgres $PG_VAR_LIB
   chown -R postgres:postgres $PG_USR_LIB
   chown -R postgres:postgres $PG_LOGDIR
+  chmod -R 0700 $PG_HOME
   echo "modify files owner..."
 }
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Copyright (C) 2019 CMCC, Inc. and others. All rights reserved.
 #
