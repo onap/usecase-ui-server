@@ -13,7 +13,7 @@ ENV PG_HOME=/usr/share/postgresql \
 
 #Install PostgreSQL as user root, Common users do not have permission to perform the installation  
 USER root
-RUN apk update && apk add postgresql
+RUN apk update && apk add postgresql && apk add bash
 
 # Adjust PostgreSQL configuration
 RUN cp ${PG_HOME}/pg_hba.conf.sample ${PG_HOME}/pg_hba.conf && \
