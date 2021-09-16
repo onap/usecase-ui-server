@@ -151,8 +151,8 @@ public class SotnController {
     	return sotnService.getAllottedResources(customerId, serviceType,serviceId);
     }
     
-    @GetMapping(value = {"/getConnectivityInfo/{connectivityId:.+}"})
-    public String getConnectivityInfo(@PathVariable(value="connectivityId") String connectivityId){
+    @GetMapping(value = {"/getConnectivityInfo", "/getConnectivityInfo/{connectivityId}"})
+    public String getConnectivityInfo(@PathVariable(required = false) String connectivityId){
     	return sotnService.getConnectivityInfo(connectivityId);
     }
     
