@@ -146,3 +146,57 @@ CREATE TABLE sort_master  (
   "language" varchar(50) NOT NULL,
   CONSTRAINT sort_master_pk PRIMARY KEY (sort_type, sort_code, language)
 );
+
+-- ----------------------------
+-- Table structure for sort_master
+-- ----------------------------
+DROP TABLE IF EXISTS instance_performance;
+CREATE TABLE instance_performance
+(
+    id                   integer not null,
+    job_id               varchar(32),
+    resource_instance_id varchar(64),
+    bandwidth            numeric,
+    date                 date,
+    max_bandwidth        numeric,
+    CONSTRAINT instance_performance_pk PRIMARY KEY (id)
+);
+
+-- ----------------------------
+-- Table structure for intent_instance
+-- ----------------------------
+DROP TABLE IF EXISTS intent_instance;
+CREATE TABLE intent_instance
+(
+    id                          serial not null
+        constraint intent_instance_pk
+            primary key,
+    instance_id                 varchar(16),
+    job_id                      varchar(16),
+    progress                    integer,
+    status                      char,
+    resource_instance_id        varchar(16),
+    name                        varchar(255),
+    cloud_point_name            varchar(255),
+    access_point_one_name       varchar(255),
+    access_point_one_band_width integer,
+    line_num                    varchar(64),
+    delete_state                integer default 0
+);
+
+-- ----------------------------
+-- Table structure for intent_model
+-- ----------------------------
+DROP TABLE IF EXISTS intent_model;
+create table intent_model
+(
+    id          serial not null
+        constraint intent_model_pk
+            primary key,
+    model_name  varchar(100) default NULL::character varying,
+    file_path   varchar(500) default NULL::character varying,
+    create_time varchar(100) default NULL::character varying,
+    size        numeric(10, 3),
+    active      integer,
+    "modelType" integer      default 0
+);

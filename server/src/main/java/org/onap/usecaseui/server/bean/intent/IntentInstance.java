@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 CTC, Inc. and others. All rights reserved.
+ * Copyright (C) 2021 CTC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,9 @@ public class IntentInstance implements Serializable {
 
     @Column(name = "line_num")
     private String lineNum;
+
+    @Column(name = "delete_state")
+    private int deleteState;
 
     public IntentInstance() {
 
@@ -146,5 +149,13 @@ public class IntentInstance implements Serializable {
 
     public void setLineNum(String lineNum) {
         this.lineNum = lineNum;
+    }
+
+    public int getDeleteState() {
+        return deleteState;
+    }
+
+    public void setDeleteState(int deleteState) {
+        this.deleteState = deleteState;
     }
 }

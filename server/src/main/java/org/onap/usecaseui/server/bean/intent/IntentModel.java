@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 CTC, Inc. and others. All rights reserved.
+ * Copyright (C) 2021 CTC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,9 @@ public class IntentModel implements Serializable {
 
     @Column(name = "active")
     private Integer active;
+
+    @Column(name = "model_type")
+    private Integer modelType;
 
     public IntentModel() {
 
@@ -97,5 +100,23 @@ public class IntentModel implements Serializable {
 
     public void setActive(Integer active) {
         this.active = active;
+    }
+
+    public String getModelType() {
+        if (this.modelType == 1) {
+            return "ccvpn";
+        }
+        else {
+            return "5gs";
+        }
+    }
+
+    public void setModelType(String modelType) {
+        if ("ccvpn".equals(modelType)) {
+            this.modelType = 1;
+        }
+        else {
+            this.modelType = 0;
+        }
     }
 }
