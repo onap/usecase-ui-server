@@ -15,23 +15,35 @@
  */
 package org.onap.usecaseui.server.service.intent.impl;
 
-import java.io.File;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.hibernate.query.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.util.ZipUtil;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.when;
+
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ZipUtil.class})
@@ -42,14 +54,19 @@ class IntentServiceImplTest {
     @InjectMocks
     private IntentServiceImpl intentService;
 
+    @Mock
+    private SessionFactory sessionFactory;
+
+    @Mock
+    private Session session;
+
     @Before
     public void before() throws Exception {
-        //doReturn(session).when(sessionFactory,"openSession");
+        MemberModifier.field(IntentServiceImpl.class, "sessionFactory").set(intentService , sessionFactory);
+        doReturn(session).when(sessionFactory,"openSession");
     }
 
-
-    //public String addModel(IntentModel model)
-    /*@Test
+    @Test
     public void addModelTest() throws Exception {
         IntentModel model = new IntentModel();
         model.setId(1);
@@ -57,29 +74,66 @@ class IntentServiceImplTest {
         doReturn(tx).when(session,"beginTransaction");
         Serializable save = Mockito.mock(Serializable.class);
         Mockito.when(session.save(model)).thenReturn(save);
+        Mockito.doNothing().when(tx).commit();
+        Mockito.doNothing().when(session).flush();
+        assertEquals(intentService.addModel(model), "1");
 
-    }*/
-    /*@Test
-    public void activeModelFileTest() throws Exception {
-        IntentModel model = new IntentModel();
-        String filePath = "filePath.zip";
-        String parentPath = "parentPath";
-        String unzipPath = "filePath";
-        model.setFilePath(filePath);
+    }
 
-        File file=PowerMockito.mock(File.class);
-        PowerMockito.whenNew(File.class).withArguments(Mockito.anyString()).thenReturn(file);
-        PowerMockito.when(file.exists()).thenReturn(true);
-        PowerMockito.when(file.getParent()).thenReturn(model.getFilePath());
-
-        assertThat(intentService.activeModelFile(model), is(unzipPath));
-    }*/
     @Test
-    public void activeModelFileModelIsNullTest() throws Exception {
+    public void listModelsTest() {
+        Query query = Mockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        List<IntentModel> list = new ArrayList<>();
+        when(query.list()).thenReturn(list);
+        assertTrue(intentService.listModels().isEmpty());
+
+    }
+
+    @Test
+    public void getModel() {
+        Query query = Mockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        when(query.setParameter("modelId", "1")).thenReturn(query);
+        when(query.uniqueResult()).thenReturn(null);
+        assertEquals(intentService.getModel("1"), null);
+
+    }
+
+    @Test
+    public void deleteModel() throws Exception {
+        Transaction tx = Mockito.mock(Transaction.class);
+        doReturn(tx).when(session,"beginTransaction");
+        Mockito.doNothing().when(session).delete(any());
+        Mockito.doNothing().when(tx).commit();
+        assertEquals(intentService.deleteModel("1"), "1");
+
+    }
+    @Test
+    public void activeModel() throws Exception {
+        Transaction tx = Mockito.mock(Transaction.class);
+        doReturn(tx).when(session,"beginTransaction");
+
+        Query query = Mockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        List<IntentModel> list = new ArrayList<>();
+        IntentModel intentModel = new IntentModel();
+        intentModel.setActive(1);
+        list.add(intentModel);
+        when(query.list()).thenReturn(list);
+        Serializable save = Mockito.mock(Serializable.class);
+        Mockito.when(session.save(any())).thenReturn(save);
+
+        Mockito.doNothing().when(tx).commit();
+        assertEquals(intentService.activeModel("1"), null);
+
+    }
+    @Test
+    public void activeModelFileModelIsNullTest() {
         assertEquals(intentService.activeModelFile(null), null);
     }
     @Test
-    public void activeModelFileFilePathIsNullTest() throws Exception {
+    public void activeModelFileFilePathIsNullTest() {
         IntentModel model = new IntentModel();
         assertEquals(intentService.activeModelFile(model), null);
     }

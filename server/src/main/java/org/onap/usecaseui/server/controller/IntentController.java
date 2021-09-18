@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 CTC, Inc. and others. All rights reserved.
+ * Copyright (C) 2021 CTC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,9 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections.MapUtils;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
-import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
-import org.onap.usecaseui.server.bean.csmf.SlicingOrderDetail;
 import org.onap.usecaseui.server.bean.intent.IntentInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.bean.intent.IntentResponseBody;
-import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
-import org.onap.usecaseui.server.controller.csmf.SlicingController;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
@@ -46,8 +42,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import retrofit2.Call;
-import retrofit2.Response;
 
 @RestController
 @org.springframework.context.annotation.Configuration
@@ -87,7 +81,7 @@ public class IntentController {
 
     @RequestMapping("/uploadModel")
     @ResponseBody
-    public String uploadModel (@RequestParam("file") MultipartFile file) {
+    public String uploadModel (@RequestParam("file") MultipartFile file,@RequestParam("modelType")String modelType) {
         String fileName = file.getOriginalFilename();
 
         String filePath = UPLOADPATH + fileName ;
@@ -110,6 +104,11 @@ public class IntentController {
             float sizeM = size/1024;
             model.setSize(sizeM);
             model.setActive(0);
+            model.setModelType(modelType);
+            Map<String,String> fileMap = new HashMap<>();
+            fileMap.put("file", filePath);
+            UploadFileUtil.formUpload("http://uui-nlp:33013/uploader", null, fileMap, null);
+
             intentService.addModel(model);
 
             logger.info("save model, " + model.toString());
@@ -134,14 +133,8 @@ public class IntentController {
             File dest = new File(filePath);
             if(dest.exists()){
                 dest.delete();
+                postDeleteFile(fileName);
                 logger.info("delete file OK: " + filePath);
-                if (filePath.endsWith(".zip")) {
-                    String unzipPath = filePath.substring(0, filePath.length() - 1 - 4);
-                    File unZipFile = new File(unzipPath);
-                    if (unZipFile.exists()) {
-                        unZipFile.delete();
-                    }
-                }
             }{
                 logger.info("file not found: " + filePath);
             }
@@ -153,6 +146,21 @@ public class IntentController {
         return result;
     }
 
+
+    private String postDeleteFile(String fileName) {
+
+        String url = "http://uui-nlp:33013/deleteFile/"+ fileName;
+        HashMap<String, String> headers = new HashMap<>();
+
+        HttpResponseResult result = HttpUtil.sendGetRequest(url,headers);
+        String respContent = result.getResultContent();
+
+        logger.info("NLP api respond: " + String.valueOf(result.getResultCode()));
+        logger.info(respContent);
+
+        return respContent;
+    }
+
     @GetMapping(value = {"/activeModel"}, produces = "application/json")
     public String activeModel(@RequestParam String modelId){
         String result = "0";
@@ -161,10 +169,9 @@ public class IntentController {
             IntentModel model = intentService.activeModel(modelId);
 
             logger.info("active NLP model, model=" + model.getFilePath());
-            String dirPath = intentService.activeModelFile(model);
-            if (dirPath != null) {
-                dirPath = dirPath.replace(UPLOADPATH, NLPLOADPATH);
-                load(dirPath);
+            String fileName = intentService.activeModelFile(model);
+            if (fileName != null) {
+                load(NLPLOADPATH + fileName);
             }
 
 
@@ -219,7 +226,12 @@ public class IntentController {
             produces = "application/json; charset=utf-8")
     public String predict(@RequestBody Object body) throws ParseException {
         String text = (String)((Map)body).get("text");
-        //System.out.println(text);
+        String modelType = (String)((Map)body).get("modelType");
+
+        String activeModelType = intentService.getActiveModelType();
+        if (modelType == null || !modelType.equals(activeModelType)) {
+            throw new RuntimeException("The active model file does not support parsing the current text");
+        }
 
         String url = "http://uui-nlp.onap:33011/api/online/predict";
         HashMap<String, String> headers = new HashMap<>();
@@ -277,7 +289,6 @@ public class IntentController {
             produces = "application/json")
     public JSONObject getInstanceId() {
         int first = new Random(10).nextInt(8) + 1;
-        System.out.println(first);
         int hashCodeV = UUID.randomUUID().toString().hashCode();
         if (hashCodeV < 0) {//有可能是负数
             hashCodeV = -hashCodeV;
@@ -288,10 +299,14 @@ public class IntentController {
         return result;
     }
     @IntentResponseBody
-    @GetMapping(value = {"/getInstanceList/{currentPage}/{pageSize}"},
+    @ResponseBody
+    @PostMapping (value = {"/getInstanceList"},consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/json")
-    public Object getInstanceList(@PathVariable String currentPage, @PathVariable String pageSize) {
-        return intentInstanceService.queryIntentInstance(null, Integer.parseInt(currentPage), Integer.parseInt(pageSize));
+    public Object getInstanceList(@RequestBody Object body) {
+        int currentPage = (int) ((Map)body).get("currentPage");
+        int pageSize = (int) ((Map)body).get("pageSize");
+        logger.error("getInstanceList --> currentPage:" + currentPage + ",pageSize:" + pageSize);
+        return intentInstanceService.queryIntentInstance(null, currentPage, pageSize);
     }
     @IntentResponseBody
     @ResponseBody
@@ -340,31 +355,39 @@ public class IntentController {
     }
 
     @IntentResponseBody
-    @DeleteMapping(value = {"/deleteIntentInstance"},
-            produces = "application/json")
-    public Object deleteIntentInstance(@RequestParam(value = "instanceId") String instanceId) {
+    @ResponseBody
+    @PostMapping(value = {"/deleteIntentInstance"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object deleteIntentInstance(@RequestBody Object body) {
+        String instanceId= (String) ((Map)body).get("instanceId");
         intentInstanceService.deleteIntentInstance(instanceId);
         return "ok";
     }
     @IntentResponseBody
-    @PutMapping(value = {"/activeIntentInstance"},
-            produces = "application/json")
-    public Object activeIntentInstance(@RequestParam(value = "instanceId") String instanceId) {
+    @ResponseBody
+    @PostMapping(value = {"/activeIntentInstance"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object activeIntentInstance(@RequestBody Object body) {
+        String instanceId= (String) ((Map)body).get("instanceId");
         intentInstanceService.activeIntentInstance(instanceId);
         return "ok";
     }
     @IntentResponseBody
-    @PutMapping(value = {"/invalidIntentInstance"},
-            produces = "application/json")
-    public Object invalidIntentInstance(@RequestParam(value = "instanceId") String instanceId) {
+    @ResponseBody
+    @PostMapping(value = {"/invalidIntentInstance"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object invalidIntentInstance(@RequestBody Object body) {
+        String instanceId= (String) ((Map)body).get("instanceId");
         intentInstanceService.invalidIntentInstance(instanceId);
         return "ok";
     }
 
     @IntentResponseBody
-    @PutMapping(value = {"/queryInstancePerformanceData"},
-            produces = "application/json")
-    public Object queryInstancePerformanceData(@RequestParam(value = "instanceId") String instanceId) {
+    @ResponseBody
+    @PostMapping(value = {"/queryInstancePerformanceData"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object queryInstancePerformanceData(@RequestBody Object body) {
+        String instanceId= (String) ((Map)body).get("instanceId");
         return intentInstanceService.queryInstancePerformanceData(instanceId);
     }
 

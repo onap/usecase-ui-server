@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 CTC, Inc. and others. All rights reserved.
+ * Copyright (C) 2021 CTC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         int offset = page.countOffset(currentPage, pageSize);
         Session session = getSession();
         try{
-            StringBuffer hql =new StringBuffer("from IntentInstance a where 1=1");
+            StringBuffer hql =new StringBuffer("from IntentInstance a where deleteState = 0");
             if (null != intentInstance) {
                 if(UuiCommonUtil.isNotNullOrEmpty(intentInstance.getInstanceId())) {
                     String ver =intentInstance.getInstanceId();
@@ -113,7 +113,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     public int getAllCount(IntentInstance intentInstance,int currentPage,int pageSize) {
         Session session = getSession();
         try{
-            StringBuffer count=new StringBuffer("select count(*) from IntentInstance a where 1=1");
+            StringBuffer count=new StringBuffer("select count(*) from IntentInstance a where deleteState = 0");
             if (null != intentInstance) {
                 if(UuiCommonUtil.isNotNullOrEmpty(intentInstance.getInstanceId())) {
                     String ver =intentInstance.getInstanceId();
@@ -128,7 +128,6 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                     count.append(" and a.status = '"+ver+"'");
                 }
             }
-            count.append(" order by id");
             Query query = session.createQuery(count.toString());
             long q=(long)query.uniqueResult();
             return (int)q;
@@ -248,7 +247,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     private List<IntentInstance> getInstanceByFinishedFlag(String flag) {
         Session session = getSession();
         try{
-            StringBuffer sql=new StringBuffer("from IntentInstance where status = '" + flag + "'");
+            StringBuffer sql=new StringBuffer("from IntentInstance where deleteState = 0 and status = '" + flag + "'");
 
             Query query = session.createQuery(sql.toString());
             List<IntentInstance> q=(List<IntentInstance>) query.list();
@@ -265,7 +264,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     public List<IntentInstance> getFinishedInstanceInfo() {
         Session session = getSession();
         try{
-            StringBuffer count=new StringBuffer("from IntentInstance where status = '1'");
+            StringBuffer count=new StringBuffer("from IntentInstance where status = '1' and deleteState = 0");
 
             Query query = session.createQuery(count.toString());
             List<IntentInstance> q=(List<IntentInstance>) query.list();
@@ -334,7 +333,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
         try(Session session = getSession()) {
 
-            result = (IntentInstance)session.createQuery("from IntentInstance where instanceId = :instanceId")
+            result = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId")
                     .setParameter("instanceId", instanceId).uniqueResult();
             logger.info("get IntentInstance OK, id=" + instanceId);
 
@@ -396,7 +395,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
         try(Session session = getSession()) {
 
-            instance = (IntentInstance)session.createQuery("from IntentInstance where instanceId = :instanceId and status = :status")
+            instance = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId and status = :status")
                     .setParameter("instanceId", instanceId).setParameter("status", "3").uniqueResult();
             logger.info("get instance OK, id=" + instanceId);
 
@@ -426,7 +425,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         IntentInstance instance = null;
 
         try(Session session = getSession()) {
-            instance = (IntentInstance)session.createQuery("from IntentInstance where instanceId = :instanceId")
+            instance = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId")
                     .setParameter("instanceId", instanceId).uniqueResult();
             logger.info("get instance OK, id=" + instanceId);
 
@@ -454,8 +453,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     @Override
     public Map<String, Object> queryInstancePerformanceData(String instanceId) {
         try(Session session = getSession()) {
-            String hql = "from IntentInstance i, InstancePerformance p where i.resourceInstanceId = p.resourceInstanceId order by p.date";
-            Query query = session.createQuery(hql);
+            String hql = "from IntentInstance i, InstancePerformance p where i.resourceInstanceId = p.resourceInstanceId and  i.instanceId = :instanceId and i.deleteState = 0 order by p.date";
+            Query query = session.createQuery(hql).setParameter("instanceId", instanceId);
             List<Object[]> queryResult= query.list();
             List<String> date = new ArrayList<>();
             List<String> bandwidth = new ArrayList<>();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 CTC, Inc. and others. All rights reserved.
+ * Copyright (C) 2021 CTC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.service.intent.impl;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,9 +28,10 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.service.intent.IntentService;
-import org.onap.usecaseui.server.util.ZipUtil;
+import org.onap.usecaseui.server.util.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +44,6 @@ import org.springframework.stereotype.Service;
 @EnableAspectJAutoProxy
 public class IntentServiceImpl implements IntentService {
     private static final Logger logger = LoggerFactory.getLogger(IntentServiceImpl.class);
-
-    private final static String UPLOADPATH = "/home/uui/upload/";
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -101,12 +99,9 @@ public class IntentServiceImpl implements IntentService {
     }
 
     public IntentModel getModel(String modelId){
-        //Transaction tx = null;
         IntentModel result = null;
 
         try(Session session = getSession()) {
-            //tx = session.beginTransaction();
-
             result = (IntentModel)session.createQuery("from IntentModel where id = :modelId")
                     .setParameter("modelId", Integer.parseInt(modelId)).uniqueResult();
             logger.info("get model OK, id=" + modelId);
@@ -184,27 +179,35 @@ public class IntentServiceImpl implements IntentService {
         if (model == null) {
             return null;
         }
-        String filePath = model.getFilePath();
-        if (filePath == null) {
+        String fileName = model.getModelName();
+        if (fileName == null) {
             return null;
         }
-        else if (filePath.endsWith(".zip")){
+        else if (fileName.endsWith(".zip")){
             try {
-                File file = new File(filePath);
-                String parentPath = file.getParent();
-                String unzipPath = filePath.substring(0, filePath.length() - 4);
-                File unZipFile = new File(unzipPath);
-                if (!unZipFile.exists()) {
-                    ZipUtil.unzip(file,parentPath);
-                }
-                return unzipPath;
+                postUnzipFile(fileName);
+                return fileName;
 
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return filePath;
+        return fileName;
+    }
+
+    private String postUnzipFile(String fileName) {
+
+        String url = "http://uui-nlp:33013/unzipFile/"+ fileName;
+        HashMap<String, String> headers = new HashMap<>();
+
+        HttpResponseResult result = HttpUtil.sendGetRequest(url,headers);
+        String respContent = result.getResultContent();
+
+        logger.info("NLP api respond: " + String.valueOf(result.getResultCode()));
+        logger.info(respContent);
+
+        return respContent;
     }
 
     public String calcFieldValue(String key, String strValue){
@@ -385,5 +388,16 @@ public class IntentServiceImpl implements IntentService {
             ret = "shared";
         }
         return ret;
+    }
+
+
+    public String getActiveModelType() {
+        try(Session session = getSession()){
+            IntentModel model = (IntentModel) session.createQuery("from IntentModel where active = 1").uniqueResult();
+            return model.getModelType();
+        } catch (Exception e) {
+            logger.error("Details:" + e.getMessage());
+            return null;
+        }
     }
 }

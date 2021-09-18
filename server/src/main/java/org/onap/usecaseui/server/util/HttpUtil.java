@@ -148,7 +148,7 @@ public class HttpUtil {
      * @param headerMap
      * @return HttpResponseResult
      */
-    public HttpResponseResult sendGetRequest(
+    public static HttpResponseResult sendGetRequest(
             String url,
             Map<String, String> headerMap) {
         logger.info(LOG_FORMATTER  ,url , "API GET calling is starting......");

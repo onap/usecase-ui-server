@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 CTC, Inc. and others. All rights reserved.
+ * Copyright (C) 2021 CTC, Inc. and others. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,12 @@ import java.util.List;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 
 public interface IntentService {
-    public String addModel(IntentModel model);
+    String addModel(IntentModel model);
     List<IntentModel> listModels();
-    public String deleteModel(String modelId);
-    public IntentModel getModel(String modelId);
-    public IntentModel activeModel(String modelId);
+    String deleteModel(String modelId);
+    IntentModel getModel(String modelId);
+    IntentModel activeModel(String modelId);
     String activeModelFile(IntentModel model);
     String calcFieldValue(String key, String strValue);
+    String getActiveModelType();
 }
