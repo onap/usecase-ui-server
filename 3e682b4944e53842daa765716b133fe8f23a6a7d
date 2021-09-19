@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0a0ce240_52503be0",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/util/UploadFileUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-09-19T10:52:11Z",
+      "side": 1,
+      "message": "Please amend the note to English",
+      "range": {
+        "startLine": 26,
+        "startChar": 1,
+        "endLine": 33,
+        "endChar": 27
+      },
+      "revId": "3e682b4944e53842daa765716b133fe8f23a6a7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64ecee58_4e4f6ac9",
+        "filename": "server/src/test/java/org/onap/usecaseui/server/controller/IntentControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2021-09-19T10:52:11Z",
+      "side": 1,
+      "message": "Please amend the note to English",
+      "revId": "3e682b4944e53842daa765716b133fe8f23a6a7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
