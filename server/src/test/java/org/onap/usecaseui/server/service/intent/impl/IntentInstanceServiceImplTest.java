@@ -40,7 +40,6 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgress;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
@@ -53,7 +52,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({IntentInstanceServiceImpl.class})
 public class IntentInstanceServiceImplTest {
 
     public IntentInstanceServiceImplTest() {
