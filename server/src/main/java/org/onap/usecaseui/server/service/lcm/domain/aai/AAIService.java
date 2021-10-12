@@ -197,7 +197,7 @@ public interface AAIService {
         "Authorization: Basic QUFJOkFBSQ==",
         "Accept: application/json"
     })
-	@GET("/api/aai-network/v14/logical-links")
+	@GET("/api/aai-network/v24/logical-links")
 	Call<ResponseBody> getLogicalLinks();
     
     @Headers({
@@ -323,7 +323,7 @@ public interface AAIService {
     	"Authorization: Basic QUFJOkFBSQ==",
     	"Accept: application/json"
     })
-    @GET("/api/aai-network/v14/connectivities")
+    @GET("/api/aai-network/v24/connectivities")
     Call<ResponseBody> getConnectivityInfo(@Query("connectivity-id") String connectivityId);
     
     @Headers({
