@@ -24,9 +24,7 @@ import retrofit2.http.*;
 public interface IntentApiService {
 
     @Headers({
-            "X-TransactionId: 9999",
-            "X-FromAppId: MSO",
-            "Authorization: Basic QUFJOkFBSQ==",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
     @POST("/so/infra/serviceIntent/v1/create")
@@ -35,7 +33,7 @@ public interface IntentApiService {
     @Headers({
             "X-TransactionId: 9999",
             "X-FromAppId: MSO",
-            "Authorization: Basic QUFJOkFBSQ==",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
     @GET("/aai/v24/business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}?depth=all")
@@ -44,7 +42,7 @@ public interface IntentApiService {
     @Headers({
             "X-TransactionId: 9999",
             "X-FromAppId: MSO",
-            "Authorization: Basic QUFJOkFBSQ==",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
     @GET("/aai/v24/network/network-policies/network-policy/{networkPolicyId}?depth=all")
@@ -53,28 +51,26 @@ public interface IntentApiService {
     @Headers({
             "X-TransactionId: 9999",
             "X-FromAppId: MSO",
-            "Authorization: Basic QUFJOkFBSQ==",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
     @GET("/aai/v24/business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}/metadata")
     Call<JSONObject> getInstanceBandwidth(@Path("resource-service-id") String resourceServiceId);
 
     @Headers({
-            "X-TransactionId: 9999",
-            "X-FromAppId: MSO",
-            "Authorization: Basic QUFJOkFBSQ==",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
-    @POST("/so/infra/serviceIntent/v1/delete")
+    @DELETE("/so/infra/serviceIntent/v1/delete")
     Call<JSONObject> deleteIntentInstance(@Body RequestBody body);
 
     @Headers({
             "X-TransactionId: 9999",
             "X-FromAppId: MSO",
-            "Authorization: Basic QUFJOkFBSQ==",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
-    @POST("/aai/v24/network/network-routes")
+    @GET("/aai/v24/network/network-routes")
     Call<JSONObject> queryNetworkRoute();
 
 }

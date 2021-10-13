@@ -59,7 +59,7 @@ public class RestfulServices {
 
         String msbUrl = getMsbAddress();
         Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://" + msbUrl + "/")
+            .baseUrl("http://" + msbUrl + "/")
             .client(okHttpClient)
             .addConverterFactory(JacksonConverterFactory.create())
             .build();
@@ -70,7 +70,7 @@ public class RestfulServices {
     public static String getMsbAddress() {
         String msbAddress = System.getenv("MSB_ADDR");
         if (msbAddress == null) {
-            return "";
+            return "127.0.0.1:8888";
         }
         return msbAddress;
     }

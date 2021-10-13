@@ -186,7 +186,7 @@ public class IntentController {
 
     private String load(String dirPath) {
 
-        String url = "http://uui-nlp.onap:33011/api/online/load";
+        String url = "http://uui-nlp:33011/api/online/load";
         HashMap<String, String> headers = new HashMap<>();
         String bodyStr = "{" + "\"path\": \""+dirPath+"\"" + "}";
         logger.info("request body: " + bodyStr);
@@ -233,7 +233,7 @@ public class IntentController {
             throw new RuntimeException("The active model file does not support parsing the current text");
         }
 
-        String url = "http://uui-nlp.onap:33011/api/online/predict";
+        String url = "http://uui-nlp:33011/api/online/predict";
         HashMap<String, String> headers = new HashMap<>();
         String bodyStr = "{\"title\": \"predict\", \"text\": \"" + text
                 +  "\"}";
