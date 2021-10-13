@@ -492,8 +492,9 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         Map<String, Object> result = new HashMap<>();
         List<String> accessNodeList = new ArrayList<>();
         List<String> cloudAccessNodeList = new ArrayList<>();
-        JSONObject body = intentApiService.queryNetworkRoute().execute().body();
-        JSONArray data = body.getJSONArray("data");
+        Response<JSONObject> response = intentApiService.queryNetworkRoute().execute();
+        JSONObject body = response.body();
+        JSONArray data = body.getJSONArray("network-route");
         for (int i = 0; i<data.size(); i++) {
             JSONObject nodeInfo = data.getJSONObject(i);
             if ("ROOT".equals(nodeInfo.getString("type"))) {

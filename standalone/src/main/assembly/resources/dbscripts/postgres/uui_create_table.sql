@@ -154,8 +154,8 @@ DROP TABLE IF EXISTS instance_performance;
 CREATE TABLE instance_performance
 (
     id                   integer not null,
-    job_id               varchar(32),
-    resource_instance_id varchar(64),
+    job_id               varchar(36),
+    resource_instance_id varchar(36),
     bandwidth            numeric,
     date                 date,
     max_bandwidth        numeric,
@@ -172,10 +172,10 @@ CREATE TABLE intent_instance
         constraint intent_instance_pk
             primary key,
     instance_id                 varchar(16),
-    job_id                      varchar(16),
+    job_id                      varchar(36),
     progress                    integer,
     status                      char,
-    resource_instance_id        varchar(16),
+    resource_instance_id        varchar(36),
     name                        varchar(255),
     cloud_point_name            varchar(255),
     access_point_one_name       varchar(255),
@@ -198,5 +198,5 @@ create table intent_model
     create_time varchar(100) default NULL::character varying,
     size        numeric(10, 3),
     active      integer,
-    "modelType" integer      default 0
+    model_type integer      default 0
 );
