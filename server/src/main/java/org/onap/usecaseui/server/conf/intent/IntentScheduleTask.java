@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.conf.intent;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -30,11 +31,11 @@ public class IntentScheduleTask {
     @Resource(name = "IntentInstanceService")
     private IntentInstanceService intentInstanceService;
 
-//    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0/20 * * * * ?")
     public void getIntentInstanceCompleteness() {
-        intentInstanceService.getIntentInstanceProgress();
+        intentInstanceService.getIntentInstanceCreateStatus();
     }
-//    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0/20 * * * * ?")
     public void getIntentInstanceBandwidth() throws IOException {
         intentInstanceService.getIntentInstanceBandwidth();
     }

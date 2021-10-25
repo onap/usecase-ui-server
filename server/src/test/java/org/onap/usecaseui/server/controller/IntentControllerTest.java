@@ -172,7 +172,7 @@ public class IntentControllerTest {
         Map<String, Object> body = new HashMap<>();
         body.put("instanceId", "instanceId");
         Mockito.doNothing().when(intentInstanceService).deleteIntentInstance(anyString());
-        assertEquals(intentController.deleteIntentInstance(body), "ok");
+        assertEquals(intentController.deleteIntentInstance("instanceId"), "ok");
     }
     @Test
     public void activeIntentInstance() {

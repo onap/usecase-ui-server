@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.util.*;
 import javax.annotation.Resource;
 
+import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.collections.MapUtils;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.IntentInstance;
@@ -51,7 +52,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class IntentController {
     private final Logger logger = LoggerFactory.getLogger(IntentController.class);
     private final static String UPLOADPATH = "/home/uui/upload/";
-    private final static String NLPLOADPATH = "/home/run/bert-master/upload/";
+    private final static String NLPLOADPATH = "/home/uuihome/uui/bert-master/upload/";
+    private final static String[] QUESTIONS_CCVPN = {"bandwidth", "access point", "cloud point"};
+    private final static String[] QUESTIONS_5GS = {"Communication Service Name", "Max Number of UEs", "Data Rate Downlink", "Latency", "Data Rate Uplink", "Resource Sharing Level", "Mobility", "Area"};
+
+    private final static String MODEL_TYPE_CCVPN = "ccvpn";
+    private final static String MODEL_TYPE_5GS = "5gs";
+
 
     @Resource(name = "IntentService")
     private IntentService intentService;
@@ -232,11 +239,12 @@ public class IntentController {
         if (modelType == null || !modelType.equals(activeModelType)) {
             throw new RuntimeException("The active model file does not support parsing the current text");
         }
+        String[] questions = getQuestions(modelType);
 
         String url = "http://uui-nlp:33011/api/online/predict";
         HashMap<String, String> headers = new HashMap<>();
         String bodyStr = "{\"title\": \"predict\", \"text\": \"" + text
-                +  "\"}";
+                +  "\", \"questions\":" + new JSONArray(Arrays.asList(questions)).toJSONString() + "}";
         logger.info("request body: " + bodyStr);
 
         HttpResponseResult result = HttpUtil.sendPostRequestByJson(url, headers, bodyStr);
@@ -249,12 +257,32 @@ public class IntentController {
 
         JSONObject map2 = new JSONObject();
 
-        for (Map.Entry<String, Object> entry:map.entrySet()) {
-            logger.debug(entry.getKey()+","+entry.getValue());
-            String key = tranlateFieldName(entry.getKey());
-            String valueStr = (String) entry.getValue();
-            String value = intentService.calcFieldValue(key, valueStr);
-            map2.put(key, value);
+        if (MODEL_TYPE_CCVPN.equals(modelType)) {
+
+            String bandWidth = map.getString("bandwidth");
+            String accessPoint = map.getString("access point");
+            String cloudPoint = map.getString("cloud point");
+            String instanceId = getUUID();
+            String accessPointAlias = intentInstanceService.formatAccessPoint(accessPoint);
+            String bandwidthAlias = intentInstanceService.formatBandwidth(bandWidth);
+            String cloudPointAlias = intentInstanceService.formatCloudPoint(cloudPoint);
+
+            Map<String, Object> accessPointOne = new HashMap<>();
+            accessPointOne.put("name", accessPointAlias);
+            accessPointOne.put("bandwidth", bandwidthAlias);
+            map2.put("name", "");
+            map2.put("instanceId", instanceId);
+            map2.put("accessPointOne", accessPointOne);
+            map2.put("cloudPointName", cloudPointAlias);
+        }
+        else {
+            for (Map.Entry<String, Object> entry:map.entrySet()) {
+                logger.debug(entry.getKey()+","+entry.getValue());
+                String key = tranlateFieldName(entry.getKey());
+                String valueStr = (String) entry.getValue();
+                String value = intentService.calcFieldValue(key, valueStr);
+                map2.put(key, value);
+            }
         }
 
         logger.info("translate result: " + map2.toJSONString());
@@ -262,6 +290,13 @@ public class IntentController {
         return map2.toJSONString();
     }
 
+    private String[] getQuestions(String modelType) {
+        if (MODEL_TYPE_CCVPN.equals(modelType)) {
+            return QUESTIONS_CCVPN;
+        } else {
+            return QUESTIONS_5GS;
+        }
+    }
 
 
     private static String tranlateFieldName(String key){
@@ -270,14 +305,14 @@ public class IntentController {
             return ret;
 
         HashMap<String, String> map = new HashMap<>();
-        map.put("Communication service","name");
-        map.put("Maximum user devices","maxNumberofUEs");
-        map.put("Downlink data rate","expDataRateDL");
-        map.put("Time delay","latency");
-        map.put("Uplink data rate","expDataRateUL");
-        map.put("Resource","resourceSharingLevel");
+        map.put("Communication Service Name","name");
+        map.put("Max Number of UEs","maxNumberofUEs");
+        map.put("Data Rate Downlink","expDataRateDL");
+        map.put("Latency","latency");
+        map.put("Data Rate Uplink","expDataRateUL");
+        map.put("Resource Sharing Level","resourceSharingLevel");
         map.put("Mobility","uEMobilityLevel");
-        map.put("Region","coverageArea");
+        map.put("Area","coverageArea");
 
         ret = map.get(key.trim());
         return ret;
@@ -288,16 +323,22 @@ public class IntentController {
     @GetMapping(value = {"/getInstanceId"},
             produces = "application/json")
     public JSONObject getInstanceId() {
-        int first = new Random(10).nextInt(8) + 1;
-        int hashCodeV = UUID.randomUUID().toString().hashCode();
-        if (hashCodeV < 0) {//有可能是负数
-            hashCodeV = -hashCodeV;
-        }
-        String instanceId = first + String.format("%015d", hashCodeV);
+        String instanceId = getUUID();
         JSONObject result = new JSONObject();
         result.put("instanceId", instanceId);
         return result;
     }
+
+    private String getUUID() {
+        int first = new Random(10).nextInt(8) + 1;
+        int hashCodeV = UUID.randomUUID().toString().hashCode();
+        if (hashCodeV < 0) {
+            hashCodeV = -hashCodeV;
+        }
+        String instanceId = first + String.format("%015d", hashCodeV);
+        return instanceId;
+    }
+
     @IntentResponseBody
     @ResponseBody
     @PostMapping (value = {"/getInstanceList"},consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -328,6 +369,7 @@ public class IntentController {
         intentInstance.setCloudPointName(cloudPointName);
         intentInstance.setAccessPointOneName(accessPointOneName);
         intentInstance.setAccessPointOneBandWidth(accessPointOneBandWidth);
+        intentInstance.setStatus("0");
 
         int flag = intentInstanceService.createIntentInstance(intentInstance);
 
@@ -355,11 +397,8 @@ public class IntentController {
     }
 
     @IntentResponseBody
-    @ResponseBody
-    @PostMapping(value = {"/deleteIntentInstance"}, consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = "application/json; charset=utf-8")
-    public Object deleteIntentInstance(@RequestBody Object body) {
-        String instanceId= (String) ((Map)body).get("instanceId");
+    @DeleteMapping(value = {"/deleteIntentInstance"}, produces = "application/json; charset=utf-8")
+    public Object deleteIntentInstance(@RequestParam String instanceId) {
         intentInstanceService.deleteIntentInstance(instanceId);
         return "ok";
     }
@@ -396,5 +435,15 @@ public class IntentController {
             produces = "application/json")
     public Object queryAccessNodeInfo() throws IOException{
         return intentInstanceService.queryAccessNodeInfo();
+    }
+
+
+    @IntentResponseBody
+    @ResponseBody
+    @PostMapping(value = {"/getInstanceStatus"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object getInstanceStatus(@RequestBody Object body) {
+        JSONArray ids= new JSONObject((Map)body).getJSONArray("ids");
+        return intentInstanceService.getInstanceStatus(ids);
     }
 }

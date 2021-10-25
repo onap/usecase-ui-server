@@ -35,14 +35,14 @@ public class InstancePerformance implements Serializable {
     private String resourceInstanceId;
 
     @Column(name = "bandwidth")
-    private String bandwidth;
+    private int bandwidth;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date")
     private Date date;
 
     @Column(name = "max_bandwidth")
-    private String maxBandwidth;
+    private int maxBandwidth;
 
 
     public InstancePerformance() {
@@ -73,11 +73,11 @@ public class InstancePerformance implements Serializable {
         this.resourceInstanceId = resourceInstanceId;
     }
 
-    public String getBandwidth() {
+    public int getBandwidth() {
         return bandwidth;
     }
 
-    public void setBandwidth(String bandwidth) {
+    public void setBandwidth(int bandwidth) {
         this.bandwidth = bandwidth;
     }
 
@@ -89,11 +89,11 @@ public class InstancePerformance implements Serializable {
         this.date = date;
     }
 
-    public String getMaxBandwidth() {
+    public int getMaxBandwidth() {
         return maxBandwidth;
     }
 
-    public void setMaxBandwidth(String maxBandwidth) {
+    public void setMaxBandwidth(int maxBandwidth) {
         this.maxBandwidth = maxBandwidth;
     }
 }

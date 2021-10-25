@@ -15,6 +15,8 @@
  */
 package org.onap.usecaseui.server.service.intent;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.onap.usecaseui.server.bean.intent.IntentInstance;
 import org.onap.usecaseui.server.util.Page;
 
@@ -26,6 +28,7 @@ public interface IntentInstanceService {
     Page<IntentInstance> queryIntentInstance(IntentInstance intentInstance, int currentPage, int pageSize);
     int createIntentInstance(IntentInstance intentInstance);
     void getIntentInstanceProgress();
+    void getIntentInstanceCreateStatus();
     List<IntentInstance> getFinishedInstanceInfo();
     void getIntentInstanceBandwidth() throws IOException;
 
@@ -38,4 +41,12 @@ public interface IntentInstanceService {
     Map<String, Object> queryInstancePerformanceData(String instanceId);
 
     Object queryAccessNodeInfo() throws IOException;
+
+    JSONObject getInstanceStatus(JSONArray ids);
+
+    String formatBandwidth(String strValue);
+
+    String formatCloudPoint(String cloudPoint);
+
+    String formatAccessPoint(String accessPoint);
 }

@@ -42,6 +42,8 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service("IntentInstanceService")
 @Transactional
@@ -57,6 +59,12 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     private IntentApiService intentApiService;
 
     private SOService soService;
+
+    private final static int MAX_BANDWIDTH = 6000;
+    private final static int MIN_BANDWIDTH = 100;
+
+    private final static List<String> GB_COMPANY = Arrays.asList(new String[] {"gbps", "gb"});
+    private final static List<String> MB_COMPANY = Arrays.asList(new String[] {"mbps", "mb"});
 
     public IntentInstanceServiceImpl() {
         this(RestfulServices.create(IntentApiService.class),RestfulServices.create(SOService.class));
@@ -106,6 +114,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         } catch (Exception e) {
             logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryAlarmsHeader. Details:" + e.getMessage());
             return null;
+        } finally {
+            session.close();
         }
     }
 
@@ -134,11 +144,15 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         } catch (Exception e) {
             logger.error("exception occurred while performing IntentInstanceServiceImpl getAllCount. Details:" + e.getMessage());
             return -1;
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public int createIntentInstance(IntentInstance intentInstance) {
+        Session session = getSession();
+        Transaction tx = null;
         try{
 
             if (null == intentInstance){
@@ -146,17 +160,25 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                 return 0;
             }
             String jobId = createIntentInstanceToSO(intentInstance);
+            if (null == jobId){
+                logger.error("create Instance error：jobId is null");
+                return 0;
+            }
             intentInstance.setJobId(jobId);
             intentInstance.setResourceInstanceId("cll-"+intentInstance.getInstanceId());
-            Session session = getSession();
-            Transaction tx = session.beginTransaction();
+
+            tx = session.beginTransaction();
             session.save(intentInstance);
             tx.commit();
-//            session.flush();
             return 1;
         } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
             logger.error("Details:" + e.getMessage());
             return 0;
+        } finally {
+            session.close();
         }
     }
 
@@ -207,7 +229,24 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                 if (progress >=100) {
                     instance.setStatus("1");
                 }
-                instance.setProgress(progress);
+            }
+            catch (Exception e) {
+                logger.info("get progress exception:"+e);
+            }
+        }
+        saveProgress(instanceList);
+
+    }
+    @Override
+    public void getIntentInstanceCreateStatus() {
+        List<IntentInstance> instanceList = getInstanceByFinishedFlag("0");
+        for (IntentInstance instance: instanceList) {
+            try {
+
+                int flag = getCreateStatusByJobId(instance);
+                if (flag > 0) {
+                    instance.setStatus(flag + "");
+                }
             }
             catch (Exception e) {
                 logger.info("get progress exception:"+e);
@@ -218,14 +257,16 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
     private void saveProgress(List<IntentInstance> instanceList) {
-        Transaction tx = null;
         if(instanceList == null || instanceList.isEmpty()) {
             return;
         }
-        try(Session session = getSession()) {
+        Session session = getSession();
+        Transaction tx = null;
+        try {
             tx = session.beginTransaction();
             for (IntentInstance instance : instanceList) {
-                session.save(instance);
+                session.update(instance);
+                session.flush();
             }
             tx.commit();
             logger.info("update progress ok");
@@ -236,12 +277,35 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             }
             logger.error("update progress exception:"+e);
 
+        } finally {
+            session.close();
         }
     }
 
     private int getProgressByJobId(IntentInstance instance) throws IOException {
         Response<OperationProgressInformation> response = soService.queryOperationProgress(instance.getResourceInstanceId(), instance.getJobId()).execute();
-        return response.body().getOperationStatus().getProgress();
+        logger.debug(response.toString());
+        if (response.isSuccessful()) {
+            return response.body().getOperationStatus().getProgress();
+        }
+        return -1;
+    }
+
+    private int getCreateStatusByJobId(IntentInstance instance) throws IOException {
+        if (instance == null || instance.getResourceInstanceId() == null) {
+            return -1;
+        }
+        Response<JSONObject> response = intentApiService.getInstanceInfo(instance.getResourceInstanceId()).execute();
+        logger.debug(response.toString());
+        if (response.isSuccessful()) {
+            String status = response.body().getString("orchestration-status");
+            if ("created".equals(status)) {
+                return 1;
+            }
+            return 0;
+        }
+        logger.error("getIntentInstance Create Statue Error:" + response.toString());
+        return -1;
     }
 
     private List<IntentInstance> getInstanceByFinishedFlag(String flag) {
@@ -256,6 +320,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         } catch (Exception e) {
             logger.error("exception occurred while performing IntentInstanceServiceImpl getNotFinishedJobId. Details:" + e.getMessage());
             return null;
+        } finally {
+            session.close();
         }
     }
 
@@ -273,6 +339,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         } catch (Exception e) {
             logger.error("exception occurred while performing IntentInstanceServiceImpl getNotFinishedJobId. Details:" + e.getMessage());
             return null;
+        } finally {
+            session.close();
         }
     }
 
@@ -282,6 +350,10 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         for (IntentInstance instance : instanceList) {
             String serviceInstanceId = instance.getResourceInstanceId();
             Response<JSONObject> response = intentApiService.getInstanceNetworkInfo(serviceInstanceId).execute();
+            if (!response.isSuccessful()) {
+                logger.error("get Intent-Instance Bandwidth error:" + response.toString());
+                continue;
+            }
             JSONObject responseBody = response.body();
             JSONObject allottedResource = responseBody.getJSONObject("allotted-resources").getJSONArray("allotted-resource").getJSONObject(0);
             JSONArray relationshipList = allottedResource.getJSONObject("relationship-list").getJSONArray("relationship");
@@ -302,25 +374,42 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                 logger.error("get network Policy Id exception. serviceInstanceId:" + instance.getResourceInstanceId());
                 continue;
             }
-            JSONObject networkPolicyInfo = intentApiService.getInstanceNetworkPolicyInfo(networkPolicyId).execute().body();
-            String maxBandwidth =  networkPolicyInfo.getString("max-bandwidth");
+
+            Response<JSONObject> networkPolicyInfoResponse = intentApiService.getInstanceNetworkPolicyInfo(networkPolicyId).execute();
+            if (!networkPolicyInfoResponse.isSuccessful()) {
+                logger.error("get Intent-Instance networkPolicyInfo error:" + networkPolicyInfoResponse.toString());
+                continue;
+            }
+            JSONObject networkPolicyInfo = networkPolicyInfoResponse.body();
+            int maxBandwidth =  networkPolicyInfo.getIntValue("max-bandwidth");
             InstancePerformance instancePerformance = new InstancePerformance();
             instancePerformance.setMaxBandwidth(maxBandwidth);
             instancePerformance.setResourceInstanceId(instance.getResourceInstanceId());
             instancePerformance.setJobId(instance.getJobId());
             instancePerformance.setDate(new Date());
 
-            JSONObject metadatum = intentApiService.getInstanceBandwidth(serviceInstanceId).execute().body();
-            String metaval = metadatum.getJSONArray("metadatum").getJSONObject(0).getString("metaval");
+            Response<JSONObject> metadatumResponse = intentApiService.getInstanceBandwidth(serviceInstanceId).execute();
+            if (!metadatumResponse.isSuccessful()) {
+                logger.error("get Intent-Instance metadatum error:" + metadatumResponse.toString());
+                continue;
+            }
+            JSONObject metadatum = metadatumResponse.body();
+            int metaval = metadatum.getJSONArray("metadatum").getJSONObject(0).getIntValue("metaval");
             instancePerformance.setBandwidth(metaval);
 
+            Session session = getSession();
+            Transaction tx = null;
             try{
-                Session session = getSession();
-                Transaction tx = session.beginTransaction();
+                tx = session.beginTransaction();
                 session.save(instancePerformance);
                 tx.commit();
             } catch (Exception e) {
+                if(tx!=null){
+                    tx.rollback();
+                }
                 logger.error("Details:" + e.getMessage());
+            } finally {
+                session.close();
             }
 
 
@@ -330,8 +419,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     @Override
     public void deleteIntentInstance(String instanceId) {
         IntentInstance result = null;
-
-        try(Session session = getSession()) {
+        Session session = getSession();
+        try {
 
             result = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId")
                     .setParameter("instanceId", instanceId).uniqueResult();
@@ -340,11 +429,13 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         } catch (Exception e) {
             logger.error("getodel occur exception:"+e);
 
+        } finally {
+            session.close();
         }
         try {
             String serviceInstanceId = result.getResourceInstanceId();
             deleteInstanceToSO(serviceInstanceId);
-            deleteInstance(serviceInstanceId);
+            deleteInstance(result);
         }catch (Exception e) {
             logger.error("delete instance to SO error :" + e);
         }
@@ -363,20 +454,16 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
         intentApiService.deleteIntentInstance(requestBody).execute();
     }
-    private String deleteInstance(String serviceInstanceId) {
+    private String deleteInstance(IntentInstance instance) {
         Transaction tx = null;
         String result="0";
-        if(serviceInstanceId==null || serviceInstanceId.trim().equals(""))
-            return  result;
-
-        try(Session session = getSession()) {
+        Session session = getSession();
+        try {
             tx = session.beginTransaction();
 
-            IntentInstance instance = new IntentInstance();
-            instance.setInstanceId(serviceInstanceId);
             session.delete(instance);
             tx.commit();
-            logger.info("delete instance OK, id=" + serviceInstanceId);
+            logger.info("delete instance OK, id=" + instance.getInstanceId());
 
             result="1";
         } catch (Exception e) {
@@ -385,6 +472,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             }
             logger.error("delete instance occur exception:"+e);
 
+        } finally {
+            session.close();
         }
         return result;
     }
@@ -392,75 +481,79 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     @Override
     public void activeIntentInstance(String instanceId) {
         IntentInstance instance = null;
-
-        try(Session session = getSession()) {
+        Session session = getSession();
+        Transaction tx = null;
+        try {
 
             instance = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId and status = :status")
                     .setParameter("instanceId", instanceId).setParameter("status", "3").uniqueResult();
             logger.info("get instance OK, id=" + instanceId);
 
-        } catch (Exception e) {
-            logger.error("getodel occur exception:"+e);
+            if (null == instance) {
+                logger.error("intentInstance is null!");
+                return;
+            }
 
-        }
-        if (null == instance) {
-            logger.error("intentInstance is null!");
-            return;
-        }
-        try {
             String jobId = createIntentInstanceToSO(instance);
             instance.setStatus("0");
             instance.setJobId(jobId);
-            Session session = getSession();
-            Transaction tx = session.beginTransaction();
+            tx = session.beginTransaction();
             session.save(instance);
             tx.commit();
 
         }catch (Exception e) {
+            if(tx!=null){
+                tx.rollback();
+            }
             logger.error("active instance to SO error :" + e);
+        } finally {
+            session.close();
         }
     }
 
     public void invalidIntentInstance(String instanceId) {
         IntentInstance instance = null;
-
-        try(Session session = getSession()) {
+        Session session = getSession();
+        Transaction tx = null;
+        try {
             instance = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId")
                     .setParameter("instanceId", instanceId).uniqueResult();
             logger.info("get instance OK, id=" + instanceId);
 
-        } catch (Exception e) {
-            logger.error("get instance occur exception:"+e);
-
-        }
-        if (null == instance) {
-            logger.error("intentInstance is null!");
-            return;
-        }
-        try {
+            if (null == instance) {
+                logger.error("intentInstance is null!");
+                return;
+            }
             deleteInstanceToSO(instance.getInstanceId());
             instance.setStatus("3");
-            Session session = getSession();
-            Transaction tx = session.beginTransaction();
+            tx = session.beginTransaction();
             session.save(instance);
+            session.flush();
             tx.commit();
 
         }catch (Exception e) {
+            if(tx!=null){
+                tx.rollback();
+            }
             logger.error("invalid instance to SO error :" + e);
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public Map<String, Object> queryInstancePerformanceData(String instanceId) {
-        try(Session session = getSession()) {
+        Session session = getSession();
+        try {
             String hql = "from IntentInstance i, InstancePerformance p where i.resourceInstanceId = p.resourceInstanceId and  i.instanceId = :instanceId and i.deleteState = 0 order by p.date";
             Query query = session.createQuery(hql).setParameter("instanceId", instanceId);
             List<Object[]> queryResult= query.list();
             List<String> date = new ArrayList<>();
-            List<String> bandwidth = new ArrayList<>();
-            List<String> maxBandwidth = new ArrayList<>();
-            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-            for (Object[] o : queryResult) {
+            List<Integer> bandwidth = new ArrayList<>();
+            List<Integer> maxBandwidth = new ArrayList<>();
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (int i = queryResult.size() > 50? queryResult.size() - 50 : 0; i < queryResult.size(); i++) {
+                Object[] o = queryResult.get(i);
                 InstancePerformance performance = (InstancePerformance) o[1];
                 date.add(ft.format(performance.getDate()));
                 bandwidth.add(performance.getBandwidth());
@@ -484,6 +577,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         }catch (Exception e) {
             logger.error("invalid instance to SO error :" + e);
             throw e;
+        } finally {
+            session.close();
         }
     }
 
@@ -493,6 +588,10 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         List<String> accessNodeList = new ArrayList<>();
         List<String> cloudAccessNodeList = new ArrayList<>();
         Response<JSONObject> response = intentApiService.queryNetworkRoute().execute();
+        if (!response.isSuccessful()) {
+            logger.error(response.toString());
+            throw new RuntimeException("Query Access Node Info Error");
+        }
         JSONObject body = response.body();
         JSONArray data = body.getJSONArray("network-route");
         for (int i = 0; i<data.size(); i++) {
@@ -507,5 +606,83 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         result.put("accessNodeList",accessNodeList);
         result.put("cloudAccessNodeList",cloudAccessNodeList);
         return result;
+    }
+
+    @Override
+    public JSONObject getInstanceStatus(JSONArray ids) {
+        Session session = getSession();
+        try {
+            JSONObject result = new JSONObject();
+            JSONArray instanceInfos = new JSONArray();
+            String hql = "from IntentInstance i where i.instanceId in (:ids)";
+            Query query = session.createQuery(hql).setParameter("ids", ids);
+            List<IntentInstance> queryResult= query.list();
+            if (queryResult != null && queryResult.size() > 0) {
+                for (IntentInstance instance : queryResult) {
+                    JSONObject instanceInfo = new JSONObject();
+                    instanceInfo.put("id", instance.getInstanceId());
+                    instanceInfo.put("status", instance.getStatus());
+                    instanceInfos.add(instanceInfo);
+                }
+            }
+            result.put("IntentInstances",instanceInfos);
+            return result;
+
+        } catch (Exception e) {
+            logger.error("get Instance status error : " + e.getMessage());
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
+
+    public String formatBandwidth(String strValue) {
+        String ret;
+        Pattern pattern = Pattern.compile("(\\d+)([\\w ]*)");
+        Matcher matcher = pattern.matcher(strValue);
+
+
+        int dataRate = 100;
+        if (matcher.matches()) {
+            dataRate = Integer.parseInt(matcher.group(1));
+            String company = matcher.group(2).trim().toLowerCase();
+            if (GB_COMPANY.contains(company)) {
+                dataRate = dataRate * 1000;
+            }
+            else if (!MB_COMPANY.contains(company)) {
+                dataRate = 100;
+            }
+            dataRate = dataRate < MIN_BANDWIDTH ? MIN_BANDWIDTH : (dataRate > MAX_BANDWIDTH ? MAX_BANDWIDTH : dataRate);
+        }
+        ret = dataRate + "";
+        return ret;
+    }
+
+
+    public String formatCloudPoint(String cloudPoint) {
+        String cloudPointAlias = "";
+        switch (cloudPoint) {
+            case "Cloud one" :
+                cloudPointAlias = "tranportEp_dst_ID_212_1";
+                break;
+        }
+        return cloudPointAlias;
+    }
+
+    public String formatAccessPoint(String accessPoint) {
+        String accessPointAlias = "";
+        switch (accessPoint) {
+            case "Access one" :
+                accessPointAlias = "tranportEp_src_ID_111_1";
+                break;
+            case "Access two" :
+                accessPointAlias = "tranportEp_src_ID_111_2";
+                break;
+            case "Access three" :
+                accessPointAlias = "tranportEp_src_ID_113_1";
+                break;
+        }
+        return accessPointAlias;
     }
 }

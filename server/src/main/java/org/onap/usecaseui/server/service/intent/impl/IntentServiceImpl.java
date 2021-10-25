@@ -383,7 +383,7 @@ public class IntentServiceImpl implements IntentService {
 
     private String formatValueForResourcesSharingLevel(String strValue) {
         String ret;
-        ret = "no-shared";
+        ret = "non-shared";
         if("shared".equalsIgnoreCase(strValue)){
             ret = "shared";
         }

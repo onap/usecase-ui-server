@@ -153,13 +153,14 @@ CREATE TABLE sort_master  (
 DROP TABLE IF EXISTS instance_performance;
 CREATE TABLE instance_performance
 (
-    id                   integer not null,
+    id                   serial not null
+        constraint instance_performance_pk
+            primary key,
     job_id               varchar(36),
     resource_instance_id varchar(36),
     bandwidth            numeric,
-    date                 date,
-    max_bandwidth        numeric,
-    CONSTRAINT instance_performance_pk PRIMARY KEY (id)
+    date                 timestamp,
+    max_bandwidth        numeric
 );
 
 -- ----------------------------
@@ -174,7 +175,7 @@ CREATE TABLE intent_instance
     instance_id                 varchar(16),
     job_id                      varchar(36),
     progress                    integer,
-    status                      char,
+    status                      char default 0,
     resource_instance_id        varchar(36),
     name                        varchar(255),
     cloud_point_name            varchar(255),

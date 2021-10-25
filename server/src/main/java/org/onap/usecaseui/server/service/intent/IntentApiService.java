@@ -58,10 +58,19 @@ public interface IntentApiService {
     Call<JSONObject> getInstanceBandwidth(@Path("resource-service-id") String resourceServiceId);
 
     @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/aai/v24/business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}")
+    Call<JSONObject> getInstanceInfo(@Path("resource-service-id") String resourceServiceId);
+
+    @Headers({
             "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })
-    @DELETE("/so/infra/serviceIntent/v1/delete")
+    @HTTP(method="DELETE", path="/so/infra/serviceIntent/v1/delete", hasBody = true)
     Call<JSONObject> deleteIntentInstance(@Body RequestBody body);
 
     @Headers({
