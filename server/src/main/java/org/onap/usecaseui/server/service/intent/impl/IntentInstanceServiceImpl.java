@@ -23,11 +23,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.intent.InstancePerformance;
-import org.onap.usecaseui.server.bean.intent.IntentInstance;
+import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
-import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -79,33 +78,33 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
     @Override
-    public Page<IntentInstance> queryIntentInstance(IntentInstance intentInstance, int currentPage, int pageSize) {
-        Page<IntentInstance> page = new Page<IntentInstance>();
-        int allRow =this.getAllCount(intentInstance,currentPage,pageSize);
+    public Page<CCVPNInstance> queryIntentInstance(CCVPNInstance instance, int currentPage, int pageSize) {
+        Page<CCVPNInstance> page = new Page<CCVPNInstance>();
+        int allRow =this.getAllCount(instance,currentPage,pageSize);
         int offset = page.countOffset(currentPage, pageSize);
         Session session = getSession();
         try{
-            StringBuffer hql =new StringBuffer("from IntentInstance a where deleteState = 0");
-            if (null != intentInstance) {
-                if(UuiCommonUtil.isNotNullOrEmpty(intentInstance.getInstanceId())) {
-                    String ver =intentInstance.getInstanceId();
+            StringBuffer hql =new StringBuffer("from CCVPNInstance a where deleteState = 0");
+            if (null != instance) {
+                if(UuiCommonUtil.isNotNullOrEmpty(instance.getInstanceId())) {
+                    String ver =instance.getInstanceId();
                     hql.append(" and a.instance_id = '"+ver+"'");
                 }
-                if(UuiCommonUtil.isNotNullOrEmpty(intentInstance.getJobId())) {
-                    String ver =intentInstance.getJobId();
+                if(UuiCommonUtil.isNotNullOrEmpty(instance.getJobId())) {
+                    String ver =instance.getJobId();
                     hql.append(" and a.job_id = '"+ver+"'");
                 }
-                if(UuiCommonUtil.isNotNullOrEmpty(intentInstance.getStatus())) {
-                    String ver =intentInstance.getStatus();
+                if(UuiCommonUtil.isNotNullOrEmpty(instance.getStatus())) {
+                    String ver =instance.getStatus();
                     hql.append(" and a.status = '"+ver+"'");
                 }
             }
             hql.append(" order by id");
-            logger.info("AlarmsHeaderServiceImpl queryIntentInstance: intentInstance={}", intentInstance);
+            logger.info("AlarmsHeaderServiceImpl queryIntentInstance: instance={}", instance);
             Query query = session.createQuery(hql.toString());
             query.setFirstResult(offset);
             query.setMaxResults(pageSize);
-            List<IntentInstance> list= query.list();
+            List<CCVPNInstance> list= query.list();
             page.setPageNo(currentPage);
             page.setPageSize(pageSize);
             page.setTotalRecords(allRow);
@@ -120,21 +119,21 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
 
-    public int getAllCount(IntentInstance intentInstance,int currentPage,int pageSize) {
+    public int getAllCount(CCVPNInstance instance, int currentPage, int pageSize) {
         Session session = getSession();
         try{
-            StringBuffer count=new StringBuffer("select count(*) from IntentInstance a where deleteState = 0");
-            if (null != intentInstance) {
-                if(UuiCommonUtil.isNotNullOrEmpty(intentInstance.getInstanceId())) {
-                    String ver =intentInstance.getInstanceId();
+            StringBuffer count=new StringBuffer("select count(*) from CCVPNInstance a where deleteState = 0");
+            if (null != instance) {
+                if(UuiCommonUtil.isNotNullOrEmpty(instance.getInstanceId())) {
+                    String ver =instance.getInstanceId();
                     count.append(" and a.instance_id = '"+ver+"'");
                 }
-                if(UuiCommonUtil.isNotNullOrEmpty(intentInstance.getJobId())) {
-                    String ver =intentInstance.getJobId();
+                if(UuiCommonUtil.isNotNullOrEmpty(instance.getJobId())) {
+                    String ver =instance.getJobId();
                     count.append(" and a.job_id = '"+ver+"'");
                 }
-                if(UuiCommonUtil.isNotNullOrEmpty(intentInstance.getStatus())) {
-                    String ver =intentInstance.getStatus();
+                if(UuiCommonUtil.isNotNullOrEmpty(instance.getStatus())) {
+                    String ver =instance.getStatus();
                     count.append(" and a.status = '"+ver+"'");
                 }
             }
@@ -150,25 +149,25 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
     @Override
-    public int createIntentInstance(IntentInstance intentInstance) {
+    public int createIntentInstance(CCVPNInstance instance) {
         Session session = getSession();
         Transaction tx = null;
         try{
 
-            if (null == intentInstance){
-                logger.error("intentInstance is null!");
+            if (null == instance){
+                logger.error("instance is null!");
                 return 0;
             }
-            String jobId = createIntentInstanceToSO(intentInstance);
+            String jobId = createIntentInstanceToSO(instance);
             if (null == jobId){
                 logger.error("create Instance error：jobId is null");
                 return 0;
             }
-            intentInstance.setJobId(jobId);
-            intentInstance.setResourceInstanceId("cll-"+intentInstance.getInstanceId());
+            instance.setJobId(jobId);
+            instance.setResourceInstanceId("cll-"+instance.getInstanceId());
 
             tx = session.beginTransaction();
-            session.save(intentInstance);
+            session.save(instance);
             tx.commit();
             return 1;
         } catch (Exception e) {
@@ -182,9 +181,9 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         }
     }
 
-    private String createIntentInstanceToSO(IntentInstance intentInstance) throws IOException {
+    private String createIntentInstanceToSO(CCVPNInstance instance) throws IOException {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", intentInstance.getName());
+        params.put("name", instance.getName());
         params.put("modelInvariantUuid", "6790ab0e-034f-11eb-adc1-0242ac120002");
         params.put("modelUuid", "6790ab0e-034f-11eb-adc1-0242ac120002");
         params.put("globalSubscriberId", "IBNCustomer");
@@ -192,18 +191,18 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("serviceType", "CLL");
         Map<String, Object> additionalProperties = new HashMap<>();
         additionalProperties.put("enableSdnc", "false");
-        additionalProperties.put("serviceInstanceID", "cll-" + intentInstance.getInstanceId());
+        additionalProperties.put("serviceInstanceID", "cll-" + instance.getInstanceId());
         List<Map<String, Object>> transportNetworks = new ArrayList<>();
         Map<String, Object> transportNetwork = new HashMap<>();
         transportNetwork.put("id", "");
         Map<String, Object> sla = new HashMap<>();
         sla.put("latency", "2");
-        sla.put("maxBandwidth", intentInstance.getAccessPointOneBandWidth());
+        sla.put("maxBandwidth", instance.getAccessPointOneBandWidth());
         List<Map<String, Object>> connectionLinks = new ArrayList<>();
         Map<String, Object> connectionLink = new HashMap<>();
         connectionLink.put("name", "");
-        connectionLink.put("transportEndpointA", intentInstance.getAccessPointOneName());
-        connectionLink.put("transportEndpointB", intentInstance.getCloudPointName());
+        connectionLink.put("transportEndpointA", instance.getAccessPointOneName());
+        connectionLink.put("transportEndpointB", instance.getCloudPointName());
         connectionLinks.add(connectionLink);
         transportNetwork.put("sla", sla);
         transportNetwork.put("connectionLinks", connectionLinks);
@@ -221,11 +220,12 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
     @Override
     public void getIntentInstanceProgress() {
-        List<IntentInstance> instanceList = getInstanceByFinishedFlag("0");
-        for (IntentInstance instance: instanceList) {
+        List<CCVPNInstance> instanceList = getInstanceByFinishedFlag("0");
+        for (CCVPNInstance instance: instanceList) {
             try {
 
                 int progress = getProgressByJobId(instance);
+                instance.setProgress(progress);
                 if (progress >=100) {
                     instance.setStatus("1");
                 }
@@ -239,8 +239,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
     @Override
     public void getIntentInstanceCreateStatus() {
-        List<IntentInstance> instanceList = getInstanceByFinishedFlag("0");
-        for (IntentInstance instance: instanceList) {
+        List<CCVPNInstance> instanceList = getInstanceByFinishedFlag("0");
+        for (CCVPNInstance instance: instanceList) {
             try {
 
                 int flag = getCreateStatusByJobId(instance);
@@ -256,7 +256,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
     }
 
-    private void saveProgress(List<IntentInstance> instanceList) {
+    private void saveProgress(List<CCVPNInstance> instanceList) {
         if(instanceList == null || instanceList.isEmpty()) {
             return;
         }
@@ -264,7 +264,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         Transaction tx = null;
         try {
             tx = session.beginTransaction();
-            for (IntentInstance instance : instanceList) {
+            for (CCVPNInstance instance : instanceList) {
                 session.update(instance);
                 session.flush();
             }
@@ -282,16 +282,18 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         }
     }
 
-    private int getProgressByJobId(IntentInstance instance) throws IOException {
-        Response<OperationProgressInformation> response = soService.queryOperationProgress(instance.getResourceInstanceId(), instance.getJobId()).execute();
+    private int getProgressByJobId(CCVPNInstance instance) throws IOException {
+        Response<JSONObject> response = intentApiService.queryOperationProgress(instance.getResourceInstanceId(), instance.getJobId()).execute();
         logger.debug(response.toString());
         if (response.isSuccessful()) {
-            return response.body().getOperationStatus().getProgress();
+            if (response.body().containsKey("operation")) {
+                return response.body().getJSONObject("operation").getInteger("progress");
+            }
         }
         return -1;
     }
 
-    private int getCreateStatusByJobId(IntentInstance instance) throws IOException {
+    private int getCreateStatusByJobId(CCVPNInstance instance) throws IOException {
         if (instance == null || instance.getResourceInstanceId() == null) {
             return -1;
         }
@@ -308,13 +310,13 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         return -1;
     }
 
-    private List<IntentInstance> getInstanceByFinishedFlag(String flag) {
+    private List<CCVPNInstance> getInstanceByFinishedFlag(String flag) {
         Session session = getSession();
         try{
-            StringBuffer sql=new StringBuffer("from IntentInstance where deleteState = 0 and status = '" + flag + "'");
+            StringBuffer sql=new StringBuffer("from CCVPNInstance where deleteState = 0 and status = '" + flag + "'");
 
             Query query = session.createQuery(sql.toString());
-            List<IntentInstance> q=(List<IntentInstance>) query.list();
+            List<CCVPNInstance> q=(List<CCVPNInstance>) query.list();
             logger.debug(q.toString());
             return q;
         } catch (Exception e) {
@@ -327,13 +329,13 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
 
     @Override
-    public List<IntentInstance> getFinishedInstanceInfo() {
+    public List<CCVPNInstance> getFinishedInstanceInfo() {
         Session session = getSession();
         try{
-            StringBuffer count=new StringBuffer("from IntentInstance where status = '1' and deleteState = 0");
+            StringBuffer count=new StringBuffer("from CCVPNInstance where status = '1' and deleteState = 0");
 
             Query query = session.createQuery(count.toString());
-            List<IntentInstance> q=(List<IntentInstance>) query.list();
+            List<CCVPNInstance> q=(List<CCVPNInstance>) query.list();
             logger.debug(q.toString());
             return q;
         } catch (Exception e) {
@@ -346,8 +348,8 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
     @Override
     public void getIntentInstanceBandwidth() throws IOException {
-        List<IntentInstance> instanceList = getInstanceByFinishedFlag("1");
-        for (IntentInstance instance : instanceList) {
+        List<CCVPNInstance> instanceList = getInstanceByFinishedFlag("1");
+        for (CCVPNInstance instance : instanceList) {
             String serviceInstanceId = instance.getResourceInstanceId();
             Response<JSONObject> response = intentApiService.getInstanceNetworkInfo(serviceInstanceId).execute();
             if (!response.isSuccessful()) {
@@ -418,13 +420,13 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
     @Override
     public void deleteIntentInstance(String instanceId) {
-        IntentInstance result = null;
+        CCVPNInstance result = null;
         Session session = getSession();
         try {
 
-            result = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId")
+            result = (CCVPNInstance)session.createQuery("from CCVPNInstance where deleteState = 0 and instanceId = :instanceId")
                     .setParameter("instanceId", instanceId).uniqueResult();
-            logger.info("get IntentInstance OK, id=" + instanceId);
+            logger.info("get CCVPNInstance OK, id=" + instanceId);
 
         } catch (Exception e) {
             logger.error("getodel occur exception:"+e);
@@ -454,7 +456,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
         intentApiService.deleteIntentInstance(requestBody).execute();
     }
-    private String deleteInstance(IntentInstance instance) {
+    private String deleteInstance(CCVPNInstance instance) {
         Transaction tx = null;
         String result="0";
         Session session = getSession();
@@ -480,17 +482,17 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
     @Override
     public void activeIntentInstance(String instanceId) {
-        IntentInstance instance = null;
+        CCVPNInstance instance = null;
         Session session = getSession();
         Transaction tx = null;
         try {
 
-            instance = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId and status = :status")
+            instance = (CCVPNInstance)session.createQuery("from CCVPNInstance where deleteState = 0 and instanceId = :instanceId and status = :status")
                     .setParameter("instanceId", instanceId).setParameter("status", "3").uniqueResult();
             logger.info("get instance OK, id=" + instanceId);
 
             if (null == instance) {
-                logger.error("intentInstance is null!");
+                logger.error("instance is null!");
                 return;
             }
 
@@ -512,16 +514,16 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
     public void invalidIntentInstance(String instanceId) {
-        IntentInstance instance = null;
+        CCVPNInstance instance = null;
         Session session = getSession();
         Transaction tx = null;
         try {
-            instance = (IntentInstance)session.createQuery("from IntentInstance where deleteState = 0 and instanceId = :instanceId")
+            instance = (CCVPNInstance)session.createQuery("from CCVPNInstance where deleteState = 0 and instanceId = :instanceId")
                     .setParameter("instanceId", instanceId).uniqueResult();
             logger.info("get instance OK, id=" + instanceId);
 
             if (null == instance) {
-                logger.error("intentInstance is null!");
+                logger.error("instance is null!");
                 return;
             }
             deleteInstanceToSO(instance.getInstanceId());
@@ -545,7 +547,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     public Map<String, Object> queryInstancePerformanceData(String instanceId) {
         Session session = getSession();
         try {
-            String hql = "from IntentInstance i, InstancePerformance p where i.resourceInstanceId = p.resourceInstanceId and  i.instanceId = :instanceId and i.deleteState = 0 order by p.date";
+            String hql = "from CCVPNInstance i, InstancePerformance p where i.resourceInstanceId = p.resourceInstanceId and  i.instanceId = :instanceId and i.deleteState = 0 order by p.date";
             Query query = session.createQuery(hql).setParameter("instanceId", instanceId);
             List<Object[]> queryResult= query.list();
             List<String> date = new ArrayList<>();
@@ -614,11 +616,11 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         try {
             JSONObject result = new JSONObject();
             JSONArray instanceInfos = new JSONArray();
-            String hql = "from IntentInstance i where i.instanceId in (:ids)";
+            String hql = "from CCVPNInstance i where i.instanceId in (:ids)";
             Query query = session.createQuery(hql).setParameter("ids", ids);
-            List<IntentInstance> queryResult= query.list();
+            List<CCVPNInstance> queryResult= query.list();
             if (queryResult != null && queryResult.size() > 0) {
-                for (IntentInstance instance : queryResult) {
+                for (CCVPNInstance instance : queryResult) {
                     JSONObject instanceInfo = new JSONObject();
                     instanceInfo.put("id", instance.getInstanceId());
                     instanceInfo.put("status", instance.getStatus());

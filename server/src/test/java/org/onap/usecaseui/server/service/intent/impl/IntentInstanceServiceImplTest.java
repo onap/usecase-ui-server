@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.onap.usecaseui.server.bean.intent.IntentInstance;
+import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
@@ -81,7 +81,7 @@ public class IntentInstanceServiceImplTest {
 
     @Test
     public void queryIntentInstance() {
-        IntentInstance instance = new IntentInstance();
+        CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setJobId("1");
         instance.setStatus("1");
@@ -95,7 +95,7 @@ public class IntentInstanceServiceImplTest {
     }
     @Test
     public void createIntentInstance() throws IOException {
-        IntentInstance instance = new IntentInstance();
+        CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setJobId("1");
         instance.setStatus("1");
@@ -119,9 +119,9 @@ public class IntentInstanceServiceImplTest {
     public void getIntentInstanceProgress() throws IOException {
 
         Query query1 = Mockito.mock(Query.class);
-        when(session.createQuery("from IntentInstance where deleteState = 0 and status = '0'")).thenReturn(query1);
-        List<IntentInstance> q = new ArrayList<>();
-        IntentInstance instance = new IntentInstance();
+        when(session.createQuery("from CCVPNInstance where deleteState = 0 and status = '0'")).thenReturn(query1);
+        List<CCVPNInstance> q = new ArrayList<>();
+        CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         q.add(instance);
         when(query1.list()).thenReturn(q);
@@ -155,9 +155,9 @@ public class IntentInstanceServiceImplTest {
     @Test
     public void getIntentInstanceBandwidth() throws IOException {
         Query query1 = Mockito.mock(Query.class);
-        when(session.createQuery("from IntentInstance where deleteState = 0 and status = '1'")).thenReturn(query1);
-        List<IntentInstance> q = new ArrayList<>();
-        IntentInstance instance = new IntentInstance();
+        when(session.createQuery("from CCVPNInstance where deleteState = 0 and status = '1'")).thenReturn(query1);
+        List<CCVPNInstance> q = new ArrayList<>();
+        CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setResourceInstanceId("1");
         q.add(instance);
@@ -301,7 +301,7 @@ public class IntentInstanceServiceImplTest {
 
     @Test
     public void deleteIntentInstance() throws IOException {
-        IntentInstance instance = new IntentInstance();
+        CCVPNInstance instance = new CCVPNInstance();
         instance.setResourceInstanceId("1");
 
         Query query = Mockito.mock(Query.class);
@@ -324,7 +324,7 @@ public class IntentInstanceServiceImplTest {
 
     @Test
     public void activeIntentInstance() throws IOException {
-        IntentInstance instance = new IntentInstance();
+        CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setJobId("1");
         instance.setStatus("1");

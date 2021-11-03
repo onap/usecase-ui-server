@@ -24,7 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
-import org.onap.usecaseui.server.bean.intent.IntentInstance;
+import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.intent.IntentService;
@@ -159,8 +159,8 @@ public class IntentControllerTest {
     }
     @Test
     public void getFinishedInstanceInfo() {
-        List<IntentInstance> instanceList = new ArrayList<>();
-        IntentInstance instance = new IntentInstance();
+        List<CCVPNInstance> instanceList = new ArrayList<>();
+        CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("instanceId");
         instance.setName("name");
         instanceList.add(instance);

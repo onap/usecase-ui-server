@@ -18,8 +18,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name="intent_instance")
-public class IntentInstance implements Serializable {
+@Table(name="ccvpn_instance")
+public class CCVPNInstance implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -59,7 +59,7 @@ public class IntentInstance implements Serializable {
     @Column(name = "delete_state")
     private int deleteState;
 
-    public IntentInstance() {
+    public CCVPNInstance() {
 
     }
 

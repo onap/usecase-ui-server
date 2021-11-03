@@ -164,10 +164,10 @@ CREATE TABLE instance_performance
 );
 
 -- ----------------------------
--- Table structure for intent_instance
+-- Table structure for ccvpn_instance
 -- ----------------------------
-DROP TABLE IF EXISTS intent_instance;
-CREATE TABLE intent_instance
+DROP TABLE IF EXISTS ccvpn_instance;
+CREATE TABLE ccvpn_instance
 (
     id                          serial not null
         constraint intent_instance_pk

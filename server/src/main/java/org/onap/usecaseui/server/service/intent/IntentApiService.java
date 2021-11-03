@@ -30,6 +30,15 @@ public interface IntentApiService {
     @POST("/so/infra/serviceIntent/v1/create")
     Call<JSONObject> createIntentInstance(@Body RequestBody body);
 
+//    curl -X GET -H "content-type:application/json" http://so:8080/onap/so/infra/e2eServiceInstances/v3/cll-101/operations/0d698405-9109-49f2-9939-fd02ead31660 --user 'InfraPortalClient:password1$'
+
+    @Headers({
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
+    })
+    @GET("/so/infra/e2eServiceInstances/v3/{serviceId}/operations/{operationId}")
+    Call<JSONObject> queryOperationProgress(@Path("serviceId") String serviceId, @Path("operationId") String operationId);
+
     @Headers({
             "X-TransactionId: 9999",
             "X-FromAppId: MSO",

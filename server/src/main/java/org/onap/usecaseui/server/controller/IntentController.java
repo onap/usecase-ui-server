@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.collections.MapUtils;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
-import org.onap.usecaseui.server.bean.intent.IntentInstance;
+import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.bean.intent.IntentResponseBody;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
@@ -362,16 +362,16 @@ public class IntentController {
         String accessPointOneName = MapUtils.getString(accessPointOne, "name");
         int accessPointOneBandWidth = MapUtils.getIntValue(accessPointOne, "bandwidth");
 
-        IntentInstance intentInstance = new IntentInstance();
-        intentInstance.setInstanceId(intentInstanceId);
-        intentInstance.setName(name);
-        intentInstance.setLineNum(lineNum);
-        intentInstance.setCloudPointName(cloudPointName);
-        intentInstance.setAccessPointOneName(accessPointOneName);
-        intentInstance.setAccessPointOneBandWidth(accessPointOneBandWidth);
-        intentInstance.setStatus("0");
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId(intentInstanceId);
+        instance.setName(name);
+        instance.setLineNum(lineNum);
+        instance.setCloudPointName(cloudPointName);
+        instance.setAccessPointOneName(accessPointOneName);
+        instance.setAccessPointOneBandWidth(accessPointOneBandWidth);
+        instance.setStatus("0");
 
-        int flag = intentInstanceService.createIntentInstance(intentInstance);
+        int flag = intentInstanceService.createIntentInstance(instance);
 
         if(flag == 1) {
             return "OK";
@@ -385,9 +385,9 @@ public class IntentController {
     @GetMapping(value = {"/getFinishedInstanceInfo"},
             produces = "application/json")
     public Object getFinishedInstanceInfo() {
-        List<IntentInstance> instanceList = intentInstanceService.getFinishedInstanceInfo();
+        List<CCVPNInstance> instanceList = intentInstanceService.getFinishedInstanceInfo();
         List<Map<String, Object>> result = new ArrayList<>();
-        for (IntentInstance instance : instanceList) {
+        for (CCVPNInstance instance : instanceList) {
             Map<String, Object> instanceInfo = new HashMap<>();
             instanceInfo.put("instanceId", instance.getInstanceId());
             instanceInfo.put("name", instance.getName());

@@ -17,7 +17,7 @@ package org.onap.usecaseui.server.service.intent;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.onap.usecaseui.server.bean.intent.IntentInstance;
+import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.util.Page;
 
 import java.io.IOException;
@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface IntentInstanceService {
-    Page<IntentInstance> queryIntentInstance(IntentInstance intentInstance, int currentPage, int pageSize);
-    int createIntentInstance(IntentInstance intentInstance);
+    Page<CCVPNInstance> queryIntentInstance(CCVPNInstance instance, int currentPage, int pageSize);
+    int createIntentInstance(CCVPNInstance instance);
     void getIntentInstanceProgress();
     void getIntentInstanceCreateStatus();
-    List<IntentInstance> getFinishedInstanceInfo();
+    List<CCVPNInstance> getFinishedInstanceInfo();
     void getIntentInstanceBandwidth() throws IOException;
 
     void deleteIntentInstance(String instanceId);
