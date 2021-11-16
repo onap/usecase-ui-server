@@ -24,7 +24,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AnSliceTaskInfo {
     private String suggestNssiId;
-    private String suggestNSSIName;
+    private String suggestNssiName;
     private String progress;
     private String status;
     private String statusDescription;
