@@ -187,7 +187,7 @@ public class TaskMgtServiceConvert {
         nsiAndSubNssiInfo.setAnEnableNSSISelection(sliceTaskParams.getAnSliceTaskInfo().getEnableNSSISelection());
         if(!ObjectUtils.isEmpty(sliceTaskParams.getAnSliceTaskInfo().getSliceProfile())){
             nsiAndSubNssiInfo.setAnSuggestNssiId(sliceTaskParams.getAnSliceTaskInfo().getSuggestNssiId());
-            nsiAndSubNssiInfo.setAnSuggestNssiName(sliceTaskParams.getAnSliceTaskInfo().getSuggestNSSIName());
+            nsiAndSubNssiInfo.setAnSuggestNssiName(sliceTaskParams.getAnSliceTaskInfo().getSuggestNssiName());
             nsiAndSubNssiInfo.setAn5qi(sliceTaskParams.getAnSliceTaskInfo().getSliceProfile().getAn5qi());
 
             String anCoverageAreaTA = sliceTaskParams.getAnSliceTaskInfo().getSliceProfile().getCoverageAreaTAList();
@@ -294,7 +294,7 @@ public class TaskMgtServiceConvert {
         }
 
         anSliceTaskInfo.setSuggestNssiId(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getAnSuggestNssiId());
-        anSliceTaskInfo.setSuggestNSSIName(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getAnSuggestNssiName());
+        anSliceTaskInfo.setSuggestNssiName(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getAnSuggestNssiName());
         SliceProfile sliceProfile = anSliceTaskInfo.getSliceProfile();
         sliceProfile.setLatency(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getAnLatency());
         sliceProfile.setAn5qi(sourceSlicingTaskAuditInfo.getNsiAndSubNssiInfo().getAn5qi());
