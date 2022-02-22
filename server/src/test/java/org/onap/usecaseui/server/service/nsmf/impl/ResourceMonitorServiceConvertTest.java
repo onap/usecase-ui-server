@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceOnlineUserInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceTotalBandwidthInfo;
+import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.TrafficReqInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.UsageTrafficInfo;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
@@ -85,6 +86,13 @@ public class ResourceMonitorServiceConvertTest {
         userNumbers.setUserNumber(1);
         userNumbers.setTimeStamp("2019-12-23 11:31:19");
         userNumbersList.add(userNumbers);
+
+        SlicingKpiReqInfo slicingKpiReqInfo = new SlicingKpiReqInfo();
+        slicingKpiReqInfo.setTimeStamp("2019-12-23 11:31:19");
+        slicingKpiReqInfo.setId("112233");
+        slicingKpiReqInfo.setHours(4);
+        kpiUserNumber.setRequest(slicingKpiReqInfo);
+
         kpiUserNumber.setResult(userNumbersList);
 
         try {
@@ -109,6 +117,13 @@ public class ResourceMonitorServiceConvertTest {
         totalBandwidth.setTimeStamp("2019-12-23 11:31:19");
         totalBandwidthList.add(totalBandwidth);
         kpiTotalBandwidth.setResult(totalBandwidthList);
+
+
+        SlicingKpiReqInfo slicingKpiReqInfo = new SlicingKpiReqInfo();
+        slicingKpiReqInfo.setTimeStamp("2019-12-23 11:31:19");
+        slicingKpiReqInfo.setId("112233");
+        slicingKpiReqInfo.setHours(4);
+        kpiTotalBandwidth.setRequest(slicingKpiReqInfo);
 
         try {
             resourceMonitorServiceConvert

@@ -16,11 +16,16 @@
 package org.onap.usecaseui.server.service.nsmf.impl;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.onap.usecaseui.server.service.nsmf.impl.TaskMgtServiceImplTest.readJsonFile;
+import static org.onap.usecaseui.server.util.CallStub.failedCall;
+import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 import com.alibaba.fastjson.JSONObject;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
@@ -32,6 +37,9 @@ import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationProgress;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskList;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipList;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.AnSliceTaskInfo;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.CnSliceTaskInfo;
@@ -68,11 +76,36 @@ public class TaskMgtServiceConvertTest {
         SOTask soTask = new SOTask();
         SliceTaskParams sliceTaskParams = new SliceTaskParams();
         ServiceProfile serviceProfile = new ServiceProfile();
+        serviceProfile.setSNSSAI("111222");
         sliceTaskParams.setServiceProfile(serviceProfile);
         soTask.setSliceTaskParams(sliceTaskParams);
+        soTask.setParams(getParams());
         task.add(soTask);
         soTaskRsp.setTask(task);
 
+        try {
+            taskMgtServiceConvert.convertSlicingTaskList(targetSlicingTaskList, soTaskRsp, 1, 100);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    String getParams(){
+        Properties properties = System.getProperties();
+        String relativelyPath = properties.getProperty("user.dir");
+        String jsonFilePath = relativelyPath+"/src/test/java/org/onap/usecaseui/server/service/nsmf/impl/json/params.json";
+        String params = readJsonFile(jsonFilePath);
+        return params;
+    }
+
+    @Test
+    public void convertSlicingTaskListWithThrowsException() {
+        when(aaiSliceService.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
+        SlicingTaskList targetSlicingTaskList = new SlicingTaskList();
+        SOTaskRsp soTaskRsp = new SOTaskRsp();
+        soTaskRsp.setTask(null);
         try {
             taskMgtServiceConvert.convertSlicingTaskList(targetSlicingTaskList, soTaskRsp, 1, 100);
         } catch (InvocationTargetException e) {
@@ -100,6 +133,7 @@ public class TaskMgtServiceConvertTest {
         sliceTaskParams.setCnSliceTaskInfo(cnSliceTaskInfo);
         sliceTaskParams.setServiceProfile(serviceProfile);
         sliceTaskParams.setSuggestNsiName("123");
+        sourceSoTaskInfo.setParams(getParams());
         sourceSoTaskInfo.setSliceTaskParams(sliceTaskParams);
 
         taskMgtServiceConvert.convertTaskAuditInfo(targetSlicingTaskAuditInfo, sourceSoTaskInfo);
@@ -179,6 +213,8 @@ public class TaskMgtServiceConvertTest {
         nsiAndSubNssiInfo.setAn5qi("er4");
         nsiAndSubNssiInfo.setAnScriptName("scriptTest");
         sourceSlicingTaskAuditInfoSuc.setNsiAndSubNssiInfo(nsiAndSubNssiInfo);
+
+        targetSoTaskInfo.setParams(getParams());
         taskMgtServiceConvert.convertTaskAuditToSoTask(targetSoTaskInfo, sourceSlicingTaskAuditInfoSuc);
     }
 
@@ -211,6 +247,7 @@ public class TaskMgtServiceConvertTest {
         sliceTaskParams.setCnSliceTaskInfo(cnSliceTaskInfo);
         sliceTaskParams.setServiceProfile(serviceProfile);
         sourceSoTaskInfo.setSliceTaskParams(sliceTaskParams);
+        sourceSoTaskInfo.setParams(getParams());
         taskMgtServiceConvert.convertTaskCreationInfo(slicingTaskCreationInfo, sourceSoTaskInfo);
     }
 
@@ -229,8 +266,31 @@ public class TaskMgtServiceConvertTest {
         sliceTaskParams.setAnSliceTaskInfo(anSliceTaskInfo);
         sliceTaskParams.setTnBHSliceTaskInfo(tnBHSliceTaskInfo);
         sliceTaskParams.setCnSliceTaskInfo(cnSliceTaskInfo);
-        soTask.setSliceTaskParams(sliceTaskParams);
+        soTaskSuc.setSliceTaskParams(sliceTaskParams);
+        soTaskSuc.setParams(getParams());
         taskMgtServiceConvert.convertTaskCreationProgress(slicingTaskCreationProgress, soTaskSuc);
     }
 
+    @Test
+    public void itCanQueryEndPointId() {
+        ConnectionLinkList connectionLinkList = new ConnectionLinkList();
+        List<ConnectionLink> logicalLink = new ArrayList<>();
+        ConnectionLink connectionLink = new ConnectionLink();
+        connectionLink.setLinkName("name1");
+        connectionLink.setLinkName2("name2");
+        connectionLink.setLinkId("123");
+        RelationshipList relationshipList = new RelationshipList();
+        connectionLink.setRelationshipList(relationshipList);
+        logicalLink.add(connectionLink);
+        connectionLinkList.setLogicalLink(logicalLink);
+
+        when(aaiSliceService.getConnectionLinks()).thenReturn(successfulCall(connectionLinkList));
+        taskMgtServiceConvert.queryEndPointId("123");
+    }
+
+    @Test
+    public void queryEndPointIdWithThrowsException() {
+        when(aaiSliceService.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
+        taskMgtServiceConvert.queryEndPointId("123");
+    }
 }

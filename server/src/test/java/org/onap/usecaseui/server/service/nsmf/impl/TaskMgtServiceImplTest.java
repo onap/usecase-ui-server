@@ -20,38 +20,56 @@ import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import javax.annotation.Nullable;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okio.BufferedSink;
+import okio.BufferedSource;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceList;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskAuditInfo;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPointInfoList;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Relationship;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipData;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipList;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
+import retrofit2.Response;
 
 public class TaskMgtServiceImplTest {
 
     TaskMgtServiceImpl taskMgtService = null;
     SOSliceService soSliceService = null;
     AAISliceService aaiSliceService = null;
+    TaskMgtServiceConvert taskMgtServiceConvert = null;
 
     @Before
     public void before() throws Exception {
         soSliceService = mock(SOSliceService.class);
         aaiSliceService = mock(AAISliceService.class);
         taskMgtService = new TaskMgtServiceImpl(soSliceService,aaiSliceService);
+        taskMgtServiceConvert = mock(TaskMgtServiceConvert.class);
+        taskMgtService.taskMgtServiceConvert = taskMgtServiceConvert;
     }
 
     @Test
@@ -101,7 +119,14 @@ public class TaskMgtServiceImplTest {
     public void itCanUpdateTaskAuditInfo() {
         SlicingTaskAuditInfo slicingTaskAuditInfo = new SlicingTaskAuditInfo();
         String taskId = "we23-3456-rte4-er43";
-        RequestBody requestBody = new RequestBody() {
+        slicingTaskAuditInfo.setTaskId(taskId);
+
+        Properties properties = System.getProperties();
+        String relativelyPath = properties.getProperty("user.dir");
+        String jsonFilePath = relativelyPath+"/src/test/java/org/onap/usecaseui/server/service/nsmf/impl/json/params.json";
+        String params = readJsonFile(jsonFilePath);
+
+        ResponseBody responseBody = new ResponseBody() {
             @Nullable
             @Override
             public MediaType contentType() {
@@ -109,13 +134,22 @@ public class TaskMgtServiceImplTest {
             }
 
             @Override
-            public void writeTo(BufferedSink bufferedSink) throws IOException {
+            public long contentLength() {
+                return 0;
+            }
 
+            @Override
+            public BufferedSource source() {
+                return null;
             }
         };
-
-        ResponseBody responseBody = null;
+        SOTask soTask = new SOTask();
+        soTask.setParams(params);
+        String jsonstr = JSON.toJSONString(soTask);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
+        when(soSliceService.getTaskById(taskId)).thenReturn(successfulCall(soTask));
         when(soSliceService.updateService(taskId, requestBody)).thenReturn(successfulCall(responseBody));
+
         taskMgtService.updateTaskAuditInfo(slicingTaskAuditInfo);
     }
 
@@ -181,9 +215,57 @@ public class TaskMgtServiceImplTest {
     public void itCanqueryConnectionLinks() {
         String taskId = "we23-345r-45ty-5687";
         ConnectionLinkList connectionLinkList = new ConnectionLinkList();
+        List<ConnectionLink> connectionLinks = new ArrayList<>();
+        ConnectionLink connectionLink = new ConnectionLink();
+        connectionLink.setLinkType("TsciConnectionLink");
+        connectionLink.setLinkId(taskId);
+        connectionLink.setLinkName2("name2");
+        connectionLink.setLinkName("name1");
+        RelationshipList relationshipList = new RelationshipList();
+        List<Relationship> relationships = new ArrayList<>();
+        Relationship relationship1 = new Relationship();
+        List<RelationshipData> relationshipDataList = new ArrayList<>();
+        relationship1.setRelationshipDataList(relationshipDataList);
+        relationships.add(relationship1);
+        relationshipList.setRelationship(relationships);
+
+        connectionLink.setRelationshipList(relationshipList);
+        connectionLink.setServiceFunction("servicefunction");
+        connectionLink.setResourceVersion("resouceversion");
+        connectionLinks.add(connectionLink);
+        connectionLinkList.setLogicalLink(connectionLinks);
+        String name1 = "name1";
+        String name2 = "name2";
+        EndPointInfoList endPointInfoList = new EndPointInfoList();
+
         when(aaiSliceService.getConnectionLinks()).thenReturn(successfulCall(connectionLinkList));
+        when(aaiSliceService.getEndpointByLinkName(name1)).thenReturn(successfulCall(endPointInfoList));
+        when(aaiSliceService.getEndpointByLinkName2(name2)).thenReturn(successfulCall(endPointInfoList));
+        when(aaiSliceService.getAllottedResource(taskId, taskId)).thenReturn(successfulCall(connectionLink));
+
         taskMgtService.queryConnectionLinks(3,5);
     }
 
+    //read json file
+    public static String readJsonFile(String fileName) {
+        String jsonStr = "";
+        try {
+            File jsonFile = new File(fileName);
+            FileReader fileReader = new FileReader(jsonFile);
+            Reader reader = new InputStreamReader(new FileInputStream(jsonFile),"utf-8");
+            int ch = 0;
+            StringBuffer sb = new StringBuffer();
+            while ((ch = reader.read()) != -1) {
+                sb.append((char) ch);
+            }
+            fileReader.close();
+            reader.close();
+            jsonStr = sb.toString();
+            return jsonStr;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
