@@ -69,7 +69,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
     private static final Logger logger = LoggerFactory.getLogger(TaskMgtServiceImpl.class);
 
     @Resource(name = "TaskMgtConvertService")
-    private TaskMgtServiceConvert taskMgtServiceConvert;
+    protected TaskMgtServiceConvert taskMgtServiceConvert;
 
     private SOSliceService soSliceService;
 
