@@ -41,10 +41,12 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscript
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
 import org.onap.usecaseui.server.service.lcm.impl.DefaultCustomerService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkInfo;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import retrofit2.Call;
+import retrofit2.Response;
 
 public class ResourceMgtServiceImplTest {
 
@@ -138,6 +140,11 @@ public class ResourceMgtServiceImplTest {
         when(aaiSliceService
             .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(successfulCall(object));
+        NetworkInfo networkInfo = new NetworkInfo();
+        when(aaiSliceService
+            .getServiceNetworkInstance(businessId))
+            .thenReturn(successfulCall(networkInfo));
+
         resourceMgtService.querySlicingBusinessDetails(businessId);
     }
 

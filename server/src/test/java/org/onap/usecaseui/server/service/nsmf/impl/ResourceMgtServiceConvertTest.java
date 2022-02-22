@@ -38,12 +38,14 @@ import org.onap.usecaseui.server.bean.nsmf.resource.NsiServiceInstanceList;
 import org.onap.usecaseui.server.bean.nsmf.resource.NssiServiceInstanceList;
 import org.onap.usecaseui.server.bean.nsmf.resource.SlicingBusinessDetails;
 import org.onap.usecaseui.server.bean.nsmf.resource.SlicingBusinessList;
+import org.onap.usecaseui.server.bean.nsmf.task.BusinessDemandInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.NstInfo;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
+import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceProfiles;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceRsp;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData;
@@ -125,6 +127,22 @@ public class ResourceMgtServiceConvertTest {
     @Test
     public void itCanGetNstInfoByBusiness() {
         JSONObject object = new JSONObject();
+        object.put("relationship-list", "jsonTest");
+        object.put("workload-context", "jsonTest");
+        JSONObject object1 = new JSONObject();
+        JSONObject object2 = new JSONObject();
+        JSONObject object3 = new JSONObject();
+
+        JSONArray jsonArrayrelationship_data = new JSONArray();
+        jsonArrayrelationship_data.add(object3);
+        object2.put("relationship-data", jsonArrayrelationship_data);
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(object2);
+
+        object1.put("relationship", jsonArray);
+        object.put("relationship-list", object1);
+
         NstInfo nstInfo = new NstInfo();
         String nsiId = "1234-ty23-rt56-oiu9";
 
@@ -215,6 +233,21 @@ public class ResourceMgtServiceConvertTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void itConvertServiceProfilesToBusinessDemandInfo() {
+        BusinessDemandInfo businessDemandInfo = new BusinessDemandInfo();
+        AAIServiceProfiles aaiServiceProfiles = new AAIServiceProfiles();
+        try {
+            resourceMgtServiceConvert.convertServiceProfilesToBusinessDemandInfo(businessDemandInfo, aaiServiceProfiles);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     @Test
     public void itCanConvertHostedNsiList() {
