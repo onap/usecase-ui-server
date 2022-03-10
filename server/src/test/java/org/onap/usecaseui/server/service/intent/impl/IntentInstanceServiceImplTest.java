@@ -17,11 +17,13 @@ package org.onap.usecaseui.server.service.intent.impl;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import okio.BufferedSource;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -33,6 +35,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
+import org.onap.usecaseui.server.bean.intent.InstancePerformance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
@@ -43,13 +46,13 @@ import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.doReturn;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 import retrofit2.Call;
 import retrofit2.Response;
+
+import javax.annotation.Nullable;
 
 @RunWith(PowerMockRunner.class)
 public class IntentInstanceServiceImplTest {
@@ -80,7 +83,22 @@ public class IntentInstanceServiceImplTest {
     }
 
     @Test
-    public void queryIntentInstance() {
+    public void queryIntentInstanceTest() {
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId("1");
+        instance.setJobId("1");
+        instance.setStatus("1");
+
+        Query query = Mockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        List<IntentModel> list = new ArrayList<>();
+        when(query.list()).thenReturn(list);
+        when(query.uniqueResult()).thenReturn(10L);
+        assertTrue(intentInstanceService.queryIntentInstance(instance,1,2).getList().isEmpty());
+    }
+
+    @Test
+    public void queryIntentInstanceGetCountErrorTest() {
         CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setJobId("1");
@@ -93,8 +111,20 @@ public class IntentInstanceServiceImplTest {
         when(query.uniqueResult()).thenReturn(10);
         assertTrue(intentInstanceService.queryIntentInstance(instance,1,2).getList().isEmpty());
     }
+
     @Test
-    public void createIntentInstance() throws IOException {
+    public void queryIntentInstanceThrowErrorTest() {
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId("1");
+        instance.setJobId("1");
+        instance.setStatus("1");
+
+        when(session.createQuery(anyString())).thenThrow(new RuntimeException());
+
+        assertEquals(intentInstanceService.queryIntentInstance(instance,1,2), null);
+    }
+    @Test
+    public void createIntentInstanceTest() throws IOException {
         CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setJobId("1");
@@ -106,6 +136,8 @@ public class IntentInstanceServiceImplTest {
         Mockito.when(intentApiService.createIntentInstance(any())).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
 
+        IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
+        doNothing().when(spy).saveIntentInstanceToAAI(isNull(),any(CCVPNInstance.class));
 
         Transaction tx = Mockito.mock(Transaction.class);
         Mockito.when(session.beginTransaction()).thenReturn(tx);
@@ -113,16 +145,56 @@ public class IntentInstanceServiceImplTest {
         Mockito.when(session.save(any())).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
 
-        assertEquals(intentInstanceService.createIntentInstance(instance), 1);
+        assertEquals(spy.createIntentInstance(instance), 1);
+    }
+
+    @Test
+    public void createIntentInstanceThrowErrorTest() throws IOException {
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId("1");
+        instance.setJobId("1");
+        instance.setStatus("1");
+
+        Call mockCall = PowerMockito.mock(Call.class);
+        JSONObject body = JSONObject.parseObject("{\"jobId\":\"123\"}");
+        Response<JSONObject> response = Response.success(body);
+        Mockito.when(intentApiService.createIntentInstance(any())).thenReturn(mockCall);
+        Mockito.when(mockCall.execute()).thenReturn(response);
+
+        IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
+        doThrow(new RuntimeException()).when(spy).saveIntentInstanceToAAI(isNull(),any(CCVPNInstance.class));
+
+        Transaction tx = Mockito.mock(Transaction.class);
+        Mockito.when(session.beginTransaction()).thenReturn(tx);
+        Serializable save = Mockito.mock(Serializable.class);
+        Mockito.when(session.save(any())).thenReturn(save);
+        Mockito.doNothing().when(tx).commit();
+
+        assertEquals(spy.createIntentInstance(instance), 0);
+    }
+
+    @Test
+    public void createIntentInstanceInstanceIsNullTest() throws IOException {
+        assertEquals(intentInstanceService.createIntentInstance(null), 0);
     }
     @Test
-    public void getIntentInstanceProgress() throws IOException {
+    public void createIntentInstanceInstanceJobIdIsNullTest() throws IOException {
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId("1");
+        instance.setStatus("1");
+        assertEquals(intentInstanceService.createIntentInstance(instance), 0);
+    }
+
+    @Test
+    public void getIntentInstanceProgressTest() throws IOException {
 
         Query query1 = Mockito.mock(Query.class);
         when(session.createQuery("from CCVPNInstance where deleteState = 0 and status = '0'")).thenReturn(query1);
         List<CCVPNInstance> q = new ArrayList<>();
         CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
+        instance.setResourceInstanceId("1");
+        instance.setJobId("1");
         q.add(instance);
         when(query1.list()).thenReturn(q);
 
@@ -130,10 +202,18 @@ public class IntentInstanceServiceImplTest {
         OperationProgress operationProgress = new OperationProgress();
         operationProgress.setProgress(100);
         operationProgressInformation.setOperationStatus(operationProgress);
+
+        JSONObject jsonObject = new JSONObject();
+        JSONObject operation = new JSONObject();
+        operation.put("progress", 100);
+        jsonObject.put("operation", operation);
         Call mockCall = PowerMockito.mock(Call.class);
-        Response<OperationProgressInformation> response = Response.success(operationProgressInformation);
-        Mockito.when(soService.queryOperationProgress(any(),any())).thenReturn(mockCall);
+        Response<JSONObject> response = Response.success(jsonObject);
+        Mockito.when(intentApiService.queryOperationProgress(anyString(),anyString())).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
+
+        IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
+        doNothing().when(spy).saveIntentInstanceToAAI(anyString(),any(CCVPNInstance.class));
 
         Transaction tx = Mockito.mock(Transaction.class);
         Mockito.when(session.beginTransaction()).thenReturn(tx);
@@ -141,7 +221,45 @@ public class IntentInstanceServiceImplTest {
         Mockito.when(session.save(any())).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
 
-        intentInstanceService.getIntentInstanceProgress();
+        spy.getIntentInstanceProgress();
+        assertEquals(operation.getString("progress"),"100");
+    }
+    @Test
+    public void getIntentInstanceCreateStatusTest() throws IOException {
+
+        Query query1 = Mockito.mock(Query.class);
+        when(session.createQuery("from CCVPNInstance where deleteState = 0 and status = '0'")).thenReturn(query1);
+        List<CCVPNInstance> q = new ArrayList<>();
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId("1");
+        instance.setResourceInstanceId("1");
+        instance.setJobId("1");
+        q.add(instance);
+        when(query1.list()).thenReturn(q);
+
+        OperationProgressInformation operationProgressInformation = new OperationProgressInformation();
+        OperationProgress operationProgress = new OperationProgress();
+        operationProgress.setProgress(100);
+        operationProgressInformation.setOperationStatus(operationProgress);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("orchestration-status", "created");
+        Call mockCall = PowerMockito.mock(Call.class);
+        Response<JSONObject> response = Response.success(jsonObject);
+        Mockito.when(intentApiService.getInstanceInfo(anyString())).thenReturn(mockCall);
+        Mockito.when(mockCall.execute()).thenReturn(response);
+
+        IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
+        doNothing().when(spy).saveIntentInstanceToAAI(anyString(),any(CCVPNInstance.class));
+
+        Transaction tx = Mockito.mock(Transaction.class);
+        Mockito.when(session.beginTransaction()).thenReturn(tx);
+        Serializable save = Mockito.mock(Serializable.class);
+        Mockito.when(session.save(any())).thenReturn(save);
+        Mockito.doNothing().when(tx).commit();
+
+        spy.getIntentInstanceCreateStatus();
+        assertEquals(jsonObject.getString("orchestration-status"),"created");
     }
 
     @Test
@@ -311,15 +429,78 @@ public class IntentInstanceServiceImplTest {
 
         Call mockCall = PowerMockito.mock(Call.class);
         when(intentApiService.deleteIntentInstance(any())).thenReturn(mockCall);
-        Mockito.when(mockCall.execute()).thenReturn(null);
+        when(mockCall.execute()).thenReturn(null);
 
-        Transaction tx = Mockito.mock(Transaction.class);
-        Mockito.when(session.beginTransaction()).thenReturn(tx);
-        Serializable save = Mockito.mock(Serializable.class);
-        Mockito.doNothing().when(session).delete(any());
-        Mockito.doNothing().when(tx).commit();
+        Transaction tx = PowerMockito.mock(Transaction.class);
+        when(session.beginTransaction()).thenReturn(tx);
+        Serializable save = PowerMockito.mock(Serializable.class);
+        doNothing().when(session).delete(any());
+        doNothing().when(tx).commit();
 
-        intentInstanceService.deleteIntentInstance("1");
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+        doNothing().when(spy).deleteIntentInstanceToAAI(anyString());
+
+        spy.deleteIntentInstance("1");
+    }
+
+
+    @Test
+    public void invalidIntentInstanceTest() throws IOException {
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setResourceInstanceId("1");
+
+        Query query = Mockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        when(query.setParameter(anyString(), anyString())).thenReturn(query);
+        when(query.uniqueResult()).thenReturn(instance);
+
+        Call mockCall = PowerMockito.mock(Call.class);
+        when(intentApiService.deleteIntentInstance(any())).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(null);
+
+        Transaction tx = PowerMockito.mock(Transaction.class);
+        when(session.beginTransaction()).thenReturn(tx);
+        Serializable save = PowerMockito.mock(Serializable.class);
+        doNothing().when(session).delete(any());
+        doNothing().when(tx).commit();
+
+        intentInstanceService.invalidIntentInstance("1");
+    }
+    @Test
+    public void queryInstancePerformanceDataTest() throws IOException {
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setResourceInstanceId("1");
+
+        InstancePerformance instancePerformance = new InstancePerformance();
+        instancePerformance.setBandwidth(2000);
+        instancePerformance.setMaxBandwidth(20000);
+        instancePerformance.setDate(new Date());
+        Object[] o = {null,instancePerformance};
+        List<Object[]> queryResult= new ArrayList<>();
+        queryResult.add(o);
+
+        Query query = Mockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        when(query.setParameter(anyString(), anyString())).thenReturn(query);
+        when(query.list()).thenReturn(queryResult);
+
+        intentInstanceService.queryInstancePerformanceData("1");
+
+
+
+
+
+        Call mockCall = PowerMockito.mock(Call.class);
+        when(intentApiService.deleteIntentInstance(any())).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(null);
+
+        Transaction tx = PowerMockito.mock(Transaction.class);
+        when(session.beginTransaction()).thenReturn(tx);
+        Serializable save = PowerMockito.mock(Serializable.class);
+        doNothing().when(session).delete(any());
+        doNothing().when(tx).commit();
+
+        intentInstanceService.invalidIntentInstance("1");
     }
 
     @Test
@@ -355,11 +536,245 @@ public class IntentInstanceServiceImplTest {
     public void queryAccessNodeInfo() throws IOException {
 
         Call mockCall = PowerMockito.mock(Call.class);
-        JSONObject body = JSONObject.parseObject("{\"data\":[{\"type\":\"ROOT\",\"route-id\":\"route1\"},{\"type\":\"route\",\"route-id\":\"route2\"}]}");
+        JSONObject body = JSONObject.parseObject("{\n" +
+                "    \"network-route\": [\n" +
+                "        {\n" +
+                "            \"route-id\": \"tranportEp_src_ID_111_1\",\n" +
+                "            \"type\": \"LEAF\",\n" +
+                "            \"role\": \"3gppTransportEP\",\n" +
+                "            \"function\": \"3gppTransportEP\",\n" +
+                "            \"ip-address\": \"10.2.3.4\",\n" +
+                "            \"prefix-length\": 24,\n" +
+                "            \"next-hop\": \"networkId-providerId-10-clientId-0-topologyId-2-nodeId-10.1.1.1-ltpId-1000\",\n" +
+                "            \"address-family\": \"ipv4\",\n" +
+                "            \"resource-version\": \"1634198223345\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"route-id\": \"tranportEp_src_ID_113_1\",\n" +
+                "            \"type\": \"LEAF\",\n" +
+                "            \"role\": \"3gppTransportEP\",\n" +
+                "            \"function\": \"3gppTransportEP\",\n" +
+                "            \"ip-address\": \"10.2.3.4\",\n" +
+                "            \"prefix-length\": 24,\n" +
+                "            \"next-hop\": \"networkId-providerId-10-clientId-0-topologyId-2-nodeId-10.1.1.3-ltpId-1000\",\n" +
+                "            \"address-family\": \"ipv4\",\n" +
+                "            \"resource-version\": \"1634198260496\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"route-id\": \"tranportEp_src_ID_111_2\",\n" +
+                "            \"type\": \"LEAF\",\n" +
+                "            \"role\": \"3gppTransportEP\",\n" +
+                "            \"function\": \"3gppTransportEP\",\n" +
+                "            \"ip-address\": \"10.2.3.4\",\n" +
+                "            \"prefix-length\": 24,\n" +
+                "            \"next-hop\": \"networkId-providerId-10-clientId-0-topologyId-2-nodeId-10.1.1.1-ltpId-2000\",\n" +
+                "            \"address-family\": \"ipv4\",\n" +
+                "            \"resource-version\": \"1634198251534\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"route-id\": \"tranportEp_dst_ID_212_1\",\n" +
+                "            \"type\": \"ROOT\",\n" +
+                "            \"role\": \"3gppTransportEP\",\n" +
+                "            \"function\": \"3gppTransportEP\",\n" +
+                "            \"ip-address\": \"10.2.3.4\",\n" +
+                "            \"prefix-length\": 24,\n" +
+                "            \"next-hop\": \"networkId-providerId-20-clientId-0-topologyId-2-nodeId-10.2.1.2-ltpId-512\",\n" +
+                "            \"address-family\": \"ipv4\",\n" +
+                "            \"resource-version\": \"1634198274852\"\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}");
         Response<JSONObject> response = Response.success(body);
         Mockito.when(intentApiService.queryNetworkRoute()).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
         Map<String, Object> result = (Map<String, Object>) intentInstanceService.queryAccessNodeInfo();
-        assertEquals(((List)result.get("accessNodeList")).size(), 1);
+        assertEquals(((List)result.get("accessNodeList")).size(), 3);
+    }
+
+    @Test
+    public void getInstanceStatusTest() {
+        List<CCVPNInstance> queryResult = new ArrayList<>();
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId("id1");
+        instance.setStatus("1");
+        queryResult.add(instance);
+
+        Query query = Mockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        when(query.setParameter(anyString(), any())).thenReturn(query);
+        when(query.list()).thenReturn(queryResult);
+
+
+        JSONObject instanceStatus = intentInstanceService.getInstanceStatus(new JSONArray());
+        assertEquals(instanceStatus.getJSONArray("IntentInstances").getJSONObject(0).getString("id"), "id1");
+    }
+    @Test
+    public void formatBandwidthTest() {
+
+        String bandwidth = intentInstanceService.formatBandwidth("2Gbps");
+        assertEquals(bandwidth, "2000");
+    }
+    @Test
+    public void formatCloudPointTest() {
+
+        String bandwidth = intentInstanceService.formatCloudPoint("Cloud one");
+        assertEquals(bandwidth, "tranportEp_dst_ID_212_1");
+    }
+    @Test
+    public void formatAccessPointOneTest() {
+        String bandwidth = intentInstanceService.formatAccessPoint("Access one");
+        assertEquals(bandwidth, "tranportEp_src_ID_111_1");
+    }
+    @Test
+    public void formatAccessPointTwoTest() {
+        String bandwidth = intentInstanceService.formatAccessPoint("Access two");
+        assertEquals(bandwidth, "tranportEp_src_ID_111_2");
+    }
+    @Test
+    public void formatAccessPointThreeTest() {
+        String bandwidth = intentInstanceService.formatAccessPoint("Access three");
+        assertEquals(bandwidth, "tranportEp_src_ID_113_1");
+    }
+
+    @Test
+    public void addCustomerTest() throws IOException {
+
+        Call mockCall = PowerMockito.mock(Call.class);
+        Response<Object> response = Response.error(404, new ResponseBody() {
+            @Nullable
+            @Override
+            public MediaType contentType() {
+                return null;
+            }
+
+            @Override
+            public long contentLength() {
+                return 0;
+            }
+
+            @Override
+            public BufferedSource source() {
+                return null;
+            }
+        });
+        when(intentApiService.queryCustomer(anyString())).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(response);
+
+        Properties properties = new Properties();
+        properties.put("ccvpn.globalCustomerId", "IBNCustomer");
+        properties.put("ccvpn.subscriberName", "IBNCustomer");
+        properties.put("ccvpn.subscriberType", "INFRA");
+        properties.put("ccvpn.serviceType", "IBN");
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+        doReturn(properties).when(spy).getProperties();
+
+        Call mockCall2 = PowerMockito.mock(Call.class);
+        when(intentApiService.addCustomer(anyString(),any())).thenReturn(mockCall2);
+
+        spy.addCustomer();
+        Mockito.verify(intentApiService,Mockito.times(1)).addCustomer(anyString(),any());
+    }
+
+
+    @Test
+    public void addSubscriptionTest() throws IOException {
+
+        Call mockCall = PowerMockito.mock(Call.class);
+        Response<Object> response = Response.error(404, new ResponseBody() {
+            @Nullable
+            @Override
+            public MediaType contentType() {
+                return null;
+            }
+
+            @Override
+            public long contentLength() {
+                return 0;
+            }
+
+            @Override
+            public BufferedSource source() {
+                return null;
+            }
+        });
+        when(intentApiService.querySubscription(anyString(),anyString())).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(response);
+
+        Properties properties = new Properties();
+        properties.put("ccvpn.globalCustomerId", "IBNCustomer");
+        properties.put("ccvpn.subscriberName", "IBNCustomer");
+        properties.put("ccvpn.subscriberType", "INFRA");
+        properties.put("ccvpn.serviceType", "IBN");
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+        doReturn(properties).when(spy).getProperties();
+
+        Call mockCall2 = PowerMockito.mock(Call.class);
+        when(intentApiService.addSubscription(anyString(),anyString(),any())).thenReturn(mockCall2);
+
+        spy.addSubscription();
+        Mockito.verify(intentApiService,Mockito.times(1)).addSubscription(anyString(),anyString(),any());
+    }
+
+    @Test
+    public void saveIntentInstanceToAAITest() throws IOException {
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+        doNothing().when(spy).addCustomer();
+        doNothing().when(spy).addSubscription();
+
+        Properties properties = new Properties();
+        properties.put("ccvpn.globalCustomerId", "IBNCustomer");
+        properties.put("ccvpn.subscriberName", "IBNCustomer");
+        properties.put("ccvpn.subscriberType", "INFRA");
+        properties.put("ccvpn.serviceType", "IBN");
+        doReturn(properties).when(spy).getProperties();
+
+        JSONObject body = new JSONObject();
+        body.put("resource-version",123);
+        Call mockCall = PowerMockito.mock(Call.class);
+        Response<JSONObject> response = Response.success(body);
+        when(intentApiService.queryServiceInstance(anyString(),anyString(),anyString())).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(response);
+
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setName("name");
+        instance.setInstanceId("id");
+
+        Call mockCall2 = PowerMockito.mock(Call.class);
+        Response<JSONObject> response2 = Response.success(body);
+        when(intentApiService.saveServiceInstance(anyString(),anyString(),anyString(),any())).thenReturn(mockCall2);
+        when(mockCall2.execute()).thenReturn(response2);
+
+        spy.saveIntentInstanceToAAI("CCVPN-id",instance);
+        Mockito.verify(intentApiService, Mockito.times(1)).saveServiceInstance(anyString(),anyString(),anyString(),any());
+
+    }
+    @Test
+    public void deleteIntentInstanceToAAITest() throws IOException {
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+        doNothing().when(spy).addCustomer();
+        doNothing().when(spy).addSubscription();
+
+        Properties properties = new Properties();
+        properties.put("ccvpn.globalCustomerId", "IBNCustomer");
+        properties.put("ccvpn.subscriberName", "IBNCustomer");
+        properties.put("ccvpn.subscriberType", "INFRA");
+        properties.put("ccvpn.serviceType", "IBN");
+        doReturn(properties).when(spy).getProperties();
+
+        JSONObject body = new JSONObject();
+        body.put("resource-version",123);
+        Call mockCall = PowerMockito.mock(Call.class);
+        Response<JSONObject> response = Response.success(body);
+        when(intentApiService.queryServiceInstance(anyString(),anyString(),anyString())).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(response);
+
+        Call mockCall2 = PowerMockito.mock(Call.class);
+        Response<JSONObject> response2 = Response.success(body);
+        when(intentApiService.deleteServiceInstance(anyString(),anyString(),anyString(),anyString())).thenReturn(mockCall2);
+        when(mockCall2.execute()).thenReturn(response2);
+
+        spy.deleteIntentInstanceToAAI("CCVPN-id");
+        Mockito.verify(intentApiService, Mockito.times(1)).deleteServiceInstance(anyString(),anyString(),anyString(),any());
+
     }
 }

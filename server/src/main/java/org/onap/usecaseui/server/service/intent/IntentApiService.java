@@ -76,6 +76,70 @@ public interface IntentApiService {
     Call<JSONObject> getInstanceInfo(@Path("resource-service-id") String resourceServiceId);
 
     @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @PUT("/aai/v24/business/customers/customer/{globalCustomerId}")
+    Call<Void> addCustomer(@Path("globalCustomerId") String globalCustomerId,@Body RequestBody body);
+
+    @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/aai/v24/business/customers/customer/{globalCustomerId}")
+    Call<JSONObject> queryCustomer(@Path("globalCustomerId") String globalCustomerId);
+    @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @PUT("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}")
+    Call<Void> addSubscription(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType,@Body RequestBody body);
+
+    @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}")
+    Call<JSONObject> querySubscription(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType);
+
+    @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @PUT("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
+    Call<Void> saveServiceInstance(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType, @Path("serviceInstanceId") String serviceInstanceId, @Body RequestBody body);
+
+
+    @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @GET("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
+    Call<JSONObject> queryServiceInstance(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType, @Path("serviceInstanceId") String serviceInstanceId);
+
+
+    @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic QUFJOkFBSQ==",
+            "Accept: application/json"
+    })
+    @DELETE("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}?resource-version={resourceVersion}")
+    Call<Void> deleteServiceInstance(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType, @Path("serviceInstanceId") String serviceInstanceId, @Path("resourceVersion") String resourceVersion);
+
+    @Headers({
             "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
             "Accept: application/json"
     })

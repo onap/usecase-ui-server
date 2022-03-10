@@ -37,7 +37,7 @@ public class IntentResponseAOP {
             resultData.setData(proceed);
         }
         catch (Exception e) {
-            resultData.setData(500);
+            resultData.setCode(500);
             resultData.setMessage("Error：" + e.getMessage());
         }
         return JSONObject.parseObject(resultData.toString());

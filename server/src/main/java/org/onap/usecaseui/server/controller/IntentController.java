@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Resource;
 
 import com.alibaba.fastjson.JSONArray;
@@ -27,6 +29,7 @@ import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.bean.intent.IntentResponseBody;
+import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
@@ -51,14 +54,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/intent")
 public class IntentController {
     private final Logger logger = LoggerFactory.getLogger(IntentController.class);
-    private final static String UPLOADPATH = "/home/uui/upload/";
-    private final static String NLPLOADPATH = "/home/uuihome/uui/bert-master/upload/";
-    private final static String[] QUESTIONS_CCVPN = {"bandwidth", "access point", "cloud point"};
-    private final static String[] QUESTIONS_5GS = {"Communication Service Name", "Max Number of UEs", "Data Rate Downlink", "Latency", "Data Rate Uplink", "Resource Sharing Level", "Mobility", "Area"};
-
-    private final static String MODEL_TYPE_CCVPN = "ccvpn";
-    private final static String MODEL_TYPE_5GS = "5gs";
-
 
     @Resource(name = "IntentService")
     private IntentService intentService;
@@ -91,9 +86,9 @@ public class IntentController {
     public String uploadModel (@RequestParam("file") MultipartFile file,@RequestParam("modelType")String modelType) {
         String fileName = file.getOriginalFilename();
 
-        String filePath = UPLOADPATH + fileName ;
+        String filePath = IntentConstant.UPLOADPATH + fileName ;
 
-        File dest = new File(filePath);
+        File dest = newFile(filePath);
 
         if(!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
@@ -114,7 +109,7 @@ public class IntentController {
             model.setModelType(modelType);
             Map<String,String> fileMap = new HashMap<>();
             fileMap.put("file", filePath);
-            UploadFileUtil.formUpload("http://uui-nlp:33013/uploader", null, fileMap, null);
+            UploadFileUtil.formUpload(IntentConstant.NLP_FILE_URL_BASE + "/uploader", null, fileMap, null);
 
             intentService.addModel(model);
 
@@ -135,9 +130,9 @@ public class IntentController {
             }
 
             String fileName = model.getModelName();
-            String filePath = UPLOADPATH + fileName;
+            String filePath = IntentConstant.UPLOADPATH + fileName;
             logger.info("delete model file: " + filePath);
-            File dest = new File(filePath);
+            File dest = newFile(filePath);
             if(dest.exists()){
                 dest.delete();
                 postDeleteFile(fileName);
@@ -156,7 +151,7 @@ public class IntentController {
 
     private String postDeleteFile(String fileName) {
 
-        String url = "http://uui-nlp:33013/deleteFile/"+ fileName;
+        String url = IntentConstant.NLP_FILE_URL_BASE + "/deleteFile/"+ fileName;
         HashMap<String, String> headers = new HashMap<>();
 
         HttpResponseResult result = HttpUtil.sendGetRequest(url,headers);
@@ -178,7 +173,7 @@ public class IntentController {
             logger.info("active NLP model, model=" + model.getFilePath());
             String fileName = intentService.activeModelFile(model);
             if (fileName != null) {
-                load(NLPLOADPATH + fileName);
+                intentService.load(IntentConstant.NLPLOADPATH + fileName);
             }
 
 
@@ -191,26 +186,7 @@ public class IntentController {
         return result;
     }
 
-    private String load(String dirPath) {
 
-        String url = "http://uui-nlp:33011/api/online/load";
-        HashMap<String, String> headers = new HashMap<>();
-        String bodyStr = "{" + "\"path\": \""+dirPath+"\"" + "}";
-        logger.info("request body: " + bodyStr);
-
-        HttpResponseResult result = HttpUtil.sendPostRequestByJson(url, headers, bodyStr);
-        String respContent = result.getResultContent();
-
-        logger.info("NLP api respond: " + String.valueOf(result.getResultCode()));
-        logger.info(respContent);
-
-        JSONObject map = JSON.parseObject(respContent);
-
-        String status = map.getString("Status");
-        logger.info("load result: " + status);
-
-        return status;
-    }
 
     @DeleteMapping(value = {"/deleteModel"}, produces = "application/json")
     public String deleteModel(@RequestParam String modelId){
@@ -227,12 +203,13 @@ public class IntentController {
 
         return result;
     }
-
+    @IntentResponseBody
     @ResponseBody
     @PostMapping(value = {"/predict"}, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/json; charset=utf-8")
-    public String predict(@RequestBody Object body) throws ParseException {
+    public Map<String, Object> predict(@RequestBody Object body) throws ParseException {
         String text = (String)((Map)body).get("text");
+        text = text.trim();
         String modelType = (String)((Map)body).get("modelType");
 
         String activeModelType = intentService.getActiveModelType();
@@ -241,7 +218,7 @@ public class IntentController {
         }
         String[] questions = getQuestions(modelType);
 
-        String url = "http://uui-nlp:33011/api/online/predict";
+        String url = IntentConstant.NLP_ONLINE_URL_BASE + "/api/online/predict";
         HashMap<String, String> headers = new HashMap<>();
         String bodyStr = "{\"title\": \"predict\", \"text\": \"" + text
                 +  "\", \"questions\":" + new JSONArray(Arrays.asList(questions)).toJSONString() + "}";
@@ -257,44 +234,129 @@ public class IntentController {
 
         JSONObject map2 = new JSONObject();
 
-        if (MODEL_TYPE_CCVPN.equals(modelType)) {
-
-            String bandWidth = map.getString("bandwidth");
-            String accessPoint = map.getString("access point");
-            String cloudPoint = map.getString("cloud point");
-            String instanceId = getUUID();
-            String accessPointAlias = intentInstanceService.formatAccessPoint(accessPoint);
-            String bandwidthAlias = intentInstanceService.formatBandwidth(bandWidth);
-            String cloudPointAlias = intentInstanceService.formatCloudPoint(cloudPoint);
-
-            Map<String, Object> accessPointOne = new HashMap<>();
-            accessPointOne.put("name", accessPointAlias);
-            accessPointOne.put("bandwidth", bandwidthAlias);
-            map2.put("name", "");
-            map2.put("instanceId", instanceId);
-            map2.put("accessPointOne", accessPointOne);
-            map2.put("cloudPointName", cloudPointAlias);
+        if (IntentConstant.MODEL_TYPE_CCVPN.equals(modelType)) {
+            assemblyCCVPNResult(text, map, map2);
         }
         else {
-            for (Map.Entry<String, Object> entry:map.entrySet()) {
-                logger.debug(entry.getKey()+","+entry.getValue());
-                String key = tranlateFieldName(entry.getKey());
-                String valueStr = (String) entry.getValue();
-                String value = intentService.calcFieldValue(key, valueStr);
-                map2.put(key, value);
-            }
+            assemblySlicingResult(map, map2);
         }
 
         logger.info("translate result: " + map2.toJSONString());
 
-        return map2.toJSONString();
+        return map2;
+    }
+
+    @IntentResponseBody
+    @ResponseBody
+    @PostMapping(value = {"/unifyPredict"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Map<String, Object> unifyPredict(@RequestBody Object body) throws ParseException {
+        String text = (String)((Map)body).get("text");
+        text = text.trim();
+        String modelType = intentService.getModelTypeByIntentText(text);
+
+        String activeModelType = intentService.getActiveModelType();
+        if (modelType == null || !modelType.equals(activeModelType)) {
+            intentService.activeModelByType(modelType);
+        }
+        String[] questions = getQuestions(modelType);
+
+        String url = IntentConstant.NLP_ONLINE_URL_BASE + "/api/online/predict";
+        HashMap<String, String> headers = new HashMap<>();
+        String bodyStr = "{\"title\": \"predict\", \"text\": \"" + text
+                +  "\", \"questions\":" + new JSONArray(Arrays.asList(questions)).toJSONString() + "}";
+        logger.info("request body: " + bodyStr);
+
+        HttpResponseResult result = HttpUtil.sendPostRequestByJson(url, headers, bodyStr);
+        String respContent = result.getResultContent();
+
+        logger.info("NLP api respond: " + String.valueOf(result.getResultCode()));
+        logger.info(respContent);
+
+        JSONObject map = JSON.parseObject(respContent);
+
+        JSONObject map2 = new JSONObject();
+        JSONObject resultMap = new JSONObject();
+
+        if (IntentConstant.MODEL_TYPE_CCVPN.equals(modelType)) {
+            assemblyCCVPNResult(text, map, map2);
+            resultMap.put("type", IntentConstant.MODEL_TYPE_CCVPN);
+        }
+        else {
+            assemblySlicingResult(map, map2);
+            resultMap.put("type", IntentConstant.MODEL_TYPE_5GS);
+        }
+        resultMap.put("formData",map2);
+
+        logger.info("translate result: " + resultMap.toJSONString());
+
+        return resultMap;
+    }
+
+    private void assemblySlicingResult(JSONObject map, JSONObject resultMap) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            logger.debug(entry.getKey() + "," + entry.getValue());
+            String key = tranlateFieldName(entry.getKey());
+            String valueStr = (String) entry.getValue();
+            String value = intentService.calcFieldValue(key, valueStr);
+            resultMap.put(key, value);
+        }
+    }
+
+    private void assemblyCCVPNResult(String text, JSONObject map, JSONObject map2) {
+        String bandWidth = map.getString("bandwidth");
+        String accessPoint = map.getString("access point");
+        String cloudPoint = map.getString("cloud point");
+        boolean protect = MapUtils.getBooleanValue(map, "protect", false);
+        String instanceId = getUUID();
+        String accessPointAlias = intentInstanceService.formatAccessPoint(accessPoint);
+        if ("".equals(accessPointAlias)) {
+            if (text.indexOf("Access one") > -1) {
+                accessPointAlias = "tranportEp_src_ID_111_1";
+            } else if (text.indexOf("Access two") > -1) {
+                accessPointAlias = "tranportEp_src_ID_111_2";
+            } else if (text.indexOf("Access three") > -1) {
+                accessPointAlias = "tranportEp_src_ID_113_1";
+            }
+        }
+        String bandwidthAlias = null;
+        if (bandWidth.matches("\\d+")) {
+            bandwidthAlias = intentInstanceService.formatBandwidth(bandWidth);
+        } else {
+            Pattern pattern = Pattern.compile("(\\d+)(Gbps|Mbps)");
+            Matcher matcher = pattern.matcher(text);
+            if (matcher.find()) {
+                int value = Integer.parseInt(matcher.group(1));
+                String unit = matcher.group(2);
+                if ("Gbps".equals(unit)) {
+                    value = value * 1000;
+                }
+                bandwidthAlias = value + "";
+            }
+        }
+
+        String cloudPointAlias = intentInstanceService.formatCloudPoint(cloudPoint);
+        if ("".equals(cloudPointAlias)) {
+            if (text.indexOf("Cloud one") > -1) {
+                cloudPointAlias = "tranportEp_dst_ID_212_1";
+            }
+        }
+
+        Map<String, Object> accessPointOne = new HashMap<>();
+        accessPointOne.put("name", accessPointAlias);
+        accessPointOne.put("bandwidth", bandwidthAlias);
+        map2.put("name", "");
+        map2.put("instanceId", instanceId);
+        map2.put("accessPointOne", accessPointOne);
+        map2.put("cloudPointName", cloudPointAlias);
+        map2.put("protect", protect);
     }
 
     private String[] getQuestions(String modelType) {
-        if (MODEL_TYPE_CCVPN.equals(modelType)) {
-            return QUESTIONS_CCVPN;
+        if (IntentConstant.MODEL_TYPE_CCVPN.equals(modelType)) {
+            return IntentConstant.QUESTIONS_CCVPN;
         } else {
-            return QUESTIONS_5GS;
+            return IntentConstant.QUESTIONS_5GS;
         }
     }
 
@@ -361,6 +423,7 @@ public class IntentController {
         Map<String, Object> accessPointOne = (Map) ((Map)body).get("accessPointOne");
         String accessPointOneName = MapUtils.getString(accessPointOne, "name");
         int accessPointOneBandWidth = MapUtils.getIntValue(accessPointOne, "bandwidth");
+        boolean protectStatus = MapUtils.getBooleanValue((Map)body,"protect", false);
 
         CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId(intentInstanceId);
@@ -370,6 +433,7 @@ public class IntentController {
         instance.setAccessPointOneName(accessPointOneName);
         instance.setAccessPointOneBandWidth(accessPointOneBandWidth);
         instance.setStatus("0");
+        instance.setProtectStatus(protectStatus?1:0);
 
         int flag = intentInstanceService.createIntentInstance(instance);
 
@@ -445,5 +509,20 @@ public class IntentController {
     public Object getInstanceStatus(@RequestBody Object body) {
         JSONArray ids= new JSONObject((Map)body).getJSONArray("ids");
         return intentInstanceService.getInstanceStatus(ids);
+    }
+
+    public File newFile(String filePath) {
+        return new File(filePath);
+    }
+
+
+
+    @IntentResponseBody
+    @ResponseBody
+    @PostMapping(value = {"/addCustomer"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object addCustomer() throws IOException {
+        intentInstanceService.addCustomer();
+        return "OK";
     }
 }

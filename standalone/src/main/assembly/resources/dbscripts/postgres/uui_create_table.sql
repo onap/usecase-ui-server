@@ -170,7 +170,7 @@ DROP TABLE IF EXISTS ccvpn_instance;
 CREATE TABLE ccvpn_instance
 (
     id                          serial not null
-        constraint intent_instance_pk
+        constraint ccvpn_instance_pk
             primary key,
     instance_id                 varchar(16),
     job_id                      varchar(36),
@@ -182,7 +182,8 @@ CREATE TABLE ccvpn_instance
     access_point_one_name       varchar(255),
     access_point_one_band_width integer,
     line_num                    varchar(64),
-    delete_state                integer default 0
+    delete_state                integer default 0,
+    protect_status              integer default 0
 );
 
 -- ----------------------------

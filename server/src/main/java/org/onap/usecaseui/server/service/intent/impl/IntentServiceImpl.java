@@ -24,12 +24,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.transaction.Transactional;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
+import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
+import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.intent.IntentService;
 import org.onap.usecaseui.server.util.HttpUtil;
 import org.slf4j.Logger;
@@ -87,7 +91,7 @@ public class IntentServiceImpl implements IntentService {
 
     public List<IntentModel> listModels(){
         try(Session session = getSession()){
-            StringBuffer hql =new StringBuffer("from IntentModel a where 1=1 ");
+            StringBuffer hql =new StringBuffer("from IntentModel a where 1=1 order by create_time ");
             Query query = session.createQuery(hql.toString());
             //query.setString("sortType",sortType);
             List<IntentModel> list= query.list();
@@ -186,7 +190,7 @@ public class IntentServiceImpl implements IntentService {
         else if (fileName.endsWith(".zip")){
             try {
                 postUnzipFile(fileName);
-                return fileName;
+                return fileName.substring(0,fileName.length()-4);
 
             }
             catch (Exception e) {
@@ -198,7 +202,7 @@ public class IntentServiceImpl implements IntentService {
 
     private String postUnzipFile(String fileName) {
 
-        String url = "http://uui-nlp:33013/unzipFile/"+ fileName;
+        String url = IntentConstant.NLP_FILE_URL_BASE + "/unzipFile/"+ fileName;
         HashMap<String, String> headers = new HashMap<>();
 
         HttpResponseResult result = HttpUtil.sendGetRequest(url,headers);
@@ -336,27 +340,27 @@ public class IntentServiceImpl implements IntentService {
     private String formatValueForCoverageArea(String strValue) {
         String ret;
         Map<String, Object> areaMap = new HashMap<>();
-        areaMap.put("wanshoulu", "Beijing Haidian District Wanshoulu Street");
-        areaMap.put("zhongguancun", "Beijing Haidian District Zhongguancun");
-        areaMap.put("haidian", "Beijing Haidian District Haidian Street");
-        areaMap.put("xisanqi", "Beijing Haidian District Xisanqi Street");
-        areaMap.put("chengbei", "Beijing Changping District Chengbei Street");
-        areaMap.put("chengnan", "Beijing Changping District Chengnan Street");
-        areaMap.put("tiantongyuan north", "Beijing Changping District Tiantongyuan North Street");
-        areaMap.put("tiantongyuan south", "Beijing Changping District Tiantongyuan South Street");
-        areaMap.put("guang'anmenwai", "Beijing Xicheng District Guang'anmenwai Street");
-        areaMap.put("xuanwumen", "Beijing Xicheng District Xuanwumen Street");
-        areaMap.put("west changan", "Beijing Xicheng District West Changan Street");
-        areaMap.put("financial", "Beijing Xicheng District Financial Street");
-        areaMap.put("lujiazui", "Shanghai udongxin District Lujiazui Street");
-        areaMap.put("zhoujiadu", "Shanghai udongxin District Zhoujiadu Street");
-        areaMap.put("tangqiao", "Shanghai udongxin District Tangqiao Street");
-        areaMap.put("nanquanlu", "Shanghai udongxin District Nanquanlu Street");
-        areaMap.put("jiangning lu", "Shanghai Jingan District Jiangning Lu Street");
-        areaMap.put("jing'an temple", "Shanghai Jingan District Jing'an Temple Street");
-        areaMap.put("ningjing west road", "Shanghai Jingan District Ningjing West Road");
+        areaMap.put("wanshoulu", "Beijing;Beijing;Haidian District;Wanshoulu Street");
+        areaMap.put("zhongguancun", "Beijing;Beijing;Haidian District;Zhongguancun Street");
+        areaMap.put("haidian", "Beijing;Beijing;Haidian District;Haidian Street");
+        areaMap.put("xisanqi", "Beijing;Beijing;Haidian District;Xisanqi Street");
+        areaMap.put("chengbei", "Beijing;Beijing;Changping District;Chengbei Street");
+        areaMap.put("chengnan", "Beijing;Beijing;Changping District;Chengnan Street");
+        areaMap.put("tiantongyuan north", "Beijing;Beijing;Changping District;Tiantongyuan North Street");
+        areaMap.put("tiantongyuan south", "Beijing;Beijing;Changping District;Tiantongyuan South Street");
+        areaMap.put("guang'anmenwai", "Beijing;Beijing;Xicheng District;Guang'anmenwai Street");
+        areaMap.put("xuanwumen", "Beijing;Beijing;Xicheng District;Xuanwumen Street");
+        areaMap.put("west changan", "Beijing;Beijing;Xicheng District;West Changan Street");
+        areaMap.put("financial", "Beijing;Beijing;Xicheng District;Financial Street");
+        areaMap.put("lujiazui", "Shanghai;Shanghai city;Pudongxin District;Lujiazui Street");
+        areaMap.put("zhoujiadu", "Shanghai;Shanghai city;Pudongxin District;Zhoujiadu Street");
+        areaMap.put("tangqiao", "Shanghai;Shanghai city;Pudongxin District;Tangqiao Street");
+        areaMap.put("nanquanlu", "Shanghai;Shanghai city;Pudongxin District;Nanquanlu Street");
+        areaMap.put("jiangning lu", "Shanghai;Shanghai city;Jingan District;Jiangning Lu Street");
+        areaMap.put("jing'an temple", "Shanghai;Shanghai city;Jingan District;Jing'an Temple Street");
+        areaMap.put("ningjing west road", "Shanghai;Shanghai city;Jingan District;Ningjing West Road");
 
-        ret = "Beijing Beijing Haiding Wanshoulu";
+        ret = "Beijing;Beijing;Haidian District;Wanshoulu Street";
         for (Map.Entry<String, Object> entry : areaMap.entrySet()) {
 
             if (strValue.toLowerCase().contains(entry.getKey())) {
@@ -399,5 +403,73 @@ public class IntentServiceImpl implements IntentService {
             logger.error("Details:" + e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public String getModelTypeByIntentText(String text) {
+        Pattern ccvpnPattern = Pattern.compile("(CCVPN|ccvpn|Cloud|CLOUD|cloud)");
+        Matcher matcher = ccvpnPattern.matcher(text);
+        if(matcher.find()) {
+            return IntentConstant.MODEL_TYPE_CCVPN;
+        }
+        return IntentConstant.MODEL_TYPE_5GS;
+    }
+
+    @Override
+    public IntentModel activeModelByType(String modelType) {
+        Transaction tx = null;
+        IntentModel result=null;
+        try(Session session = getSession()){
+
+            tx = session.beginTransaction();
+            List<IntentModel> list = session.createQuery("from IntentModel where active=1").list();
+            if(list!=null && list.size()>0){
+                for (IntentModel m : list) {
+                    m.setActive(0);
+                    session.save(m);
+                }
+            }
+
+            List<IntentModel> listModelByType = session.createQuery("from IntentModel where modelType = :modelType order by createTime desc")
+                    .setParameter("modelType", IntentConstant.MODEL_TYPE_CCVPN.equals(modelType)?1:0).list();
+            if (listModelByType.isEmpty()) {
+                return null;
+            }
+            IntentModel model = listModelByType.get(0);
+            model.setActive(1);
+            session.save(model);
+            tx.commit();
+            logger.info("active model OK, id=" + model.getId());
+            String fileName = activeModelFile(model);
+            if (fileName != null) {
+                load(IntentConstant.NLPLOADPATH + fileName);
+            }
+            result = model;
+            return result;
+        } catch (Exception e) {
+            logger.error("Details:" + e.getMessage());
+            return null;
+        }
+    }
+    @Override
+    public String load(String dirPath) {
+
+        String url = IntentConstant.NLP_ONLINE_URL_BASE + "/api/online/load";
+        HashMap<String, String> headers = new HashMap<>();
+        String bodyStr = "{" + "\"path\": \""+dirPath+"\"" + "}";
+        logger.info("request body: " + bodyStr);
+
+        HttpResponseResult result = HttpUtil.sendPostRequestByJson(url, headers, bodyStr);
+        String respContent = result.getResultContent();
+
+        logger.info("NLP api respond: " + String.valueOf(result.getResultCode()));
+        logger.info(respContent);
+
+        JSONObject map = JSON.parseObject(respContent);
+
+        String status = map.getString("Status");
+        logger.info("load result: " + status);
+
+        return status;
     }
 }

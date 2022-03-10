@@ -49,4 +49,6 @@ public interface IntentInstanceService {
     String formatCloudPoint(String cloudPoint);
 
     String formatAccessPoint(String accessPoint);
+
+    void addCustomer() throws IOException;
 }
