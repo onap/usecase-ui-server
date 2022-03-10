@@ -21,9 +21,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.MultipartConfigElement;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={JpaRepositoriesAutoConfiguration.class})
@@ -39,6 +43,14 @@ public class UuiServerApplication {
     @Bean
     public RestTemplate getRestTemplate(){
         return new RestTemplate();
+    }
+
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(DataSize.parse("512MB"));
+        factory.setMaxRequestSize(DataSize.parse("512MB"));
+        return factory.createMultipartConfig();
     }
 
     public static void main(String[] args) {

@@ -24,6 +24,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.intent.InstancePerformance;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
+import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
@@ -35,10 +36,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
+import retrofit2.Call;
 import retrofit2.Response;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -165,6 +167,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             }
             instance.setJobId(jobId);
             instance.setResourceInstanceId("cll-"+instance.getInstanceId());
+            saveIntentInstanceToAAI(null, instance);
 
             tx = session.beginTransaction();
             session.save(instance);
@@ -181,7 +184,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         }
     }
 
-    private String createIntentInstanceToSO(CCVPNInstance instance) throws IOException {
+    public String createIntentInstanceToSO(CCVPNInstance instance) throws IOException {
         Map<String, Object> params = new HashMap<>();
         params.put("name", instance.getName());
         params.put("modelInvariantUuid", "6790ab0e-034f-11eb-adc1-0242ac120002");
@@ -228,6 +231,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                 instance.setProgress(progress);
                 if (progress >=100) {
                     instance.setStatus("1");
+                    saveIntentInstanceToAAI(IntentConstant.INTENT_INSTANCE_ID_PREFIX + "-" + instance.getInstanceId(),instance);
                 }
             }
             catch (Exception e) {
@@ -246,6 +250,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                 int flag = getCreateStatusByJobId(instance);
                 if (flag > 0) {
                     instance.setStatus(flag + "");
+                    saveIntentInstanceToAAI(IntentConstant.INTENT_INSTANCE_ID_PREFIX + "-" + instance.getInstanceId(),instance);
                 }
             }
             catch (Exception e) {
@@ -437,6 +442,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         try {
             String serviceInstanceId = result.getResourceInstanceId();
             deleteInstanceToSO(serviceInstanceId);
+            deleteIntentInstanceToAAI(IntentConstant.INTENT_INSTANCE_ID_PREFIX + "-"+instanceId);
             deleteInstance(result);
         }catch (Exception e) {
             logger.error("delete instance to SO error :" + e);
@@ -687,4 +693,96 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         }
         return accessPointAlias;
     }
+
+    public void addCustomer() throws IOException {
+        Properties environment = getProperties();
+        String globalCustomerId = environment.getProperty("ccvpn.globalCustomerId");
+        Response<JSONObject> queryCustomerResponse = intentApiService.queryCustomer(globalCustomerId).execute();
+        if (queryCustomerResponse.isSuccessful()) {
+            return;
+        }
+        String subscriberName = environment.getProperty("ccvpn.subscriberName");
+        String subscriberType = environment.getProperty("ccvpn.subscriberType");
+        Map<String, Object> params = new HashMap<>();
+        params.put("global-customer-id", globalCustomerId);
+        params.put("subscriber-name", subscriberName);
+        params.put("subscriber-type", subscriberType);
+        okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
+        intentApiService.addCustomer(globalCustomerId, requestBody).execute();
+    }
+
+    public void addSubscription() throws IOException {
+        Properties environment = getProperties();
+        String globalCustomerId = environment.getProperty("ccvpn.globalCustomerId");
+        String serviceType = environment.getProperty("ccvpn.serviceType");
+        Response<JSONObject> querySubscription = intentApiService.querySubscription(globalCustomerId, serviceType).execute();
+        if (querySubscription.isSuccessful()) {
+            return;
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("service-type", serviceType);
+        okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
+        intentApiService.addSubscription(globalCustomerId, serviceType, requestBody).execute();
+    }
+
+    public Properties getProperties() throws IOException {
+        String slicingPath = System.getProperty("user.dir") + File.separator + "config" + File.separator + "ccvpn.properties";
+        InputStream inputStream = new FileInputStream(new File(slicingPath));
+        Properties environment = new Properties();
+        environment.load(inputStream);
+        return environment;
+    }
+
+
+    public void saveIntentInstanceToAAI(String serviceInstanceId, CCVPNInstance instance) throws IOException {
+        addCustomer();
+        addSubscription();
+        Properties environment = getProperties();
+        String globalCustomerId = environment.getProperty("ccvpn.globalCustomerId");
+        String serviceType = environment.getProperty("ccvpn.serviceType");
+        String resourceVersion = null;
+        if (serviceInstanceId != null) {
+            Response<JSONObject> queryServiceInstance = intentApiService.queryServiceInstance(globalCustomerId, serviceType, serviceInstanceId).execute();
+            if (queryServiceInstance.isSuccessful()) {
+                JSONObject body = queryServiceInstance.body();
+                resourceVersion  = body.getString("resource-version");
+            }
+        } else {
+            serviceInstanceId = IntentConstant.MODEL_TYPE_CCVPN + "-" + instance.getInstanceId();
+        }
+        JSONObject environmentContext = JSONObject.parseObject(JSONObject.toJSONString(instance));
+        environmentContext.put("resourceInstanceId",instance.getResourceInstanceId());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("service-instance-id", serviceInstanceId);
+        params.put("service-instance-name", instance.getName());
+        params.put("service-type", IntentConstant.MODEL_TYPE_CCVPN);
+        params.put("environment-context", environmentContext);
+        params.put("service-instance-location-id", instance.getResourceInstanceId());
+        params.put("bandwidth-total", instance.getAccessPointOneBandWidth());
+        params.put("data-owner", IntentConstant.INTENT_INSTANCE_DATA_OWNER);
+        if (resourceVersion != null) {
+            params.put("resource-version",resourceVersion);
+        }
+        okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
+        intentApiService.saveServiceInstance(globalCustomerId,serviceType,serviceInstanceId,requestBody).execute();
+
+    }
+    public void deleteIntentInstanceToAAI(String serviceInstanceId) throws IOException {
+        addCustomer();
+        addSubscription();
+        Properties environment = getProperties();
+        String globalCustomerId = environment.getProperty("ccvpn.globalCustomerId");
+        String serviceType = environment.getProperty("ccvpn.serviceType");
+        if (serviceInstanceId == null) {
+            return;
+        }
+        Response<JSONObject> queryServiceInstance = intentApiService.queryServiceInstance(globalCustomerId, serviceType, serviceInstanceId).execute();
+        if (queryServiceInstance.isSuccessful()) {
+            JSONObject body = queryServiceInstance.body();
+            String resourceVersion  = body.getString("resource-version");
+            intentApiService.deleteServiceInstance(globalCustomerId,serviceType,serviceInstanceId,resourceVersion).execute();
+        }
+    }
+
 }

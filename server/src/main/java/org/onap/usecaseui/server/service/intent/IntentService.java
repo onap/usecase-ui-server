@@ -28,4 +28,10 @@ public interface IntentService {
     String activeModelFile(IntentModel model);
     String calcFieldValue(String key, String strValue);
     String getActiveModelType();
+
+    String getModelTypeByIntentText(String text);
+
+    IntentModel activeModelByType(String modelType);
+
+    String load(String s);
 }

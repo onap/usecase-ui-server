@@ -56,6 +56,9 @@ public class CCVPNInstance implements Serializable {
     @Column(name = "line_num")
     private String lineNum;
 
+    @Column(name = "protect_status")
+    private int protectStatus;
+
     @Column(name = "delete_state")
     private int deleteState;
 
@@ -157,5 +160,13 @@ public class CCVPNInstance implements Serializable {
 
     public void setDeleteState(int deleteState) {
         this.deleteState = deleteState;
+    }
+
+    public int getProtectStatus() {
+        return protectStatus;
+    }
+
+    public void setProtectStatus(int protectStatus) {
+        this.protectStatus = protectStatus;
     }
 }
