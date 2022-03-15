@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "262eef86_8869ee67",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/controller/IntentController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2022-03-15T11:30:20Z",
+      "side": 1,
+      "message": "Please use English notes",
+      "revId": "a9d3349958333361b6d91d12ca7eeed4d049e480",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "351702f7_b5ef4ec9",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/csmf/impl/SlicingServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2022-03-15T11:30:20Z",
+      "side": 1,
+      "message": "It is not recommended to introduce intent related interfaces here. Instead, the createslicingservice interface should be called in intent related classes as needed",
+      "revId": "a9d3349958333361b6d91d12ca7eeed4d049e480",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "249c1f91_e93ed10a",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/intent/impl/IntentInstanceServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 722,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2022-03-15T11:30:20Z",
+      "side": 1,
+      "message": "Please add the corresponding test code",
+      "revId": "a9d3349958333361b6d91d12ca7eeed4d049e480",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
