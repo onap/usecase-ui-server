@@ -145,7 +145,7 @@ public class IntentInstanceServiceImplTest {
         Mockito.when(session.save(any())).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
 
-        assertEquals(spy.createIntentInstance(instance), 1);
+        assertEquals(spy.createCCVPNInstance(instance), 1);
     }
 
     @Test
@@ -170,19 +170,19 @@ public class IntentInstanceServiceImplTest {
         Mockito.when(session.save(any())).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
 
-        assertEquals(spy.createIntentInstance(instance), 0);
+        assertEquals(spy.createCCVPNInstance(instance), 0);
     }
 
     @Test
     public void createIntentInstanceInstanceIsNullTest() throws IOException {
-        assertEquals(intentInstanceService.createIntentInstance(null), 0);
+        assertEquals(intentInstanceService.createCCVPNInstance(null), 0);
     }
     @Test
     public void createIntentInstanceInstanceJobIdIsNullTest() throws IOException {
         CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setStatus("1");
-        assertEquals(intentInstanceService.createIntentInstance(instance), 0);
+        assertEquals(intentInstanceService.createCCVPNInstance(instance), 0);
     }
 
     @Test

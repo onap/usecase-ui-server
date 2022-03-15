@@ -17,7 +17,9 @@ package org.onap.usecaseui.server.service.intent;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
+import org.onap.usecaseui.server.bean.intent.IntentInstance;
 import org.onap.usecaseui.server.util.Page;
 
 import java.io.IOException;
@@ -26,7 +28,7 @@ import java.util.Map;
 
 public interface IntentInstanceService {
     Page<CCVPNInstance> queryIntentInstance(CCVPNInstance instance, int currentPage, int pageSize);
-    int createIntentInstance(CCVPNInstance instance);
+    int createCCVPNInstance(CCVPNInstance instance);
     void getIntentInstanceProgress();
     void getIntentInstanceCreateStatus();
     List<CCVPNInstance> getFinishedInstanceInfo();
@@ -51,4 +53,12 @@ public interface IntentInstanceService {
     String formatAccessPoint(String accessPoint);
 
     void addCustomer() throws IOException;
+
+    IntentInstance createIntentInstance(Object body,String businessInstanceId, String businessInstance,  String type);
+
+    void deleteIntent(int id);
+
+    void verifyIntent(int id);
+
+    Page<IntentInstance> getIntentInstanceList(int currentPage, int pageSize);
 }

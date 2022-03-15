@@ -47,10 +47,12 @@ import org.onap.usecaseui.server.bean.nsmf.common.PagedResult;
 import org.onap.usecaseui.server.bean.nsmf.common.ResultHeader;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.constant.CommonConstant;
+import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.constant.csmf.CsmfParamConstant;
 import org.onap.usecaseui.server.constant.nsmf.NsmfCodeConstant;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
+import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
@@ -73,6 +75,11 @@ public class SlicingServiceImpl implements SlicingService {
 
     @Resource(name = "ServiceLcmService")
     private ServiceLcmService serviceLcmService;
+
+    @Resource(name = "IntentInstanceService")
+    private IntentInstanceService intentInstanceService;
+
+
 
     private AAISliceService aaiSliceService;
 
@@ -146,6 +153,7 @@ public class SlicingServiceImpl implements SlicingService {
 
                 resultMsg = "5G slicing order created normally.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
+                intentInstanceService.createIntentInstance(slicingOrder,createResponse.getService().getServiceId(), slicingOrder.getSlicing_order_info().getName(), IntentConstant.MODEL_TYPE_5GS);
             } else {
                 logger.error(String
                     .format("createSlicingService: Can not submitOrders [code={}, message={}]", updateResponse.code(),

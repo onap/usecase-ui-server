@@ -243,8 +243,8 @@ public class IntentControllerTest {
         accessPointOne.put("name","name");
         accessPointOne.put("bandwidth","1");
         body.put("accessPointOne",accessPointOne);
-        Mockito.when(intentInstanceService.createIntentInstance(any())).thenReturn(1);
-        assertEquals(intentController.createIntentInstance(body), "OK");
+        Mockito.when(intentInstanceService.createCCVPNInstance(any())).thenReturn(1);
+        assertEquals(intentController.createCCVPNInstance(body), "OK");
     }
     @Test
     public void getFinishedInstanceInfo() {
