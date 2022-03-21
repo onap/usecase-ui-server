@@ -47,6 +47,13 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>5.3.13</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-parent</artifactId>
@@ -191,7 +198,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
-            <version>5.3.13</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -201,7 +207,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.3.13</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -211,7 +216,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>5.3.13</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -221,7 +225,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>5.3.13</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
