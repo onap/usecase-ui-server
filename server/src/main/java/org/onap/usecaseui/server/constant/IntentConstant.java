@@ -27,8 +27,7 @@ public final class IntentConstant {
     public final static String INTENT_INSTANCE_ID_PREFIX = "IBN";
     public final static String INTENT_INSTANCE_DATA_OWNER = "UUI";
 
-    public final static String NLP_HOST = "http://10.21.19.55";
-    //    public final static String NLP_HOST = "http://uui-nlp";
+    public final static String NLP_HOST = "http://uui-nlp";
     public final static String NLP_ONLINE_URL_BASE = NLP_HOST+":33011";
     public final static String NLP_OFFLINE_URL_BASE = NLP_HOST+":33012";
     public final static String NLP_FILE_URL_BASE = NLP_HOST+":33013";

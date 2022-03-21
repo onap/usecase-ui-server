@@ -29,6 +29,7 @@ import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.bean.intent.IntentResponseBody;
+import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
@@ -415,7 +416,7 @@ public class IntentController {
     @ResponseBody
     @PostMapping(value = {"/createIntentInstance"}, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = "application/json; charset=utf-8")
-    public Object createIntentInstance(@RequestBody Object body) throws IOException {
+    public Object createCCVPNInstance(@RequestBody Object body) throws IOException {
         String intentInstanceId = (String) ((Map)body).get("instanceId");
         String name = (String) ((Map)body).get("name");
         String lineNum = (String) ((Map)body).get("lineNum");
@@ -435,9 +436,12 @@ public class IntentController {
         instance.setStatus("0");
         instance.setProtectStatus(protectStatus?1:0);
 
-        int flag = intentInstanceService.createIntentInstance(instance);
+        int flag = intentInstanceService.createCCVPNInstance(instance);
 
         if(flag == 1) {
+            if (((Map) body).containsKey("intentContent")) {
+                intentInstanceService.createIntentInstance(body, instance.getInstanceId() + "", instance.getName(), IntentConstant.MODEL_TYPE_CCVPN);
+            }
             return "OK";
         }
         else {
@@ -514,4 +518,42 @@ public class IntentController {
     public File newFile(String filePath) {
         return new File(filePath);
     }
+
+
+    @ResponseBody
+    @PostMapping(value = {"/csmf/5gSlicing"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public ServiceResult createSlicingServiceWithIntent(@RequestBody Object slicingOrderBody) {
+        return intentInstanceService.createSlicingServiceWithIntent(slicingOrderBody);
+    }
+
+    @IntentResponseBody
+    @DeleteMapping(value = {"/deleteIntent"}, produces = "application/json; charset=utf-8")
+    public Object deleteIntent(@RequestParam int id) {
+        intentInstanceService.deleteIntent(id);
+        return "ok";
+    }
+
+    @IntentResponseBody
+    @ResponseBody
+    @PostMapping(value = {"/verifyIntentInstance"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object verifyIntentInstance(@RequestBody Object body) {
+        int id = MapUtils.getIntValue((Map) body, "id");
+        intentInstanceService.verifyIntent(id);
+        return "Intent verification passed, Recommended implementation!";
+    }
+
+    @IntentResponseBody
+    @ResponseBody
+    @PostMapping(value = {"/getIntentList"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object getIntentList(@RequestBody Object body) {
+
+        int currentPage = (int) ((Map)body).get("currentPage");
+        int pageSize = (int) ((Map)body).get("pageSize");
+        logger.error("getInstanceList --> currentPage:" + currentPage + ",pageSize:" + pageSize);
+        return intentInstanceService.getIntentInstanceList(currentPage, pageSize);
+    }
+
 }

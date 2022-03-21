@@ -34,13 +34,21 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.onap.usecaseui.server.bean.csmf.ServiceCreateResult;
+import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
+import org.onap.usecaseui.server.bean.csmf.SlicingOrderDetail;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.InstancePerformance;
+import org.onap.usecaseui.server.bean.intent.IntentInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
+import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
+import org.onap.usecaseui.server.constant.IntentConstant;
+import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgress;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
+import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -53,6 +61,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import javax.annotation.Nullable;
+import javax.annotation.Resource;
 
 @RunWith(PowerMockRunner.class)
 public class IntentInstanceServiceImplTest {
@@ -69,6 +78,13 @@ public class IntentInstanceServiceImplTest {
     @Mock
     private SOService soService;
 
+    @Mock
+    @Resource(name = "ResourceMgtService")
+    private ResourceMgtService resourceMgtService;
+
+    @Mock
+    @Resource(name = "SlicingService")
+    private SlicingService slicingService;
 
     @Mock
     private SessionFactory sessionFactory;
@@ -79,6 +95,8 @@ public class IntentInstanceServiceImplTest {
     @Before
     public void before() throws Exception {
         MemberModifier.field(IntentInstanceServiceImpl.class, "sessionFactory").set(intentInstanceService , sessionFactory);
+        MemberModifier.field(IntentInstanceServiceImpl.class, "resourceMgtService").set(intentInstanceService , resourceMgtService);
+        MemberModifier.field(IntentInstanceServiceImpl.class, "slicingService").set(intentInstanceService , slicingService);
         doReturn(session).when(sessionFactory,"openSession");
     }
 
@@ -124,7 +142,7 @@ public class IntentInstanceServiceImplTest {
         assertEquals(intentInstanceService.queryIntentInstance(instance,1,2), null);
     }
     @Test
-    public void createIntentInstanceTest() throws IOException {
+    public void createCCVPNInstanceTest() throws IOException {
         CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setJobId("1");
@@ -145,11 +163,11 @@ public class IntentInstanceServiceImplTest {
         Mockito.when(session.save(any())).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
 
-        assertEquals(spy.createIntentInstance(instance), 1);
+        assertEquals(spy.createCCVPNInstance(instance), 1);
     }
 
     @Test
-    public void createIntentInstanceThrowErrorTest() throws IOException {
+    public void createCCVPNInstanceThrowErrorTest() throws IOException {
         CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setJobId("1");
@@ -170,19 +188,19 @@ public class IntentInstanceServiceImplTest {
         Mockito.when(session.save(any())).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
 
-        assertEquals(spy.createIntentInstance(instance), 0);
+        assertEquals(spy.createCCVPNInstance(instance), 0);
     }
 
     @Test
-    public void createIntentInstanceInstanceIsNullTest() throws IOException {
-        assertEquals(intentInstanceService.createIntentInstance(null), 0);
+    public void createCCVPNInstanceInstanceIsNullTest() throws IOException {
+        assertEquals(intentInstanceService.createCCVPNInstance(null), 0);
     }
     @Test
-    public void createIntentInstanceInstanceJobIdIsNullTest() throws IOException {
+    public void createCCVPNInstanceInstanceJobIdIsNullTest() throws IOException {
         CCVPNInstance instance = new CCVPNInstance();
         instance.setInstanceId("1");
         instance.setStatus("1");
-        assertEquals(intentInstanceService.createIntentInstance(instance), 0);
+        assertEquals(intentInstanceService.createCCVPNInstance(instance), 0);
     }
 
     @Test
@@ -776,5 +794,197 @@ public class IntentInstanceServiceImplTest {
         spy.deleteIntentInstanceToAAI("CCVPN-id");
         Mockito.verify(intentApiService, Mockito.times(1)).deleteServiceInstance(anyString(),anyString(),anyString(),any());
 
+    }
+    @Test
+    public void createIntentInstanceWithCCVPNInstanceTest() {
+        Map<String, Object> body = new HashMap<>();
+        body.put("intentContent", "this is intent content");
+        body.put("name", "this is name");
+        Transaction tx = PowerMockito.mock(Transaction.class);
+        when(session.beginTransaction()).thenReturn(tx);
+
+        Serializable save = Mockito.mock(Serializable.class);
+        when(session.save(any(IntentInstance.class))).thenReturn(save);
+
+        doNothing().when(tx).commit();
+        doNothing().when(session).close();
+        IntentInstance instance = intentInstanceService.createIntentInstance(body, "id", "name", IntentConstant.MODEL_TYPE_CCVPN);
+        assertEquals(instance.getBusinessInstanceId(), "id");
+    }
+    @Test
+    public void createIntentInstanceWithSlicingInstanceTest() {
+        Map<String, Object> slicingOrderInfo = new HashMap<>();
+        slicingOrderInfo.put("intentContent", "this is intent content");
+        slicingOrderInfo.put("name", "this is name");
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("slicing_order_info", slicingOrderInfo);
+        Transaction tx = PowerMockito.mock(Transaction.class);
+        when(session.beginTransaction()).thenReturn(tx);
+
+        Serializable save = Mockito.mock(Serializable.class);
+        when(session.save(any(IntentInstance.class))).thenReturn(save);
+
+        doNothing().when(tx).commit();
+        doNothing().when(session).close();
+        IntentInstance instance = intentInstanceService.createIntentInstance(body, "id", "name", IntentConstant.MODEL_TYPE_5GS);
+        assertEquals(instance.getBusinessInstanceId(), "id");
+    }
+    @Test
+    public void createIntentInstanceWithThrowErrorTest() {
+        Map<String, Object> slicingOrderInfo = new HashMap<>();
+        slicingOrderInfo.put("intentContent", "this is intent content");
+        slicingOrderInfo.put("name", "this is name");
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("slicing_order_info", slicingOrderInfo);
+        Transaction tx = PowerMockito.mock(Transaction.class);
+        when(session.beginTransaction()).thenReturn(tx);
+
+        when(session.save(any(IntentInstance.class))).thenThrow(new RuntimeException());
+
+        doNothing().when(session).close();
+        IntentInstance instance = intentInstanceService.createIntentInstance(body, "id", "name", IntentConstant.MODEL_TYPE_5GS);
+        assertNull(instance);
+    }
+
+    @Test
+    public void deleteIntentWithDeleteCCVPNInstanceTest() {
+
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+
+        IntentInstance instance = new IntentInstance();
+        instance.setId(1);
+        instance.setIntentSource(IntentConstant.MODEL_TYPE_CCVPN);
+        instance.setBusinessInstanceId("1");
+
+        Query query = PowerMockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        when(query.setParameter("id", 1)).thenReturn(query);
+        when(query.uniqueResult()).thenReturn(instance);
+
+        doNothing().when(spy).deleteIntentInstance(anyString());
+
+        Transaction tx = PowerMockito.mock(Transaction.class);
+        when(session.beginTransaction()).thenReturn(tx);
+        doNothing().when(session).delete(any());
+        doNothing().when(tx).commit();
+        doNothing().when(session).close();
+
+        spy.deleteIntent(1);
+
+        Mockito.verify(spy, Mockito.times(1)).deleteIntentInstance("1");
+    }
+
+    @Test
+    public void deleteIntentWithDeleteSlicingInstanceTest() {
+
+
+        IntentInstance instance = new IntentInstance();
+        instance.setId(1);
+        instance.setIntentSource(IntentConstant.MODEL_TYPE_5GS);
+        instance.setBusinessInstanceId("1");
+
+        Query query = PowerMockito.mock(Query.class);
+        when(session.createQuery(anyString())).thenReturn(query);
+        when(query.setParameter("id", 1)).thenReturn(query);
+        when(query.uniqueResult()).thenReturn(instance);
+
+        ServiceResult serviceResult = new ServiceResult();
+        when(resourceMgtService.terminateSlicingService(anyString())).thenReturn(serviceResult);
+
+        Transaction tx = PowerMockito.mock(Transaction.class);
+        when(session.beginTransaction()).thenReturn(tx);
+        doNothing().when(session).delete(any());
+        doNothing().when(tx).commit();
+        doNothing().when(session).close();
+
+        intentInstanceService.deleteIntent(1);
+
+        Mockito.verify(resourceMgtService, Mockito.times(1)).terminateSlicingService(anyString());
+    }
+    @Test
+    public void deleteIntentWithThrowErrorTest() {
+
+
+        IntentInstance instance = new IntentInstance();
+        instance.setId(1);
+        instance.setIntentSource(IntentConstant.MODEL_TYPE_5GS);
+        instance.setBusinessInstanceId("1");
+
+        when(session.createQuery(anyString())).thenThrow(new RuntimeException());
+
+        doNothing().when(session).close();
+
+        intentInstanceService.deleteIntent(1);
+
+        Mockito.verify(resourceMgtService, Mockito.times(0)).terminateSlicingService(anyString());
+    }
+
+    @Test
+    public void getIntentInstanceListTest() {
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+        doReturn(2).when(spy).getIntentInstanceAllCount();
+
+        Query query = PowerMockito.mock(Query.class);
+        when(session.createQuery("from IntentInstance order by id")).thenReturn(query);
+        when(query.setFirstResult(anyInt())).thenReturn(query);
+        when(query.setMaxResults(anyInt())).thenReturn(query);
+
+        List<IntentInstance> list = new ArrayList<>();
+        list.add(new IntentInstance());
+        list.add(new IntentInstance());
+        when(query.list()).thenReturn(list);
+        doNothing().when(session).close();
+        int totalRecords = spy.getIntentInstanceList(1, 10).getTotalRecords();
+        assertEquals(totalRecords,2);
+    }
+
+    @Test
+    public void getIntentInstanceListThrowErrorTest() {
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+        doReturn(2).when(spy).getIntentInstanceAllCount();
+
+        when(session.createQuery("from IntentInstance order by id")).thenThrow(new RuntimeException());
+        doNothing().when(session).close();
+        assertEquals(spy.getIntentInstanceList(1, 10),null);
+    }
+
+    @Test
+    public void createSlicingServiceWithIntent() {
+        IntentInstanceServiceImpl spy = spy(intentInstanceService);
+
+        SlicingOrder slicingOrder = new SlicingOrder();
+        slicingOrder.setSlicing_order_info(new SlicingOrderDetail());
+        slicingOrder.getSlicing_order_info().setName("name");
+
+        ServiceResult serviceResult = new ServiceResult();
+        ServiceCreateResult serviceCreateResult = new ServiceCreateResult();
+        serviceCreateResult.setService_id("id");
+        serviceResult.setResult_body(serviceCreateResult);
+        when(slicingService.createSlicingService(any())).thenReturn(serviceResult);
+
+        IntentInstance instance = new IntentInstance();
+        doReturn(instance).when(spy).createIntentInstance(any(),anyString(),anyString(),anyString());
+
+        assertEquals(spy.createSlicingServiceWithIntent(slicingOrder), serviceResult);
+    }
+
+    @Test
+    public void getIntentInstanceAllCountTest() {
+
+        Query query = PowerMockito.mock(Query.class);
+        when(session.createQuery("select count(*) from IntentInstance")).thenReturn(query);
+        when(query.uniqueResult()).thenReturn(2L);
+
+
+        assertEquals(intentInstanceService.getIntentInstanceAllCount(),2);
+    }
+
+    @Test
+    public void getIntentInstanceAllCountThrowErrorTest() {
+
+        when(session.createQuery("select count(*) from IntentInstance")).thenThrow(new RuntimeException());
+        assertEquals(intentInstanceService.getIntentInstanceAllCount(),-1);
     }
 }

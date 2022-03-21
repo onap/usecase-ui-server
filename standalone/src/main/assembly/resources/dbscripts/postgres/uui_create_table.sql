@@ -202,3 +202,21 @@ create table intent_model
     active      integer,
     model_type integer      default 0
 );
+
+-- ----------------------------
+-- Table structure for intent_instance
+-- ----------------------------
+DROP TABLE IF EXISTS intent_instance;
+create table intent_instance
+(
+    id                   serial not null
+        constraint intent_instance_pk
+            primary key,
+    intent_name          varchar(50),
+    intent_source        integer,
+    customer             varchar(50),
+    intent_content       text,
+    intent_config        text,
+    business_instance_id varchar(50),
+    business_instance    varchar(255)
+);

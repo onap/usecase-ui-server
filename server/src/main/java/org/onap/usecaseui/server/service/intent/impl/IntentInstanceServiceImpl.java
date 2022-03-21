@@ -22,12 +22,18 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.onap.usecaseui.server.bean.csmf.ServiceCreateResult;
+import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
 import org.onap.usecaseui.server.bean.intent.InstancePerformance;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
+import org.onap.usecaseui.server.bean.intent.IntentInstance;
+import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.constant.IntentConstant;
+import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -39,6 +45,7 @@ import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -56,6 +63,11 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Resource(name = "ResourceMgtService")
+    private ResourceMgtService resourceMgtService;
+
+    @Resource(name = "SlicingService")
+    private SlicingService slicingService;
 
     private IntentApiService intentApiService;
 
@@ -151,7 +163,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
     @Override
-    public int createIntentInstance(CCVPNInstance instance) {
+    public int createCCVPNInstance(CCVPNInstance instance) {
         Session session = getSession();
         Transaction tx = null;
         try{
@@ -709,6 +721,154 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("subscriber-type", subscriberType);
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
         intentApiService.addCustomer(globalCustomerId, requestBody).execute();
+    }
+
+    @Override
+    public IntentInstance createIntentInstance(Object body,String businessInstanceId, String businessInstance, String type) {
+        IntentInstance instance = new IntentInstance();
+        if (IntentConstant.MODEL_TYPE_CCVPN.equals(type)) {
+            assembleIntentInstanceFormCCVPNInfo(instance, body);
+        }
+        else if (IntentConstant.MODEL_TYPE_5GS.equals(type)) {
+            assembleIntentInstanceFormSliceInfo(instance, body);
+        }
+        instance.setIntentSource(type);
+        instance.setBusinessInstanceId(businessInstanceId);
+        instance.setBusinessInstance(businessInstance);
+        Session session = getSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            session.save(instance);
+            tx.commit();
+            return instance;
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            logger.error("createIntentInstance Details:" + e.getMessage());
+            return null;
+        } finally {
+            session.close();
+        }
+    }
+
+    private IntentInstance assembleIntentInstanceFormCCVPNInfo(IntentInstance instance, Object body) {
+        JSONObject jsonObject = new JSONObject((Map) body);
+        String intent_content = jsonObject.getString("intentContent");
+        jsonObject.remove("intentContent");
+        instance.setIntentConfig(jsonObject.toJSONString());
+        instance.setIntentContent(intent_content);
+        instance.setIntentName(jsonObject.getString("name"));
+        return instance;
+    }
+
+    private IntentInstance assembleIntentInstanceFormSliceInfo(IntentInstance instance, Object body) {
+        JSONObject jsonObject = new JSONObject((Map) body);
+        JSONObject slicingOrderInfo = jsonObject.getJSONObject("slicing_order_info");
+        String intent_content = slicingOrderInfo.getString("intentContent");
+        slicingOrderInfo.remove("intentContent");
+        instance.setIntentConfig(slicingOrderInfo.toJSONString());
+        instance.setIntentContent(intent_content);
+        instance.setIntentName(slicingOrderInfo.getString("name"));
+        return instance;
+    }
+
+
+    @Override
+    public void deleteIntent(int id) {
+        Transaction tx = null;
+        Session session = getSession();
+        try {
+            IntentInstance intentInstance = (IntentInstance)session.createQuery("from IntentInstance where id = :id")
+                    .setParameter("id", id).uniqueResult();
+            if (IntentConstant.MODEL_TYPE_CCVPN.equals(intentInstance.getIntentSource())) {
+                deleteIntentInstance(intentInstance.getBusinessInstanceId());
+            } else {
+                resourceMgtService.terminateSlicingService(intentInstance.getBusinessInstanceId());
+            }
+
+
+            tx = session.beginTransaction();
+            session.delete(intentInstance);
+            tx.commit();
+            logger.info("delete IntentInstance OK, id=" + intentInstance.getId());
+        } catch (Exception e) {
+            if(tx!=null){
+                tx.rollback();
+            }
+            logger.error("delete IntentInstance occur exception:"+e);
+
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public void verifyIntent(int id) {
+        Session session = getSession();
+        IntentInstance instance = new IntentInstance();
+        try {
+            String hql = "from IntentInstance where id = :id";
+            Query query = session.createQuery(hql).setParameter("id", id);
+            instance = (IntentInstance) query.uniqueResult();
+
+        } catch (Exception e) {
+            logger.error("verifyIntentInstance error. Details:" + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public Page<IntentInstance> getIntentInstanceList(int currentPage, int pageSize) {
+        Page<IntentInstance> page = new Page<IntentInstance>();
+        int allRow = getIntentInstanceAllCount();
+        int offset = page.countOffset(currentPage, pageSize);
+        Session session = getSession();
+        try{
+            String hql = "from IntentInstance order by id";
+            Query query = session.createQuery(hql);
+            query.setFirstResult(offset);
+            query.setMaxResults(pageSize);
+            List<IntentInstance> list= query.list();
+            page.setPageNo(currentPage);
+            page.setPageSize(pageSize);
+            page.setTotalRecords(allRow);
+            page.setList(list);
+            return page;
+        } catch (Exception e) {
+            logger.error("exception occurred while performing IntentInstanceServiceImpl getIntentInstanceList. Details:" + e.getMessage());
+            return null;
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public ServiceResult createSlicingServiceWithIntent(Object slicingOrderBody) {
+
+        SlicingOrder slicingOrder = JSONObject.parseObject(JSONObject.toJSONString(slicingOrderBody), SlicingOrder.class);
+        ServiceResult serviceResult = slicingService.createSlicingService(slicingOrder);
+        ServiceCreateResult createResult = (ServiceCreateResult) serviceResult.getResult_body();
+
+        createIntentInstance(slicingOrderBody,createResult.getService_id(), slicingOrder.getSlicing_order_info().getName(), IntentConstant.MODEL_TYPE_5GS);
+        return serviceResult;
+    }
+
+    public int getIntentInstanceAllCount() {
+        Session session = getSession();
+        try{
+            String count="select count(*) from IntentInstance";
+            Query query = session.createQuery(count);
+            long q=(long)query.uniqueResult();
+            return (int)q;
+        } catch (Exception e) {
+            logger.error("exception occurred while performing IntentInstanceServiceImpl getAllCount. Details:" + e.getMessage());
+            return -1;
+        } finally {
+            session.close();
+        }
     }
 
     public void addSubscription() throws IOException {
