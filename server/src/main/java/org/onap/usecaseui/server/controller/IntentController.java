@@ -450,6 +450,29 @@ public class IntentController {
     }
 
     @IntentResponseBody
+    @ResponseBody
+    @PostMapping(value = {"/updateCCVPNInstance"}, consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = "application/json; charset=utf-8")
+    public Object updateCCVPNInstance(@RequestBody Object body) throws IOException {
+        String intentInstanceId = MapUtils.getString((Map)body,"instanceId");
+        int accessPointOneBandWidth = MapUtils.getIntValue((Map)body,"bandwidth");
+
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId(intentInstanceId);
+        instance.setAccessPointOneBandWidth(accessPointOneBandWidth);
+
+        int flag = intentInstanceService.updateCCVPNInstance(instance);
+
+        if(flag == 1) {
+            return "OK";
+        }
+        else {
+            throw new RuntimeException("create Instance error");
+        }
+    }
+
+
+    @IntentResponseBody
     @GetMapping(value = {"/getFinishedInstanceInfo"},
             produces = "application/json")
     public Object getFinishedInstanceInfo() {

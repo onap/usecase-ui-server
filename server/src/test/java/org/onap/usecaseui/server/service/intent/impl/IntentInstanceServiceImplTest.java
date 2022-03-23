@@ -987,4 +987,29 @@ public class IntentInstanceServiceImplTest {
         when(session.createQuery("select count(*) from IntentInstance")).thenThrow(new RuntimeException());
         assertEquals(intentInstanceService.getIntentInstanceAllCount(),-1);
     }
+
+    @Test
+    public void updateCCVPNInstanceTest() throws IOException {
+        CCVPNInstance instance = new CCVPNInstance();
+        instance.setInstanceId("1");
+        instance.setAccessPointOneBandWidth(1);
+
+        CCVPNInstance ccvpnInstance = new CCVPNInstance();
+        ccvpnInstance.setInstanceId(instance.getInstanceId());
+
+        Query query = mock(Query.class);
+        when(session.createQuery("from CCVPNInstance where instanceId = :instanceId")).thenReturn(query);
+        when(query.setParameter(anyString(), anyString())).thenReturn(query);
+        when(query.uniqueResult()).thenReturn(ccvpnInstance);
+
+        IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
+        doNothing().when(spy).saveIntentInstanceToAAI(anyString(),any(CCVPNInstance.class));
+
+        Transaction tx = Mockito.mock(Transaction.class);
+        Mockito.when(session.beginTransaction()).thenReturn(tx);
+        doNothing().when(session).update(ccvpnInstance);
+        Mockito.doNothing().when(tx).commit();
+
+        assertEquals(spy.updateCCVPNInstance(instance), 1);
+    }
 }

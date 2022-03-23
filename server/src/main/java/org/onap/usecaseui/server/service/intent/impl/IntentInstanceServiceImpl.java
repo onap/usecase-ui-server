@@ -856,6 +856,37 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         return serviceResult;
     }
 
+    @Override
+    public int updateCCVPNInstance(CCVPNInstance instance) {
+        Session session = getSession();
+        Transaction tx = null;
+        try{
+            if (null == instance){
+                logger.error("instance is null!");
+                return 0;
+            }
+            instance.setResourceInstanceId("cll-"+instance.getInstanceId());
+
+            CCVPNInstance ccvpnInstance = (CCVPNInstance)session.createQuery("from CCVPNInstance where instanceId = :instanceId")
+                    .setParameter("instanceId", instance.getInstanceId()).uniqueResult();
+            ccvpnInstance.setAccessPointOneBandWidth(instance.getAccessPointOneBandWidth());
+            saveIntentInstanceToAAI(IntentConstant.INTENT_INSTANCE_ID_PREFIX + "-" + ccvpnInstance.getInstanceId(), ccvpnInstance);
+
+            tx = session.beginTransaction();
+            session.update(ccvpnInstance);
+            tx.commit();
+            return 1;
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            logger.error("Details:" + e.getMessage());
+            return 0;
+        } finally {
+            session.close();
+        }
+    }
+
     public int getIntentInstanceAllCount() {
         Session session = getSession();
         try{
@@ -917,7 +948,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("service-instance-id", serviceInstanceId);
         params.put("service-instance-name", instance.getName());
         params.put("service-type", IntentConstant.MODEL_TYPE_CCVPN);
-        params.put("environment-context", environmentContext);
+        params.put("environment-context", environmentContext.toJSONString());
         params.put("service-instance-location-id", instance.getResourceInstanceId());
         params.put("bandwidth-total", instance.getAccessPointOneBandWidth());
         params.put("data-owner", IntentConstant.INTENT_INSTANCE_DATA_OWNER);

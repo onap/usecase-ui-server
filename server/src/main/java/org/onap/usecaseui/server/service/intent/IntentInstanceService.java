@@ -63,4 +63,6 @@ public interface IntentInstanceService {
     Page<IntentInstance> getIntentInstanceList(int currentPage, int pageSize);
 
     ServiceResult createSlicingServiceWithIntent(Object slicingOrderBody);
+
+    int updateCCVPNInstance(CCVPNInstance instance);
 }
