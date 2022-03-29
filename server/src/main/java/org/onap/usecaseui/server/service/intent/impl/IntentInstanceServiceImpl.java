@@ -219,6 +219,10 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         connectionLink.put("transportEndpointA", instance.getAccessPointOneName());
         connectionLink.put("transportEndpointB", instance.getCloudPointName());
         connectionLinks.add(connectionLink);
+        if (instance.getProtectStatus() == 1) {
+            sla.put("protectionType", instance.getProtectionType());
+            connectionLink.put("transportEndpointBProtection", instance.getProtectionCloudPointName());
+        }
         transportNetwork.put("sla", sla);
         transportNetwork.put("connectionLinks", connectionLinks);
         transportNetworks.add(transportNetwork);

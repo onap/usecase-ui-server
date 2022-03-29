@@ -62,6 +62,12 @@ public class CCVPNInstance implements Serializable {
     @Column(name = "delete_state")
     private int deleteState;
 
+    @Column(name = "protection_cloud_point_name")
+    private String protectionCloudPointName;
+
+    @Column(name = "protection_type")
+    private String protectionType;
+
     public CCVPNInstance() {
 
     }
@@ -168,5 +174,21 @@ public class CCVPNInstance implements Serializable {
 
     public void setProtectStatus(int protectStatus) {
         this.protectStatus = protectStatus;
+    }
+
+    public String getProtectionCloudPointName() {
+        return protectionCloudPointName;
+    }
+
+    public void setProtectionCloudPointName(String protectionCloudPointName) {
+        this.protectionCloudPointName = protectionCloudPointName;
+    }
+
+    public String getProtectionType() {
+        return protectionType;
+    }
+
+    public void setProtectionType(String protectionType) {
+        this.protectionType = protectionType;
     }
 }

@@ -435,6 +435,10 @@ public class IntentController {
         instance.setAccessPointOneBandWidth(accessPointOneBandWidth);
         instance.setStatus("0");
         instance.setProtectStatus(protectStatus?1:0);
+        if (protectStatus) {
+            instance.setProtectionType("1+1");
+            instance.setProtectionCloudPointName("tranportEp_dst_ID_123_4");
+        }
 
         int flag = intentInstanceService.createCCVPNInstance(instance);
 
