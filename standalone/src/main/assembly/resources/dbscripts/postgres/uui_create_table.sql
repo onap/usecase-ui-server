@@ -183,7 +183,9 @@ CREATE TABLE ccvpn_instance
     access_point_one_band_width integer,
     line_num                    varchar(64),
     delete_state                integer default 0,
-    protect_status              integer default 0
+    protect_status              integer default 0,
+    protection_cloud_point_name       varchar(255),
+    protection_type       varchar(255)
 );
 
 -- ----------------------------
