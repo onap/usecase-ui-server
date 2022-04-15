@@ -943,7 +943,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                 resourceVersion  = body.getString("resource-version");
             }
         } else {
-            serviceInstanceId = IntentConstant.MODEL_TYPE_CCVPN + "-" + instance.getInstanceId();
+            serviceInstanceId = IntentConstant.INTENT_INSTANCE_ID_PREFIX + "-" + instance.getInstanceId();
         }
         JSONObject environmentContext = JSONObject.parseObject(JSONObject.toJSONString(instance));
         environmentContext.put("resourceInstanceId",instance.getResourceInstanceId());
