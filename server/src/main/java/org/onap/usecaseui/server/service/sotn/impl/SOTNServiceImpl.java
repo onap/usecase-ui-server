@@ -400,6 +400,46 @@ public class SOTNServiceImpl implements SOTNService{
         return result;
 	}
 
+    @Override
+    public String getVpnBindingInfo(String vpnId) {
+        String result="";
+        try {
+            logger.info("aai getVpnBindingInfo is starting!");
+            Response<ResponseBody> response = this.aaiService.getVpnBindingInfo(vpnId).execute();
+            logger.info("aai getVpnBindingInfo has finished!");
+            if (response.isSuccessful()) {
+                result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getVpnBindingInfo[code=%s, message=%s]", response.code(), response.message()));
+                result= CommonConstant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getVpnBindingInfo occur exception:"+e);
+            result= CommonConstant.CONSTANT_FAILED;
+        }
+        return result;
+    }
+
+    @Override
+    public String getNetworkRouteInfo(String routeId){
+        String result="";
+        try {
+            logger.info("aai getNetworkRouteInfo is starting!");
+            Response<ResponseBody> response = this.aaiService.getNetworkRouteInfo(routeId).execute();
+            logger.info("aai getNetworkRouteInfo has finished!");
+            if (response.isSuccessful()) {
+                result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getNetworkRouteInfo[code=%s, message=%s]", response.code(), response.message()));
+                result= CommonConstant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getNetworkRouteInfo occur exception:"+e);
+            result= CommonConstant.CONSTANT_FAILED;
+        }
+        return result;
+    }
+
 	@Override
 	public String getPinterfaceByVpnId(String vpnId) {
 		String result="";

@@ -162,14 +162,28 @@ public class SotnControllerTest {
 		sotnController.getConnectivityInfo(linkName);
 		verify(sotnService, times(1)).getConnectivityInfo(linkName);
 	}
-	
+
+	@Test
+	public void TestGetVpnBindingInfo(){
+		String vpnId = "vpnId";
+		sotnController.getVpnBindingInfo(vpnId);
+		verify(sotnService, times(1)).getVpnBindingInfo(vpnId);
+	}
+
+	@Test
+	public void TestGetNetworkRouteInfo(){
+		String linkName="routeId";
+		sotnController.getNetworkRouteInfo(linkName);
+		verify(sotnService, times(1)).getNetworkRouteInfo(linkName);
+	}
+
 	@Test
 	public void TestGetPinterfaceByVpnId(){
 		String linkName="pnfName";
 		sotnController.getPinterfaceByVpnId(linkName);
 		verify(sotnService, times(1)).getPinterfaceByVpnId(linkName);
 	}
-	
+
 	@Test
 	public void TestGetServiceInstanceList(){
 		String linkName="pnfName";

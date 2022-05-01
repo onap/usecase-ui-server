@@ -192,12 +192,12 @@ public interface AAIService {
 	Call<PinterfaceRsp> getPinterfaceByPnfName(@Path("pnfName") String pnfName);
     
     @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
     })
-	@GET("/api/aai-network/v24/logical-links")
+	@GET("/aai/v24/network/logical-links")
 	Call<ResponseBody> getLogicalLinks();
     
     @Headers({
@@ -309,23 +309,41 @@ public interface AAIService {
     Call<ResponseBody> getAllottedResources(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
     
     @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
     })
-    @GET("/api/aai-network/v14/pnfs/pnf/{pnfName}")
-    Call<ResponseBody> getPnfInfo(@Path("pnfName") String pnfName);
+    @GET("/aai/v24/network/pnfs")
+    Call<ResponseBody> getPnfInfo(@Query("pnfName") String pnfName);
     
     @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
     })
-    @GET("/api/aai-network/v24/connectivities")
+    @GET("/aai/v24/network/connectivities")
     Call<ResponseBody> getConnectivityInfo(@Query("connectivity-id") String connectivityId);
-    
+
+    @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
+    })
+    @GET("/aai/v24/network/vpn-bindings")
+    Call<ResponseBody> getVpnBindingInfo(@Query("vpn-id") String vpnId);
+
+    @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
+    })
+    @GET("/aai/v24/network/network-routes")
+    Call<ResponseBody> getNetworkRouteInfo(@Query("route-id") String routeId);
+
     @Headers({
     	"X-TransactionId: 7777",
     	"X-FromAppId: uui",

@@ -138,8 +138,8 @@ public class SotnController {
     	return sotnService.serviceInstanceInfo(customerId, serviceType, serviceId);
     }
     
-    @GetMapping(value = {"/getPnfInfo/{pnfName:.+}"})
-    public String getPnfInfo(@PathVariable(value="pnfName") String pnfName){
+    @GetMapping(value = {"/getPnfInfo", "/getPnfInfo/{pnfName}"})
+    public String getPnfInfo(@PathVariable(required = false) String pnfName){
     	return sotnService.getPnfInfo(pnfName);
     }
     
@@ -155,7 +155,17 @@ public class SotnController {
     public String getConnectivityInfo(@PathVariable(required = false) String connectivityId){
     	return sotnService.getConnectivityInfo(connectivityId);
     }
-    
+
+	@GetMapping(value = {"/getVpnBindingInfo", "/getVpnBindingInfo/{vpnId}"})
+	public String getVpnBindingInfo(@PathVariable(required = false) String vpnId){
+		return sotnService.getVpnBindingInfo(vpnId);
+	}
+
+	@GetMapping(value = {"/getNetworkRouteInfo", "/getNetworkRouteInfo/{routeId}"})
+	public String getNetworkRouteInfo(@PathVariable(required = false) String routeId){
+		return sotnService.getNetworkRouteInfo(routeId);
+	}
+
     @GetMapping(value = {"/getPinterfaceByVpnId/{vpnId:.+}"})
     public String getPinterfaceByVpnId(@PathVariable(value="vpnId") String vpnId){
     	return sotnService.getPinterfaceByVpnId(vpnId);

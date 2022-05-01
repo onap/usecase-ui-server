@@ -56,7 +56,11 @@ public interface SOTNService {
 	public String getAllottedResources(String customerId,String serviceType,String serviceId);
 	
 	public String getConnectivityInfo(String connectivityId);
-	
+
+	public String getVpnBindingInfo(String vpnId);
+
+	public String getNetworkRouteInfo(String routeId);
+
 	public String getPinterfaceByVpnId(String vpnId);
 	
 	public String deleteExtNetwork(String networkId,String resourceVersion);
