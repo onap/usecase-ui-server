@@ -35,7 +35,7 @@ public class IntentScheduleTask {
     public void getIntentInstanceCompleteness() {
         intentInstanceService.getIntentInstanceProgress();
     }
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     public void getIntentInstanceBandwidth() throws IOException {
         intentInstanceService.getIntentInstanceBandwidth();
     }

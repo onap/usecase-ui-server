@@ -136,8 +136,8 @@ public interface IntentApiService {
             "Authorization: Basic QUFJOkFBSQ==",
             "Accept: application/json"
     })
-    @DELETE("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}?resource-version={resourceVersion}")
-    Call<Void> deleteServiceInstance(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType, @Path("serviceInstanceId") String serviceInstanceId, @Path("resourceVersion") String resourceVersion);
+    @DELETE("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
+    Call<Void> deleteServiceInstance(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType, @Path("serviceInstanceId") String serviceInstanceId, @Query("resource-version") String resourceVersion);
 
     @Headers({
             "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
