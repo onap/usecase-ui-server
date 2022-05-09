@@ -205,7 +205,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("subscriptionServiceType", "IBN");
         params.put("serviceType", "CLL");
         Map<String, Object> additionalProperties = new HashMap<>();
-        additionalProperties.put("enableSdnc", "false");
+        additionalProperties.put("enableSdnc", "true");
         additionalProperties.put("serviceInstanceID", "cll-" + instance.getInstanceId());
         List<Map<String, Object>> transportNetworks = new ArrayList<>();
         Map<String, Object> transportNetwork = new HashMap<>();
@@ -404,7 +404,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                 continue;
             }
             JSONObject networkPolicyInfo = networkPolicyInfoResponse.body();
-            int maxBandwidth =  networkPolicyInfo.getIntValue("max-bandwidth");
+            int maxBandwidth =  networkPolicyInfo.getIntValue("max-bandwidth") * 1000;
             InstancePerformance instancePerformance = new InstancePerformance();
             instancePerformance.setMaxBandwidth(maxBandwidth);
             instancePerformance.setResourceInstanceId(instance.getResourceInstanceId());
