@@ -345,6 +345,15 @@ public interface AAIService {
     Call<ResponseBody> getNetworkRouteInfo(@Query("route-id") String routeId);
 
     @Headers({
+            "X-TransactionId: 9999",
+            "X-FromAppId: MSO",
+            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
+            "Accept: application/json"
+    })
+    @GET("/aai/v24/network/unis")
+    Call<ResponseBody> getUniInfo(@Query("uni-id") String uniId);
+
+    @Headers({
     	"X-TransactionId: 7777",
     	"X-FromAppId: uui",
     	"Authorization: Basic QUFJOkFBSQ==",

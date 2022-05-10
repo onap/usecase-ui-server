@@ -440,6 +440,26 @@ public class SOTNServiceImpl implements SOTNService{
         return result;
     }
 
+    @Override
+    public String getUniInfo(String id){
+        String result="";
+        try {
+            logger.info("aai getUniInfo is starting!");
+            Response<ResponseBody> response = this.aaiService.getUniInfo(id).execute();
+            logger.info("aai getUniInfo has finished!");
+            if (response.isSuccessful()) {
+                result=new String(response.body().bytes());
+            } else {
+                logger.info(String.format("Can not get getUniInfo[code=%s, message=%s]", response.code(), response.message()));
+                result= CommonConstant.CONSTANT_FAILED;
+            }
+        } catch (IOException e) {
+            logger.error("getUniInfo occur exception:"+e);
+            result= CommonConstant.CONSTANT_FAILED;
+        }
+        return result;
+    }
+
 	@Override
 	public String getPinterfaceByVpnId(String vpnId) {
 		String result="";
