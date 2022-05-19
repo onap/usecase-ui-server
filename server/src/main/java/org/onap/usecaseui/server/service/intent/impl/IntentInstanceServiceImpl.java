@@ -415,9 +415,17 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             if (!metadatumResponse.isSuccessful()) {
                 logger.error("get Intent-Instance metadatum error:" + metadatumResponse.toString());
                 continue;
+            }else {
+                logger.debug("get Intent-Instance metadatum ok: instance id:" + instance.getInstanceId() + ", metadatum info:" + metadatumResponse.toString());
             }
             JSONObject metadatum = metadatumResponse.body();
-            int metaval = metadatum.getJSONArray("metadatum").getJSONObject(0).getIntValue("metaval");
+            JSONArray metadatumArr = metadatum.getJSONArray("metadatum");
+            int metaval = -1;
+            for (int i = 0; i < metadatumArr.size(); i++) {
+                if (metaval == -1 || metaval > metadatumArr.getJSONObject(i).getIntValue("metaval")) {
+                    metaval = metadatumArr.getJSONObject(i).getIntValue("metaval");
+                }
+            }
             instancePerformance.setBandwidth(metaval);
 
             Session session = getSession();
@@ -473,7 +481,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("subscriptionServiceType", "IBN");
         params.put("serviceType", "CLL");
         JSONObject additionalProperties = new JSONObject();
-        additionalProperties.put("enableSdnc", "false");
+        additionalProperties.put("enableSdnc", "true");
         params.put("additionalProperties", additionalProperties);
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
         intentApiService.deleteIntentInstance(requestBody).execute();
@@ -621,11 +629,12 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         for (int i = 0; i<data.size(); i++) {
             JSONObject nodeInfo = data.getJSONObject(i);
             if ("ROOT".equals(nodeInfo.getString("type"))) {
-                cloudAccessNodeList.add(nodeInfo.getString("route-id"));
+                cloudAccessNodeList.add(nodeInfo.getString("route-id")+"("+nodeInfo.getString("data-source")+")");
             }
             else {
-                accessNodeList.add(nodeInfo.getString("route-id"));
+                accessNodeList.add(nodeInfo.getString("route-id")+"("+nodeInfo.getString("data-source")+")");
             }
+            IntentConstant.NetWorkNodeAlias.put(nodeInfo.getString("route-id"), nodeInfo.getString("route-id")+"("+nodeInfo.getString("data-source")+")");
         }
         result.put("accessNodeList",accessNodeList);
         result.put("cloudAccessNodeList",cloudAccessNodeList);

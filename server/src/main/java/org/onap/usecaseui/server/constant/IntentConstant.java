@@ -15,6 +15,9 @@
  */
 package org.onap.usecaseui.server.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class IntentConstant {
     public final static String UPLOADPATH = "/home/uui/upload/";
     public final static String NLPLOADPATH = "/home/uuihome/uui/bert-master/upload/";
@@ -31,4 +34,6 @@ public final class IntentConstant {
     public final static String NLP_ONLINE_URL_BASE = NLP_HOST+":33011";
     public final static String NLP_OFFLINE_URL_BASE = NLP_HOST+":33012";
     public final static String NLP_FILE_URL_BASE = NLP_HOST+":33013";
+
+    public static Map<String, String> NetWorkNodeAlias = new HashMap<>();
 }

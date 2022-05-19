@@ -312,12 +312,12 @@ public class IntentController {
         String instanceId = getUUID();
         String accessPointAlias = intentInstanceService.formatAccessPoint(accessPoint);
         if ("".equals(accessPointAlias)) {
-            if (text.indexOf("Access one") > -1) {
-                accessPointAlias = "tranportEp_src_ID_111_1";
-            } else if (text.indexOf("Access two") > -1) {
-                accessPointAlias = "tranportEp_src_ID_111_2";
-            } else if (text.indexOf("Access three") > -1) {
-                accessPointAlias = "tranportEp_src_ID_113_1";
+            if (text.toLowerCase().contains("access one") || text.toLowerCase().contains("company a")) {
+                accessPointAlias = MapUtils.getString(IntentConstant.NetWorkNodeAlias, "tranportEp_src_ID_111_1","tranportEp_src_ID_111_1");
+            } else if (text.toLowerCase().contains("access two") || text.toLowerCase().contains("company b")) {
+                accessPointAlias = MapUtils.getString(IntentConstant.NetWorkNodeAlias, "tranportEp_src_ID_111_2","tranportEp_src_ID_111_2");
+            } else if (text.toLowerCase().contains("access three") || text.toLowerCase().contains("company c")) {
+                accessPointAlias = MapUtils.getString(IntentConstant.NetWorkNodeAlias, "tranportEp_src_ID_113_1","tranportEp_src_ID_113_1");
             }
         }
         String bandwidthAlias = null;
@@ -339,7 +339,9 @@ public class IntentController {
         String cloudPointAlias = intentInstanceService.formatCloudPoint(cloudPoint);
         if ("".equals(cloudPointAlias)) {
             if (text.indexOf("Cloud one") > -1) {
-                cloudPointAlias = "tranportEp_dst_ID_212_1";
+                cloudPointAlias = MapUtils.getString(IntentConstant.NetWorkNodeAlias, "tranportEp_dst_ID_212_1","tranportEp_dst_ID_212_1");
+            }else if (text.indexOf("Cloud two") > -1) {
+                cloudPointAlias = MapUtils.getString(IntentConstant.NetWorkNodeAlias, "tranportEp_dst_ID_213_1","tranportEp_dst_ID_213_1");
             }
         }
 
@@ -410,7 +412,12 @@ public class IntentController {
         int currentPage = (int) ((Map)body).get("currentPage");
         int pageSize = (int) ((Map)body).get("pageSize");
         logger.error("getInstanceList --> currentPage:" + currentPage + ",pageSize:" + pageSize);
-        return intentInstanceService.queryIntentInstance(null, currentPage, pageSize);
+        Page<CCVPNInstance> ccvpnInstancePage = intentInstanceService.queryIntentInstance(null, currentPage, pageSize);
+        for (CCVPNInstance instance : ccvpnInstancePage.getList()) {
+            instance.setAccessPointOneName(MapUtils.getString(IntentConstant.NetWorkNodeAlias, instance.getAccessPointOneName(),instance.getAccessPointOneName()));
+            instance.setCloudPointName(MapUtils.getString(IntentConstant.NetWorkNodeAlias, instance.getCloudPointName(),instance.getCloudPointName()));
+        }
+        return ccvpnInstancePage;
     }
     @IntentResponseBody
     @ResponseBody
@@ -420,9 +427,9 @@ public class IntentController {
         String intentInstanceId = (String) ((Map)body).get("instanceId");
         String name = (String) ((Map)body).get("name");
         String lineNum = (String) ((Map)body).get("lineNum");
-        String cloudPointName = (String) ((Map)body).get("cloudPointName");
+        String cloudPointName = ((String) ((Map)body).get("cloudPointName")).split("\\(")[0];
         Map<String, Object> accessPointOne = (Map) ((Map)body).get("accessPointOne");
-        String accessPointOneName = MapUtils.getString(accessPointOne, "name");
+        String accessPointOneName = MapUtils.getString(accessPointOne, "name").split("\\(")[0];
         int accessPointOneBandWidth = MapUtils.getIntValue(accessPointOne, "bandwidth");
         boolean protectStatus = MapUtils.getBooleanValue((Map)body,"protect", false);
 
