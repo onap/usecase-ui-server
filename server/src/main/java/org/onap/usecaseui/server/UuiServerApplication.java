@@ -29,9 +29,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.MultipartConfigElement;
 
-@SpringBootApplication
-@EnableAutoConfiguration(exclude={JpaRepositoriesAutoConfiguration.class})
-@ComponentScan(basePackages = "org.onap.usecaseui.server")
+@SpringBootApplication(exclude = {JpaRepositoriesAutoConfiguration.class},
+        scanBasePackages = "org.onap.usecaseui.server")
 public class UuiServerApplication {
     public static DmaapSubscriber dmaapSubscriber;
 
