@@ -20,13 +20,5 @@ function shutdown_usecaseui_server(){
     curl -X POST http://127.0.0.1:8082/api/usecaseui-server/v1/shutdown
     echo ================== usecase-ui server shutdown finished =============================================
 }
-
-function shutdown_usecaseui_db(){
-    echo ================== usecase-ui database shutdown is starting =============================================
-    service postgresql stop
-    echo ================== usecase-ui database shutdown finished =============================================
-}
-
 shutdown_usecaseui_server;
-shutdown_usecaseui_db;
 echo "*****************usecase server shutdown finished*****************"
