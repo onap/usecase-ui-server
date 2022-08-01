@@ -26,5 +26,7 @@ echo @JAVA_OPTS@ $JAVA_OPTS
 jar_path="$main_path/*.jar"
 echo @jar_path@ $jar_path
 
+echo "waiting postgres to start..."
+sleep 1m
 echo "Starting usecase-ui-server..."
-$JAVA_PATH $JAVA_OPTS -classpath $jar_path -jar $jar_path
+$JAVA_PATH $JAVA_OPTS -classpath $jar_path -jar $jar_path $SPRING_OPTS
