@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee3282cc_ce0da4da",
+        "filename": "standalone/src/main/assembly/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5029
+      },
+      "writtenOn": "2022-08-02T03:32:30Z",
+      "side": 0,
+      "message": "Why remove this line?",
+      "revId": "6488a4b4eedbcd06338b50ad0362a8477511bdb4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
