@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f712fa9d_be16bf72",
+        "filename": "server/src/main/resources/application.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5029
+      },
+      "writtenOn": "2022-08-02T03:22:51Z",
+      "side": 1,
+      "message": "the DB username and password should also be configurable",
+      "revId": "fcdd5cc93361de071902bd32497a9dfcd476ef99",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "797087e0_07f6c91c",
+        "filename": "server/src/main/resources/application.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5029
+      },
+      "writtenOn": "2022-08-02T03:22:51Z",
+      "side": 1,
+      "message": "The hibernate related configs could all be removed since now we are switching to mybatis.",
+      "revId": "fcdd5cc93361de071902bd32497a9dfcd476ef99",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
