@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "90862f57_6f8b6307",
+        "filename": "server/src/main/resources/application.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2022-08-08T02:38:23Z",
+      "side": 1,
+      "message": "Please confirm the db name",
+      "revId": "27f4639fc4e17257450929f16788dfb92243fdc8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
