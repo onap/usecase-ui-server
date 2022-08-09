@@ -18,15 +18,6 @@
 main_path="/home/uui"
 echo @main_path@ $main_path
 
-echo "Starting postgreSQL..."
-#service postgresql start
-postmaster -D /usr/share/postgresql/data &
-sleep 10
-
-echo "usecase-ui database init script start..."
-dbScript="$main_path/resources/bin/initDB.sh"
-source $dbScript 127.0.0.1 5432 postgres uui
-echo "usecase-ui database init script finished normally..."
 
 JAVA_PATH="$JAVA_HOME/bin/java"
 JAVA_OPTS="-Xms50m -Xmx128m"
@@ -37,4 +28,4 @@ jar_path="$main_path/usecase-ui-server.jar"
 echo @jar_path@ $jar_path
 
 echo "Starting usecase-ui-server..."
-$JAVA_PATH $JAVA_OPTS -classpath $jar_path -jar $jar_path
+$JAVA_PATH $JAVA_OPTS -classpath $jar_path -jar $jar_path $SPRING_OPTS
