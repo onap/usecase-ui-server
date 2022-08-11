@@ -222,7 +222,7 @@ public class IntentController {
         String url = IntentConstant.NLP_ONLINE_URL_BASE + "/api/online/predict";
         HashMap<String, String> headers = new HashMap<>();
         String bodyStr = "{\"title\": \"predict\", \"text\": \"" + text
-                +  "\", \"questions\":" + new JSONArray(Arrays.asList(questions)).toJSONString() + "}";
+                +  "\", \"questions\":" + new JSONArray().toJSONString(Arrays.asList(questions)) + "}";
         logger.info("request body: " + bodyStr);
 
         HttpResponseResult result = HttpUtil.sendPostRequestByJson(url, headers, bodyStr);
@@ -265,7 +265,7 @@ public class IntentController {
         String url = IntentConstant.NLP_ONLINE_URL_BASE + "/api/online/predict";
         HashMap<String, String> headers = new HashMap<>();
         String bodyStr = "{\"title\": \"predict\", \"text\": \"" + text
-                +  "\", \"questions\":" + new JSONArray(Arrays.asList(questions)).toJSONString() + "}";
+                +  "\", \"questions\":" + new JSONArray().toJSONString(Arrays.asList(questions)) + "}";
         logger.info("request body: " + bodyStr);
 
         HttpResponseResult result = HttpUtil.sendPostRequestByJson(url, headers, bodyStr);

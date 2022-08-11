@@ -26,6 +26,7 @@ import okio.ByteString;
 import okio.Options;
 import okio.Sink;
 import okio.Timeout;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.E2EServiceInstanceRequest;
@@ -499,6 +500,19 @@ public class SotnServiceTemplateServiceImplTest {
                     @Override
                     public BufferedSource source() {
                         BufferedSource bufferedSource = new BufferedSource() {
+
+                            @NotNull
+                            @Override
+                            public BufferedSource peek() {
+                                return null;
+                            }
+
+                            @NotNull
+                            @Override
+                            public Buffer getBuffer() {
+                                return null;
+                            }
+
                             @Override
                             public long read(Buffer buffer, long l) throws IOException {
                                 return 0;
