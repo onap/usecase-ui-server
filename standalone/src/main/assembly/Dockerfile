@@ -4,6 +4,8 @@ MAINTAINER "Lu Ji" <lu.ji3@zte.com.cn>
 # Expose the Usecase-UI backend port 
 EXPOSE 8082
 
+USER root
+
 #Configure Java SDK
 ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 
