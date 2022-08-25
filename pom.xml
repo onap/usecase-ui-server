@@ -25,7 +25,7 @@
 
     <groupId>org.onap.usecase-ui.server</groupId>
     <artifactId>usecase-ui-server-parent</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>5.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>usecase-ui-server-parent</name>
     <description>parent project for usecase-ui server</description>
