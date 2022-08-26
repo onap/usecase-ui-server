@@ -59,7 +59,7 @@ public class RestfulServices {
 
         String msbUrl = getMsbAddress();
         Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://" + msbUrl + "/")
+            .baseUrl("http://localhost:8888/")
             .client(okHttpClient)
             .addConverterFactory(JacksonConverterFactory.create())
             .build();
