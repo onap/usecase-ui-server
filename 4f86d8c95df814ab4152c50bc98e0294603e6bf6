@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "918a6e6a_2fb7897b",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/service/csmf/impl/SlicingServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2022-08-29T15:31:57Z",
+      "side": 1,
+      "message": "If slicingservice is not in the intent mode, adding such code will cause the operation to fail",
+      "revId": "4f86d8c95df814ab4152c50bc98e0294603e6bf6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e732a49b_de4e1f82",
+        "filename": "server/src/main/java/org/onap/usecaseui/server/util/RestfulServices.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 6267
+      },
+      "writtenOn": "2022-08-29T15:31:57Z",
+      "side": 1,
+      "message": "Please do not submit such code, thank you",
+      "revId": "4f86d8c95df814ab4152c50bc98e0294603e6bf6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
