@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e52f1023_24792d18",
+        "filename": "server/src/main/resources/policy/modifycll.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 797
+      },
+      "writtenOn": "2022-08-30T02:31:19Z",
+      "side": 1,
+      "message": "the commit belongs to uui/intent-analysis, Wrong project",
+      "range": {
+        "startLine": 3,
+        "startChar": 4,
+        "endLine": 3,
+        "endChar": 58
+      },
+      "revId": "87aa92d455dbd4dc9aef450da12acaf782b89ccb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cca6195a_dec82445",
+        "filename": "server/src/main/resources/policy/push_slicems_config.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 797
+      },
+      "writtenOn": "2022-08-30T02:31:19Z",
+      "side": 1,
+      "message": "Do not name intent config as slicems config. intent management have no relation with slice.",
+      "range": {
+        "startLine": 4,
+        "startChar": 7,
+        "endLine": 4,
+        "endChar": 46
+      },
+      "revId": "87aa92d455dbd4dc9aef450da12acaf782b89ccb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
