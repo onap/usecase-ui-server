@@ -80,4 +80,21 @@ public class ResourceMonitorControllerTest {
         resourceMonitorController.querySlicingTotalBandwidth("1577016963000", serviceList);
         verify(resourceMonitorService, times(1)).querySlicingTotalBandwidth("1577016963000", serviceList);
     }
+
+    @Test
+    public void testQuerySlicingPDUSessionEstSR() {
+        ResourceMonitorService resourceMonitorService = mock(ResourceMonitorService.class);
+        ResourceMonitorController resourceMonitorController = new ResourceMonitorController();
+        resourceMonitorController.setResourceMonitorService(resourceMonitorService);
+
+        ServiceList serviceList = new ServiceList();
+        List<ServiceInfo> serviceInfoList = new ArrayList<>();
+        ServiceInfo serviceInfo = new ServiceInfo();
+        serviceInfo.setServiceId("1234-9067-4356-9876");
+        serviceInfoList.add(serviceInfo);
+        serviceList.setServiceInfoList(serviceInfoList);
+
+        resourceMonitorController.querySlicingTotalBandwidth("1577016963000", serviceList);
+        verify(resourceMonitorService, times(1)).querySlicingPDUSessionEstSR("1577016963000", serviceList);
+    }
 }

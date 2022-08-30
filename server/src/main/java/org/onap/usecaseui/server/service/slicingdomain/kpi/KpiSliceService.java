@@ -19,6 +19,7 @@ package org.onap.usecaseui.server.service.slicingdomain.kpi;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiPDUSessionEstSR;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -38,5 +39,9 @@ public interface KpiSliceService {
     @Headers({"Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==", "Accept: application/json"})
     @POST("/api/datalake/v1/exposure/totalTraffic")
     Call<KpiTotalTraffic> listTotalTraffic(@Body RequestBody body);
+
+    @Headers({"Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==", "Accept: application/json"})
+    @POST("/api/datalake/v1/exposure/pDUSessionEstSR")
+    Call<KpiPDUSessionEstSR> listPDUSessionEstSR(@Body RequestBody body);
 
 }

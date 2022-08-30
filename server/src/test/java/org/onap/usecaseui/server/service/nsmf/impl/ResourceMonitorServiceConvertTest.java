@@ -23,13 +23,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceOnlineUserInfo;
+import org.onap.usecaseui.server.bean.nsmf.monitor.ServicePDUSessionEstSRInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceTotalBandwidthInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.TrafficReqInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.UsageTrafficInfo;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiPDUSessionEstSR;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.PDUSessionEstSR;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.TotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.TotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.UserNumbers;
@@ -128,6 +131,37 @@ public class ResourceMonitorServiceConvertTest {
         try {
             resourceMonitorServiceConvert
                 .convertServiceTotalBandwidthInfo(serviceTotalBandwidthInfo, kpiTotalBandwidth);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void itCanConvertconvertServicePDUSessionEstSRInfo() {
+	ServicePDUSessionEstSRInfo servicePDUSessionEstSRInfo = new ServicePDUSessionEstSRInfo();
+	KpiPDUSessionEstSR kpiPDUSessionEstSR = new KpiPDUSessionEstSR();
+
+        List<PDUSessionEstSR> kpiPDUSessionEstSRInfoList = new ArrayList<>();
+        PDUSessionEstSR kpiPDUSessionEstSRInfo = new PDUSessionEstSR();
+        kpiPDUSessionEstSRInfo.setPDUSessionEstSR(100);
+        kpiPDUSessionEstSRInfo.setTimeStamp("2019-12-23 11:31:19");
+        kpiPDUSessionEstSRInfoList.add(kpiPDUSessionEstSRInfo);
+        kpiPDUSessionEstSR.setResult(kpiPDUSessionEstSRInfoList);
+
+
+        SlicingKpiReqInfo slicingKpiReqInfo = new SlicingKpiReqInfo();
+        slicingKpiReqInfo.setTimeStamp("2019-12-23 11:31:19");
+        slicingKpiReqInfo.setId("112233");
+        slicingKpiReqInfo.setHours(4);
+        kpiPDUSessionEstSR.setRequest(slicingKpiReqInfo);
+
+        try {
+            resourceMonitorServiceConvert
+                .convertServicePDUSessionEstSRInfo(servicePDUSessionEstSRInfo, kpiPDUSessionEstSR);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

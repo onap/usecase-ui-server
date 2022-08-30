@@ -25,4 +25,6 @@ public interface ResourceMonitorService {
     ServiceResult querySlicingOnlineUserNumber(String queryTimestamp, ServiceList serviceList);
 
     ServiceResult querySlicingTotalBandwidth(String queryTimestamp, ServiceList serviceList);
+
+    ServiceResult querySlicingPDUSessionEstSR(String queryTimestamp, ServiceList serviceList);
 }

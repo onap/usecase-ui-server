@@ -27,12 +27,16 @@ import org.onap.usecaseui.server.bean.nsmf.monitor.TotalBandwidthInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.TrafficReqInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.UsageTrafficInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.UserNumberInfo;
+import org.onap.usecaseui.server.bean.nsmf.monitor.ServicePDUSessionEstSRInfo;
+import org.onap.usecaseui.server.bean.nsmf.monitor.PDUSessionEstSRInfo;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.TotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.UserNumbers;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiPDUSessionEstSR;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.PDUSessionEstSR;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +65,14 @@ public class ResourceMonitorServiceConvert {
     SlicingKpiReqInfo buildSlicingKpiReqInfo(ServiceInfo serviceInfo, String queryTimestamp, int kpiHours) {
         SlicingKpiReqInfo slicingKpiReqInfo = new SlicingKpiReqInfo();
         slicingKpiReqInfo.setId(serviceInfo.getServiceId());
+        slicingKpiReqInfo.setTimeStamp(queryTimestamp);
+        slicingKpiReqInfo.setHours(kpiHours);
+        return slicingKpiReqInfo;
+    }
+
+    SlicingKpiReqInfo buildSlicingPDUSessionEstSRKpiReqInfo(ServiceInfo serviceInfo, String queryTimestamp, int kpiHours) {
+        SlicingKpiReqInfo slicingKpiReqInfo = new SlicingKpiReqInfo();
+        slicingKpiReqInfo.setId("PDUSessionEstSR"+"."+serviceInfo.getServiceId());
         slicingKpiReqInfo.setTimeStamp(queryTimestamp);
         slicingKpiReqInfo.setHours(kpiHours);
         return slicingKpiReqInfo;
@@ -104,5 +116,22 @@ public class ResourceMonitorServiceConvert {
         }
 
         serviceTotalBandwidthInfo.setTotalBandwidthInfoList(totalBandwidthInfoList);
+    }
+
+    void convertServicePDUSessionEstSRInfo(ServicePDUSessionEstSRInfo servicePDUSessionEstSRInfo,
+        KpiPDUSessionEstSR kpiPDUSessionEstSR)
+        throws InvocationTargetException, IllegalAccessException, ParseException {
+
+        List<PDUSessionEstSRInfo> kpiPDUSessionEstSRInfoList = new ArrayList<>();
+        servicePDUSessionEstSRInfo.setId(kpiPDUSessionEstSR.getRequest().getId().substring(kpiPDUSessionEstSR.getRequest().getId().lastIndexOf(".") + 1));
+        if (kpiPDUSessionEstSR.getResult() != null) {
+            for (PDUSessionEstSR pDUSessionEstSR : kpiPDUSessionEstSR.getResult()) {
+                PDUSessionEstSRInfo kpiPDUSessionEstSRInfo = new PDUSessionEstSRInfo();
+                kpiPDUSessionEstSRInfo.setTimestamp(pDUSessionEstSR.getTimeStamp());
+                kpiPDUSessionEstSRInfo.setPduSessionEstSR(String.valueOf(pDUSessionEstSR.getPDUSessionEstSR()));
+                kpiPDUSessionEstSRInfoList.add(kpiPDUSessionEstSRInfo);
+            }
+        }
+        servicePDUSessionEstSRInfo.setPDUSessionEstSRInfoList(kpiPDUSessionEstSRInfoList);
     }
 }

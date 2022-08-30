@@ -68,4 +68,13 @@ public class ResourceMonitorController {
             ServiceList serviceList) {
         return resourceMonitorService.querySlicingTotalBandwidth(queryTimestamp, serviceList);
     }
+
+    @ResponseBody
+    @PostMapping(value = {
+        "/queryTimestamp/{queryTimestamp}/pDUSessionEstSR"}, produces = "application/json")
+    public ServiceResult querySlicingPDUSessionEstSR(@PathVariable(value = "queryTimestamp") String queryTimestamp,
+        @RequestBody
+            ServiceList serviceList) {
+        return resourceMonitorService.querySlicingPDUSessionEstSR(queryTimestamp, serviceList);
+    }
 }

@@ -143,4 +143,19 @@ public class ResourceMonitorServiceImplTest {
         when(kpiSliceService.listTotalBandwidth(body)).thenReturn(failedCall("kpi is not exist!"));
         resourceMonitorService.querySlicingTotalBandwidth(queryTimestamp, serviceList);
     }
+
+    @Test
+    public void querySlicingPDUSessionEstSRWithThrowsException() {
+        ServiceList serviceList = new ServiceList();
+        List<ServiceInfo> serviceInfoList = new ArrayList<>();
+        ServiceInfo serviceInfo = new ServiceInfo();
+        serviceInfo.setServiceId("123e-456t-567t-yui8");
+        serviceInfoList.add(serviceInfo);
+        serviceList.setServiceInfoList(serviceInfoList);
+        String queryTimestamp = "1577071879000";
+
+        RequestBody body = null;
+        when(kpiSliceService.listPDUSessionEstSR(body)).thenReturn(failedCall("kpi is not exist!"));
+        resourceMonitorService.querySlicingPDUSessionEstSR(queryTimestamp, serviceList);
+    }
 }

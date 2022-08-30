@@ -34,7 +34,9 @@ import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceList;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceOnlineUserInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceOnlineUserList;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceTotalBandwidthInfo;
+import org.onap.usecaseui.server.bean.nsmf.monitor.ServicePDUSessionEstSRInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceTotalBandwidthList;
+import org.onap.usecaseui.server.bean.nsmf.monitor.ServicePDUSessionEstSRList;
 import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.TrafficReqInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.UsageTrafficInfo;
@@ -46,6 +48,7 @@ import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiPDUSessionEstSR;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
@@ -248,6 +251,59 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
         resultHeader.setResult_message(resultMsg);
         serviceResult.setResult_header(resultHeader);
         serviceResult.setResult_body(serviceTotalBandwidthList);
+        return serviceResult;
+    }
+
+    @Override
+    public ServiceResult querySlicingPDUSessionEstSR(String queryTimestamp, ServiceList serviceList) {
+        ServiceResult serviceResult = new ServiceResult();
+        ResultHeader resultHeader = new ResultHeader();
+        initConfig();
+        ServicePDUSessionEstSRList servicePDUSessionEstSRList = new ServicePDUSessionEstSRList();
+
+        List<ServicePDUSessionEstSRInfo> servicePDUSessionEstSRInfoList = new ArrayList<>();
+        List<ServiceInfo> serviceInfoList = serviceList.getServiceInfoList();
+
+        String resultMsg = "";
+
+        try {
+            for (ServiceInfo serviceInfo : serviceInfoList) {
+                SlicingKpiReqInfo slicingKpiReqInfo = resourceMonitorServiceConvert
+                    .buildSlicingPDUSessionEstSRKpiReqInfo(serviceInfo, queryTimestamp, kpiHours);
+                String jsonstr = JSON.toJSONString(slicingKpiReqInfo);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
+                Response<KpiPDUSessionEstSR> response =this.kpiSliceService.listPDUSessionEstSR(requestBody).execute();
+                if (response.isSuccessful()) {
+                    KpiPDUSessionEstSR kpiPDUSessionEstSR = response.body();
+                    logger.info("querySlicingPDUSessionEstSR: listPDUSessionEstSR reponse is:{}",
+                        gson.toJson(kpiPDUSessionEstSR));
+                    ServicePDUSessionEstSRInfo servicePDUSessionEstSRInfo = new ServicePDUSessionEstSRInfo();
+                    resourceMonitorServiceConvert
+                        .convertServicePDUSessionEstSRInfo(servicePDUSessionEstSRInfo, kpiPDUSessionEstSR);
+                    servicePDUSessionEstSRInfoList.add(servicePDUSessionEstSRInfo);
+                    resultMsg = "5G slicing service PDUSessionEstSR query result.";
+                    resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
+                } else {
+                    logger.error(String
+                        .format("querySlicingPDUSessionEstSR: Can not get KpiUserNumber[code={}, message={}]",
+                            response.code(),
+                            response.message()));
+                    resultMsg = "5G slicing PDUSessionEstSR query failed!";
+                    resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
+                }
+            }
+        } catch (Exception e) {
+            resultMsg = "5G slicing PDUSessionEstSR query failed. Unknown exception occurred!";
+            resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
+            logger.error("Exception in querySlicingPDUSessionEstSR :{}",e);
+        }
+
+        logger.info(resultMsg);
+        logger.info("querySlicingPDUSessionEstSR: 5G slicing kpiPDUSessionEstSR query has been finished.");
+        servicePDUSessionEstSRList.setServicePDUSessionEstSRInfoList(servicePDUSessionEstSRInfoList);
+        resultHeader.setResult_message(resultMsg);
+        serviceResult.setResult_header(resultHeader);
+        serviceResult.setResult_body(servicePDUSessionEstSRList);
         return serviceResult;
     }
 }
