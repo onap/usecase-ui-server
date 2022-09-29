@@ -5,7 +5,7 @@ MAINTAINER "Lu Ji" <lu.ji3@zte.com.cn>
 EXPOSE 8082
 
 USER root
-
+RUN apk update && apk add bash
 #Configure Java SDK
 ENV CLASSPATH .:${JAVA_HOME}/lib:${JRE_HOME}/lib
 
