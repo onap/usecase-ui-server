@@ -17,6 +17,7 @@ package org.onap.usecaseui.server.service.intent;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentInstance;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
@@ -65,4 +66,6 @@ public interface IntentInstanceService {
     ServiceResult createSlicingServiceWithIntent(Object slicingOrderBody);
 
     int updateCCVPNInstance(CCVPNInstance instance);
+
+    void saveSlicingServiceToAAI(String serviceId,String operationId, SlicingOrder slicingOrder) throws IOException;
 }

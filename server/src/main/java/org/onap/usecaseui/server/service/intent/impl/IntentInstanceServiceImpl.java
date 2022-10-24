@@ -24,6 +24,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.csmf.ServiceCreateResult;
 import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
+import org.onap.usecaseui.server.bean.csmf.SlicingOrderDetail;
 import org.onap.usecaseui.server.bean.intent.InstancePerformance;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentInstance;
@@ -864,7 +865,12 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         SlicingOrder slicingOrder = JSONObject.parseObject(JSONObject.toJSONString(slicingOrderBody), SlicingOrder.class);
         ServiceResult serviceResult = slicingService.createSlicingService(slicingOrder);
         ServiceCreateResult createResult = (ServiceCreateResult) serviceResult.getResult_body();
-
+        try {
+            saveSlicingServiceToAAI(createResult.getService_id(), createResult.getOperation_id(), slicingOrder);
+        } catch (IOException e) {
+            logger.error("save 5g slice to AAI fail!");
+            throw new RuntimeException("save 5g slice to AAI fail!", e);
+        }
         createIntentInstance(slicingOrderBody,createResult.getService_id(), slicingOrder.getSlicing_order_info().getName(), IntentConstant.MODEL_TYPE_5GS);
         return serviceResult;
     }
@@ -987,6 +993,33 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             String resourceVersion  = body.getString("resource-version");
             intentApiService.deleteServiceInstance(globalCustomerId,serviceType,serviceInstanceId,resourceVersion).execute();
         }
+    }
+
+    @Override
+    public void saveSlicingServiceToAAI(String serviceId, String operationId, SlicingOrder slicingOrder) throws IOException {
+        addCustomer();
+        addSubscription();
+        Properties environment = getProperties();
+        String globalCustomerId = environment.getProperty("ccvpn.globalCustomerId");
+        String serviceType = environment.getProperty("ccvpn.serviceType");
+        SlicingOrderDetail slicingOrderInfo = slicingOrder.getSlicing_order_info();
+        JSONObject environmentContext = JSONObject.parseObject(JSONObject.toJSONString(slicingOrderInfo));
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("service-instance-id", serviceId);
+        params.put("service-instance-name", slicingOrderInfo.getName());
+        params.put("service-type", IntentConstant.MODEL_TYPE_5GS);
+        params.put("environment-context", environmentContext.toJSONString());
+        params.put("service-operation-id", operationId);
+        params.put("data-rate-uplink", slicingOrderInfo.getExpDataRateUL());
+        params.put("data-rate-downlink", slicingOrderInfo.getExpDataRateDL());
+        params.put("latency", slicingOrderInfo.getLatency());
+        params.put("max-number-of-ues", slicingOrderInfo.getMaxNumberofUEs());
+        params.put("mobility", slicingOrderInfo.getUEMobilityLevel());
+        params.put("resource-sharing-level", slicingOrderInfo.getResourceSharingLevel());
+        params.put("data-owner", IntentConstant.INTENT_INSTANCE_DATA_OWNER);
+        okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
+        intentApiService.saveServiceInstance(globalCustomerId,serviceType,serviceId,requestBody).execute();
     }
 
 }
