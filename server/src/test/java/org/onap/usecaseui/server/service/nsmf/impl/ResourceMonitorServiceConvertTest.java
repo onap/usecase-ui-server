@@ -147,7 +147,7 @@ public class ResourceMonitorServiceConvertTest {
 
         List<PDUSessionEstSR> kpiPDUSessionEstSRInfoList = new ArrayList<>();
         PDUSessionEstSR kpiPDUSessionEstSRInfo = new PDUSessionEstSR();
-        kpiPDUSessionEstSRInfo.setPDUSessionEstSR(100);
+        kpiPDUSessionEstSRInfo.setPDUSessionEstSR("100");
         kpiPDUSessionEstSRInfo.setTimeStamp("2019-12-23 11:31:19");
         kpiPDUSessionEstSRInfoList.add(kpiPDUSessionEstSRInfo);
         kpiPDUSessionEstSR.setResult(kpiPDUSessionEstSRInfoList);

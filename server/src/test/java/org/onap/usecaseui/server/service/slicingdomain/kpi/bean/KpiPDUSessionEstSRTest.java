@@ -40,7 +40,7 @@ class KpiPDUSessionEstSRTest {
     	List<PDUSessionEstSR> pDUSessionEstSRList = new ArrayList<>();
     	PDUSessionEstSR pDUSessionEstSR = new PDUSessionEstSR();
     	pDUSessionEstSR.setTimeStamp("12345634456");
-    	pDUSessionEstSR.setPDUSessionEstSR(123);
+        pDUSessionEstSR.setPDUSessionEstSR("123");
 
     	pDUSessionEstSRList.add(pDUSessionEstSR);
     	kpiPDUSessionEstSR.setResult(pDUSessionEstSRList);

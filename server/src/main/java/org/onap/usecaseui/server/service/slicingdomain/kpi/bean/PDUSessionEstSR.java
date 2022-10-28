@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.slicingdomain.kpi.bean;
+package org.onap.usecaseui.server.bean.nsmf.monitor;
 
-public class PDUSessionEstSR {
-    private String timeStamp;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
-    private int pDUSessionEstSR;
+@Getter
+@Setter
+public class PDUSessionEstSRInfo {
 
-    public String getTimeStamp() {
-        return timeStamp;
-    }
+    private String timestamp;
 
-    public void setTimeStamp(String timeStamp) {
-        this.timeStamp = timeStamp;
-    }
+    private String pduSessionEstSR;
 
-    public int getPDUSessionEstSR() {
-        return pDUSessionEstSR;
-    }
-
-    public void setPDUSessionEstSR(int pDUSessionEstSR) {
-        this.pDUSessionEstSR = pDUSessionEstSR;
-    }
 }
