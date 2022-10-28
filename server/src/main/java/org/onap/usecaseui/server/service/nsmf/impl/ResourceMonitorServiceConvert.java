@@ -126,9 +126,11 @@ public class ResourceMonitorServiceConvert {
         servicePDUSessionEstSRInfo.setId(kpiPDUSessionEstSR.getRequest().getId().substring(kpiPDUSessionEstSR.getRequest().getId().lastIndexOf(".") + 1));
         if (kpiPDUSessionEstSR.getResult() != null) {
             for (PDUSessionEstSR pDUSessionEstSR : kpiPDUSessionEstSR.getResult()) {
+		String newTimeStamp = NsmfCommonUtil
+                        .timestamp2Time(pDUSessionEstSR.getTimeStamp().replace("T", NsmfParamConstant.SPACE));
                 PDUSessionEstSRInfo kpiPDUSessionEstSRInfo = new PDUSessionEstSRInfo();
-                kpiPDUSessionEstSRInfo.setTimestamp(pDUSessionEstSR.getTimeStamp());
-                kpiPDUSessionEstSRInfo.setPduSessionEstSR(String.valueOf(pDUSessionEstSR.getPDUSessionEstSR()));
+                kpiPDUSessionEstSRInfo.setTimestamp(newTimeStamp);
+                kpiPDUSessionEstSRInfo.setPduSessionEstSR(pDUSessionEstSR.getPDUSessionEstSR());
                 kpiPDUSessionEstSRInfoList.add(kpiPDUSessionEstSRInfo);
             }
         }

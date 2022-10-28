@@ -33,7 +33,7 @@ public class PDUSessionEstSRTest {
 	    public void testSetAndGetPDUSessionEstSR() throws Exception {
 	    	PDUSessionEstSR pDUSessionEstSR = new PDUSessionEstSR();
 	    	pDUSessionEstSR.setTimeStamp("12345634456");
-	    	pDUSessionEstSR.setPDUSessionEstSR(123);
+	        pDUSessionEstSR.setPDUSessionEstSR("123");
 	    	
 	    	pDUSessionEstSR.getTimeStamp();
 	    	pDUSessionEstSR.getPDUSessionEstSR();	    	

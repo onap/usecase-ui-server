@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.service.slicingdomain.kpi.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,13 +22,12 @@ import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
 
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown=true)
 public class KpiPDUSessionEstSR {
 
-    private List<PDUSessionEstSR> result;
+    private List <PDUSessionEstSR> result;
 
     private SlicingKpiReqInfo request;
 
-	private int result_count;
-    
+    private int result_count;
+
 }

@@ -15,24 +15,17 @@
  */
 package org.onap.usecaseui.server.service.slicingdomain.kpi.bean;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class PDUSessionEstSR {
+
     private String timeStamp;
 
-    private int pDUSessionEstSR;
+    @JsonProperty("pDUSessionEstSR")
+    private String pDUSessionEstSR;
 
-    public String getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(String timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
-    public int getPDUSessionEstSR() {
-        return pDUSessionEstSR;
-    }
-
-    public void setPDUSessionEstSR(int pDUSessionEstSR) {
-        this.pDUSessionEstSR = pDUSessionEstSR;
-    }
 }
