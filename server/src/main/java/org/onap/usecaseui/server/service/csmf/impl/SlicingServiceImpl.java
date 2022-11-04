@@ -129,7 +129,7 @@ public class SlicingServiceImpl implements SlicingService {
             CreationRequest creationRequest = new CreationRequest();
             creationRequest.setService(creationService);
 
-            String jsonstr = JSON.toJSONString(creationRequest);
+            String jsonstr = gson.toJson(creationRequest);
             logger.info("createSlicingService:creationRequest request is:{}", jsonstr);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
             Response<CreateResponse> updateResponse = soSliceService
