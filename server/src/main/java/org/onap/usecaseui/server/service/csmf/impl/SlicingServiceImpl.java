@@ -154,6 +154,7 @@ public class SlicingServiceImpl implements SlicingService {
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
         } catch (Exception e) {
+            // set error message
             resultMsg = "5G slicing order created failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             logger.error(e.getMessage());
