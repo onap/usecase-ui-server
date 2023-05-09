@@ -53,13 +53,11 @@ public class RestfulServices {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .connectTimeout(300, TimeUnit.SECONDS)
             .readTimeout(300, TimeUnit.SECONDS)
-            .sslSocketFactory(getSSLSocketFactory(), new CustomTrustManager())
-            .hostnameVerifier(getHostnameVerifier())
             .build();
 
         String msbUrl = getMsbAddress();
         Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("https://" + msbUrl + "/")
+            .baseUrl("http://" + msbUrl + "/")
             .client(okHttpClient)
             .addConverterFactory(JacksonConverterFactory.create())
             .build();
