@@ -1,0 +1,10 @@
+distribution_type: 'container'
+container_release_tag: '5.2.2'
+project: 'usecase-ui-serve'
+container_pull_registry: nexus3.onap.org:10003
+container_push_registry: nexus3.onap.org:10002
+log_dir: 'usecase-ui-server-master-docker-java-daily/2220'
+ref: '254facd32db93db81f906074a116eeb1b6c5b1b3'
+containers:
+    - name: 'usecase-ui-server'
+      version: '5.2.0-STAGING-20230614T082030Z'
