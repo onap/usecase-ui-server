@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.controller;
 
+package org.onap.usecaseui.server.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 @RestController
 @Configuration
 @EnableAspectJAutoProxy
@@ -60,18 +59,17 @@ public class PerformanceController {
     private PerformanceInformationService performanceInformationService;
 
     private Logger logger = LoggerFactory.getLogger(PerformanceController.class);
-    
+
     public void setPerformanceHeaderService(PerformanceHeaderService performanceHeaderService) {
         this.performanceHeaderService = performanceHeaderService;
     }
-
 
     public void setPerformanceInformationService(PerformanceInformationService performanceInformationService) {
         this.performanceInformationService = performanceInformationService;
     }
 
     private ObjectMapper omPerformance = new ObjectMapper();
-    
+
     @GetMapping(value = {"/performance/{currentPage}/{pageSize}"}, produces = "application/json")
     public String getPerformanceData(@PathVariable String currentPage,
                                      @PathVariable String pageSize,
@@ -94,7 +92,7 @@ public class PerformanceController {
             return omPerformance.writeValueAsString("failed");
         }
     }
-    
+
     @GetMapping(value = {"/performance/queryAllSourceNames"})
     public String getSourceIds(){
         try {
@@ -104,7 +102,7 @@ public class PerformanceController {
             return "";
         }
     }
-    
+
     @RequestMapping("/performance/getPerformanceHeaderDetail/{id}")
     public String getPerformanceHeaderDetail(@PathVariable String id) throws JsonProcessingException {
         PerformanceHeader performanceHeader= performanceHeaderService.getPerformanceHeaderById(id);
@@ -121,7 +119,7 @@ public class PerformanceController {
         String string =omPerformance.writeValueAsString(map);
         return string;
     }
-    
+
     @GetMapping(value = {"/performance/getSourceNames/{currentPage}/{pageSize}"}, produces = "application/json")
     public String getPerformanceSourceNames(@PathVariable String currentPage,@PathVariable String pageSize,
             @RequestParam(required = false) String sourceName) throws JsonProcessingException{
