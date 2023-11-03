@@ -18,8 +18,9 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.anyObject;
 
 public class AllottedResourceTest {
     @Before
@@ -58,7 +59,7 @@ public class AllottedResourceTest {
         ar.setAccessNodeId("");
         ar.setAccessProviderId("");
         ar.setAccessTopologyId("");
-        ar.setAdditionalProperty("", anyObject());
+        ar.setAdditionalProperty("",null);
         ar.setCvlan("");
         ar.setId("");
         ar.setModelInvariantId("");

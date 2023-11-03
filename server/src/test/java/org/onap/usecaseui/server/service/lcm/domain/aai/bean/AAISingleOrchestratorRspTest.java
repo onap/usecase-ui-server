@@ -39,7 +39,6 @@ package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.Assert.*;
 
 public class AAISingleOrchestratorRspTest {
 

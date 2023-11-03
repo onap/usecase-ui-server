@@ -15,8 +15,6 @@
  */
 package org.onap.usecaseui.server.service.nsmf.impl;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
@@ -27,7 +25,6 @@ import com.alibaba.fastjson.JSONArray;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;

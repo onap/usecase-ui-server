@@ -27,7 +27,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.MultipartConfigElement;
+import jakarta.servlet.MultipartConfigElement;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={JpaRepositoriesAutoConfiguration.class})

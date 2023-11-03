@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-import static org.mockito.Matchers.anyObject;
 
 public class ResourceRequestTest {
 

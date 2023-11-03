@@ -18,10 +18,6 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.lcm.TemplateInput;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ResponseServiceInstanceWrapperTest {
     @Before

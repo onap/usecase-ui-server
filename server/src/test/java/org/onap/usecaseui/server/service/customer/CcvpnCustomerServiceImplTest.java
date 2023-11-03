@@ -21,11 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.customer.impl.CcvpnCustomerServiceImpl;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.service.sotn.impl.SOTNServiceImpl;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static org.mockito.Mockito.mock;

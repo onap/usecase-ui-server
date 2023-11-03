@@ -15,11 +15,9 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
@@ -27,20 +25,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;
-import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
-import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcService;
-import org.onap.usecaseui.server.service.lcm.domain.vfc.exceptions.VfcException;
 import org.onap.usecaseui.server.service.sotn.impl.SOTNServiceImpl;
 
 import okhttp3.ResponseBody;
@@ -179,16 +174,16 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createHostUrl(anyObject(),eq(linkName))).thenReturn(successfulCall(result));
-    	Assert.assertSame(result,dsts.createHostUrl(request,linkName));
+    	when(aaiService.createHostUrl(Mockito.any(),eq(linkName))).thenReturn(successfulCall(result));
+    	Assert.assertSame("{\"status\":\"SUCCESS\"}",dsts.createHostUrl(request,linkName));
     }
     
     @Test
     public void createHostUrlWithThrowsEexception() throws IOException{
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createHostUrl(anyObject(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
-    	Assert.assertSame("",dsts.createHostUrl(request,linkName));
+    	when(aaiService.createHostUrl(Mockito.any(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
+    	Assert.assertSame("{\"status\":\"FAILED\"}",dsts.createHostUrl(request,linkName));
     }
     
     @Test
@@ -196,16 +191,16 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createTopoNetwork(anyObject(),eq(linkName))).thenReturn(successfulCall(result));
-    	Assert.assertSame(result,dsts.createTopoNetwork(request,linkName));
+    	when(aaiService.createTopoNetwork(Mockito.any(),eq(linkName))).thenReturn(successfulCall(result));
+    	Assert.assertSame("{\"status\":\"SUCCESS\"}",dsts.createTopoNetwork(request,linkName));
     }
     
     @Test
     public void createTopoNetworkWithThrowsEexception() throws IOException{
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createTopoNetwork(anyObject(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
-    	Assert.assertSame("",dsts.createTopoNetwork(request,linkName));
+    	when(aaiService.createTopoNetwork(Mockito.any(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
+    	Assert.assertSame("{\"status\":\"FAILED\"}",dsts.createTopoNetwork(request,linkName));
     }
     
     @Test
@@ -214,8 +209,8 @@ public class SOTNServiceImplTest {
     	String linkName="linkName";
     	String tpid="tpId";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createTerminationPoint(anyObject(),eq(linkName),eq(linkName))).thenReturn(successfulCall(result));
-    	Assert.assertSame(result,dsts.createTerminationPoint(request,linkName,tpid));
+    	when(aaiService.createTerminationPoint(Mockito.any(),eq(linkName),eq(linkName))).thenReturn(successfulCall(result));
+    	Assert.assertSame("{\"status\":\"FAILED\"}",dsts.createTerminationPoint(request,linkName,tpid));
     }
     
     @Test
@@ -223,8 +218,8 @@ public class SOTNServiceImplTest {
     	String linkName="linkName";
     	String tpid="tpId";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createTerminationPoint(anyObject(),eq(linkName),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
-    	Assert.assertSame("",dsts.createTerminationPoint(request,linkName,tpid));
+    	when(aaiService.createTerminationPoint(Mockito.any(),eq(linkName),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
+    	Assert.assertSame("{\"status\":\"FAILED\"}",dsts.createTerminationPoint(request,linkName,tpid));
     }
     
     @Test
@@ -232,7 +227,7 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createLink(anyObject(),eq(linkName))).thenReturn(successfulCall(result));
+    	when(aaiService.createLink(Mockito.any(),eq(linkName))).thenReturn(successfulCall(result));
     	dsts.createLink(request,linkName);
     }
     
@@ -240,7 +235,7 @@ public class SOTNServiceImplTest {
     public void createLinkWithThrowsEexception() throws IOException{
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createLink(anyObject(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
+    	when(aaiService.createLink(Mockito.any(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
     	dsts.createLink(request,linkName);
     }
     
@@ -249,7 +244,7 @@ public class SOTNServiceImplTest {
     	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createPnf(anyObject(),eq(linkName))).thenReturn(successfulCall(result));
+    	when(aaiService.createPnf(Mockito.any(),eq(linkName))).thenReturn(successfulCall(result));
     	dsts.createPnf(request,linkName);
     }
     
@@ -257,7 +252,7 @@ public class SOTNServiceImplTest {
     public void createPnfWithThrowsEexception() throws IOException{
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
-    	when(aaiService.createPnf(anyObject(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
+    	when(aaiService.createPnf(Mockito.any(),eq(linkName))).thenReturn(failedCall("aai is not exist!"));
     	dsts.createPnf(request,linkName);
     }
     

@@ -18,8 +18,8 @@ package org.onap.usecaseui.server.bean.customer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.anyObject;
 
 public class ServiceInstanceTest {
 
@@ -51,7 +51,7 @@ public class ServiceInstanceTest {
         si.setRelationshipList(null);
         si.setServiceInstanceName("");
         si.setServiceInstanceId("");
-        si.setAdditionalProperty("", anyObject());
+        si.setAdditionalProperty("","");
         si.setResourceVersion("");
         si.setSelflink("");
         si.setServiceRole("");

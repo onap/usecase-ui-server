@@ -21,7 +21,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.collections.MapUtils;
@@ -39,6 +39,7 @@ import org.onap.usecaseui.server.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

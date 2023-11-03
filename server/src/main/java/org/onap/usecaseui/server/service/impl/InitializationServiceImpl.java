@@ -15,7 +15,7 @@
  */
 package org.onap.usecaseui.server.service.impl;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.onap.usecaseui.server.service.InitializationService;
 import org.slf4j.Logger;

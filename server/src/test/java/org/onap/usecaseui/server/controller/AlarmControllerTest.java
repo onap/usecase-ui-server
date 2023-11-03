@@ -18,10 +18,7 @@ package org.onap.usecaseui.server.controller;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,8 +28,8 @@ import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bo.AlarmBo;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
-import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.wrapper.AlarmWrapper;
+import org.powermock.api.support.membermodification.MemberModifier;
 
 public class AlarmControllerTest {
 

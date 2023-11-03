@@ -18,9 +18,9 @@ package org.onap.usecaseui.server.bean.activeEdge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.activateEdge.SiteResource;
 
-import static org.mockito.Matchers.anyObject;
 
 public class SiteResourceTest {
     @Before
@@ -56,7 +56,7 @@ public class SiteResourceTest {
         sr.setRelationshipList(null);
         sr.setSiteResourceId("");
         sr.setSiteResourceName("");
-        sr.setAdditionalProperty("", anyObject());
+        sr.setAdditionalProperty("", "");
         sr.setCity("");
         sr.setOperationalStatus("");
         sr.setPostalcode("");

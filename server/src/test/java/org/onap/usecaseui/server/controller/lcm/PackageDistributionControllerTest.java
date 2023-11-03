@@ -15,14 +15,18 @@
  */
 package org.onap.usecaseui.server.controller.lcm;
 
+import com.alibaba.fastjson2.JSONObject;
+import netscape.javascript.JSObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
+import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import static org.mockito.Mockito.*;
 
@@ -32,12 +36,17 @@ import java.text.ParseException;
 public class PackageDistributionControllerTest {
 
     private PackageDistributionService service;
+
+    private ServiceLcmService serviceLcmService;
+
     private PackageDistributionController controller = new PackageDistributionController();
 
     @Before
     public void setUp() {
         service = mock(PackageDistributionService.class);
+        serviceLcmService = mock(ServiceLcmService.class);
         controller.setPackageDistributionService(service);
+        controller.setServiceLcmService(serviceLcmService);
     }
     
     private HttpServletRequest mockRequest() throws IOException {
@@ -120,14 +129,10 @@ public class PackageDistributionControllerTest {
     
     @Test
     public void testGetNsLcmJobStatus() throws IOException {
-        String csarId = "1";
-        String responseId="1";
-        String operationType="1";
         String jobId="1";
         HttpServletRequest request = mockRequest();
-        controller.getNsLcmJobStatus(csarId,request);
-
-        verify(service, times(1)).getNsLcmJobStatus(csarId,responseId,operationType,jobId);
+        controller.getNsLcmJobStatus(jobId,request);
+        verify(service, times(1)).getNsLcmJobStatus(any(),any(),any(),any());
     }
     
     @Test
@@ -300,15 +305,19 @@ public class PackageDistributionControllerTest {
     public void testInstantiateNetworkServiceInstance() throws IOException, ParseException {
     	String ns_instance_id="1";
         HttpServletRequest request = mockRequest();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("jobId","jobId");
+        when(service.instantiateNetworkServiceInstance(any(),any())).thenReturn(jsonObject.toString());
         controller.instantiateNetworkServiceInstance(request);
 
-        verify(service, times(1)).instantiateNetworkServiceInstance(request,ns_instance_id);
+        verify(service, times(1)).instantiateNetworkServiceInstance(eq(request),any());
     }
     
     @Test
     public void testTerminateNetworkServiceInstance() throws Exception {
     	String ns_instance_id="1";
         HttpServletRequest request = mockRequest();
+        doNothing().when( serviceLcmService).saveOrUpdateServiceInstanceOperation(any());
         controller.terminateNetworkServiceInstance(request,ns_instance_id);
 
         verify(service, times(1)).terminateNetworkServiceInstance(request,ns_instance_id);

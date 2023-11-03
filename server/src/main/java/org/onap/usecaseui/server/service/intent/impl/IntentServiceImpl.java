@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -91,7 +91,7 @@ public class IntentServiceImpl implements IntentService {
 
     public List<IntentModel> listModels(){
         try(Session session = getSession()){
-            StringBuffer hql =new StringBuffer("from IntentModel a where 1=1 order by create_time ");
+            StringBuffer hql =new StringBuffer("from IntentModel a where 1=1 order by createTime ");
             Query query = session.createQuery(hql.toString());
             //query.setString("sortType",sortType);
             List<IntentModel> list= query.list();
