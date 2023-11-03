@@ -19,9 +19,8 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 
 public class LogicalLinkTest {
     @Before
@@ -45,13 +44,13 @@ public class LogicalLinkTest {
     @Test
     public void  testSetlogicalLink() throws Exception{
         LogicalLink Ll = new LogicalLink();
-        Ll.setAdditionalProperty("", anyObject());
+        Ll.setAdditionalProperty("", "");
         Ll.setInMaint(true);
         Ll.setLinkName("");
         Ll.setLinkType("");
         Ll.setOperationalStatus("");
         Ll.setResourceVersion("");
-        Ll.setRelationshipList(any());
+        Ll.setRelationshipList(null);
     }
 
 }

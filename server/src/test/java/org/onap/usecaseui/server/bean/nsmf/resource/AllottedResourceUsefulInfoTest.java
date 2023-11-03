@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.bean.nsmf.resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 
 public class AllottedResourceUsefulInfoTest {
     @Before

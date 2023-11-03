@@ -21,13 +21,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.Transactional;
 
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
 import org.onap.usecaseui.server.bean.SortMaster;
 import org.onap.usecaseui.server.service.AlarmsHeaderService;
@@ -44,7 +43,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 @org.springframework.context.annotation.Configuration
 @EnableAspectJAutoProxy
-public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
+public class   AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AlarmsHeaderServiceImpl.class);
 
@@ -115,8 +114,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			}
 			Query query = session.createQuery(count.toString());
 			if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getStartEpochMicrosec())&&UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getLastEpochMicroSec())) {
-				query.setString("startTime",alarmsHeader.getStartEpochMicrosec());
-				query.setString("endTime",alarmsHeader.getLastEpochMicroSec());
+				query.setParameter("startTime",alarmsHeader.getStartEpochMicrosec());
+				query.setParameter("endTime",alarmsHeader.getLastEpochMicroSec());
 			}
 			long q=(long)query.uniqueResult();
 			session.flush();
@@ -159,8 +158,8 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			logger.info("AlarmsHeaderServiceImpl queryAlarmsHeader: alarmsHeader={}", alarmsHeader);
 			Query query = session.createQuery(hql.toString());
 			if(UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getStartEpochMicrosec())&&UuiCommonUtil.isNotNullOrEmpty(alarmsHeader.getLastEpochMicroSec())) {
-				query.setString("startTime",alarmsHeader.getStartEpochMicrosec());
-				query.setString("endTime",alarmsHeader.getLastEpochMicroSec());
+				query.setParameter("startTime",alarmsHeader.getStartEpochMicrosec());
+				query.setParameter("endTime",alarmsHeader.getLastEpochMicroSec());
 			}
 			query.setFirstResult(offset);
 			query.setMaxResults(pageSize);
@@ -205,13 +204,13 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 			//Query q=session.createQuery("update AlarmsHeader set status='"+status+"', updateTime='"+date+"' , startEpochMicrosecCleared='"+startEpochMicrosecCleared+"'  ,lastEpochMicroSecCleared='"+lastEpochMicroSecCleared+"'    where eventName='"+eventName+"' and reportingEntityName='"+reportingEntityName+"' and specificProblem ='"+specificProblem+"'");
             Query q=session.createQuery("update AlarmsHeader set status=:status, startEpochMicrosecCleared=:startEpochMicrosecCleared  ,lastEpochMicroSecCleared=:lastEpochMicroSecCleared    where eventName=:eventName and reportingEntityName=:reportingEntityName and specificProblem =:specificProblem");
 
-            q.setString("status",status);
+            q.setParameter("status",status);
 
-            q.setString("startEpochMicrosecCleared",startEpochMicrosecCleared);
-            q.setString("lastEpochMicroSecCleared",lastEpochMicroSecCleared);
-            q.setString("eventName",eventName);
-            q.setString("reportingEntityName",reportingEntityName);
-            q.setString("specificProblem",specificProblem);
+            q.setParameter("startEpochMicrosecCleared",startEpochMicrosecCleared);
+            q.setParameter("lastEpochMicroSecCleared",lastEpochMicroSecCleared);
+            q.setParameter("eventName",eventName);
+            q.setParameter("reportingEntityName",reportingEntityName);
+            q.setParameter("specificProblem",specificProblem);
 
 
             q.executeUpdate();
@@ -232,7 +231,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
                 hql+=" where a.status = :status";
             Query query = session.createQuery(hql);
             if (!status.equals("0"))
-                query.setString("status",status);
+                query.setParameter("status",status);
             return query.uniqueResult().toString();
         } catch (Exception e) {
             logger.error("exception occurred while performing AlarmsHeaderServiceImpl queryStatusCount. Details:" + e.getMessage());
@@ -247,7 +246,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 
 			String string = "from AlarmsHeader a where 1=1 and a.id=:id";
 			Query q = session.createQuery(string);
-			q.setString("id",id);
+			q.setParameter("id",id);
 			AlarmsHeader alarmsHeader =(AlarmsHeader)q.uniqueResult();
  			return alarmsHeader;
 
@@ -263,7 +262,7 @@ public class AlarmsHeaderServiceImpl implements AlarmsHeaderService {
 		try{
 			StringBuffer hql =new StringBuffer("from SortMaster a where 1=1 and a.sortType=:sortType");
 			Query query = session.createQuery(hql.toString());
-			query.setString("sortType",sortType);
+			query.setParameter("sortType",sortType);
 			List<SortMaster> list= query.list();
 			return list;
 		} catch (Exception e) {

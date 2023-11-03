@@ -21,14 +21,13 @@ import java.util.Date;
 import java.util.List;
 
 
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.Transactional;
 
 import com.google.common.base.Throwables;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.PerformanceInformation;
 import org.onap.usecaseui.server.service.PerformanceInformationService;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -148,13 +147,13 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 			}
 			Query query = session.createQuery(hql);
 			if (resourceId != null && !"".equals(resourceId)){
-				query.setString("resourceId",resourceId);
+				query.setParameter("resourceId",resourceId);
 			}
 			if (name != null && !"".equals(name)){
-				query.setString("name",name);
+				query.setParameter("name",name);
 			}
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
-				query.setString("startTime", startTime).setString("endTime", endTime);
+				query.setParameter("startTime", startTime).setParameter("endTime", endTime);
 			}
 			logger.info("PerformanceInformationServiceImpl queryDateBetween: list={}", query.list());
 			return query.list();
@@ -170,7 +169,7 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
 		try {
 			String string = "from PerformanceInformation a where 1=1 and a.headerId=:headerId";
 			Query query = session.createQuery(string);
-			query.setString("headerId",headerId);
+			query.setParameter("headerId",headerId);
 			List<PerformanceInformation> list = query.list();
 			session.flush();
 			return list;
@@ -197,13 +196,13 @@ public class PerformanceInformationServiceImpl implements PerformanceInformation
             }
             Query query = session.createQuery(hql);
             if (sourceId != null && !"".equals(sourceId)){
-                query.setString("resourceId",sourceId);
+                query.setParameter("resourceId",sourceId);
             }
             if (name != null && !"".equals(name)){
-                query.setString("name",name);
+                query.setParameter("name",name);
             }
             if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
-                query.setString("startTime", startTime).setString("endTime", endTime);
+                query.setParameter("startTime", startTime).setParameter("endTime", endTime);
             }
             String num=(String) query.uniqueResult();
             return UuiCommonUtil.isNotNullOrEmpty(num)?num:0+"";

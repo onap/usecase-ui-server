@@ -15,11 +15,9 @@
  */
 package org.onap.usecaseui.server.bean.nsmf.common;
 
-import java.util.Collections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 public class ResultHeaderTest {
 
     @Before

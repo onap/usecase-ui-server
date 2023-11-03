@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.bean.nsmf.monitor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
-
 public class PDUSessionEstSRInfoTest {
 
 	@Before

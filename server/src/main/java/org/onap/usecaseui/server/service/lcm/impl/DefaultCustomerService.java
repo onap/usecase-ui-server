@@ -47,7 +47,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service("CustomerService")
 @org.springframework.context.annotation.Configuration

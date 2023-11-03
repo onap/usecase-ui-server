@@ -26,21 +26,30 @@ import com.alibaba.fastjson.JSONObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.annotation.Resource;
 import okhttp3.RequestBody;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.bean.csmf.CreateResponse;
 import org.onap.usecaseui.server.bean.csmf.OrderInfo;
 import org.onap.usecaseui.server.bean.csmf.OrderList;
 import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
 import org.onap.usecaseui.server.bean.csmf.SlicingOrderDetail;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
-import org.onap.usecaseui.server.service.nsmf.impl.ResourceMgtServiceImpl;
+import org.onap.usecaseui.server.controller.IntentController;
+import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
+import org.onap.usecaseui.server.service.lcm.impl.DefaultServiceLcmService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
-import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
+import org.powermock.api.support.membermodification.MemberModifier;
 import retrofit2.Call;
 
 public class SlicingServiceImplTest {
@@ -48,12 +57,15 @@ public class SlicingServiceImplTest {
     SlicingServiceImpl slicingService = null;
     SOSliceService soSliceService;
     AAISliceService aaiSliceService;
+    ServiceLcmService serviceLcmService;
 
     @Before
     public void before() throws Exception {
         aaiSliceService = mock(AAISliceService.class);
         soSliceService = mock(SOSliceService.class);
+        serviceLcmService = mock(DefaultServiceLcmService.class);
         slicingService = new SlicingServiceImpl(aaiSliceService, soSliceService);
+        MemberModifier.field(SlicingServiceImpl.class, "serviceLcmService").set(slicingService , serviceLcmService);
     }
 
     @Test
@@ -156,6 +168,7 @@ public class SlicingServiceImplTest {
         RequestBody requestBody = null;
         String businessId = "test123";
         String operationId = "opera123";
+        when(serviceLcmService.getServiceInstanceOperationById(businessId)).thenReturn(new ServiceInstanceOperations());
         when(soSliceService.queryOperationProgress(businessId, operationId))
             .thenReturn(successfulCall(soOperation));
         slicingService.addProgressToOrder(orderList);

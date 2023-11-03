@@ -19,13 +19,12 @@ package org.onap.usecaseui.server.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.Transactional;
 
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
 import org.onap.usecaseui.server.service.PerformanceHeaderService;
 import org.onap.usecaseui.server.util.Page;
@@ -102,7 +101,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 			}
 			Query query = session.createQuery(hql.toString());
 			if(null!=performanceHeder.getStartEpochMicrosec() && null!=performanceHeder.getLastEpochMicroSec()) {
-				query.setString("startTime",performanceHeder.getStartEpochMicrosec()).setString("endTime",performanceHeder.getLastEpochMicroSec());
+				query.setParameter("startTime",performanceHeder.getStartEpochMicrosec()).setParameter("endTime",performanceHeder.getLastEpochMicroSec());
 			}
 			long q=(long)query.uniqueResult();
 			session.flush();
@@ -131,7 +130,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 				}
 			Query query = session.createQuery(hql.toString());
 			if(UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getStartEpochMicrosec())&& UuiCommonUtil.isNotNullOrEmpty(performanceHeder.getLastEpochMicroSec())) {
-				query.setString("startTime",performanceHeder.getStartEpochMicrosec()).setString("endTime",performanceHeder.getLastEpochMicroSec());
+				query.setParameter("startTime",performanceHeder.getStartEpochMicrosec()).setParameter("endTime",performanceHeder.getLastEpochMicroSec());
 			}
 			query.setFirstResult(offset);
 			query.setMaxResults(pageSize);
@@ -185,7 +184,7 @@ public class PerformanceHeaderServiceImpl implements PerformanceHeaderService {
 
 			String string = "from PerformanceHeader a where 1=1 and a.id=:id";
 			Query q = session.createQuery(string);
-			q.setString("id",id);
+			q.setParameter("id",id);
 			PerformanceHeader performanceHeader =(PerformanceHeader)q.uniqueResult();
 			session.flush();
 			return performanceHeader;

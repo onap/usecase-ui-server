@@ -15,14 +15,10 @@
  */
 package org.onap.usecaseui.server.bean.nsmf.common;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.lcm.TemplateInput;
-
 public class PagedResultTest {
 
     @Before

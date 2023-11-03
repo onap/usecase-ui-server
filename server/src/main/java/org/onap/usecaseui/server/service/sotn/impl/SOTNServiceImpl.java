@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;

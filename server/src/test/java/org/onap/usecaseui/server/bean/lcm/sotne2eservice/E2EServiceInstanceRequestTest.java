@@ -19,8 +19,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
+
 
 public class E2EServiceInstanceRequestTest {
     @Before
@@ -40,8 +40,8 @@ public class E2EServiceInstanceRequestTest {
     @Test
     public void  testSetE2EServiceInstanceRequest() throws Exception{
         E2EServiceInstanceRequest e2esir = new E2EServiceInstanceRequest();
-        e2esir.setAdditionalProperty("",anyObject());
+        e2esir.setAdditionalProperty("","");
         e2esir.setAdditionalProperties(null);
-        e2esir.setService(any());
+        e2esir.setService(null);
     }
 }

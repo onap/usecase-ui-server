@@ -20,8 +20,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import org.onap.usecaseui.server.controller.lcm.CustomerController;
-import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
 
 public class ResourceMgtControllerTest {

@@ -24,7 +24,7 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface ServiceLcmService {
 
