@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
-import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import okhttp3.RequestBody;
@@ -28,8 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceList;
-import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;

@@ -21,9 +21,7 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
-import org.onap.usecaseui.server.controller.nsmf.TaskMgtController;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
-import org.onap.usecaseui.server.service.nsmf.TaskMgtService;
 
 public class SlicingControllerTest {
 

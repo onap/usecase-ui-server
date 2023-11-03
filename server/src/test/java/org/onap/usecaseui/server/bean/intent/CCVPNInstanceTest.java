@@ -18,8 +18,6 @@ package org.onap.usecaseui.server.bean.intent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.csmf.CreateResponse;
-import org.onap.usecaseui.server.bean.csmf.CreateResult;
 
 public class CCVPNInstanceTest {
 

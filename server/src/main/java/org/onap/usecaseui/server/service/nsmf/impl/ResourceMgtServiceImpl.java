@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import org.apache.commons.beanutils.BeanUtils;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.bean.nsmf.common.ResultHeader;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
@@ -59,20 +58,16 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Slice
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.SliceProfileList;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.AnSliceTaskInfo;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.CnSliceTaskInfo;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
-import org.onap.usecaseui.server.service.slicingdomain.so.bean.TnBHSliceTaskInfo;
 import org.onap.usecaseui.server.util.DateUtils;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import retrofit2.Response;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -157,6 +152,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
     }
 
     public void addBusinessProgress(SlicingBusinessList slicingBusinessList)  {
+        System.out.println(aaiSliceService);
+        System.out.println(serviceLcmService);
+        System.out.println(generalConvert);
         if (slicingBusinessList.getSlicingBusinessInfoList() == null
             || slicingBusinessList.getSlicingBusinessInfoList().size() == 0) {
             logger.error(

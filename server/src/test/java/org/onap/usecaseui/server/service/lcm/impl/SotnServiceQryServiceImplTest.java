@@ -19,6 +19,7 @@ import okhttp3.ResponseBody;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
@@ -32,15 +33,15 @@ public class SotnServiceQryServiceImplTest {
 
     @Test
     public void getServiceInstancesTest() {
-        ResponseBody result=null;
-        when(aaiService.listServiceInstances("ISAAC","SOTN")).thenReturn(successfulCall(result));
+        ResponseBody result=mock(ResponseBody.class);
+        when(aaiService.listServiceInstances(eq("SOTN-CUST"),eq("SOTN"))).thenReturn(successfulCall(result));
         sotnServiceQryService.getServiceInstances("SOTN");
     }
 
     @Test
     public void getServiceInstancesWithThrowException() {
         ResponseBody result=null;
-        when(aaiService.listServiceInstances("ISAAC","SOTN")).thenReturn(failedCall("aai is not exist!"));
+        when(aaiService.listServiceInstances(eq("SOTN-CUST"),eq("SOTN"))).thenReturn(failedCall("aai is not exist!"));
         sotnServiceQryService.getServiceInstances("SOTN");
     }
 

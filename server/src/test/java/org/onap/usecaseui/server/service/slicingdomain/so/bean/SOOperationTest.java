@@ -34,6 +34,6 @@ public class SOOperationTest {
     public void testSetAndGetSOOperation() throws Exception {
         SOOperation soOperation = new SOOperation();
         soOperation.getOperation();
-        soOperation.setOperation((Operation) new Object());
+        soOperation.setOperation(new SOOperation().new Operation());
     }
 }

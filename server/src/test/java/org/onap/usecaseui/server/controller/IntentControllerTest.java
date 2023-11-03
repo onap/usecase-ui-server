@@ -15,21 +15,27 @@
  */
 package org.onap.usecaseui.server.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
+import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.intent.IntentService;
+import org.onap.usecaseui.server.service.intent.impl.IntentServiceImpl;
 import org.onap.usecaseui.server.util.HttpUtil;
+import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.UploadFileUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
@@ -37,13 +43,16 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
+
+import javax.annotation.meta.TypeQualifier;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +61,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.support.membermodification.MemberMatcher.method;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({HttpUtil.class,UploadFileUtil.class})
+@RunWith(MockitoJUnitRunner.class)
 public class IntentControllerTest {
 
     public IntentControllerTest(){}
@@ -66,16 +75,22 @@ public class IntentControllerTest {
 
     @Mock
     @Resource(name = "IntentService")
-    private IntentService intentService;
+    private IntentServiceImpl intentService;
 
     @Mock
     private IntentInstanceService intentInstanceService;
+
+    @Mock
+    private SessionFactory sessionFactory;
+    @Mock
+    private Session session;
 
     @Before
     public void before() throws IllegalAccessException {
         MemberModifier.field(IntentController.class, "intentService").set(intentController , intentService);
         MemberModifier.field(IntentController.class, "intentInstanceService").set(intentController , intentInstanceService);
 
+        when(sessionFactory.openSession()).thenReturn(session);
     }
 
     @Test
@@ -133,7 +148,7 @@ public class IntentControllerTest {
         String modelId = "1";
         IntentModel model = new IntentModel();
         model.setModelName("filename.zip");
-        when(intentService.getModel(anyString())).thenReturn(model);
+        when(intentService.getModel(eq(modelId))).thenReturn(model);
         when(intentService.deleteModel(anyString())).thenReturn("1");
 
         File file=PowerMockito.mock(File.class);
@@ -229,8 +244,13 @@ public class IntentControllerTest {
 
         body.put("currentPage",1);
         body.put("pageSize",2);
-        Mockito.when(intentInstanceService.queryIntentInstance(null,1,2)).thenReturn(null);
-        assertEquals(intentController.getInstanceList(body), null);
+        Page<CCVPNInstance> page = new Page<>();
+        CCVPNInstance ccvpnInstance = new CCVPNInstance();
+        ccvpnInstance.setAccessPointOneName("xx");
+        ccvpnInstance.setCloudPointName("bb");
+        page.setList(List.of(ccvpnInstance));
+        Mockito.when(intentInstanceService.queryIntentInstance(null,1,2)).thenReturn(page);
+        Assert.assertNotNull(intentController.getInstanceList(body));
     }
     @Test
     public void createIntentInstance() throws IOException {
