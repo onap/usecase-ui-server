@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.usecaseui.server.bean.csmf.ServiceCreateResult;
 import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
 import org.onap.usecaseui.server.bean.csmf.SlicingOrderDetail;
@@ -60,10 +61,10 @@ import static org.powermock.api.mockito.PowerMockito.*;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import javax.annotation.Nullable;
-import javax.annotation.Resource;
+import jakarta.annotation.Nullable;
+import jakarta.annotation.Resource;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class IntentInstanceServiceImplTest {
 
     public IntentInstanceServiceImplTest() {
@@ -97,7 +98,7 @@ public class IntentInstanceServiceImplTest {
         MemberModifier.field(IntentInstanceServiceImpl.class, "sessionFactory").set(intentInstanceService , sessionFactory);
         MemberModifier.field(IntentInstanceServiceImpl.class, "resourceMgtService").set(intentInstanceService , resourceMgtService);
         MemberModifier.field(IntentInstanceServiceImpl.class, "slicingService").set(intentInstanceService , slicingService);
-        doReturn(session).when(sessionFactory,"openSession");
+        when(sessionFactory.openSession()).thenReturn(session);
     }
 
     @Test

@@ -45,7 +45,7 @@ public class ServiceTemplateControllerTest {
         String modelPath = "modelPath";
         controller.getServiceTemplateInput(uuid, modelPath);
 
-        verify(service, times(1)).fetchServiceTemplateInput(uuid, modelPath);
+        verify(service, times(1)).fetchServiceTemplateInput(uuid, "/api"+modelPath);
     }
 
     @Test

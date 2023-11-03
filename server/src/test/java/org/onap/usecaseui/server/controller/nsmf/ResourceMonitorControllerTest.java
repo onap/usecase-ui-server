@@ -24,7 +24,6 @@ import java.util.List;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceList;
-import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
 import org.onap.usecaseui.server.service.nsmf.ResourceMonitorService;
 
 public class ResourceMonitorControllerTest {
@@ -94,7 +93,7 @@ public class ResourceMonitorControllerTest {
         serviceInfoList.add(serviceInfo);
         serviceList.setServiceInfoList(serviceInfoList);
 
-        resourceMonitorController.querySlicingTotalBandwidth("1577016963000", serviceList);
+        resourceMonitorController.querySlicingPDUSessionEstSR("1577016963000", serviceList);
         verify(resourceMonitorService, times(1)).querySlicingPDUSessionEstSR("1577016963000", serviceList);
     }
 }

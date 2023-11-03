@@ -18,8 +18,7 @@ package org.onap.usecaseui.server.bean;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.mockito.Matchers.anyObject;
+import org.mockito.Mockito;
 
 public class RelationshipDatumTest {
     @Before
@@ -41,7 +40,7 @@ public class RelationshipDatumTest {
     @Test
     public void testSetRelationshipDatum() throws Exception {
         RelationshipDatum rd = new RelationshipDatum();
-        rd.setAdditionalProperty("", anyObject());
+        rd.setAdditionalProperty("", null);
         rd.setRelationshipKey("");
         rd.setRelationshipValue("");
     }

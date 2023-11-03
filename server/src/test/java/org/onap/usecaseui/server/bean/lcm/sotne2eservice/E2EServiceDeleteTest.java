@@ -19,8 +19,8 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.anyObject;
 
 public class E2EServiceDeleteTest {
     @Before
@@ -41,7 +41,7 @@ public class E2EServiceDeleteTest {
     @Test
     public void  testSetE2EServiceDelete() throws Exception{
         E2EServiceDelete e2esd = new E2EServiceDelete();
-        e2esd.setAdditionalProperty("", anyObject());
+        e2esd.setAdditionalProperty("","");
         e2esd.setGlobalSubscriberId("");
         e2esd.setServiceType("");
     }

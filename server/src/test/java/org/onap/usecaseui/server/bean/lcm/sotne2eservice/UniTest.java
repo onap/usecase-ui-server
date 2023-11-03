@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 public class UniTest {
     @Before
     public void before() throws Exception {

@@ -38,7 +38,7 @@ import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static org.onap.usecaseui.server.constant.CommonConstant.BLANK;
 import static org.onap.usecaseui.server.constant.CommonConstant.ENCODING_UTF8;

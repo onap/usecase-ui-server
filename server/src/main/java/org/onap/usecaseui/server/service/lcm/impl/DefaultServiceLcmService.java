@@ -22,14 +22,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Throwables;
-import javax.transaction.Transactional;
-import org.hibernate.Query;
+import jakarta.transaction.Transactional;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -189,8 +187,8 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         try  {
             String string = "update ServiceBean set status=:status where 1=1 and serviceInstanceId=:serviceInstanceId";
             Query q = session.createQuery(string);
-            q.setString("status", status);
-            q.setString("serviceInstanceId", serviceInstanceId);
+            q.setParameter("status", status);
+            q.setParameter("serviceInstanceId", serviceInstanceId);
             q.executeUpdate();
             session.flush();
         } catch (Exception e) {
@@ -208,7 +206,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 
             String string = "from ServiceBean  where 1=1 and serviceInstanceId=:serviceInstanceId";
             Query q = session.createQuery(string);
-            q.setString("serviceInstanceId", serviceInstanceId);
+            q.setParameter("serviceInstanceId", serviceInstanceId);
             List<ServiceBean> list = q.list();
             session.flush();
             if (list.size() > 0) {
@@ -232,7 +230,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
 
             String string = "from ServiceBean  where 1=1 and parentServiceInstanceId=:parentServiceInstanceId";
             Query q = session.createQuery(string);
-            q.setString("parentServiceInstanceId", parentServiceInstanceId);
+            q.setParameter("parentServiceInstanceId", parentServiceInstanceId);
             list = q.list();
             session.flush();
         } catch (Exception e) {
@@ -272,10 +270,10 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         try {
             String hql =
                     "select a.* from service_instance_operations a where service_instance_id =:serviceId and operation_type =:operationType and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId )";
-            Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
-            q.setString("serviceId", serviceInstanceId);
-            q.setString("serviceInstanceId", serviceInstanceId);
-            q.setString("operationType", operationType);
+            Query q = session.createNativeQuery(hql).addEntity(ServiceInstanceOperations.class);
+            q.setParameter("serviceId", serviceInstanceId);
+            q.setParameter("serviceInstanceId", serviceInstanceId);
+            q.setParameter("operationType", operationType);
             list = q.list();
             ServiceInstanceOperations serviceOperation = list.get(0);
             serviceOperation.setOperationResult(operationResult);
@@ -301,9 +299,9 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         try  {
             String hql =
                     "select a.* from service_instance_operations a where service_instance_id =:serviceId and start_time = (select max(start_time) from service_instance_operations where service_instance_id=:serviceInstanceId)";
-            Query q = session.createSQLQuery(hql).addEntity(ServiceInstanceOperations.class);
-            q.setString("serviceId", serviceId);
-            q.setString("serviceInstanceId", serviceId);
+            Query q = session.createNativeQuery(hql).addEntity(ServiceInstanceOperations.class);
+            q.setParameter("serviceId", serviceId);
+            q.setParameter("serviceInstanceId", serviceId);
             q.list();
             list = q.list();
             if (!list.isEmpty()) {
