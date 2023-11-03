@@ -22,7 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface CustomerService {
 	

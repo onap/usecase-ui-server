@@ -18,9 +18,6 @@ package org.onap.usecaseui.server.bean.nsmf.monitor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.nsmf.common.ResultHeader;
-import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
-
 public class ServiceInfoTest {
 
     @Before

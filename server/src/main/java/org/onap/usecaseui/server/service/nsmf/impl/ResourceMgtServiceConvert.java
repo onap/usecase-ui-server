@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.apache.commons.beanutils.BeanUtils;
 import org.onap.usecaseui.server.bean.nsmf.common.PagedResult;
 import org.onap.usecaseui.server.bean.nsmf.resource.HostedBusinessInfo;
