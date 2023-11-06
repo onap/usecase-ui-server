@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.bean.lcm;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 public class VfNsPackageInfoTest {
 
 	@Before

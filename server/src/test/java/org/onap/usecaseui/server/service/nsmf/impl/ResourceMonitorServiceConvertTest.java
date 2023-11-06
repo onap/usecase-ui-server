@@ -62,6 +62,8 @@ public class ResourceMonitorServiceConvertTest {
 
         KpiTotalTraffic kpiTotalTraffic = new KpiTotalTraffic();
         List<TotalTraffic> totalTrafficList = new ArrayList<>();
+        TotalTraffic totalTraffic = new TotalTraffic();
+        totalTrafficList.add(totalTraffic);
         kpiTotalTraffic.setResult(totalTrafficList);
 
         TrafficReqInfo trafficReqInfo = new TrafficReqInfo();
