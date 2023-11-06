@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 public class ServiceInstanceListTest {
     @Before
     public void before() throws Exception {

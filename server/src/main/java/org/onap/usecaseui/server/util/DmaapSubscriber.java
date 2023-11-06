@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.annotation.Resource;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
+import jakarta.annotation.Resource;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Response;
 
 import com.google.common.base.Throwables;
 import org.glassfish.jersey.client.ClientConfig;
@@ -106,7 +107,7 @@ public class DmaapSubscriber implements Runnable {
     }
 
     public List<String> getDMaaPData(String topic) {
-        Client client = ClientBuilder.newClient(new ClientConfig());
+        Client client = ClientBuilder.newClient((Configuration) new ClientConfig());
         WebTarget webTarget = client.target(url + "/" + topic + "/" + consumerGroup + "/" + consumer);
         Response response = webTarget.queryParam("timeout", timeout).request().get();
         return response.readEntity(List.class);

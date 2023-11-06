@@ -18,8 +18,8 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.anyObject;
 
 public class ConnectivityTest {
     @Before
@@ -66,7 +66,7 @@ public class ConnectivityTest {
         c.setAccessNodeId("");
         c.setAccessProviderId("");
         c.setAccessTopologyId("");
-        c.setAdditionalProperty("",anyObject());
+        c.setAdditionalProperty("", "");
         c.setBandwidthProfileName("");
         c.setCbs("");
         c.setColorAware("");

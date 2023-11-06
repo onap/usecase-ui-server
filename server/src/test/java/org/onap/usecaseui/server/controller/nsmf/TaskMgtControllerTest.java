@@ -21,7 +21,6 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskAuditInfo;
-import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
 import org.onap.usecaseui.server.service.nsmf.TaskMgtService;
 
 public class TaskMgtControllerTest {
