@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import org.onap.usecaseui.server.bean.nsmf.common.ResultHeader;

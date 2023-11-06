@@ -19,8 +19,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Matchers.anyObject;
-
 public class AllottedResourceTest {
     @Before
     public void before() throws Exception {
@@ -58,7 +56,7 @@ public class AllottedResourceTest {
         ar.setAccessNodeId("");
         ar.setAccessProviderId("");
         ar.setAccessTopologyId("");
-        ar.setAdditionalProperty("", anyObject());
+        ar.setAdditionalProperty("",null);
         ar.setCvlan("");
         ar.setId("");
         ar.setModelInvariantId("");

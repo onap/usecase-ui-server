@@ -15,23 +15,11 @@
  */
 package org.onap.usecaseui.server.service.impl;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.AlarmsHeader;
-
-import mockit.Mock;
-import mockit.MockUp;
 
 /** 
 * AlarmsHeaderServiceImpl Tester. 
@@ -47,89 +35,6 @@ public class AlarmsHeaderServiceImplTest {
 	@Before
 	public void before() throws Exception {
 		alarmsHeaderServiceImpl = new AlarmsHeaderServiceImpl();
-
-		MockUp<Transaction> mockUpTransaction = new MockUp<Transaction>() {
-			@Mock
-			public void commit() {
-			}
-		};
-		MockUp<Query> mockUpQuery = new MockUp<Query>() {
-		};
-		new MockUp<Query>() {
-			@Mock
-			public Query setString(String name, String value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setDate(String name, Date value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setInteger(String name, int value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public int executeUpdate() {
-				return 0;
-			}
-			@Mock
-			public Query setMaxResults(int value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setFirstResult(int firstResult) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setParameterList(String name, Object[] values) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public List<AlarmsHeader> list() {
-				AlarmsHeader ah = new AlarmsHeader();
-				return Arrays.asList(ah);
-			}
-			@Mock
-			public Object uniqueResult() {
-				return "0";
-			}
-		};
-		MockUp<Session> mockedSession = new MockUp<Session>() {
-			@Mock
-			public Query createQuery(String sql) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Transaction beginTransaction() {
-				return mockUpTransaction.getMockInstance();
-			}
-			@Mock
-			public Transaction getTransaction() {
-				return mockUpTransaction.getMockInstance();
-			}
-			@Mock
-			public Serializable save(Object object) {
-				return (Serializable) serialVersionUID;
-			}
-			@Mock
-			public void flush() {
-			}
-			@Mock
-			public void update(Object object) {
-			}
-		};
-		new MockUp<SessionFactory>() {
-			@Mock
-			public Session openSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
-		new MockUp<AlarmsHeaderServiceImpl>() {
-			@Mock
-			private Session getSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
 	}
 
 	@After
@@ -160,12 +65,6 @@ public class AlarmsHeaderServiceImplTest {
 
 	@Test
 	public void testGetAllCount() throws Exception {
-		new MockUp<Query>() {
-			@Mock
-			public Object uniqueResult() {
-				return "1";
-			}
-		};
 		try {
 			AlarmsHeader ah = new AlarmsHeader();
 			ah.setVersion("va2");

@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.bean.nsmf.common;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 public class ServiceResultTest {
 
     @Before

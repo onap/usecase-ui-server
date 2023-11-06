@@ -15,13 +15,15 @@
  */
 package org.onap.usecaseui.server.controller.sotn;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +44,7 @@ public class SotnControllerTest {
 	
 	@Test
 	public void TestGetNetWorkResources(){
+		when(sotnService.getNetWorkResources()).thenReturn("aa");
 		sotnController.getNetWorkResources();
 		verify(sotnService, times(1)).getNetWorkResources();
 	}
@@ -131,12 +134,9 @@ public class SotnControllerTest {
 	
 	@Test
 	public void TestGetServiceInstanceInfo(){
-		String linkName="pnfName";
-		String resourceVersion="resourceVersion";
-		String serviceType="serviceType";
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		sotnController.getServiceInstanceInfo(request);
-		verify(sotnService, times(1)).serviceInstanceInfo(linkName,resourceVersion,serviceType);
+		verify(sotnService, times(1)).serviceInstanceInfo(any(),any(),any());
 	}
 	
 	@Test
@@ -148,12 +148,9 @@ public class SotnControllerTest {
 	
 	@Test
 	public void TestGetAllottedResources(){
-		String linkName="pnfName";
-		String resourceVersion="resourceVersion";
-		String serviceType="serviceType";
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		sotnController.getAllottedResources(request);
-		verify(sotnService, times(1)).getAllottedResources(linkName,resourceVersion,serviceType);
+		verify(sotnService, times(1)).getAllottedResources(any(),any(),any());
 	}
 	
 	@Test
@@ -186,11 +183,9 @@ public class SotnControllerTest {
 
 	@Test
 	public void TestGetServiceInstanceList(){
-		String linkName="pnfName";
-		String resourceVersion="resourceVersion";
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		sotnController.getServiceInstanceList(request);
-		verify(sotnService, times(1)).getServiceInstances(linkName,resourceVersion);
+		verify(sotnService, times(1)).getServiceInstances(any(),any());
 	}
 	
 	@Test

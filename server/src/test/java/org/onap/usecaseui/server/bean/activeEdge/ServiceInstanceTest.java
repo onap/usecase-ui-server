@@ -18,9 +18,9 @@ package org.onap.usecaseui.server.bean.activeEdge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.activateEdge.ServiceInstance;
 
-import static org.mockito.Matchers.anyObject;
 
 public class ServiceInstanceTest {
     @Before
@@ -53,7 +53,7 @@ public class ServiceInstanceTest {
         si.setInputparameters("");
         si.setServiceInstanceName("");
         si.setServiceInstanceId("");
-        si.setAdditionalProperty("", anyObject());
+        si.setAdditionalProperty("", "");
         si.setOrchestrationstatus("");
         si.setResourceVersion("");
         si.setSelflink("");

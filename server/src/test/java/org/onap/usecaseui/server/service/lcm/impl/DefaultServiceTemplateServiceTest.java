@@ -16,11 +16,9 @@
 package org.onap.usecaseui.server.service.lcm.impl;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
-import org.onap.usecaseui.server.service.impl.AlarmsInformationServiceImpl;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;

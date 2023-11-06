@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.onap.usecaseui.server.bean.activateEdge.ComplexObj;
 import org.onap.usecaseui.server.bean.activateEdge.RelationshipList;
 
-import static org.mockito.Matchers.anyObject;
 
 public class ComplexObjTest {
     RelationshipList relationshipList;
@@ -56,7 +55,7 @@ public class ComplexObjTest {
         ComplexObj co = new ComplexObj();
         co.setCity("");
         co.setPostalCode("");
-        co.setAdditionalProperty("", anyObject());
+        co.setAdditionalProperty("", "");
         co.setCountry("");
         co.setLatitude("");
         co.setLongitude("");

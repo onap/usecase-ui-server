@@ -18,13 +18,9 @@ package org.onap.usecaseui.server.bean.activeEdge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.activateEdge.RelationshipList;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.Relationship;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
-import static org.mockito.Matchers.anyObject;
 
 public class RelationshipListTest {
 
@@ -48,6 +44,6 @@ public class RelationshipListTest {
     public void testSetRelationshipList() throws Exception {
         RelationshipList rl = new RelationshipList();
         rl.setRelationship(null);
-        rl.setAdditionalProperty("", anyObject());
+        rl.setAdditionalProperty("", "");
     }
 }

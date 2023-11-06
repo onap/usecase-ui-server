@@ -16,8 +16,7 @@
 package org.onap.usecaseui.server.service.lcm.impl;
 
 import static java.util.Collections.singletonList;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
@@ -26,10 +25,11 @@ import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
@@ -37,8 +37,6 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
-
-import com.alibaba.fastjson.JSONObject;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -124,7 +122,7 @@ public class DefaultCustomerServiceTest {
         CustomerService customerService = new DefaultCustomerService(aaiService);
         String customerId="1";
         ResponseBody result=null;
-        when(aaiService.createOrUpdateCustomer(eq(customerId),anyObject())).thenReturn(successfulCall(result));
+        when(aaiService.createOrUpdateCustomer(eq(customerId), Mockito.any())).thenReturn(successfulCall(result));
         customerService.createOrUpdateCustomer(request, customerId);
     }
     
@@ -134,7 +132,7 @@ public class DefaultCustomerServiceTest {
         AAIService aaiService = mock(AAIService.class);
         CustomerService customerService = new DefaultCustomerService(aaiService);
         String customerId="1";
-        when(aaiService.createOrUpdateCustomer(eq(customerId),anyObject())).thenReturn(failedCall("VFC is not available!"));
+        when(aaiService.createOrUpdateCustomer(eq(customerId),Mockito.any())).thenReturn(failedCall("VFC is not available!"));
         customerService.createOrUpdateCustomer(request, customerId);
     }
     
@@ -144,10 +142,10 @@ public class DefaultCustomerServiceTest {
         AAIService aaiService = mock(AAIService.class);
         CustomerService customerService = new DefaultCustomerService(aaiService);
         String customerId="1";
-        when(aaiService.createOrUpdateCustomer(eq(customerId),anyObject())).thenReturn(emptyBodyCall());
+        when(aaiService.createOrUpdateCustomer(eq(customerId),Mockito.any())).thenReturn(emptyBodyCall());
         customerService.createOrUpdateCustomer(request, customerId);
     }
-    
+
     @Test
     public void itCanGetCustomerById(){
         AAIService aaiService = mock(AAIService.class);
@@ -157,16 +155,18 @@ public class DefaultCustomerServiceTest {
         when(aaiService.getCustomerById(eq(customerId))).thenReturn(successfulCall(customer));
         customerService.getCustomerById(customerId);
     }
-    
+
     @Test
     public void getCustomerByIdWillThrowExceptionWhenVFCIsNotAvailable(){
         AAIService aaiService = mock(AAIService.class);
         CustomerService customerService = new DefaultCustomerService(aaiService);
         String customerId="1";
-        when(aaiService.getCustomerById(eq(customerId))).thenReturn(failedCall("VFC is not available!"));
+        AAICustomer aaiCustomer = new AAICustomer("","","","");
+        Call<AAICustomer> call = successfulCall(aaiCustomer);
+        when(aaiService.getCustomerById(eq(customerId))).thenReturn(call);
         customerService.getCustomerById(customerId);
     }
-    
+
     @Test
     public void getCustomerByIdWillThrowExceptionWhenVFCResponseError(){
         AAIService aaiService = mock(AAIService.class);
@@ -215,7 +215,7 @@ public class DefaultCustomerServiceTest {
         String serviceType="1";
         String customerId="demo";
         ResponseBody result=null;
-        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),anyObject())).thenReturn(successfulCall(result));
+        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(successfulCall(result));
         customerService.createOrUpdateServiceType(request2, serviceType,customerId);
     }
     
@@ -226,7 +226,7 @@ public class DefaultCustomerServiceTest {
         String customerId="demo";
         AAIService aaiService = mock(AAIService.class);
         CustomerService customerService = new DefaultCustomerService(aaiService);
-        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),anyObject())).thenReturn(failedCall("VFC is not available!"));
+        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(failedCall("VFC is not available!"));
         customerService.createOrUpdateServiceType(request2, serviceType,customerId);
     }
     
@@ -237,7 +237,7 @@ public class DefaultCustomerServiceTest {
         String customerId="demo";
         AAIService aaiService = mock(AAIService.class);
         CustomerService customerService = new DefaultCustomerService(aaiService);
-        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),anyObject())).thenReturn(emptyBodyCall());
+        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(emptyBodyCall());
         customerService.createOrUpdateServiceType(request2, serviceType,customerId);
     }
     

@@ -15,13 +15,14 @@
  */
 package org.onap.usecaseui.server.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.postgresql.hostchooser.HostRequirement.any;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,12 +34,14 @@ import org.onap.usecaseui.server.service.AlarmsHeaderService;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.wrapper.AlarmWrapper;
+import org.powermock.api.support.membermodification.MemberModifier;
 
 public class AlarmControllerTest {
 
 	AlarmController controller = null;
     AlarmsHeaderService service;
     AlarmsInformationService alService;
+
 
 	@Before
 	public void before() throws Exception {
@@ -62,7 +65,8 @@ public class AlarmControllerTest {
 	@Test
 	public void testGetAlarmData() throws Exception {
 		try {
-			controller.getAlarmData("sourceName", "priority", "startTime", "endTime", "vfStatus", "1", "10");
+			when(service.queryAlarmsHeader(any(),eq(1),eq(10))).thenReturn(new Page<>());
+			controller.getAlarmData("sourceName", "priority", null, null, "vfStatus", "1", "10");
 			controller.getAlarmData(null, null, null, null, null, "1", "10");
 		} catch (Exception e) {
 			e.printStackTrace();

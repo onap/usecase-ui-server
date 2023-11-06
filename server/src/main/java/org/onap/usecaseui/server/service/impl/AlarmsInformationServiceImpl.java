@@ -18,12 +18,11 @@ package org.onap.usecaseui.server.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.Transactional;
-import org.hibernate.Query;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.Transactional;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.AlarmsInformation;
 import org.onap.usecaseui.server.bean.maxAndMinTimeBean;
 import org.onap.usecaseui.server.service.AlarmsInformationService;
@@ -156,15 +155,15 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 				hql += " and (CASE WHEN a.startEpochMicrosec=:zero THEN a.lastEpochMicroSec ELSE a.startEpochMicrosec END) between :startTime and :endTime ";
 			}
 			Query query = session.createQuery(hql);
-			query.setString("zero",zero);
+			query.setParameter("zero",zero);
 			if (sourceName != null && !"".equals(sourceName)){
-				query.setString("sourceName",sourceName);
+				query.setParameter("sourceName",sourceName);
 			}
 			if (UuiCommonUtil.isNotNullOrEmpty(status)){
-				query.setString("status",status);
+				query.setParameter("status",status);
 			}
 			if (startTime != null && !"".equals(startTime) && endTime != null && !"".equals(endTime)){
-				query.setString("startTime", startTime).setString("endTime", endTime);
+				query.setParameter("startTime", startTime).setParameter("endTime", endTime);
 			}
 			long num=(long) query.uniqueResult();
 			return (int)num;
@@ -180,7 +179,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 		Session session = getSession();
 		try {
 			String sql = "select MAX(startEpochMicrosec),MIN(startEpochMicrosec) FROM alarms_commoneventheader";
-			Query query = session.createSQLQuery(sql);
+			Query query = session.createNativeQuery(sql);
 			list = query.list();
 			session.flush();
 		}catch (Exception e){
@@ -198,7 +197,7 @@ public class AlarmsInformationServiceImpl implements AlarmsInformationService {
 		try {
 			String string = "from AlarmsInformation a where 1=1 and a.headerId=:headerId";
 			Query query = session.createQuery(string);
-			query.setString("headerId",headerId);
+			query.setParameter("headerId",headerId);
 			List<AlarmsInformation> list = query.list();
 			session.flush();
 			return list;

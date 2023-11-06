@@ -16,7 +16,6 @@
 package org.onap.usecaseui.server.bean.intent;
 
 import java.util.Date;
-import javax.xml.crypto.Data;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
