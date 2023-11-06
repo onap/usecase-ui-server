@@ -18,9 +18,7 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.mockito.Matchers.anyObject;
-
+import org.mockito.Mockito;
 public class VpnInformationTest {
     @Before
     public void before() throws Exception {
@@ -59,7 +57,7 @@ public class VpnInformationTest {
         vi.setAccessClientId("");
         vi.setAccessProviderId("");
         vi.setAccessTopologyId("");
-        vi.setAdditionalProperty("", anyObject());
+        vi.setAdditionalProperty("", "");
         vi.setDstAccessLtpId("");
         vi.setOperationalStatus("");
         vi.setResourceVersion("");

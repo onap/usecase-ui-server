@@ -31,30 +31,24 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okio.BufferedSink;
 import okio.BufferedSource;
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
-import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceList;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskAuditInfo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPointInfoList;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipData;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipList;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceService;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
-import retrofit2.Response;
 
 public class TaskMgtServiceImplTest {
 

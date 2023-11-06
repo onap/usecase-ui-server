@@ -15,16 +15,10 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
-import mockit.Mock;
-import mockit.MockUp;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.ServiceBean;
+import org.mockito.Mockito;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
@@ -34,17 +28,12 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperatio
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
@@ -62,88 +51,6 @@ public class DefaultServiceLcmServiceTest {
 		SOService soService = mock(SOService.class);
 		service = new DefaultServiceLcmService(soService);
 
-		MockUp<Transaction> mockUpTransaction = new MockUp<Transaction>() {
-			@Mock
-			public void commit() {
-			}
-		};
-		MockUp<Query> mockUpQuery = new MockUp<Query>() {
-		};
-		new MockUp<Query>() {
-			@Mock
-			public Query setString(String name, String value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setDate(String name, Date value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setInteger(String name, int value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public int executeUpdate() {
-				return 0;
-			}
-			@Mock
-			public Query setMaxResults(int value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setFirstResult(int firstResult) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setParameterList(String name, Object[] values) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public List<ServiceBean> list() {
-                ServiceBean ah = new ServiceBean();
-				return Arrays.asList(ah);
-			}
-			@Mock
-			public Object uniqueResult() {
-				return "0";
-			}
-		};
-		MockUp<Session> mockedSession = new MockUp<Session>() {
-			@Mock
-			public Query createQuery(String sql) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Transaction beginTransaction() {
-				return mockUpTransaction.getMockInstance();
-			}
-			@Mock
-			public Transaction getTransaction() {
-				return mockUpTransaction.getMockInstance();
-			}
-			@Mock
-			public Serializable save(Object object) {
-				return (Serializable) serialVersionUID;
-			}
-			@Mock
-			public void flush() {
-			}
-			@Mock
-			public void update(Object object) {
-			}
-		};
-		new MockUp<SessionFactory>() {
-			@Mock
-			public Session openSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
-		new MockUp<DefaultServiceLcmService>() {
-			@Mock
-			private Session getSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
 	}
 	
     @Test
@@ -154,7 +61,7 @@ public class DefaultServiceLcmServiceTest {
         op.setServiceId("1");
         ServiceOperation operation = new ServiceOperation();
         operation.setService(op);
-        when(soService.instantiateService(anyObject())).thenReturn(successfulCall(operation));
+        when(soService.instantiateService(Mockito.any())).thenReturn(successfulCall(operation));
 
         HttpServletRequest request = mockRequest();
 
@@ -194,7 +101,7 @@ public class DefaultServiceLcmServiceTest {
     @Test(expected = SOException.class)
     public void instantiateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
         SOService soService = mock(SOService.class);
-        when(soService.instantiateService(anyObject())).thenReturn(failedCall("SO is not available!"));
+        when(soService.instantiateService(Mockito.any())).thenReturn(failedCall("SO is not available!"));
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -205,7 +112,7 @@ public class DefaultServiceLcmServiceTest {
     @Test(expected = SOException.class)
     public void instantiateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
         SOService soService = mock(SOService.class);
-        when(soService.instantiateService(anyObject())).thenReturn(emptyBodyCall());
+        when(soService.instantiateService(Mockito.any())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -219,7 +126,7 @@ public class DefaultServiceLcmServiceTest {
         String serviceId = "1";
         DeleteOperationRsp rsp = new DeleteOperationRsp();
         rsp.setOperationId("1");
-        when(soService.terminateService(eq(serviceId), anyObject())).thenReturn(successfulCall(rsp));
+        when(soService.terminateService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -231,7 +138,7 @@ public class DefaultServiceLcmServiceTest {
     public void terminateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        when(soService.terminateService(eq(serviceId), anyObject())).thenReturn(failedCall("SO is not available!"));
+        when(soService.terminateService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -243,7 +150,7 @@ public class DefaultServiceLcmServiceTest {
     public void terminateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        when(soService.terminateService(eq(serviceId), anyObject())).thenReturn(emptyBodyCall());
+        when(soService.terminateService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -292,7 +199,7 @@ public class DefaultServiceLcmServiceTest {
     public void scaleServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        when(soService.scaleService(eq(serviceId), anyObject())).thenReturn(failedCall("SO is not available!"));
+        when(soService.scaleService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -304,7 +211,7 @@ public class DefaultServiceLcmServiceTest {
     public void scaleServiceWillThrowExceptionWhenSOResponseError() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        when(soService.scaleService(eq(serviceId), anyObject())).thenReturn(emptyBodyCall());
+        when(soService.scaleService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -318,7 +225,7 @@ public class DefaultServiceLcmServiceTest {
         String serviceId = "1";
         SaveOrUpdateOperationRsp rsp = new SaveOrUpdateOperationRsp();
         rsp.setOperationId("1");
-        when(soService.scaleService(eq(serviceId), anyObject())).thenReturn(successfulCall(rsp));
+        when(soService.scaleService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -330,7 +237,7 @@ public class DefaultServiceLcmServiceTest {
     public void updateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        when(soService.updateService(eq(serviceId), anyObject())).thenReturn(failedCall("SO is not available!"));
+        when(soService.updateService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -342,7 +249,7 @@ public class DefaultServiceLcmServiceTest {
     public void updateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
         SOService soService = mock(SOService.class);
         String serviceId = "1";
-        when(soService.updateService(eq(serviceId), anyObject())).thenReturn(emptyBodyCall());
+        when(soService.updateService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
@@ -356,53 +263,11 @@ public class DefaultServiceLcmServiceTest {
         String serviceId = "1";
         SaveOrUpdateOperationRsp rsp = new SaveOrUpdateOperationRsp();
         rsp.setOperationId("1");
-        when(soService.updateService(eq(serviceId), anyObject())).thenReturn(successfulCall(rsp));
+        when(soService.updateService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
         HttpServletRequest request = mockRequest();
 
         ServiceLcmService service = new DefaultServiceLcmService(soService);
 
         Assert.assertSame(rsp, service.updateService(serviceId, request));
-    }
-    
-    @Test
-    public void itCanGetServiceInstanceIdByParentId() throws IOException {
-    	
-        String parentServiceInstanceId = "1";
-        
-        service.getServiceInstanceIdByParentId(parentServiceInstanceId);
-        
-        service.getServiceInstanceIdByParentId(null);
-    }
-    
-    @Test
-    public void itCanGetServiceBeanByServiceInStanceId() throws IOException {
-    	
-        String serviceInstanceId = "1";
-        
-        service.getServiceBeanByServiceInStanceId(serviceInstanceId);
-        
-        service.getServiceBeanByServiceInStanceId(null);
-    }
-    
-    @Test
-    public void itCanUpdateServiceInstanceStatusById() throws IOException {
-    	
-        String serviceInstanceId = "1";
-        
-        String status="active";
-        
-        service.updateServiceInstanceStatusById(status,serviceInstanceId);
-        
-        service.updateServiceInstanceStatusById(null,null);
-    }
-    
-    @Test
-    public void itCanSaveOrUpdateServiceBean() throws IOException {
-    	
-    	ServiceBean serviceBean = new ServiceBean();
-        
-        service.saveOrUpdateServiceBean(serviceBean);
-        
-        service.saveOrUpdateServiceBean(null);
     }
 }

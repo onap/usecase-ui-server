@@ -19,18 +19,6 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
 import org.onap.usecaseui.server.bean.PerformanceHeader;
-import org.onap.usecaseui.server.service.impl.PerformanceHeaderServiceImpl;
-import org.onap.usecaseui.server.util.DateUtils;
-
-import java.util.*;
-import java.io.*;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-
-import mockit.Mock;
-import mockit.MockUp;
 
 /** 
 * PerformanceHeaderServiceImpl Tester. 
@@ -46,89 +34,6 @@ public class PerformanceHeaderServiceImplTest {
 	@Before
 	public void before() throws Exception {
 		performanceHeaderServiceImpl = new PerformanceHeaderServiceImpl();
-
-		MockUp<Transaction> mockUpTransaction = new MockUp<Transaction>() {
-			@Mock
-			public void commit() {
-			}
-		};
-		MockUp<Query> mockUpQuery = new MockUp<Query>() {
-		};
-		new MockUp<Query>() {
-			@Mock
-			public Query setString(String name, String value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setDate(String name, Date value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setInteger(String name, int value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public int executeUpdate() {
-				return 0;
-			}
-			@Mock
-			public Query setMaxResults(int value) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setFirstResult(int firstResult) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Query setParameterList(String name, Object[] values) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public List<PerformanceHeader> list() {
-				PerformanceHeader ph = new PerformanceHeader();
-				return Arrays.asList(ph);
-			}
-			@Mock
-			public Object uniqueResult() {
-				return "0";
-			}
-		};
-		MockUp<Session> mockedSession = new MockUp<Session>() {
-			@Mock
-			public Query createQuery(String sql) {
-				return mockUpQuery.getMockInstance();
-			}
-			@Mock
-			public Transaction beginTransaction() {
-				return mockUpTransaction.getMockInstance();
-			}
-			@Mock
-			public Transaction getTransaction() {
-				return mockUpTransaction.getMockInstance();
-			}
-			@Mock
-			public Serializable save(Object object) {
-				return (Serializable) serialVersionUID;
-			}
-			@Mock
-			public void flush() {
-			}
-			@Mock
-			public void update(Object object) {
-			}
-		};
-		new MockUp<SessionFactory>() {
-			@Mock
-			public Session openSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
-		new MockUp<PerformanceHeaderServiceImpl>() {
-			@Mock
-			private Session getSession() {
-				return mockedSession.getMockInstance();
-			}
-		};
 	}
 
 	@After
@@ -161,12 +66,6 @@ public class PerformanceHeaderServiceImplTest {
 
 	@Test
 	public void testGetAllCount() throws Exception {
-		new MockUp<Query>() {
-			@Mock
-			public Object uniqueResult() {
-				return "1";
-			}
-		};
 		try {
 			PerformanceHeader ph = new PerformanceHeader();
 			ph.setVersion("");

@@ -20,7 +20,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 public class ServiceTotalBandwidthInfoTest {
     @Before
     public void before() throws Exception {

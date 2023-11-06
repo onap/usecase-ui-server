@@ -19,8 +19,8 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
 
 public class FileWrapperTest {
     @Before
@@ -39,7 +39,7 @@ public class FileWrapperTest {
     @Test
     public void  testSetFileWrapper() throws Exception{
         FileWrapper fw = new  FileWrapper();
-        fw.setFile(any());
+        fw.setFile(null);
     }
 
 }

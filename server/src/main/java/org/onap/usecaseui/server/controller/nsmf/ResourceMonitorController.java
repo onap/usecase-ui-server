@@ -15,7 +15,7 @@
  */
 package org.onap.usecaseui.server.controller.nsmf;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceList;
 import org.onap.usecaseui.server.service.nsmf.ResourceMonitorService;
