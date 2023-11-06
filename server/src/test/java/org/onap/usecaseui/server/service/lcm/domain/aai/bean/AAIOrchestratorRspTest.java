@@ -38,7 +38,6 @@
 
 package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 
-import junit.framework.Assert.*;
 import org.junit.Test;
 
 import java.util.ArrayList;

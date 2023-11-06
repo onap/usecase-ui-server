@@ -16,7 +16,7 @@
 package org.onap.usecaseui.server.controller.lcm;
 
 import java.util.List;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;

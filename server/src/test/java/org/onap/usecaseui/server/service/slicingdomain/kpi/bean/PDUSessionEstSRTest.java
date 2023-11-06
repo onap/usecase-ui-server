@@ -17,7 +17,7 @@ package org.onap.usecaseui.server.service.slicingdomain.kpi.bean;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class PDUSessionEstSRTest {
 

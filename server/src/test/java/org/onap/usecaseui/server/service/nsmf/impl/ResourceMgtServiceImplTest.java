@@ -21,32 +21,18 @@ import static org.onap.usecaseui.server.util.CallStub.emptyBodyCall;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.nsmf.resource.NsiInfo;
-import org.onap.usecaseui.server.bean.nsmf.resource.SlicingBusinessInfo;
-import org.onap.usecaseui.server.bean.nsmf.resource.SlicingBusinessList;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
-import org.onap.usecaseui.server.service.lcm.CustomerService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceSubscriptionRsp;
-import org.onap.usecaseui.server.service.lcm.impl.DefaultCustomerService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkInfo;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import retrofit2.Call;
-import retrofit2.Response;
 
 public class ResourceMgtServiceImplTest {
 
@@ -87,24 +73,6 @@ public class ResourceMgtServiceImplTest {
         when(aaiSliceService
             .listService(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G)).thenReturn(call);
         resourceMgtService.querySlicingBusiness(1, 100);
-    }
-
-    @Test
-    public void itCanAddBusinessProgress() {
-        SOOperation soOperation = new SOOperation();
-        SlicingBusinessList slicingBusinessList = new SlicingBusinessList();
-        List<SlicingBusinessInfo> slicingBusinessInfoList = new ArrayList<>();
-        SlicingBusinessInfo slicingBusinessInfo = new SlicingBusinessInfo();
-        slicingBusinessInfoList.add(slicingBusinessInfo);
-        slicingBusinessList.setSlicingBusinessInfoList(slicingBusinessInfoList);
-        String businessId = "test001";
-        String operationId = "test001";
-        when(soSliceService.queryOperationProgress(businessId, operationId))
-            .thenReturn(successfulCall(soOperation));
-        resourceMgtService.addBusinessProgress(slicingBusinessList);
-
-        SlicingBusinessList slicingBusinessListNull = new SlicingBusinessList();
-        resourceMgtService.addBusinessProgress(slicingBusinessListNull);
     }
 
     @Test

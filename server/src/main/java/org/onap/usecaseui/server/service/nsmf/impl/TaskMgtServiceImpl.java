@@ -55,7 +55,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import retrofit2.Response;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;

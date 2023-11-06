@@ -21,14 +21,12 @@ import static org.onap.usecaseui.server.service.nsmf.impl.TaskMgtServiceImplTest
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
-import com.alibaba.fastjson.JSONObject;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.BusinessDemandInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.NsiAndSubNssiInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.NstInfo;
@@ -40,7 +38,6 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipList;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.AnSliceTaskInfo;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.CnSliceTaskInfo;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
@@ -49,10 +46,6 @@ import org.onap.usecaseui.server.service.slicingdomain.so.bean.ServiceProfile;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SliceProfile;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SliceTaskParams;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.TnBHSliceTaskInfo;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TaskMgtServiceConvertTest {
 

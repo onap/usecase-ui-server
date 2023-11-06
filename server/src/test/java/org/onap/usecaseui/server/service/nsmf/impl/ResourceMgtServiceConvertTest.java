@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.service.nsmf.impl;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.usecaseui.server.util.CallStub.failedCall;
@@ -41,6 +42,7 @@ import org.onap.usecaseui.server.bean.nsmf.resource.SlicingBusinessList;
 import org.onap.usecaseui.server.bean.nsmf.task.BusinessDemandInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.NstInfo;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
+import org.onap.usecaseui.server.controller.IntentController;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
@@ -50,6 +52,7 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceRsp;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.powermock.api.support.membermodification.MemberModifier;
 
 public class ResourceMgtServiceConvertTest {
 
@@ -57,11 +60,15 @@ public class ResourceMgtServiceConvertTest {
     SOSliceService soSliceService = null;
     AAISliceService aaiSliceService = null;
 
+    GeneralConvertImpl generalConvert;
+
     @Before
     public void before() throws Exception {
         aaiSliceService = mock(AAISliceService.class);
         soSliceService = mock(SOSliceService.class);
+        generalConvert = mock(GeneralConvertImpl.class);
         resourceMgtServiceConvert = new ResourceMgtServiceConvert(soSliceService, aaiSliceService);
+        MemberModifier.field(ResourceMgtServiceConvert.class, "generalConvert").set(resourceMgtServiceConvert , generalConvert);
     }
 
     @Test
@@ -92,6 +99,7 @@ public class ResourceMgtServiceConvertTest {
         SlicingBusinessDetails slicingBusinessDetails = new SlicingBusinessDetails();
         AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
         String businessId = "iu89-iu87-iu78-tr67";
+        when(generalConvert.getUseInterval(businessId)).thenReturn("businessId");
         try {
             resourceMgtServiceConvert.convertBusinessDetails(businessId, slicingBusinessDetails, aaiServiceAndInstance);
         } catch (InvocationTargetException e) {
@@ -226,6 +234,7 @@ public class ResourceMgtServiceConvertTest {
         when(aaiSliceService.getServiceProfiles(NsmfParamConstant.CUSTOM_5G,
             NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(successfulCall(object));
+        when(generalConvert.getUseInterval(eq(businessId))).thenReturn(businessId);
         try {
             resourceMgtServiceConvert
                 .convertBusinessProfileDetails(businessId, slicingBusinessDetails, aaiServiceAndInstance);
