@@ -18,8 +18,8 @@ package org.onap.usecaseui.server.bean.lcm.sotne2eservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.anyObject;
 
 public class PnfTest {
     @Before
@@ -47,7 +47,7 @@ public class PnfTest {
     public void testSetPnf() throws Exception {
         Pnf pnf = new Pnf();
         pnf.setPnfId("");
-        pnf.setAdditionalProperty("", anyObject());
+        pnf.setAdditionalProperty("", null);
         pnf.setAdminStatus("");
         pnf.setInMaint(true);
         pnf.setOperationalStatus("");

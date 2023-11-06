@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
-
+import org.junit.Test;
 public class ServicePDUSessionEstSRListTest {
 
 	@Before

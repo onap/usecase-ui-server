@@ -39,8 +39,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @org.springframework.context.annotation.Configuration

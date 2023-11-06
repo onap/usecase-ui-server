@@ -46,13 +46,8 @@ import org.springframework.core.io.Resource;
 import retrofit2.Response;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.RelationshipData;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileReader;
+import jakarta.servlet.ServletInputStream;
 import java.io.IOException;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.util.*;
 import java.util.stream.Collectors;

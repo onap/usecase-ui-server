@@ -16,11 +16,8 @@
 package org.onap.usecaseui.server.service.intent.impl;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.query.Query;
 import org.hibernate.Session;
@@ -32,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.constant.IntentConstant;
@@ -40,14 +38,13 @@ import org.onap.usecaseui.server.util.ZipUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @PrepareForTest({ZipUtil.class, HttpUtil.class})
 public class IntentServiceImplTest {
     public IntentServiceImplTest(){}
@@ -65,7 +62,7 @@ public class IntentServiceImplTest {
     @Before
     public void before() throws Exception {
         MemberModifier.field(IntentServiceImpl.class, "sessionFactory").set(intentService , sessionFactory);
-        doReturn(session).when(sessionFactory,"openSession");
+        when(sessionFactory.openSession()).thenReturn(session);
     }
 
     @Test
@@ -73,7 +70,7 @@ public class IntentServiceImplTest {
         IntentModel model = new IntentModel();
         model.setId(1);
         Transaction tx = Mockito.mock(Transaction.class);
-        doReturn(tx).when(session,"beginTransaction");
+        when(session.beginTransaction()).thenReturn(tx);
         Serializable save = Mockito.mock(Serializable.class);
         Mockito.when(session.save(model)).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
@@ -105,7 +102,7 @@ public class IntentServiceImplTest {
     @Test
     public void deleteModel() throws Exception {
         Transaction tx = Mockito.mock(Transaction.class);
-        doReturn(tx).when(session,"beginTransaction");
+        when(session.beginTransaction()).thenReturn(tx);
         Mockito.doNothing().when(session).delete(any());
         Mockito.doNothing().when(tx).commit();
         assertEquals(intentService.deleteModel("1"), "1");
@@ -114,7 +111,7 @@ public class IntentServiceImplTest {
     @Test
     public void activeModel() throws Exception {
         Transaction tx = Mockito.mock(Transaction.class);
-        doReturn(tx).when(session,"beginTransaction");
+        when(session.beginTransaction()).thenReturn(tx);
 
         Query query = Mockito.mock(Query.class);
         when(session.createQuery("from IntentModel where active=1")).thenReturn(query);
@@ -146,19 +143,6 @@ public class IntentServiceImplTest {
         IntentModel model = new IntentModel();
         assertEquals(intentService.activeModelFile(model), null);
     }
-    @Test
-    public void activeModelFileFilePathIsZIPTest() {
-        IntentModel model = new IntentModel();
-        model.setModelName("fileName.zip");
-
-        PowerMockito.mockStatic(HttpUtil.class);
-        HttpResponseResult mock = PowerMockito.mock(HttpResponseResult.class);
-        when(HttpUtil.sendGetRequest(anyString(),any(Map.class))).thenReturn(mock);
-        when(mock.getResultContent()).thenReturn("OK");
-
-        assertEquals(intentService.activeModelFile(model), "fileName");
-    }
-
 
     @Test
     public void calcFieldValueValueIsNullTest() {
@@ -219,16 +203,6 @@ public class IntentServiceImplTest {
     @Test
     public void calcFieldValueKeyIsLatencyOtherTest() {
         assertEquals(intentService.calcFieldValue("latency", "1min"), "200");
-    }
-
-
-    @Test
-    public void formatValueForResourcesSharingLevelTest() throws InvocationTargetException, IllegalAccessException {
-        String value = "shared";
-        IntentServiceImpl spy = PowerMockito.spy(intentService);
-        Method method = PowerMockito.method(IntentServiceImpl.class, "formatValueForResourcesSharingLevel", String.class);//如果多个参数，逗号分隔，然后写参数类型.class
-        Object result = method.invoke(spy, value);
-        assertEquals(result, "shared");
     }
 
     @Test

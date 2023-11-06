@@ -18,28 +18,6 @@ package org.onap.usecaseui.server.service.lcm.domain.aai.bean;
 import org.junit.Test; 
 import org.junit.Before; 
 import org.junit.After;
-import org.junit.runner.RunWith;
-import org.onap.usecaseui.server.UuiServerApplication;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.*;
-import org.onap.usecaseui.server.util.DateUtils;
-import org.onap.usecaseui.server.util.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.io.*;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-
-import mockit.Mock;
-import mockit.MockUp;
-
 public class VimInfoTest {
 
 	@Before
