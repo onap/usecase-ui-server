@@ -18,7 +18,7 @@ package org.onap.usecaseui.server.service.intent.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -46,8 +46,8 @@ import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import javax.annotation.Resource;
-import javax.transaction.Transactional;
+import jakarta.annotation.Resource;
+import jakarta.transaction.Transactional;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -103,11 +103,11 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             if (null != instance) {
                 if(UuiCommonUtil.isNotNullOrEmpty(instance.getInstanceId())) {
                     String ver =instance.getInstanceId();
-                    hql.append(" and a.instance_id = '"+ver+"'");
+                    hql.append(" and a.instanceId = '"+ver+"'");
                 }
                 if(UuiCommonUtil.isNotNullOrEmpty(instance.getJobId())) {
                     String ver =instance.getJobId();
-                    hql.append(" and a.job_id = '"+ver+"'");
+                    hql.append(" and a.jobId = '"+ver+"'");
                 }
                 if(UuiCommonUtil.isNotNullOrEmpty(instance.getStatus())) {
                     String ver =instance.getStatus();
@@ -141,11 +141,11 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             if (null != instance) {
                 if(UuiCommonUtil.isNotNullOrEmpty(instance.getInstanceId())) {
                     String ver =instance.getInstanceId();
-                    count.append(" and a.instance_id = '"+ver+"'");
+                    count.append(" and a.instanceId = '"+ver+"'");
                 }
                 if(UuiCommonUtil.isNotNullOrEmpty(instance.getJobId())) {
                     String ver =instance.getJobId();
-                    count.append(" and a.job_id = '"+ver+"'");
+                    count.append(" and a.jobId = '"+ver+"'");
                 }
                 if(UuiCommonUtil.isNotNullOrEmpty(instance.getStatus())) {
                     String ver =instance.getStatus();

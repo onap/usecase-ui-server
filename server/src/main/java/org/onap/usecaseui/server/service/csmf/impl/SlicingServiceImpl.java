@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.service.csmf.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;

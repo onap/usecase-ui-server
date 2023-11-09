@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.onap.usecaseui.server.bean.intent;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity

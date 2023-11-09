@@ -22,7 +22,7 @@ import org.onap.usecaseui.server.service.lcm.SotnServiceTemplateService;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 

@@ -16,7 +16,7 @@
 package org.onap.usecaseui.server.bean.intent;
 import org.apache.commons.collections.MapUtils;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

@@ -18,8 +18,8 @@ package org.onap.usecaseui.server.controller.lcm;
 import java.text.ParseException;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
