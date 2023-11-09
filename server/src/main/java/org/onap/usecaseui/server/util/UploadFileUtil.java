@@ -15,7 +15,7 @@
  */
 package org.onap.usecaseui.server.util;
 
-import javax.activation.MimetypesFileTypeMap;
+import jakarta.activation.MimetypesFileTypeMap;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;

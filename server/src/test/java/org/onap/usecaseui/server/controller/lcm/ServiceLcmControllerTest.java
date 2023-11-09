@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static org.mockito.Mockito.*;
 

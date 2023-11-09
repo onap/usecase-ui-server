@@ -15,7 +15,7 @@
  */
 package org.onap.usecaseui.server.controller.csmf;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.service.csmf.SlicingService;

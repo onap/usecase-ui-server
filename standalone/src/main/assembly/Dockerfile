@@ -1,7 +1,7 @@
 FROM nexus3.onap.org:10001/onap/integration-java11:9.0.0
 MAINTAINER "Lu Ji" <lu.ji3@zte.com.cn>
 
-# Expose the Usecase-UI backend port 
+# Expose the Usecase-UI backend port p
 EXPOSE 8082
 
 USER root
