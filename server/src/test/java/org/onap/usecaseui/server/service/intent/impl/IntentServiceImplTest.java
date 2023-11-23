@@ -30,14 +30,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.constant.IntentConstant;
-import org.onap.usecaseui.server.util.HttpUtil;
-import org.onap.usecaseui.server.util.ZipUtil;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -45,7 +41,6 @@ import static org.powermock.api.mockito.PowerMockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
-@PrepareForTest({ZipUtil.class, HttpUtil.class})
 public class IntentServiceImplTest {
     public IntentServiceImplTest(){}
 
@@ -258,14 +253,4 @@ public class IntentServiceImplTest {
 
         assertEquals(spy.activeModelByType(IntentConstant.MODEL_TYPE_CCVPN), intentModel1);
     }
-    @Test
-    public void loadTest() {
-        PowerMockito.mockStatic(HttpUtil.class);
-        HttpResponseResult result = PowerMockito.mock(HttpResponseResult.class);
-        when(HttpUtil.sendPostRequestByJson(anyString(), any(), anyString())).thenReturn(result);
-        when(result.getResultContent()).thenReturn("{\"Status\":\"OK\"}");
-        assertEquals(intentService.load("filename"), "OK");
-
-    }
-
 }

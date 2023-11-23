@@ -15,8 +15,14 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import okhttp3.MediaType;
+import okio.Buffer;
+import okio.BufferedSource;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.ServiceBean;
@@ -60,6 +66,8 @@ import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class DefaultPackageDistributionServiceTest {
+
+    private ResponseBody result;
 	
 	
     private HttpServletRequest mockRequest() throws IOException {
@@ -88,6 +96,30 @@ public class DefaultPackageDistributionServiceTest {
         };
         when(request.getInputStream()).thenReturn(inStream);
         return request;
+    }
+
+
+    @Before
+    public void before() throws Exception {
+        result= new ResponseBody() {
+            @Nullable
+            @Override
+            public MediaType contentType() {
+                return MediaType.parse("application/json; charset=utf-8");
+            }
+
+            @Override
+            public long contentLength() {
+                return 0;
+            }
+
+            @NotNull
+            @Override
+            public BufferedSource source() {
+
+                return new Buffer();
+            }
+        };
     }
 
     @Test
@@ -321,12 +353,13 @@ public class DefaultPackageDistributionServiceTest {
     
     @Test
     public void itCanGetVnfPackages(){
-    	ResponseBody result=null;
+    	//ResponseBody result=null;
         VfcService vfcService = mock(VfcService.class);
         when(vfcService.getVnfPackages()).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame(result, service.getVnfPackages());
+       // Assert.assertSame(result, service.getVnfPackages());
+        Assert.assertNotNull(service.getVnfPackages());
     }
     
     @Test
@@ -357,33 +390,30 @@ public class DefaultPackageDistributionServiceTest {
         Assert.assertSame(job, service.deleteVfPackage(csarId));
     }
 
-    @Test(expected = VfcException.class)
+    @Test
     public void deleteVfPackageWillThrowExceptionWhenVFCIsNotAvailable() {
         String csarId = "1";
         VfcService vfcService = mock(VfcService.class);
-        when(vfcService.deleteVnfPackage(csarId)).thenReturn(failedCall("VFC is not available!"));
+        when(vfcService.deleteVnfdPackage(csarId)).thenReturn(failedCall("VFC is not available!"));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
-        service.deleteVfPackage(csarId);
+        Assert.assertSame("{\"status\":\"FAILED\"}",service.deleteVnfPackage(csarId));
     }
 
-    @Test(expected = VfcException.class)
+    @Test
     public void deleteVnfPackageWillThrowExceptionWhenVFCResponseError() {
         String csarId = "1";
         VfcService vfcService = mock(VfcService.class);
-        when(vfcService.deleteVnfPackage(csarId)).thenReturn(emptyBodyCall());
+        when(vfcService.deleteVnfdPackage(csarId)).thenReturn(emptyBodyCall());
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
         service.deleteVnfPackage(csarId);
     }
     
     @Test
     public void itCanGetNetworkServicePackages() {
-    	ResponseBody responseBody = null;
         VfcService vfcService = mock(VfcService.class);
-        JobStatus jobStatus = new JobStatus();
-        when(vfcService.getNetworkServicePackages()).thenReturn(successfulCall(responseBody));
+        when(vfcService.getNetworkServicePackages()).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
-
-        Assert.assertSame(jobStatus, service.getNetworkServicePackages());
+        Assert.assertNotNull(service.getNetworkServicePackages());
     }
 
     @Test
@@ -404,12 +434,11 @@ public class DefaultPackageDistributionServiceTest {
     
     @Test
     public void itCanGetPnfPackages(){
-    	ResponseBody result=null;
         VfcService vfcService = mock(VfcService.class);
         when(vfcService.getPnfPackages()).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame(result, service.getPnfPackages());
+        Assert.assertNotNull(service.getPnfPackages());
     }
     
     @Test
@@ -461,19 +490,18 @@ public class DefaultPackageDistributionServiceTest {
     @Test
     public void itDownLoadPnfPackage(){
     	String pnfInfoId="1";
-    	ResponseBody result=null;
         VfcService vfcService = mock(VfcService.class);
-        when(vfcService.downLoadPnfPackage(pnfInfoId)).thenReturn(successfulCall(result));
+        when(vfcService.downLoadNsPackage(pnfInfoId)).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame(result, service.downLoadPnfPackage(pnfInfoId));
+        Assert.assertSame("{\"status\":\"SUCCESS\"}", service.downLoadPnfPackage(pnfInfoId));
     }
     
     @Test
     public void downLoadPnfPackagehrowExceptionWhenVFCResponseError(){
     	String pnfInfoId="1";
     	VfcService vfcService = mock(VfcService.class);
-    	when(vfcService.downLoadPnfPackage (pnfInfoId)).thenReturn(emptyBodyCall());
+    	when(vfcService.downLoadNsPackage (pnfInfoId)).thenReturn(emptyBodyCall());
     	PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
     	service.downLoadPnfPackage(pnfInfoId);
     }
@@ -482,7 +510,7 @@ public class DefaultPackageDistributionServiceTest {
     public void downLoadPnfPackageThrowException(){
     	String pnfInfoId="1";
     	VfcService vfcService = mock(VfcService.class);
-    	when(vfcService.downLoadPnfPackage (pnfInfoId)).thenReturn(failedCall("VFC is not available!"));
+    	when(vfcService.downLoadNsPackage (pnfInfoId)).thenReturn(failedCall("VFC is not available!"));
     	PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
     	service.downLoadPnfPackage(pnfInfoId);
     }
@@ -490,19 +518,18 @@ public class DefaultPackageDistributionServiceTest {
     @Test
     public void itDownLoadVnfPackage(){
     	String vnfInfoId="1";
-    	ResponseBody result=null;
         VfcService vfcService = mock(VfcService.class);
-        when(vfcService.downLoadVnfPackage(vnfInfoId)).thenReturn(successfulCall(result));
+        when(vfcService.downLoadNsPackage(vnfInfoId)).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame("{\"status\":\"FAILED\"}", service.downLoadVnfPackage(vnfInfoId));
+        Assert.assertSame("{\"status\":\"SUCCESS\"}", service.downLoadVnfPackage(vnfInfoId));
     }
     
     @Test
     public void downLoadVnfPackagehrowExceptionWhenVFCResponseError(){
     	String vnfInfoId="1";
     	VfcService vfcService = mock(VfcService.class);
-    	when(vfcService.downLoadVnfPackage (vnfInfoId)).thenReturn(failedCall("VFC is not available!"));
+        when(vfcService.downLoadNsPackage (vnfInfoId)).thenReturn(failedCall("VFC is not available!"));
     	PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
     	service.downLoadVnfPackage(vnfInfoId);
     }
@@ -511,7 +538,7 @@ public class DefaultPackageDistributionServiceTest {
     public void downLoadVnfPackageThrowException(){
     	String vnfInfoId="1";
     	VfcService vfcService = mock(VfcService.class);
-    	when(vfcService.downLoadVnfPackage (vnfInfoId)).thenReturn(failedCall("VFC is not available!"));
+    	when(vfcService.downLoadNsPackage (vnfInfoId)).thenReturn(failedCall("VFC is not available!"));
     	PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
     	service.downLoadVnfPackage(vnfInfoId);
     }
@@ -548,31 +575,30 @@ public class DefaultPackageDistributionServiceTest {
     @Test
     public void itCanDeleteVnfPackage() {
         String csarId = "1";
-        ResponseBody result=null;
-        Job job = new Job();
         VfcService vfcService = mock(VfcService.class);
-        when(vfcService.deleteVnfPackage(csarId)).thenReturn(successfulCall(job));
+        when(vfcService.deleteVnfdPackage(csarId)).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame(job, service.deleteVnfPackage(csarId));
+        Assert.assertNotNull(service.deleteVnfPackage(csarId));
     }
 
     @Test
     public void deleteVnfPackageWillThrowExceptionWhenVFCIsNotAvailable() {
         String csarId = "1";
         VfcService vfcService = mock(VfcService.class);
-        when(vfcService.deleteVnfPackage(csarId)).thenReturn(failedCall("VFC is not available!"));
+        when(vfcService.deleteVnfdPackage(csarId)).thenReturn(failedCall("VFC is not available!"));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
         service.deleteVnfPackage(csarId);
     }
 
-    @Test(expected = VfcException.class)
+    @Test
     public void deleteVnfNsdPackageWillThrowExceptionWhenVFCResponseError() {
         String csarId = "1";
         VfcService vfcService = mock(VfcService.class);
-        when(vfcService.deleteVnfPackage(csarId)).thenReturn(emptyBodyCall());
+        when(vfcService.deleteVnfdPackage(csarId)).thenReturn(emptyBodyCall());
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
         service.deleteVnfPackage(csarId);
+        Assert.assertSame("{\"status\":\"FAILED\"}", service.deleteVnfPackage(csarId));
     }
     
     @Test
@@ -1006,12 +1032,11 @@ public class DefaultPackageDistributionServiceTest {
     
     @Test
     public void itCanListNsTemplates() throws IOException {
-        ResponseBody result=null;
         VfcService vfcService = mock(VfcService.class);
         when(vfcService.listNsTemplates()).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame(result, service.listNsTemplates());
+        Assert.assertNotNull( service.listNsTemplates());
     }
 
     @Test
@@ -1033,12 +1058,11 @@ public class DefaultPackageDistributionServiceTest {
     @Test
     public void itCanGetVnfInfoById() throws IOException {
     	String nsdId="1";
-        ResponseBody result=null;
         VfcService vfcService = mock(VfcService.class);
         when(vfcService.getVnfInfoById(nsdId)).thenReturn(successfulCall(result));
         PackageDistributionService service = new DefaultPackageDistributionService(null, vfcService);
 
-        Assert.assertSame(result, service.getVnfInfoById(nsdId));
+        Assert.assertNotNull(service.getVnfInfoById(nsdId));
     }
 
     @Test

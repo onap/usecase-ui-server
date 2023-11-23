@@ -18,7 +18,6 @@ package org.onap.usecaseui.server.service.lcm.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.ResponseBody;
-import org.json.simple.parser.JSONParser;
 import org.onap.usecaseui.server.bean.activateEdge.ServiceInstance;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ModelConfig;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ResponseServiceInstanceWrapper;
@@ -65,7 +64,6 @@ public class SotnServiceQryServiceImpl implements SotnServiceQryService {
 
         //serviceType = "generic";
         ObjectMapper mapper = new ObjectMapper();
-        JSONParser parser = new JSONParser();
 
         try {
             Response<ResponseBody> response = aaiService.listServiceInstances(customerid, serviceType).execute();

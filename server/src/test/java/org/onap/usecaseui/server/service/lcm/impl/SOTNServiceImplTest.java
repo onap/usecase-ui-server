@@ -29,6 +29,11 @@ import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 
+import okhttp3.MediaType;
+import okio.Buffer;
+import okio.BufferedSource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +41,8 @@ import org.mockito.Mockito;
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
+import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 import org.onap.usecaseui.server.service.sotn.impl.SOTNServiceImpl;
 
 import okhttp3.ResponseBody;
@@ -44,10 +51,31 @@ public class SOTNServiceImplTest {
 	
 	SOTNServiceImpl dsts = null;
 	AAIService aaiService = null;
+
+	ResponseBody result;
 	@Before
 	public void before() throws Exception {
 		aaiService= mock(AAIService.class);
 		dsts = new SOTNServiceImpl(aaiService);
+		result= new ResponseBody() {
+			@Nullable
+			@Override
+			public MediaType contentType() {
+				return MediaType.parse("application/json; charset=utf-8");
+			}
+
+			@Override
+			public long contentLength() {
+				return 0;
+			}
+
+			@NotNull
+			@Override
+			public BufferedSource source() {
+
+				return new Buffer();
+			}
+		};
 	}
 	
     private HttpServletRequest mockRequest() throws IOException {
@@ -80,7 +108,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanGetNetWorkResources(){
-    	ResponseBody result=null;
     	when(aaiService.listNetWorkResources()).thenReturn(successfulCall(result));
     	dsts.getNetWorkResources();
     }
@@ -104,7 +131,7 @@ public class SOTNServiceImplTest {
     	dsts.getPinterfaceByPnfName(pnfName);
     }
     
-    @Test
+    @Test(expected = AAIException.class)
     public void getPinterfaceByPnfNameWithThrowsEexception(){
     	String pnfName="test";
     	when(aaiService.getPinterfaceByPnfName(pnfName)).thenReturn(failedCall("aai is not exist!"));
@@ -113,7 +140,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanGetLogicalLinks(){
-    	ResponseBody result=null;
     	when(aaiService.getLogicalLinks()).thenReturn(successfulCall(result));
     	dsts.getLogicalLinks();
     }
@@ -126,7 +152,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanGetSpecificLogicalLink(){
-    	ResponseBody result=null;
     	String linkName="linkName";
     	when(aaiService.getSpecificLogicalLink(linkName)).thenReturn(successfulCall(result));
     	dsts.getSpecificLogicalLink(linkName);
@@ -141,7 +166,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanGetHostUrl(){
-    	ResponseBody result=null;
     	String linkName="linkName";
     	when(aaiService.getHostUrl(linkName)).thenReturn(successfulCall(result));
     	dsts.getHostUrl(linkName);
@@ -156,7 +180,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanGetExtAaiId(){
-    	ResponseBody result=null;
     	String linkName="linkName";
     	when(aaiService.getExtAaiId(linkName)).thenReturn(successfulCall(result));
     	dsts.getExtAaiId(linkName);
@@ -171,7 +194,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanCreateHostUrl() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
     	when(aaiService.createHostUrl(Mockito.any(),eq(linkName))).thenReturn(successfulCall(result));
@@ -188,7 +210,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanCreateTopoNetwork() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
     	when(aaiService.createTopoNetwork(Mockito.any(),eq(linkName))).thenReturn(successfulCall(result));
@@ -205,7 +226,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanCreateTerminationPoint() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	String tpid="tpId";
     	HttpServletRequest request = mockRequest();
@@ -224,7 +244,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanCreateLink() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
     	when(aaiService.createLink(Mockito.any(),eq(linkName))).thenReturn(successfulCall(result));
@@ -241,7 +260,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanCreatePnf() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	HttpServletRequest request = mockRequest();
     	when(aaiService.createPnf(Mockito.any(),eq(linkName))).thenReturn(successfulCall(result));
@@ -258,7 +276,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanDeleteLink() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	when(aaiService.deleteLink(linkName,resourceVersion)).thenReturn(successfulCall(result));
@@ -275,7 +292,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanGetServiceInstances() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	when(aaiService.getServiceInstances(linkName,resourceVersion)).thenReturn(successfulCall(result));
@@ -292,7 +308,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanGerviceInstanceInfo() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	String serviceId="serviceId";
@@ -300,7 +315,7 @@ public class SOTNServiceImplTest {
     	dsts.serviceInstanceInfo(linkName,resourceVersion,serviceId);
     }
     
-    @Test
+    @Test(expected = SOException.class)
     public void serviceInstanceInfoWithThrowsEexception() throws IOException{
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
@@ -311,7 +326,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCanGetPnfInfo() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	when(aaiService.getPnfInfo(linkName)).thenReturn(successfulCall(result));
     	dsts.getPnfInfo(linkName);
@@ -326,7 +340,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCangetAllottedResources() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	String resourceVersion="resourceVersion";
     	String serviceId="serviceId";
@@ -345,7 +358,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCangetConnectivityInfo() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	when(aaiService.getConnectivityInfo(linkName)).thenReturn(successfulCall(result));
     	dsts.getConnectivityInfo(linkName);
@@ -360,7 +372,6 @@ public class SOTNServiceImplTest {
     
     @Test
     public void itCangetPinterfaceByVpnId() throws IOException{
-    	ResponseBody result=null;
     	String linkName="linkName";
     	when(aaiService.getPinterfaceByVpnId(linkName)).thenReturn(successfulCall(result));
     	dsts.getPinterfaceByVpnId(linkName);

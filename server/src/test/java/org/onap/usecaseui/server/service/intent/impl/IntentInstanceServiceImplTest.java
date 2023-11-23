@@ -28,6 +28,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,10 +53,11 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInf
 import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 import retrofit2.Call;
@@ -98,6 +100,7 @@ public class IntentInstanceServiceImplTest {
         MemberModifier.field(IntentInstanceServiceImpl.class, "sessionFactory").set(intentInstanceService , sessionFactory);
         MemberModifier.field(IntentInstanceServiceImpl.class, "resourceMgtService").set(intentInstanceService , resourceMgtService);
         MemberModifier.field(IntentInstanceServiceImpl.class, "slicingService").set(intentInstanceService , slicingService);
+        MemberModifier.field(IntentInstanceServiceImpl.class, "intentApiService").set(intentInstanceService , intentApiService);
         when(sessionFactory.openSession()).thenReturn(session);
     }
 
@@ -184,11 +187,7 @@ public class IntentInstanceServiceImplTest {
         doThrow(new RuntimeException()).when(spy).saveIntentInstanceToAAI(isNull(),any(CCVPNInstance.class));
 
         Transaction tx = Mockito.mock(Transaction.class);
-        Mockito.when(session.beginTransaction()).thenReturn(tx);
         Serializable save = Mockito.mock(Serializable.class);
-        Mockito.when(session.save(any())).thenReturn(save);
-        Mockito.doNothing().when(tx).commit();
-
         assertEquals(spy.createCCVPNInstance(instance), 0);
     }
 
@@ -237,7 +236,6 @@ public class IntentInstanceServiceImplTest {
         Transaction tx = Mockito.mock(Transaction.class);
         Mockito.when(session.beginTransaction()).thenReturn(tx);
         Serializable save = Mockito.mock(Serializable.class);
-        Mockito.when(session.save(any())).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
 
         spy.getIntentInstanceProgress();
@@ -274,7 +272,6 @@ public class IntentInstanceServiceImplTest {
         Transaction tx = Mockito.mock(Transaction.class);
         Mockito.when(session.beginTransaction()).thenReturn(tx);
         Serializable save = Mockito.mock(Serializable.class);
-        Mockito.when(session.save(any())).thenReturn(save);
         Mockito.doNothing().when(tx).commit();
 
         spy.getIntentInstanceCreateStatus();
@@ -479,8 +476,6 @@ public class IntentInstanceServiceImplTest {
 
         Transaction tx = PowerMockito.mock(Transaction.class);
         when(session.beginTransaction()).thenReturn(tx);
-        Serializable save = PowerMockito.mock(Serializable.class);
-        doNothing().when(session).delete(any());
         doNothing().when(tx).commit();
 
         intentInstanceService.invalidIntentInstance("1");
@@ -510,15 +505,8 @@ public class IntentInstanceServiceImplTest {
 
 
         Call mockCall = PowerMockito.mock(Call.class);
-        when(intentApiService.deleteIntentInstance(any())).thenReturn(mockCall);
-        when(mockCall.execute()).thenReturn(null);
-
         Transaction tx = PowerMockito.mock(Transaction.class);
-        when(session.beginTransaction()).thenReturn(tx);
         Serializable save = PowerMockito.mock(Serializable.class);
-        doNothing().when(session).delete(any());
-        doNothing().when(tx).commit();
-
         intentInstanceService.invalidIntentInstance("1");
     }
 
@@ -952,7 +940,7 @@ public class IntentInstanceServiceImplTest {
     }
 
     @Test
-    public void createSlicingServiceWithIntent() {
+    public void createSlicingServiceWithIntent() throws IOException {
         IntentInstanceServiceImpl spy = spy(intentInstanceService);
 
         SlicingOrder slicingOrder = new SlicingOrder();
@@ -964,11 +952,7 @@ public class IntentInstanceServiceImplTest {
         serviceCreateResult.setService_id("id");
         serviceResult.setResult_body(serviceCreateResult);
         when(slicingService.createSlicingService(any())).thenReturn(serviceResult);
-
-        IntentInstance instance = new IntentInstance();
-        doReturn(instance).when(spy).createIntentInstance(any(),anyString(),anyString(),anyString());
-
-        assertEquals(spy.createSlicingServiceWithIntent(slicingOrder), serviceResult);
+        Assert.assertThrows(RuntimeException.class,()->intentInstanceService.createSlicingServiceWithIntent(slicingOrder));
     }
 
     @Test

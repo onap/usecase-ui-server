@@ -15,7 +15,13 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
+import okhttp3.MediaType;
 import okhttp3.ResponseBody;
+import okio.Buffer;
+import okio.BufferedSource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 
@@ -30,17 +36,38 @@ public class SotnServiceQryServiceImplTest {
     AAIService aaiService = mock(AAIService.class);
 
     SotnServiceQryServiceImpl sotnServiceQryService = new SotnServiceQryServiceImpl(aaiService);
+    ResponseBody result;
 
+    @Before
+    public void before() throws Exception {
+        result= new ResponseBody() {
+            @Nullable
+            @Override
+            public MediaType contentType() {
+                return MediaType.parse("application/json; charset=utf-8");
+            }
+
+            @Override
+            public long contentLength() {
+                return 0;
+            }
+
+            @NotNull
+            @Override
+            public BufferedSource source() {
+
+                return new Buffer();
+            }
+        };
+    }
     @Test
     public void getServiceInstancesTest() {
-        ResponseBody result=mock(ResponseBody.class);
         when(aaiService.listServiceInstances(eq("SOTN-CUST"),eq("SOTN"))).thenReturn(successfulCall(result));
         sotnServiceQryService.getServiceInstances("SOTN");
     }
 
     @Test
     public void getServiceInstancesWithThrowException() {
-        ResponseBody result=null;
         when(aaiService.listServiceInstances(eq("SOTN-CUST"),eq("SOTN"))).thenReturn(failedCall("aai is not exist!"));
         sotnServiceQryService.getServiceInstances("SOTN");
     }

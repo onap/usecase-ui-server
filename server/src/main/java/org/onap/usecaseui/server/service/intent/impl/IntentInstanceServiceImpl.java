@@ -778,14 +778,18 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
     private IntentInstance assembleIntentInstanceFormSliceInfo(IntentInstance instance, Object body) {
-        JSONObject jsonObject = new JSONObject((Map) body);
-        JSONObject slicingOrderInfo = jsonObject.getJSONObject("slicing_order_info");
-        String intent_content = slicingOrderInfo.getString("intentContent");
-        slicingOrderInfo.remove("intentContent");
-        instance.setIntentConfig(slicingOrderInfo.toJSONString());
-        instance.setIntentContent(intent_content);
-        instance.setIntentName(slicingOrderInfo.getString("name"));
-        return instance;
+        if(body instanceof Map){
+            Map map = (Map) body;
+            JSONObject jsonObject = new JSONObject(map);
+            JSONObject slicingOrderInfo = jsonObject.getJSONObject("slicing_order_info");
+            String intent_content = slicingOrderInfo.getString("intentContent");
+            slicingOrderInfo.remove("intentContent");
+            instance.setIntentConfig(slicingOrderInfo.toJSONString());
+            instance.setIntentContent(intent_content);
+            instance.setIntentName(slicingOrderInfo.getString("name"));
+            return instance;
+        }
+        return new IntentInstance();
     }
 
 
