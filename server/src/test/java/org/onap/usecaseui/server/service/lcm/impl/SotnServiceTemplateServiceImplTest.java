@@ -26,6 +26,7 @@ import okio.ByteString;
 import okio.Options;
 import okio.Sink;
 import okio.Timeout;
+import okio.TypedOptions;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -500,6 +501,12 @@ public class SotnServiceTemplateServiceImplTest {
                     @Override
                     public BufferedSource source() {
                         BufferedSource bufferedSource = new BufferedSource() {
+
+                            @org.jetbrains.annotations.Nullable
+                            @Override
+                            public <T> T select(@NotNull TypedOptions<T> typedOptions) throws IOException {
+                                return null;
+                            }
 
                             @NotNull
                             @Override
