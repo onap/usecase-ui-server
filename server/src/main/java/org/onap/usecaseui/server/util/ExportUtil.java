@@ -2,6 +2,7 @@ package org.onap.usecaseui.server.util;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -16,6 +17,7 @@ import java.util.List;
 
 
 @SuppressWarnings("unused")
+@Slf4j
 public class ExportUtil {
 
     public static void exportExcel(HttpServletResponse response, String fileName, List<?> dataList) {
@@ -35,7 +37,7 @@ public class ExportUtil {
         try {
             write(response, book, fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("An exception occurred with exportExcel, message: "+e.getMessage());
         }
     }
     private static void write(HttpServletResponse response, SXSSFWorkbook book, String fileName) throws IOException {
