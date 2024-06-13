@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.service.intent.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -35,6 +36,7 @@ import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
+import org.onap.usecaseui.server.util.ExportUtil;
 import org.onap.usecaseui.server.util.Page;
 import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -1024,6 +1026,22 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("data-owner", IntentConstant.INTENT_INSTANCE_DATA_OWNER);
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
         intentApiService.saveServiceInstance(globalCustomerId,serviceType,serviceId,requestBody).execute();
+    }
+
+    @Override
+    public void exportIntentContent(HttpServletResponse response) {
+        Session session = getSession();
+        try{
+            String hql = "select i.intentContent from IntentInstance i order by id";
+            Query<String> query = session.createQuery(hql, String.class);
+            query.setMaxResults(1000);
+            List<String> intentContents = query.getResultList();
+            ExportUtil.exportExcel(response,"intentContent",intentContents);
+        } catch (Exception e) {
+            logger.error("An exception occurred with exportIntentContent. Details:" + e.getMessage());
+        } finally {
+            session.close();
+        }
     }
 
 }

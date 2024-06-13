@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import jakarta.annotation.Resource;
 
 import com.alibaba.fastjson.JSONArray;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.MapUtils;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
@@ -591,4 +592,8 @@ public class IntentController {
         return intentInstanceService.getIntentInstanceList(currentPage, pageSize);
     }
 
+    @PostMapping("/exportIntentContent")
+    public void exportIntentContent(HttpServletResponse response) {
+        intentInstanceService.exportIntentContent(response);
+    }
 }
