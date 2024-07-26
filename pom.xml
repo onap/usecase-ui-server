@@ -49,5 +49,6 @@
     <modules>
         <module>server</module>
         <module>standalone</module>
+        <module>checkstyle</module>
     </modules>
 </project>
