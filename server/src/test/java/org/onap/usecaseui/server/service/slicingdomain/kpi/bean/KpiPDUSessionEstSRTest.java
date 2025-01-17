@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.SlicingKpiReqInfo;
 
-class KpiPDUSessionEstSRTest {
+public class KpiPDUSessionEstSRTest {
 
 	@Before
     public void before() throws Exception {
@@ -34,9 +34,9 @@ class KpiPDUSessionEstSRTest {
 
     @Test
     public void testSetAndGetKpiPDUSessionEstSR() throws Exception {
-    	
+
     	KpiPDUSessionEstSR kpiPDUSessionEstSR = new KpiPDUSessionEstSR();
-    	    	
+
     	List<PDUSessionEstSR> pDUSessionEstSRList = new ArrayList<>();
     	PDUSessionEstSR pDUSessionEstSR = new PDUSessionEstSR();
     	pDUSessionEstSR.setTimeStamp("12345634456");
