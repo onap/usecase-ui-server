@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.conf.intent;
+package org.onap.usecaseui.server.config.intent;
 
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.springframework.context.annotation.Configuration;

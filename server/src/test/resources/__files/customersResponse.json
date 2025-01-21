@@ -1,0 +1,10 @@
+{
+  "customer": [
+    {
+      "global-customer-id": "someCustomer",
+      "subscriber-name": "someSubscriber",
+      "subscriber-type": "someType",
+      "resource-version": "abcd"
+    }
+  ]
+}
