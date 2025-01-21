@@ -33,452 +33,158 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AAIService {
 
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
+
 //    @GET("/api/aai-business/v11/customers")
     @GET("/api/aai-business/v13/customers")
     Call<AAICustomerRsp> listCustomer();
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-	})
+
 	@GET("/api/aai-externalSystem/v16/esr-nfvo-list")
 	Call<AAIOrchestratorRsp> listOrchestrator();
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-	})
+
 	@GET("/api/aai-externalSystem/v16/esr-nfvo-list/esr-nfvo/{nfvo-id}?depth=all")
 	Call<AAISingleOrchestratorRsp> getOrchestrator(@Path("nfvo-id") String nfvoId);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @PUT("/api/aai-business/v13/customers/customer/{global-customer-id}")
     Call<ResponseBody> createOrUpdateCustomer(@Path("global-customer-id") String customerId,@Body RequestBody body);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @DELETE("/api/aai-business/v13//customers/customer/{global-customer-id}")
     Call<ResponseBody> deleteCustomer(@Path("global-customer-id") String customerId,@Query("resource-version") String resourceVersion);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @GET("/api/aai-business/v13//customers/customer/{global-customer-id}")
     Call<AAICustomer> getCustomerById(@Path("global-customer-id") String customerId);
-    
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
+
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     @GET("/api/aai-business/v16/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> listServiceInstances(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
 
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
 //    @GET("/cloud-infrastructure/cloud-regions")
     @GET("/api/aai-cloudInfrastructure/v11/cloud-regions")
     Call<VimInfoRsp> listVimInfo();
 
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
 //    @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
     @GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
     Call<ServiceSubscriptionRsp> listServiceSubscriptions(@Path("global-customer-id") String customerId);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-	})
+
 	//@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
 	@PUT("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
 	Call<ResponseBody> createOrUpdateServiceType(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType,@Body RequestBody body);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-	})
+
 	//@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
 	@DELETE("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
 	Call<ResponseBody> deleteServiceType(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType,@Query("resource-version") String resourceVersion);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-	})
+
 	//@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions")
 	@GET("/api/aai-business/v11/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}")
 	Call<AAIServiceSubscription> getServiceTypeById(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType);
-    
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
+
     @GET("/api/aai-externalSystem/v11/esr-thirdparty-sdnc-list")
     Call<SDNCControllerRsp> listSdncControllers();
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-	})
+
 	@GET("/api/aai-business/v11/customers/customer/{customerId}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{serviceId}")
 	Call<ResponseBody> getAAIServiceInstance(@Path("customerId") String customerId,@Path("service-type") String seviceType,@Path("serviceId") String serviceId);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
 	@GET("/api/aai-network/v14/network-resources")
 	Call<ResponseBody> listNetWorkResources();
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
 	@GET("/api/aai-network/v14/pnfs/pnf/{pnfName}/p-interfaces")
 	Call<PinterfaceRsp> getPinterfaceByPnfName(@Path("pnfName") String pnfName);
-    
-    @Headers({
-            "X-TransactionId: 9999",
-            "X-FromAppId: MSO",
-            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-            "Accept: application/json"
-    })
+
 	@GET("/aai/v24/network/logical-links")
 	Call<ResponseBody> getLogicalLinks();
-    
-    @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
-    })
+
     @GET("/api/aai-network/v14/logical-links/logical-link/{link-name}")
     Call<ResponseBody> getSpecificLogicalLink(@Path("link-name") String linkName);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @PUT("/api/aai-network/v14/network-resources/network-resource/{networkId}")
     Call<ResponseBody> createTopoNetwork(@Body RequestBody body,@Path("networkId") String networkId);
-    
-    @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
-    })
+
     @PUT("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}")
     Call<ResponseBody> createHostUrl(@Body RequestBody body,@Path("aai-id") String aaiId);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
 	@GET("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}")
 	Call<ResponseBody> getExtAaiId(@Path("aai-id") String aaiId);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
 	@GET("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}/esr-system-info")
 	Call<ResponseBody> getHostUrl(@Path("aai-id") String aaiId);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @PUT("/api/aai-network/v14/pnfs/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}")
     Call<ResponseBody> createTerminationPoint(@Body RequestBody body,@Path("pnfName") String pnfName,@Path("tp-id") String tpId);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @PUT("/api/aai-network/v14/pnfs/pnf/{pnfname}")
     Call<ResponseBody> createPnf(@Body RequestBody body,@Path("pnfname") String pnfname);
-    
-    @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
-    })
+
     @PUT("/api/aai-network/v14/logical-links/logical-link/{linkName}")
     Call<ResponseBody> createLink(@Body RequestBody body,@Path("linkName") String linkName);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @DELETE("/api/aai-network/v14/logical-links/logical-link/{linkName}")
     Call<ResponseBody> deleteLink(@Path("linkName") String linkName,@Query("resource-version") String resourceVersion);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> getServiceInstances(@Path("global-customer-id") String customerId,@Path("service-type") String serviceType);
-    
-    @Headers({
-        "X-TransactionId: 7777",
-        "X-FromAppId: uui",
-        "Authorization: Basic QUFJOkFBSQ==",
-        "Accept: application/json"
-    })
+
     @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> serviceInstaneInfo(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Query("service-instance-id") String serviceInstanceId);
-    
-    @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
-    })
+
     @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources")
     Call<ResponseBody> getAllottedResources(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
-    
-    @Headers({
-            "X-TransactionId: 9999",
-            "X-FromAppId: MSO",
-            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-            "Accept: application/json"
-    })
+
     @GET("/aai/v24/network/pnfs")
     Call<ResponseBody> getPnfInfo(@Query("pnfName") String pnfName);
-    
-    @Headers({
-            "X-TransactionId: 9999",
-            "X-FromAppId: MSO",
-            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-            "Accept: application/json"
-    })
+
     @GET("/aai/v24/network/connectivities")
     Call<ResponseBody> getConnectivityInfo(@Query("connectivity-id") String connectivityId);
 
-    @Headers({
-            "X-TransactionId: 9999",
-            "X-FromAppId: MSO",
-            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-            "Accept: application/json"
-    })
     @GET("/aai/v24/network/vpn-bindings")
     Call<ResponseBody> getVpnBindingInfo(@Query("vpn-id") String vpnId);
 
-    @Headers({
-            "X-TransactionId: 9999",
-            "X-FromAppId: MSO",
-            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-            "Accept: application/json"
-    })
     @GET("/aai/v24/network/network-routes")
     Call<ResponseBody> getNetworkRouteInfo(@Query("route-id") String routeId);
 
-    @Headers({
-            "X-TransactionId: 9999",
-            "X-FromAppId: MSO",
-            "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-            "Accept: application/json"
-    })
     @GET("/aai/v24/network/unis")
     Call<ResponseBody> getUniInfo(@Query("uni-id") String uniId);
 
-    @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
-    })
     @GET("/api/aai-network/v14/vpn-bindings")
     Call<ResponseBody> getPinterfaceByVpnId(@Query("vpn-id") String vpnId);
-    
-    @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
-    })
+
     @DELETE("/api/aai-network/v14/ext-aai-networks/ext-aai-network/{aai-id}")
     Call<ResponseBody> deleteExtNetwork(@Path("aai-id") String aaiId,@Query("resource-version") String resourceVersion);
 
-    
-    @Headers({
-    	"X-TransactionId: 7777",
-    	"X-FromAppId: uui",
-    	"Authorization: Basic QUFJOkFBSQ==",
-    	"Accept: application/json"
-    })
     @PUT("/api/aai-query/v19?format=resource")
     Call<ResponseBody> querynNetworkResourceList(@Body RequestBody body);
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
+
     @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
     Call<ResponseBody> getServiceInstancesForEdge(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,
                                                   @Path("service-instance-id") String serviceinstanceid);
-
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
     @GET("/api/aai-network/v14/connectivities/connectivity")
     Call<ResponseBody> getConnectivityInformation(@Query("connectivity-id") String connectivityId);
 
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
     @GET("/api/aai-network/v14/pnfs/pnf/{pnfName}/p-interfaces/p-interface/{tp-id}")
     Call<ResponseBody> getTerminationPoint(@Path("pnfName") String pnfName,@Path("tp-id") String tpId);
 
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
     @GET("/api/aai-business/v16/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources/allotted-resource/{allotted-resource-id}")
     Call<ResponseBody> getAllotedResourceFor5G(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,
                                                @Path("service-instance-id") String serviceinstanceid,@Path("allotted-resource-id") String allottedResourceId);
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
+
     @GET("/api/aai-network/v14/site-resources/site-resource/{site-resource-id}")
     Call<ResponseBody> getSiteResourceInfo(@Path("site-resource-id") String siteResourceId);
 
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
     @GET("/api/aai-cloudInfrastructure/v14/complexes/complex/{complex-id}")
     Call<ResponseBody> getComplexObject(@Path("complex-id") String complexId);
 
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
-
     @GET("/api/aai-business/v14/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances")
     Call<ResponseBody> getAllServiceInformation(@Path("global-customer-id") String customerId, @Path("service-type") String serviceType);
-//    @Headers({
-//            "X-TransactionId: 7777",
-//            "X-FromAppId: uui",
-//            "Authorization: Basic QUFJOkFBSQ==",
-//            "Accept: application/json"
-//    })
-//    @GET("/api/aai-network/v14/pnfs/pnf/{pnfName}")
-//    Call<ResponseBody> getPnfInfo(@Path("pnfName") String pnfName);
-
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
 
     @GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions")
     Call<ResponseBody> getServiceSubscription(@Path("global-customer-id") String customerID);
 
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
-
     @GET("/aai/v19/network/generic-vnfs/generic-vnf/{vnf-id}")
     Call<ResponseBody> getVNFsDetail(@Path("vnf-id") String vnfId);
-
-    @Headers({
-            "X-TransactionId: 7777",
-            "X-FromAppId: uui",
-            "Authorization: Basic QUFJOkFBSQ==",
-            "Accept: application/json"
-    })
 
     @GET("/aai/v19/network/unis/uni/{uni-id}")
     Call<ResponseBody> getUNIInfo(@Path("uni-id") String uniId);

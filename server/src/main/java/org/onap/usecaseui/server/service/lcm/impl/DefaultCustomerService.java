@@ -26,10 +26,6 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.Results;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAINetworkInterfaceResponse;
 
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
-import org.onap.usecaseui.server.util.RestfulServices;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -48,23 +44,15 @@ import java.util.List;
 import java.util.ArrayList;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service("CustomerService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
+@RequiredArgsConstructor
 public class DefaultCustomerService implements CustomerService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultCustomerService.class);
-
-    private AAIService aaiService;
-
-    public DefaultCustomerService() {
-        this(RestfulServices.create(AAIService.class));
-    }
-
-    public DefaultCustomerService(AAIService aaiService) {
-        this.aaiService = aaiService;
-    }
+    private final AAIService aaiService;
 
     @Override
     public List<AAICustomer> listCustomer() {
@@ -73,23 +61,23 @@ public class DefaultCustomerService implements CustomerService {
             if (response.isSuccessful()) {
                 return response.body().getCustomer();
             } else {
-                logger.info(String.format("Can not get customers[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get customers[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("list customers occur exception");
+            log.error("list customers occur exception");
             throw new AAIException("AAI is not available.", e);
         }
     }
-    
+
     @Override
     public JSONObject createOrUpdateCustomer(HttpServletRequest request,String customerId){
     		JSONObject result = new JSONObject();
 		try {
-			logger.info("aai createOrUpdateCustomer is starting!");
+			log.info("aai createOrUpdateCustomer is starting!");
 			RequestBody requestBody = extractBody(request);
 			Response<ResponseBody> response = this.aaiService.createOrUpdateCustomer(customerId,requestBody).execute();
-			logger.info("aai createOrUpdateCustomer is finished!");
+			log.info("aai createOrUpdateCustomer is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
 			}else{
@@ -102,14 +90,14 @@ public class DefaultCustomerService implements CustomerService {
 		}
 		return result;
     }
-    
+
     @Override
     public JSONObject getCustomerById(String customerId){
     		JSONObject result = new JSONObject();
 		try {
-			logger.info("aai getCustomerById is starting!");
+			log.info("aai getCustomerById is starting!");
 			Response<AAICustomer> response = this.aaiService.getCustomerById(customerId).execute();
-			logger.info("aai getCustomerById is finished!");
+			log.info("aai getCustomerById is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
 				result.put("result",response.body());
@@ -123,14 +111,14 @@ public class DefaultCustomerService implements CustomerService {
 		}
 		return result;
     }
-    
+
     @Override
     public JSONObject deleteCustomer(String customerId,String resourceVersion){
 		JSONObject result = new JSONObject();
 		try {
-			logger.info("aai deleteCustomer is starting!");
+			log.info("aai deleteCustomer is starting!");
 			Response<ResponseBody> response = this.aaiService.deleteCustomer(customerId,resourceVersion).execute();
-			logger.info("aai deleteCustomer is finished!");
+			log.info("aai deleteCustomer is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
 			}else{
@@ -146,7 +134,7 @@ public class DefaultCustomerService implements CustomerService {
 		}
 		return result;
     }
-    
+
     @Override
     public List<AAIServiceSubscription> listServiceSubscriptions(String serviceType) {
         try {
@@ -154,23 +142,23 @@ public class DefaultCustomerService implements CustomerService {
             if (response.isSuccessful()) {
                 return response.body().getServiceSubscriptions();
             } else {
-                logger.info(String.format("Can not get service-subscriptions[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get service-subscriptions[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("list customers occur exception");
+            log.error("list customers occur exception");
             throw new AAIException("AAI is not available.", e);
         }
     }
-    
+
     @Override
     public JSONObject createOrUpdateServiceType(HttpServletRequest request,String serviceType,String customerId){
 		JSONObject result = new JSONObject();
 		try {
-			logger.info("aai createOrUpdateServiceType is starting!");
+			log.info("aai createOrUpdateServiceType is starting!");
 			RequestBody requestBody = extractBody(request);
 			Response<ResponseBody> response = this.aaiService.createOrUpdateServiceType(customerId,serviceType,requestBody).execute();
-			logger.info("aai createOrUpdateServiceType is finished!");
+			log.info("aai createOrUpdateServiceType is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
 			}else{
@@ -183,14 +171,14 @@ public class DefaultCustomerService implements CustomerService {
 		}
 		return result;
     }
-    
+
     @Override
     public JSONObject deleteServiceType(String customerId,String serviceType,String resourceVersion){
 		JSONObject result = new JSONObject();
 		try {
-			logger.info("aai deleteServiceType is starting!");
+			log.info("aai deleteServiceType is starting!");
 			Response<ResponseBody> response = this.aaiService.deleteServiceType(customerId,serviceType,resourceVersion).execute();
-			logger.info("aai deleteServiceType is finished!");
+			log.info("aai deleteServiceType is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
 			}else{
@@ -206,15 +194,15 @@ public class DefaultCustomerService implements CustomerService {
 		}
 		return result;
     }
-    
+
     @Override
     public JSONObject getServiceTypeById(String customerId, String serviceType) {
         JSONObject result = new JSONObject();
         try {
-            logger.info("aai getServiceTypeById is starting!");
+            log.info("aai getServiceTypeById is starting!");
             Response<AAIServiceSubscription> response =
                     this.aaiService.getServiceTypeById(customerId, serviceType).execute();
-            logger.info("aai getServiceTypeById is finished!");
+            log.info("aai getServiceTypeById is finished!");
             if (response.isSuccessful()) {
                 result.put("status", "SUCCESS");
                 result.put("result", response.body());
@@ -229,7 +217,7 @@ public class DefaultCustomerService implements CustomerService {
         }
         return result;
     }
-        
+
         @Override
     public List<String> fetchNIList(String networkInterfaceType) {
         List<String> niList = new ArrayList<String>();
@@ -237,19 +225,19 @@ public class DefaultCustomerService implements CustomerService {
         ObjectMapper mapper = new ObjectMapper();
         Results[] interfaceList = null;
         try {
-            logger.info("aai fetchNIList is starting!");
+            log.info("aai fetchNIList is starting!");
             String body = "{\r\n" + "\"start\" : [\"network\"],\r\n" + "\"query\" : \"query/getInterfaceTypes?porttype="
                     + networkInterfaceType + "\"\r\n" + "}";
-            logger.info("request body {} for Interface type {}" , body,networkInterfaceType);
+            log.info("request body {} for Interface type {}" , body,networkInterfaceType);
             RequestBody request = RequestBody.create(MediaType.parse("application/json"), body);
             Response<ResponseBody> response = this.aaiService.querynNetworkResourceList(request).execute();
             if (response.isSuccessful()) {
                 String jsonResponse = response.body().string();
-                logger.info("response json returned {}", jsonResponse);
+                log.info("response json returned {}", jsonResponse);
                 try {
                     niResponse = mapper.readValue(jsonResponse, AAINetworkInterfaceResponse.class);
                 } catch (IOException ex) {
-                    logger.info("read value exception", ex);
+                    log.info("read value exception", ex);
                 }
                 if (niResponse != null) {
                     interfaceList = niResponse.getResults();
@@ -259,13 +247,13 @@ public class DefaultCustomerService implements CustomerService {
                     niList.add(pInterface.getInterfaceName() + " (" + pInterface.getPortDescription() + ")");
                 }
             } else {
-                logger.error("Request to AAI Fails dues to {} " , response.errorBody());
+                log.error("Request to AAI Fails dues to {} " , response.errorBody());
                 throw new IOException(response.errorBody().toString());
             }
         } catch (Exception e) {
             niResponse = null;
-            logger.info("Request to AAI Fails dues to " + e);
-            logger.info("Mocking Response Data");
+            log.info("Request to AAI Fails dues to " + e);
+            log.info("Mocking Response Data");
 
             String jsonMock = "{\r\n" + "    \"results\": [\r\n" + "        {\r\n"
                     + "            \"p-interface\": {\r\n"
@@ -315,7 +303,7 @@ public class DefaultCustomerService implements CustomerService {
             try {
                 niResponse = mapper.readValue(jsonMock, AAINetworkInterfaceResponse.class);
             } catch (IOException ex) {
-                logger.info("ReadValue exception", ex);
+                log.info("ReadValue exception", ex);
             }
 
             if (niResponse != null) {
@@ -325,7 +313,7 @@ public class DefaultCustomerService implements CustomerService {
                 PInterface pInterface = result.getPinterface();
                 niList.add(pInterface.getInterfaceName());
             }
-        
+
 	}
 	Collections.sort(niList);
         return niList;
