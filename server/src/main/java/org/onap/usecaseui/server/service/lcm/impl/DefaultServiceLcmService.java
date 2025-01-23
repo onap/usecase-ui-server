@@ -27,6 +27,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Throwables;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -41,47 +44,34 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperatio
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 import org.onap.usecaseui.server.util.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import okhttp3.RequestBody;
 import retrofit2.Response;
 
-@Service("ServiceLcmService")
+@Slf4j
 @Transactional
+@Service("ServiceLcmService")
+@RequiredArgsConstructor
 public class DefaultServiceLcmService implements ServiceLcmService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultServiceLcmService.class);
-
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    private final EntityManagerFactory entityManagerFactory;
+    private final SOService soService;
 
     public Session getSession() {
         return entityManagerFactory.unwrap(SessionFactory.class).getCurrentSession();}
 
-    private SOService soService;
-
-    public DefaultServiceLcmService() {
-        this(create(SOService.class));
-    }
-
-    public DefaultServiceLcmService(SOService soService) {
-        this.soService = soService;
-    }
-
     @Override
     public ServiceOperation instantiateService(HttpServletRequest request) {
         try {
-            logger.info("so instantiate is starting");
+            log.info("so instantiate is starting");
             RequestBody requestBody = extractBody(request);
             Response<ServiceOperation> response = soService.instantiateService(requestBody).execute();
-            logger.info("so instantiate has finished");
+            log.info("so instantiate has finished");
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.error(String.format("Can not instantiate service[code=%s, message=%s]", response.code(),
+                log.error(String.format("Can not instantiate service[code=%s, message=%s]", response.code(),
                         response.message()));
                 throw new SOException("SO instantiate service failed!");
             }
@@ -98,7 +88,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.error(String.format("Can not query operation process[code=%s, message=%s]", response.code(),
+                log.error(String.format("Can not query operation process[code=%s, message=%s]", response.code(),
                         response.message()));
                 throw new SOException("SO query operation process failed!");
             }
@@ -110,14 +100,14 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public DeleteOperationRsp terminateService(String serviceId, HttpServletRequest request) {
         try {
-            logger.info("so terminate is starting");
+            log.info("so terminate is starting");
             RequestBody requestBody = extractBody(request);
             Response<DeleteOperationRsp> response = soService.terminateService(serviceId, requestBody).execute();
-            logger.info("so terminate has finished");
+            log.info("so terminate has finished");
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.error(String.format("Can not terminate service[code=%s, message=%s]", response.code(),
+                log.error(String.format("Can not terminate service[code=%s, message=%s]", response.code(),
                         response.message()));
                 throw new SOException("SO terminate service failed!");
             }
@@ -129,15 +119,15 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public SaveOrUpdateOperationRsp scaleService(String serviceId, HttpServletRequest request) {
         try {
-            logger.info("so scale is finished");
+            log.info("so scale is finished");
             RequestBody requestBody = extractBody(request);
             Response<SaveOrUpdateOperationRsp> response = soService.scaleService(serviceId, requestBody).execute();
-            logger.info("so scale has finished");
+            log.info("so scale has finished");
             if (response.isSuccessful()) {
-                logger.info("scaleService response content is :" + response.body().toString());
+                log.info("scaleService response content is :" + response.body().toString());
                 return response.body();
             } else {
-                logger.error(String.format("Can not scaleService service[code=%s, message=%s]", response.code(),
+                log.error(String.format("Can not scaleService service[code=%s, message=%s]", response.code(),
                         response.message()));
                 throw new SOException("SO terminate service failed!");
             }
@@ -149,14 +139,14 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     @Override
     public SaveOrUpdateOperationRsp updateService(String serviceId, HttpServletRequest request) {
         try {
-            logger.info("so update is starting");
+            log.info("so update is starting");
             RequestBody requestBody = extractBody(request);
             Response<SaveOrUpdateOperationRsp> response = soService.updateService(serviceId, requestBody).execute();
-            logger.info("so update has finished");
+            log.info("so update has finished");
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.error(String.format("Can not updateService service[code=%s, message=%s]", response.code(),
+                log.error(String.format("Can not updateService service[code=%s, message=%s]", response.code(),
                         response.message()));
                 throw new SOException("SO terminate service failed!");
             }
@@ -170,12 +160,12 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         Session session = getSession();
         try  {
             if (null == serviceBean) {
-                logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceBean is null!");
+                log.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceBean is null!");
             }
             session.saveOrUpdate(serviceBean);
             session.flush();
         } catch (Exception e) {
-            logger.error(
+            log.error(
                     "exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceBean. Details:"
                             + e.getMessage());
         }
@@ -192,7 +182,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             q.executeUpdate();
             session.flush();
         } catch (Exception e) {
-            logger.error(
+            log.error(
                     "exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusById.Detail."
                             + e.getMessage());
         }
@@ -213,7 +203,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
                 serviceBean = list.get(0);
             }
         } catch (Exception e) {
-            logger.error(
+            log.error(
                     "exception occurred while performing DefaultServiceLcmService getServiceBeanByServiceInStanceId.Detail."
                             + e.getMessage());
             serviceBean = new ServiceBean();;
@@ -235,7 +225,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             session.flush();
         } catch (Exception e) {
             list = new ArrayList<>();
-            logger.error(
+            log.error(
                     "exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."
                             + e.getMessage());
         }
@@ -248,15 +238,15 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         Session session = getSession();
         try  {
             if (null == serviceOperation) {
-                logger.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceOperation is null!");
+                log.error("DefaultServiceLcmService saveOrUpdateServiceBean serviceOperation is null!");
             }
             session.saveOrUpdate(serviceOperation);
             session.flush();
         } catch (Exception e) {
-            logger.error(
+            log.error(
                     "exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceInstanceOperation. Details:"
                             + Throwables.getStackTraceAsString(e));
-            logger.error(
+            log.error(
                     "exception occurred while performing DefaultServiceLcmService saveOrUpdateServiceInstanceOperation. Details:"
                             + e.getMessage());
         }
@@ -285,7 +275,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             session.flush();
 
         } catch (Exception e) {
-            logger.error(
+            log.error(
                     "exception occurred while performing DefaultServiceLcmService updateServiceInstanceOperation.Detail."
                             + e.getMessage());
         }
@@ -312,7 +302,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             session.flush();
 
         } catch (Exception e) {
-            logger.error("exception occurred while performing DefaultServiceLcmService getServiceInstanceOperationById."
+            log.error("exception occurred while performing DefaultServiceLcmService getServiceInstanceOperationById."
                     + e.getMessage());
         }
         return serviceOperation;
@@ -333,7 +323,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             session.flush();
         } catch (Exception e) {
             list = new ArrayList<>();
-            logger.error(
+            log.error(
                     "exception occurred while performing DefaultServiceLcmService updateServiceInstanceStatusByIdDetail."
                             + e.getMessage());
         }

@@ -1,0 +1,60 @@
+{
+  "service-instance": [
+    {
+      "service-instance-id": "97740f7b-e205-48e9-819b-2ad997d78286",
+      "service-instance-name": "5G-smth",
+      "service-type": "5G",
+      "environment-context": "General_Revenue-Bearing",
+      "workload-context": "Production",
+      "model-invariant-id": "f367053b-55ca-4074-9322-c102aed93f4f",
+      "model-version-id": "e70da80f-4df7-4be7-89c5-2ae4fdfd0f48",
+      "resource-version": "1699950946612",
+      "selflink": "restconf/config/GENERIC-RESOURCE-API:services/service/97740f7b-e205-48e9-819b-2ad997d78286/service-data/service-topology/",
+      "orchestration-status": "Assigned",
+      "input-parameters": "[]",
+      "relationship-list": {
+        "relationship": [
+          {
+            "related-to": "owning-entity",
+            "relationship-label": "org.onap.relationships.inventory.BelongsTo",
+            "related-link": "/aai/v30/business/owning-entities/owning-entity/59d660dc-4aeb-4058-9bb9-c2bd2a0bcb72",
+            "relationship-data": [
+              {
+                "relationship-key": "owning-entity.owning-entity-id",
+                "relationship-value": "59d660dc-4aeb-4058-9bb9-c2bd2a0bcb72"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "service-instance-id": "97732f7b-e205-48e9-819b-2ad997d78286",
+      "service-instance-name": "5G-smth-else",
+      "service-type": "5G",
+      "environment-context": "General_Revenue-Bearing",
+      "workload-context": "Production",
+      "model-invariant-id": "f367053b-55ca-4074-9322-c102aed93f4f",
+      "model-version-id": "e70da80f-4df7-4be7-89c5-2ae4fdfd0f48",
+      "resource-version": "1699950946613",
+      "selflink": "restconf/config/GENERIC-RESOURCE-API:services/service/97732f7b-e205-48e9-819b-2ad997d78286/service-data/service-topology/",
+      "orchestration-status": "Assigned",
+      "input-parameters": "[]",
+      "relationship-list": {
+        "relationship": [
+          {
+            "related-to": "owning-entity",
+            "relationship-label": "org.onap.relationships.inventory.BelongsTo",
+            "related-link": "/aai/v30/business/owning-entities/owning-entity/59d660dc-4aeb-4058-9bb9-c2bd2a0bcb72",
+            "relationship-data": [
+              {
+                "relationship-key": "owning-entity.owning-entity-id",
+                "relationship-value": "59d660dc-4aeb-4058-9bb9-c2bd2a0bcb72"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

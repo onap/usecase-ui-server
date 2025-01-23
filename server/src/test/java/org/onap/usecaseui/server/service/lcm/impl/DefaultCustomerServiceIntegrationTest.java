@@ -45,19 +45,19 @@ import org.wiremock.spring.EnableWireMock;
     },
     properties = {
         "spring.main.web-application-type=none", // only temporary
-        "client.aai.baseUrl=${wiremock.server.baseUrl}",
-        "client.aai.username=AAI",
-        "client.aai.password=AAI"
+        "uui-server.client.aai.baseUrl=${wiremock.server.baseUrl}",
+        "uui-server.client.aai.username=AAI",
+        "uui-server.client.aai.password=AAI"
     })
 public class DefaultCustomerServiceIntegrationTest {
 
     @Autowired
     CustomerService customerService;
 
-    @Value("${client.aai.username}")
+    @Value("${uui-server.client.aai.username}")
     String username;
 
-    @Value("${client.aai.password}")
+    @Value("${uui-server.client.aai.password}")
     String password;
 
     @Test
