@@ -21,6 +21,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,8 +31,9 @@ import org.springframework.web.client.RestTemplate;
 import jakarta.servlet.MultipartConfigElement;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude={JpaRepositoriesAutoConfiguration.class})
+@EnableConfigurationProperties
 @ComponentScan(basePackages = "org.onap.usecaseui.server")
+@EnableAutoConfiguration(exclude={JpaRepositoriesAutoConfiguration.class})
 public class UuiServerApplication {
     public static DmaapSubscriber dmaapSubscriber;
 
@@ -39,7 +41,7 @@ public class UuiServerApplication {
     public void setDatastore(DmaapSubscriber dmaapSubscriber) {
         UuiServerApplication.dmaapSubscriber = dmaapSubscriber;
     }
-    
+
     @Bean
     public RestTemplate getRestTemplate(){
         return new RestTemplate();

@@ -44,6 +44,7 @@ import org.onap.usecaseui.server.bean.csmf.SlicingOrder;
 import org.onap.usecaseui.server.bean.csmf.SlicingOrderDetail;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.controller.IntentController;
+import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.impl.DefaultServiceLcmService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
@@ -58,13 +59,15 @@ public class SlicingServiceImplTest {
     SOSliceService soSliceService;
     AAISliceService aaiSliceService;
     ServiceLcmService serviceLcmService;
+    SlicingProperties slicingProperties;
 
     @Before
     public void before() throws Exception {
         aaiSliceService = mock(AAISliceService.class);
         soSliceService = mock(SOSliceService.class);
         serviceLcmService = mock(DefaultServiceLcmService.class);
-        slicingService = new SlicingServiceImpl(aaiSliceService, soSliceService);
+        slicingProperties = mock(SlicingProperties.class);
+        slicingService = new SlicingServiceImpl(serviceLcmService, aaiSliceService, soSliceService, slicingProperties);
         MemberModifier.field(SlicingServiceImpl.class, "serviceLcmService").set(slicingService , serviceLcmService);
     }
 

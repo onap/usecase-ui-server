@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -29,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
@@ -50,93 +52,52 @@ import org.onap.usecaseui.server.constant.csmf.CsmfParamConstant;
 import org.onap.usecaseui.server.constant.nsmf.NsmfCodeConstant;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
+import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service("SlicingService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class SlicingServiceImpl implements SlicingService {
 
-    private final static Logger logger = LoggerFactory.getLogger(SlicingServiceImpl.class);
-
-    @Resource(name = "ServiceLcmService")
-    private ServiceLcmService serviceLcmService;
-
-    private AAISliceService aaiSliceService;
-
-    private SOSliceService soSliceService;
-
-    public SlicingServiceImpl() {
-        this(RestfulServices.create(AAISliceService.class), RestfulServices.create(SOSliceService.class));
-    }
-
-    public SlicingServiceImpl(AAISliceService aaiSliceService, SOSliceService soSliceService) {
-        this.aaiSliceService = aaiSliceService;
-        this.soSliceService = soSliceService;
-    }
+    private static final Gson gson = new Gson();
+    private final ServiceLcmService serviceLcmService;
+    private final AAISliceService aaiSliceService;
+    private final SOSliceService soSliceService;
+    private final SlicingProperties slicingProperties;
 
     @Override
     public ServiceResult createSlicingService(SlicingOrder slicingOrder) {
 
-        ServiceCreateResult createResult = new ServiceCreateResult();
         String resultCode;
         String resultMsg;
-        Gson gson = new Gson();
+
         ResultHeader resultHeader = new ResultHeader();
+        ServiceCreateResult createResult = new ServiceCreateResult();
         try {
             // request bean for create slicing service
-            CreationRequestInputs requestInputs = new CreationRequestInputs();
-            requestInputs.setExpDataRateDL(slicingOrder.getSlicing_order_info().getExpDataRateDL());
-            requestInputs.setExpDataRateUL(slicingOrder.getSlicing_order_info().getExpDataRateUL());
-            requestInputs.setLatency(slicingOrder.getSlicing_order_info().getLatency());
-            requestInputs.setMaxNumberofUEs(slicingOrder.getSlicing_order_info().getMaxNumberofUEs());
-            requestInputs.setUEMobilityLevel(slicingOrder.getSlicing_order_info().getUEMobilityLevel());
-            requestInputs.setResourceSharingLevel(slicingOrder.getSlicing_order_info().getResourceSharingLevel());
-            requestInputs.setCoverageAreaList(slicingOrder.getSlicing_order_info().getCoverageArea());
-            //use default value
-            requestInputs.setUseInterval("20");
-            CreationParameters parameters = new CreationParameters();
-            parameters.setRequestInputs(requestInputs);
-            CreationService creationService = new CreationService();
-            creationService.setName(slicingOrder.getSlicing_order_info().getName());
-            creationService.setDescription(CommonConstant.BLANK);
-            String slicingPath = System.getProperty("user.dir") + File.separator + "config" + File.separator + "slicing.properties";
-            InputStream inputStream = new FileInputStream(new File(slicingPath));
-            Properties environment = new Properties();
-            environment.load(inputStream);
-            String serviceInvariantUuid = environment.getProperty("slicing.serviceInvariantUuid");
-            creationService.setServiceInvariantUuid(serviceInvariantUuid);
-            String serviceUuid = environment.getProperty("slicing.serviceUuid");
-            creationService.setServiceUuid(serviceUuid);
-            logger.info("serviceInvariantUuid is {}, serviceUuid is {}.", serviceInvariantUuid, serviceUuid);
-
-            creationService.setGlobalSubscriberId(environment.getProperty("slicing.globalSubscriberId"));
-            creationService.setServiceType(environment.getProperty("slicing.serviceType"));
-            creationService.setParameters(parameters);
+            CreationRequestInputs requestInputs = mapCreationRequest(slicingOrder);
+            CreationService creationService = buildCreationService(slicingOrder, requestInputs);
 
             CreationRequest creationRequest = new CreationRequest();
             creationRequest.setService(creationService);
 
             String jsonstr = gson.toJson(creationRequest);
-            logger.info("createSlicingService:creationRequest request is:{}", jsonstr);
+            log.info("createSlicingService:creationRequest request is:{}", jsonstr);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
             Response<CreateResponse> updateResponse = soSliceService
                 .submitOrders(requestBody).execute();
 
             if (updateResponse.isSuccessful()) {
                 CreateResponse createResponse = updateResponse.body();
-                logger.info("createSlicingService: submitOrders reponse is:{}",
+                log.info("createSlicingService: submitOrders reponse is:{}",
                     gson.toJson(createResponse).toString());
 
                 // set create operation result
@@ -146,7 +107,7 @@ public class SlicingServiceImpl implements SlicingService {
                 resultMsg = "5G slicing order created normally.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
+                log.error(String
                     .format("createSlicingService: Can not submitOrders [code={}, message={}]", updateResponse.code(),
                         updateResponse.message()));
                 resultMsg = "5G slicing order created failed.";
@@ -156,14 +117,70 @@ public class SlicingServiceImpl implements SlicingService {
             // set error message
             resultMsg = "5G slicing order created failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
-        logger.info(resultMsg);
-        logger.info("createSlicingService: 5G slicing order creation has been finished.");
+        log.info(resultMsg);
+        log.info("createSlicingService: 5G slicing order creation has been finished.");
         resultHeader.setResult_message(resultMsg);
         ServiceResult serviceResult = new ServiceResult(resultHeader, createResult);
         return serviceResult;
+    }
+
+    private CreationRequestInputs mapCreationRequest(SlicingOrder slicingOrder) {
+        CreationRequestInputs requestInputs = new CreationRequestInputs();
+        requestInputs.setExpDataRateDL(slicingOrder.getSlicing_order_info().getExpDataRateDL());
+        requestInputs.setExpDataRateUL(slicingOrder.getSlicing_order_info().getExpDataRateUL());
+        requestInputs.setLatency(slicingOrder.getSlicing_order_info().getLatency());
+        requestInputs.setMaxNumberofUEs(slicingOrder.getSlicing_order_info().getMaxNumberofUEs());
+        requestInputs.setUEMobilityLevel(slicingOrder.getSlicing_order_info().getUEMobilityLevel());
+        requestInputs.setResourceSharingLevel(slicingOrder.getSlicing_order_info().getResourceSharingLevel());
+        requestInputs.setCoverageAreaList(slicingOrder.getSlicing_order_info().getCoverageArea());
+        //use default value
+        requestInputs.setUseInterval("20");
+        return requestInputs;
+    }
+
+    private CreationService buildCreationService(SlicingOrder slicingOrder, CreationRequestInputs requestInputs)
+            throws FileNotFoundException, IOException {
+        CreationParameters parameters = new CreationParameters();
+        parameters.setRequestInputs(requestInputs);
+        CreationService creationService = new CreationService();
+        creationService.setName(slicingOrder.getSlicing_order_info().getName());
+        creationService.setDescription(CommonConstant.BLANK);
+
+        String slicingPath = System.getProperty("user.dir") + File.separator + "config" + File.separator + "slicing.properties";
+        try {
+            // kept for compatibility reasons
+            InputStream inputStream = new FileInputStream(new File(slicingPath));
+            setEnvironmentProperties(creationService, inputStream);
+        } catch (FileNotFoundException e) {
+            addConfigurationProperties(creationService);
+        }
+
+        creationService.setParameters(parameters);
+        return creationService;
+    }
+
+    private void addConfigurationProperties(CreationService creationService) {
+        creationService.setServiceInvariantUuid(slicingProperties.getServiceInvariantUuid());
+        creationService.setServiceUuid(slicingProperties.getServiceUuid());
+        creationService.setGlobalSubscriberId(slicingProperties.getGlobalSubscriberId());
+        creationService.setServiceType(slicingProperties.getServiceType());
+    }
+
+    private void setEnvironmentProperties(CreationService creationService, InputStream inputStream)
+            throws IOException {
+        Properties environment = new Properties();
+        environment.load(inputStream);
+        String serviceInvariantUuid = environment.getProperty("slicing.serviceInvariantUuid");
+        creationService.setServiceInvariantUuid(serviceInvariantUuid);
+        String serviceUuid = environment.getProperty("slicing.serviceUuid");
+        creationService.setServiceUuid(serviceUuid);
+        log.info("serviceInvariantUuid is {}, serviceUuid is {}.", serviceInvariantUuid, serviceUuid);
+
+        creationService.setGlobalSubscriberId(environment.getProperty("slicing.globalSubscriberId"));
+        creationService.setServiceType(environment.getProperty("slicing.serviceType"));
     }
 
     @Override
@@ -179,7 +196,7 @@ public class SlicingServiceImpl implements SlicingService {
             Response<JSONObject> response = this.aaiSliceService
                 .listOrders(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G).execute();
             if (response.isSuccessful()) {
-                logger.info("querySlicingOrderList: listService reponse is:{}", response.body());
+                log.info("querySlicingOrderList: listService reponse is:{}", response.body());
                 Type type = new TypeToken<List<AAIServiceInstance>>() {
                 }.getType();
 
@@ -190,7 +207,7 @@ public class SlicingServiceImpl implements SlicingService {
                 resultMsg = "5G slicing order query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("querySlicingOrderList: Can not get listOrders[code={}, message={}]",
+                log.error(String.format("querySlicingOrderList: Can not get listOrders[code={}, message={}]",
                     response.code(),
                     response.message()));
                 resultMsg = "\"5G slicing order query failed!";
@@ -204,7 +221,7 @@ public class SlicingServiceImpl implements SlicingService {
             Exception e) {
             resultMsg = "5G slicing order query failed. Unknown exception occurred!";
             resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
         // Filter by status and paginate
@@ -221,8 +238,8 @@ public class SlicingServiceImpl implements SlicingService {
         // return API result for calling [Query Slicing Order List]
         OrderList responseOrderList = new OrderList(orderList.size(), pagedOrderList.getPagedList());
         addProgressToOrder(responseOrderList);
-        logger.info(resultMsg);
-        logger.info("querySlicingOrderList: 5G slicing order query has been finished.");
+        log.info(resultMsg);
+        log.info("querySlicingOrderList: 5G slicing order query has been finished.");
         resultHeader.setResult_message(resultMsg);
         serviceResult.setResult_header(resultHeader);
         serviceResult.setResult_body(responseOrderList);
@@ -246,7 +263,7 @@ public class SlicingServiceImpl implements SlicingService {
     public void addProgressToOrder(OrderList responseOrderList)  {
         if (responseOrderList.getSlicing_order_list() == null
             || responseOrderList.getSlicing_order_list().size() == 0) {
-            logger.error(
+            log.error(
                 "addProgressToOrder: responseOrderList.getSlicing_order_list() is null or responseOrderList.getSlicing_order_list() size is 0.");
             return;
         }
@@ -259,7 +276,7 @@ public class SlicingServiceImpl implements SlicingService {
             ServiceInstanceOperations serviceInstanceOperations = serviceLcmService
                 .getServiceInstanceOperationById(businessId);
             if (null == serviceInstanceOperations || serviceInstanceOperations.getOperationId() == null) {
-                logger.error(
+                log.error(
                     "addProgressToOrder: null == serviceInstanceOperations for businessId:{}.",
                     businessId);
                 continue;
@@ -272,27 +289,27 @@ public class SlicingServiceImpl implements SlicingService {
                 if (response.isSuccessful()) {
                     SOOperation soOperation = response.body();
                     Gson gson = new Gson();
-                    logger.info("addProgressToOrder: queryOperationProgress reponse is:{}",
+                    log.info("addProgressToOrder: queryOperationProgress reponse is:{}",
                         gson.toJson(soOperation).toString());
                     if (soOperation == null || soOperation.getOperation() == null) {
-                        logger.error("addProgressToOrder: soOperation is null or getOperation() is null for businessId {}!", businessId);
+                        log.error("addProgressToOrder: soOperation is null or getOperation() is null for businessId {}!", businessId);
                         continue;
                     }
                     String operationResult = soOperation.getOperation().getResult();
                     String operationType = soOperation.getOperation().getOperation();
                     int progress = soOperation.getOperation().getProgress();
-                    logger.info("addProgressToOrder: operationResult is:{}, operationType is {}, progress is {}",
+                    log.info("addProgressToOrder: operationResult is:{}, operationType is {}, progress is {}",
                         operationResult, operationType, progress);
                     if (operationResult.equals(NsmfCodeConstant.OPERATION_ERROR_STATUS)) {
-                        logger.error("addProgressToOrder: progress is ok, but operationResult is error for businessId {}!", businessId);
+                        log.error("addProgressToOrder: progress is ok, but operationResult is error for businessId {}!", businessId);
                         continue;
                     }
                     orderInfo.setLast_operation_type(operationType);
                     orderInfo.setLast_operation_progress(String.valueOf(progress));
                 }
             } catch (IOException e) {
-                logger.error(e.getMessage());
-                logger.error("addProgressToOrder: catch an IOException for businessId {}!", businessId);
+                log.error(e.getMessage());
+                log.error("addProgressToOrder: catch an IOException for businessId {}!", businessId);
                 continue;
             }
         }
