@@ -1,0 +1,6 @@
+{
+  "service": {
+    "serviceId": "someServiceId",
+    "operationId": "someOperationId"
+  }
+}

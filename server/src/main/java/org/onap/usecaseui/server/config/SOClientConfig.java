@@ -18,8 +18,8 @@ package org.onap.usecaseui.server.config;
 
 import java.io.IOException;
 
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,16 +33,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @Configuration
-public class AAIClientConfig {
+public class SOClientConfig {
 
-    @Value("${uui-server.client.aai.baseUrl}")
+    @Value("${uui-server.client.so.baseUrl}")
     String baseUrl;
-    @Value("${uui-server.client.aai.username}")
+    @Value("${uui-server.client.so.username}")
     String username;
-    @Value("${uui-server.client.aai.password}")
+    @Value("${uui-server.client.so.password}")
     String password;
 
-    @Bean
     OkHttpClient okHttpClient() {
         return new OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
             @Override
@@ -51,30 +50,29 @@ public class AAIClientConfig {
                 Request.Builder builder = originalRequest.newBuilder()
                     .header("Authorization", Credentials.basic(username, password))
                     .header(HttpHeaders.ACCEPT, "application/json")
-                    .header("X-TransactionId", "7777")
-                    .header("X-FromAppId", "uui");
+                    .header("X-TransactionId", "9999")
+                    .header("X-FromAppId", "onap-cli");
                 Request newRequest = builder.build();
                 return chain.proceed(newRequest);
             }
         }).build();
     }
 
-    @Bean
-    Retrofit retrofit(OkHttpClient okHttpClient) {
+    Retrofit retrofit() {
         return new Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(JacksonConverterFactory.create())
-            .client(okHttpClient)
+            .client(okHttpClient())
             .build();
     }
 
     @Bean
-    AAIService aaiService(Retrofit retrofit) {
-        return retrofit.create(AAIService.class);
+    SOService soService() {
+        return retrofit().create(SOService.class);
     }
 
     @Bean
-    AAISliceService aaiSliceService(Retrofit retrofit) {
-        return retrofit.create(AAISliceService.class);
+    SOSliceService soSliceService() {
+        return retrofit().create(SOSliceService.class);
     }
 }

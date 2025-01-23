@@ -28,7 +28,6 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -36,90 +35,37 @@ import retrofit2.http.Query;
 
 public interface SOSliceService {
 
-	@Headers({
-        "X-TransactionId: 9999",
-        "X-FromAppId: onap-cli",
-        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-        "Accept: application/json"
-	})
 	@GET("/api/so-serviceInstances/v3/{serviceId}/operations/{operationId}")
 	Call<SOOperation> queryOperationProgress(@Path("serviceId") String serviceId,
 			@Path("operationId") String operationId);
 
-	@Headers({
-        "X-TransactionId: 9999",
-        "X-FromAppId: onap-cli",
-        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-        "Accept: application/json"
-	})
 	@POST("/api/so-serviceInstances/v3/{serviceInstanceId}/activate")
 	Call<ActivateService> activeService(@Path("serviceInstanceId") String serviceInstanceId, @Body RequestBody body);
 
-	@Headers({ "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==", "Accept: application/json" })
 	@POST("/api/so-serviceInstances/v3/{serviceInstanceId}/deactivate")
 	Call<ActivateService> deactiveService(@Path("serviceInstanceId") String serviceInstanceId, @Body RequestBody body);
-
-	@Headers({
-        "X-TransactionId: 9999",
-        "X-FromAppId: onap-cli",
-        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-        "Accept: application/json"
-	})
 
 	@HTTP(method = "DELETE",path = "/api/so-serviceInstances/v3/{serviceInstanceId}",hasBody = true)
 	Call<ActivateService> terminateService(@Path("serviceInstanceId") String serviceInstanceId, @Body RequestBody body);
 
-	@Headers({
-        "X-TransactionId: 9999",
-        "X-FromAppId: onap-cli",
-        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-        "Accept: application/json"
-	})
 	@GET("/api/so-orchestrationTasks/v4")
 	Call<JSONArray> listTask();
-	
-	@Headers({
-        "X-TransactionId: 9999",
-        "X-FromAppId: onap-cli",
-        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-        "Accept: application/json"
-	})
+
 	@GET("/api/so-orchestrationTasks/v4")
 	Call<JSONArray> listTaskByStage(@Query("status") String status );
 
-	@Headers({
-        "X-TransactionId: 9999",
-        "X-FromAppId: onap-cli",
-        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-        "Accept: application/json"
-	})
 	@GET("/api/so-orchestrationTasks/v4/{taskId}")
 	Call<SOTask> getTaskById(@Path("taskId") String taskId);
 
-	@Headers({ "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==", "Accept: application/json" })
 	@GET("/api/so-orchestrationTasks/v4/{taskId}")
 	Call<SOTask> getTaskByIdD(@Path("taskId") String taskId);
-	
-	@Headers({ "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==", "Accept: application/json" })
+
 	@PUT("/api/so-orchestrationTasks/v4/{taskId}")
 	Call<ResponseBody> updateService(@Path("taskId") String taskId, @Body RequestBody body);
 
-	@Headers({
-        "X-TransactionId: 9999",
-        "X-FromAppId: onap-cli",
-        "Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-        "Accept: application/json"
-	})
 	@POST("/api/so-orchestrationTasks/v4/{taskId}/commit")
 	Call<ResponseBody> commitTask(@Path("taskId") String taskId);
 
-
-	@Headers({
-		"X-TransactionId: 9999",
-		"X-FromAppId: onap-cli",
-		"Authorization: Basic SW5mcmFQb3J0YWxDbGllbnQ6cGFzc3dvcmQxJA==",
-		"Accept: application/json"
-	})
 	@POST("/api/so-serviceInstances/v3")
 	Call<CreateResponse> submitOrders(@Body RequestBody body);
 }
