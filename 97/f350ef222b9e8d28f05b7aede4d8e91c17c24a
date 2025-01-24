@@ -1,0 +1,9 @@
+Verified+1: ONAP Bypass GHA <releng+onap.bypass.gha@linuxfoundation.org>
+Code-Review+2: Keguang He <hekeguang@chinamobile.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Submitted-by: Keguang He <hekeguang@chinamobile.com>
+Submitted-at: Fri, 24 Jan 2025 06:49:33 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/usecase-ui/server/+/139986
+Project: usecase-ui/server
+Branch: refs/heads/master
