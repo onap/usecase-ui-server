@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.config;
 
 import java.io.IOException;
 
+import org.onap.usecaseui.server.service.intent.IntentAaiService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,5 +77,10 @@ public class AAIClientConfig {
     @Bean
     AAISliceService aaiSliceService(Retrofit retrofit) {
         return retrofit.create(AAISliceService.class);
+    }
+
+    @Bean
+    IntentAaiService intentAaiService(Retrofit retrofit) {
+        return retrofit.create(IntentAaiService.class);
     }
 }

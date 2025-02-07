@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2017 CTC, Inc. and others. All rights reserved.
+/**
+ * Copyright 2025 Deutsche Telekom.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.intent;
+package org.onap.usecaseui.server.service.intent.config;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-import com.alibaba.fastjson.JSONObject;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.http.*;
+import lombok.Data;
 
-public interface IntentApiService {
-
-    Call<JSONObject> createIntentInstance(@Body RequestBody body);
-    Call<JSONObject> queryOperationProgress(@Path("serviceId") String serviceId, @Path("operationId") String operationId);
-    Call<JSONObject> deleteIntentInstance(@Body RequestBody body);
-
-
+@Data
+@Configuration
+@ConfigurationProperties(prefix = "uui-server.ccvpn")
+public class IntentProperties {
+  String globalCustomerId;
+  String serviceType;
+  String subscriberName;
+  String subscriberType;
 }

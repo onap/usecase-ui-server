@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2017 CTC, Inc. and others. All rights reserved.
+/**
+ * Copyright 2025 Deutsche Telekom.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,24 @@
  */
 package org.onap.usecaseui.server.service.intent;
 
-
 import com.alibaba.fastjson.JSONObject;
+
 import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.*;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.HTTP;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
-public interface IntentApiService {
+public interface IntentSoService {
 
+    @POST("/so/infra/serviceIntent/v1/create")
     Call<JSONObject> createIntentInstance(@Body RequestBody body);
+
+    @GET("/so/infra/e2eServiceInstances/v3/{serviceId}/operations/{operationId}")
     Call<JSONObject> queryOperationProgress(@Path("serviceId") String serviceId, @Path("operationId") String operationId);
+
+    @HTTP(method="DELETE", path="/so/infra/serviceIntent/v1/delete", hasBody = true)
     Call<JSONObject> deleteIntentInstance(@Body RequestBody body);
-
-
 }
