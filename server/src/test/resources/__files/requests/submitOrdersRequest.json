@@ -1,0 +1,16 @@
+{
+  "service": {
+    "description": "",
+    "serviceInvariantUuid": "someServiceInvariantUuid",
+    "serviceUuid": "someServiceUuid",
+    "globalSubscriberId": "someGlobalSubscriberId",
+    "serviceType": "someServiceType",
+    "parameters": {
+      "requestInputs": {
+        "latency": 10,
+        "maxNumberofUEs": 10,
+        "useInterval": "20"
+      }
+    }
+  }
+}
