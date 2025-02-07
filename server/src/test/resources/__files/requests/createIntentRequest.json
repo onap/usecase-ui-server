@@ -1,0 +1,26 @@
+{
+  "modelInvariantUuid": "6790ab0e-034f-11eb-adc1-0242ac120002",
+  "serviceType": "CLL",
+  "subscriptionServiceType": "IBN",
+  "globalSubscriberId": "IBNCustomer",
+  "additionalProperties": {
+    "transportNetworks": [
+      {
+        "connectionLinks": [
+          {
+            "transportEndpointA": "accessPointOneName",
+            "name": ""
+          }
+        ],
+        "sla": {
+          "maxBandwidth": 0,
+          "latency": "2"
+        },
+        "id": ""
+      }
+    ],
+    "serviceInstanceID": "cll-someInstanceId",
+    "enableSdnc": "true"
+  },
+  "modelUuid": "6790ab0e-034f-11eb-adc1-0242ac120002"
+}
