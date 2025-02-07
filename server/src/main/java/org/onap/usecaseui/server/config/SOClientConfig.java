@@ -18,6 +18,7 @@ package org.onap.usecaseui.server.config;
 
 import java.io.IOException;
 
+import org.onap.usecaseui.server.service.intent.IntentSoService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,5 +75,10 @@ public class SOClientConfig {
     @Bean
     SOSliceService soSliceService() {
         return retrofit().create(SOSliceService.class);
+    }
+
+    @Bean
+    IntentSoService intentSoService() {
+        return retrofit().create(IntentSoService.class);
     }
 }
