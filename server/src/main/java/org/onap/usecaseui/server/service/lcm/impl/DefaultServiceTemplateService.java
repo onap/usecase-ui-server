@@ -16,6 +16,9 @@
 package org.onap.usecaseui.server.service.lcm.impl;
 
 import com.google.common.io.Files;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.ResponseBody;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
@@ -50,25 +53,13 @@ import java.util.*;
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.CATEGORY_E2E_SERVICE;
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.DISTRIBUTION_STATUS_DISTRIBUTED;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service("ServiceTemplateService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class DefaultServiceTemplateService implements ServiceTemplateService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultServiceTemplateService.class);
-
-    private SDCCatalogService sdcCatalog;
-
-    private AAIService aaiService;
-
-    public DefaultServiceTemplateService() {
-        this(RestfulServices.create(SDCCatalogService.class), RestfulServices.create(AAIService.class));
-    }
-
-    public DefaultServiceTemplateService(SDCCatalogService sdcCatalog, AAIService aaiService) {
-        this.sdcCatalog = sdcCatalog;
-        this.aaiService = aaiService;
-    }
+    private final SDCCatalogService sdcCatalog;
+    private final AAIService aaiService;
 
     @Override
     public List<SDCServiceTemplate> listDistributedServiceTemplate() {
@@ -77,11 +68,11 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not get distributed e2e service templates[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get distributed e2e service templates[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("Visit SDC Catalog occur exception");
+            log.error("Visit SDC Catalog occur exception");
             throw new SDCCatalogException("SDC Catalog is not available.", e);
         }
     }
@@ -110,11 +101,11 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         try {
             String msbUrl = RestfulServices.getMsbAddress();
             String templateUrl = String.format("https://%s%s", msbUrl, toscaModelPath);
-            logger.info("download Csar File Url is:"+templateUrl);
+            log.info("download Csar File Url is:"+templateUrl);
             ResponseBody body = sdcCatalog.downloadCsar(templateUrl).execute().body();
             Files.write(body.bytes(),new File(toPath));
         } catch (IOException e) {
-            logger.error(String.format("Download %s failed!", toscaModelPath));
+            log.error(String.format("Download %s failed!", toscaModelPath));
             throw e;
         }
     }
@@ -145,7 +136,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
         }
         return serviceTemplateInput;
     }
-    
+
     private void appendLocationParameters(ServiceTemplateInput serviceTemplateInput, ToscaTemplate tosca) {
         for (NodeTemplate nodeTemplate : tosca.getNodeTemplates()) {
             String type = nodeTemplate.getMetaData().getValue("type");
@@ -274,7 +265,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             SDCServiceTemplate template = response.body();
             return template.getToscaModelURL();
         } else {
-            logger.info(String.format("Cannot get tosca model for node template[%s]", nodeUUID));
+            log.info(String.format("Cannot get tosca model for node template[%s]", nodeUUID));
             return null;
         }
     }
@@ -353,11 +344,11 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             if (response.isSuccessful()) {
                 return response.body().getCloudRegion();
             } else {
-                logger.info(String.format("Can not get vim info[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get vim info[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("Visit AAI occur exception");
+            log.error("Visit AAI occur exception");
             throw new AAIException("AAI is not available.", e);
         }
     }
@@ -369,11 +360,11 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             if (response.isSuccessful()) {
                 return response.body().getEsrThirdpartySdncList();
             } else {
-                logger.info(String.format("Can not get sdnc controllers[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get sdnc controllers[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("Visit AAI occur exception");
+            log.error("Visit AAI occur exception");
             throw new AAIException("AAI is not available.", e);
         }
     }

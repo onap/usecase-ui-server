@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.usecaseui.server.service.csmf.config;
+package org.onap.usecaseui.server.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -22,10 +22,9 @@ import lombok.Data;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "uui-server.slicing")
-public class SlicingProperties {
-  String serviceInvariantUuid;
-  String serviceUuid;
-  String globalSubscriberId;
-  String serviceType;
+@ConfigurationProperties(prefix = "uui-server.client.aai")
+public class AAIClientProperties {
+  String baseUrl;
+  String username;
+  String password;
 }

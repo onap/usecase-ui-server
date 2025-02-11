@@ -1,6 +1,9 @@
 /**
  * Copyright 2016-2017 ZTE Corporation.
  *
+ * ================================================================================
+ * Modifications Copyright (C) 2025 Deutsche Telekom.
+ * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,6 +32,8 @@ import java.util.List;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
@@ -57,40 +62,22 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service("PackageDistributionService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class DefaultPackageDistributionService implements PackageDistributionService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultPackageDistributionService.class);
+    private final SDCCatalogService sdcCatalogService;
+    private final VfcService vfcService;
+    private final ServiceLcmService serviceLcmService;
 
-    private SDCCatalogService sdcCatalogService;
-
-    private VfcService vfcService;
-    
-    @Resource(name="ServiceLcmService")
-    private ServiceLcmService serviceLcmService;
-
-    public DefaultPackageDistributionService() {
-        this(create(SDCCatalogService.class), create(VfcService.class));
-    }
-
-    public DefaultPackageDistributionService(SDCCatalogService sdcCatalogService, VfcService vfcService) {
-        this.sdcCatalogService = sdcCatalogService;
-        this.vfcService = vfcService;
-    }
-
-    public void setServiceLcmService(ServiceLcmService serviceLcmService) {
-        this.serviceLcmService = serviceLcmService;
-    }
-    
     @Override
     public VfNsPackageInfo retrievePackageInfo() {
-            List<SDCServiceTemplate> nsTemplate = sdcNsPackageInfo();
-            List<Vnf> vnf = sdcVfPackageInfo();
-            return new VfNsPackageInfo(nsTemplate, vnf);
+        List<SDCServiceTemplate> nsTemplate = sdcNsPackageInfo();
+        List<Vnf> vnf = sdcVfPackageInfo();
+        return new VfNsPackageInfo(nsTemplate, vnf);
     }
-    
+
     @Override
     public List<Vnf> sdcVfPackageInfo() {
         try {
@@ -98,15 +85,15 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not get VF resources[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get VF resources[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("sdcVfPackageInfo occur exception.Details:"+e.getMessage());
+            log.error("sdcVfPackageInfo occur exception.Details:"+e.getMessage());
         }
         return null;
     }
-    
+
     @Override
     public List<SDCServiceTemplate> sdcNsPackageInfo() {
         try {
@@ -114,15 +101,15 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not get NS services[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get NS services[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("sdcNsPackageInfo occur exception.Details:"+e.getMessage());
+            log.error("sdcNsPackageInfo occur exception.Details:"+e.getMessage());
         }
         return null;
     }
-    
+
     @Override
     public DistributionResult postNsPackage(Csar csar) {
         try {
@@ -130,7 +117,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not post NS packages[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not post NS packages[code=%s, message=%s]", response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -145,7 +132,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not get VF packages[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get VF packages[code=%s, message=%s]", response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -160,27 +147,27 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
             throw new VfcException("VFC service is not available!", e);
         }
     }
-    
+
     @Override
     public JobStatus getNsLcmJobStatus(String serviceInstanceId,String jobId, String responseId,String operationType) {        try {
         Response<JobStatus> response = vfcService.getNsLcmJobStatus(jobId, responseId).execute();
         if (response.isSuccessful()) {
             return response.body();
         } else {
-            logger.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
+            log.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
             throw new VfcException("VFC service getNsLcmJobStatus is not available!");
         }
     } catch (IOException e) {
         throw new VfcException("VFC service getNsLcmJobStatus is not available!", e);
     }}
-    
+
     @Override
     public DistributionResult deleteNsPackage(String csarId) {
         try {
@@ -188,7 +175,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not delete NS packages[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not delete NS packages[code=%s, message=%s]", response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -203,7 +190,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                logger.info(String.format("Can not delete VF packages[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not delete VF packages[code=%s, message=%s]", response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -215,17 +202,17 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     public String getVnfPackages() {
         String result="";
         try {
-            logger.info("vfc getVnfPackages is starting!");
+            log.info("vfc getVnfPackages is starting!");
             Response<ResponseBody> response = this.vfcService.getVnfPackages().execute();
-            logger.info("vfc getVnfPackages has finished!");
+            log.info("vfc getVnfPackages has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getVnfPackages[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get getVnfPackages[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("getVnfPackages occur exception:"+e);
+            log.error("getVnfPackages occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
@@ -236,21 +223,21 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc getNetworkServicePackages is starting!");
+            log.info("vfc getNetworkServicePackages is starting!");
             Response<ResponseBody> response = this.vfcService.getNetworkServicePackages().execute();
-            logger.info("vfc getNetworkServicePackages has finished!");
+            log.info("vfc getNetworkServicePackages has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getNetworkServicePackages[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get getNetworkServicePackages[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("getNetworkServicePackages occur exception:"+e);
+            log.error("getNetworkServicePackages occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -258,21 +245,21 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc getPnfPackages is starting!");
+            log.info("vfc getPnfPackages is starting!");
             Response<ResponseBody> response = this.vfcService.getPnfPackages().execute();
-            logger.info("vfc getPnfPackages has finished!");
+            log.info("vfc getPnfPackages has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getPnfPackages[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get getPnfPackages[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("getPnfPackages occur exception:"+e);
+            log.error("getPnfPackages occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -280,21 +267,21 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc downLoadNsPackage is starting!");
+            log.info("vfc downLoadNsPackage is starting!");
             Response<ResponseBody> response = this.vfcService.downLoadNsPackage(nsdInfoId).execute();
-            logger.info("vfc downLoadNsPackage has finished!");
+            log.info("vfc downLoadNsPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get downLoadNsPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get downLoadNsPackage[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("downLoadNsPackage occur exception:"+e);
+            log.error("downLoadNsPackage occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -302,21 +289,21 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc downLoadPnfPackage is starting!");
+            log.info("vfc downLoadPnfPackage is starting!");
             Response<ResponseBody> response = this.vfcService.downLoadNsPackage(pnfdInfoId).execute();
-            logger.info("vfc downLoadPnfPackage has finished!");
+            log.info("vfc downLoadPnfPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get downLoadPnfPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get downLoadPnfPackage[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("downLoadPnfPackage occur exception:"+e);
+            log.error("downLoadPnfPackage occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -324,21 +311,21 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc downLoadVnfPackage is starting!");
+            log.info("vfc downLoadVnfPackage is starting!");
             Response<ResponseBody> response = this.vfcService.downLoadNsPackage(vnfPkgId).execute();
-            logger.info("vfc downLoadVnfPackage has finished!");
+            log.info("vfc downLoadVnfPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get downLoadVnfPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get downLoadVnfPackage[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("downLoadVnfPackage occur exception:"+e);
+            log.error("downLoadVnfPackage occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -346,24 +333,24 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         Response<ResponseBody> response=null;
         String result="";
         try {
-            logger.info("vfc deleteNsdPackage is starting!");
+            log.info("vfc deleteNsdPackage is starting!");
             response = this.vfcService.deleteNsdPackage(nsdInfoId).execute();
-            logger.info("vfc deleteNsdPackage has finished!");
+            log.info("vfc deleteNsdPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get deleteNsdPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get deleteNsdPackage[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
             if(e.getMessage().contains("204")){
                 return CommonConstant.CONSTANT_SUCCESS;
             }
-            logger.error("deleteNsdPackage occur exception:"+e);
+            log.error("deleteNsdPackage occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -371,24 +358,24 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         Response<ResponseBody> response=null;
         String result="";
         try {
-            logger.info("vfc deleteVnfPackage is starting!");
+            log.info("vfc deleteVnfPackage is starting!");
             response = this.vfcService.deleteVnfdPackage(vnfPkgId).execute();
-            logger.info("vfc deleteVnfPackage has finished!");
+            log.info("vfc deleteVnfPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get deleteNsdPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get deleteNsdPackage[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
             if(e.getMessage().contains("204")){
                 return CommonConstant.CONSTANT_SUCCESS;
             }
-            logger.error("deleteVnfPackage occur exception:"+e);
+            log.error("deleteVnfPackage occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -396,33 +383,33 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         Response<ResponseBody> response=null;
         String result="";
         try {
-            logger.info("vfc deletePnfPackage is starting!");
+            log.info("vfc deletePnfPackage is starting!");
             response = this.vfcService.deletePnfdPackage(pnfdInfoId).execute();
-            logger.info("vfc deletePnfPackage has finished!");
+            log.info("vfc deletePnfPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get deletePnfPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get deletePnfPackage[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
             if(e.getMessage().contains("204")){
                 return CommonConstant.CONSTANT_SUCCESS;
             }
-            logger.error("deletePnfPackage occur exception:"+e);
+            log.error("deletePnfPackage occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
     public List<String> getNetworkServiceInfo() {
         List<String> result = new ArrayList<>();
         try {
-            logger.info("vfc getNetworkServiceInfo is starting!");
+            log.info("vfc getNetworkServiceInfo is starting!");
             Response<nsServiceRsp> response = this.vfcService.getNetworkServiceInfo().execute();
-            logger.info("vfc getNetworkServiceInfo has finished!");
+            log.info("vfc getNetworkServiceInfo has finished!");
             if (response.isSuccessful()) {
                 List<String> nsServices = response.body().nsServices;
                 if(nsServices.size()>0){
@@ -437,33 +424,33 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 }
                 return result;
             } else {
-                logger.info(String.format("Can not get getNetworkServiceInfo[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get getNetworkServiceInfo[code=%s, message=%s]", response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
-            logger.error("getNetworkServiceInfo occur exception:"+e);
+            log.error("getNetworkServiceInfo occur exception:"+e);
             return Collections.emptyList();
         }
-    
+
     }
 
     @Override
     public String createNetworkServiceInstance(HttpServletRequest request) {
         String result = "";
         try {
-            logger.info("aai createNetworkServiceInstance is starting");
+            log.info("aai createNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.createNetworkServiceInstance(requestBody).execute();
-            logger.info("aai createNetworkServiceInstance has finished");
+            log.info("aai createNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not createNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("createNetworkServiceInstance occur exception:"+e);
+            log.error("createNetworkServiceInstance occur exception:"+e);
         }
         return result;
     }
@@ -473,43 +460,43 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         Response response = null;
         String result="";
         try {
-            logger.info("vfc deleteNetworkServiceInstance is starting!");
+            log.info("vfc deleteNetworkServiceInstance is starting!");
             response = this.vfcService.deleteNetworkServiceInstance(nsInstanceId).execute();
-            logger.info("vfc deleteNetworkServiceInstance has finished!");
+            log.info("vfc deleteNetworkServiceInstance has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get deleteNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get deleteNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
             if(e.getMessage().contains("204")){
                 return CommonConstant.CONSTANT_SUCCESS;
             }
-            logger.error("deleteNetworkServiceInstance occur exception:"+e);
+            log.error("deleteNetworkServiceInstance occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;
         }
         return result;
-    
+
     }
 
     @Override
     public String terminateNetworkServiceInstance(HttpServletRequest request,String networkServiceInstanceId) {
         String result = "";
         try {
-            logger.info("aai terminateNetworkServiceInstance is starting");
+            log.info("aai terminateNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.terminateNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
-            logger.info("aai terminateNetworkServiceInstance has finished");
+            log.info("aai terminateNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not terminateNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not terminateNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("terminateNetworkServiceInstance occur exception:"+e);
+            log.error("terminateNetworkServiceInstance occur exception:"+e);
         }
         return result;
     }
@@ -518,19 +505,19 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     public String healNetworkServiceInstance(HttpServletRequest request,String networkServiceInstanceId) {
         String result = "";
         try {
-            logger.info("aai healNetworkServiceInstance is starting");
+            log.info("aai healNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.healNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
-            logger.info("aai healNetworkServiceInstance has finished");
+            log.info("aai healNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not healNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not healNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("healNetworkServiceInstance occur exception:"+e);
+            log.error("healNetworkServiceInstance occur exception:"+e);
         }
         return result;
     }
@@ -539,19 +526,19 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     public String scaleNetworkServiceInstance(HttpServletRequest request,String networkServiceInstanceId) {
         String result = "";
         try {
-            logger.info("aai scaleNetworkServiceInstance is starting");
+            log.info("aai scaleNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.scaleNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
-            logger.info("aai scaleNetworkServiceInstance has finished");
+            log.info("aai scaleNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not scaleNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not scaleNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("scaleNetworkServiceInstance occur exception:"+e);
+            log.error("scaleNetworkServiceInstance occur exception:"+e);
         }
         return result;
     }
@@ -560,19 +547,19 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     public String createNetworkServiceData(HttpServletRequest request) {
         String result = "";
         try {
-            logger.info("aai createNetworkServiceData is starting");
+            log.info("aai createNetworkServiceData is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.createNetworkServiceData(requestBody).execute();
-            logger.info("aai createNetworkServiceData has finished");
+            log.info("aai createNetworkServiceData has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createNetworkServiceData[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not createNetworkServiceData[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("createNetworkServiceData occur exception:"+e);
+            log.error("createNetworkServiceData occur exception:"+e);
         }
         return result;
     }
@@ -581,19 +568,19 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     public String createVnfData(HttpServletRequest request) {
         String result = "";
         try {
-            logger.info("aai createVnfData is starting");
+            log.info("aai createVnfData is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.createVnfData(requestBody).execute();
-            logger.info("aai createVnfData has finished");
+            log.info("aai createVnfData has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createVnfData[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not createVnfData[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("createVnfData occur exception:"+e);
+            log.error("createVnfData occur exception:"+e);
         }
         return result;
     }
@@ -602,19 +589,19 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     public String createPnfData(HttpServletRequest request) {
         String result = "";
         try {
-            logger.info("aai createPnfData is starting");
+            log.info("aai createPnfData is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.createPnfData(requestBody).execute();
-            logger.info("aai createPnfData has finished");
+            log.info("aai createPnfData has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createPnfData[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not createPnfData[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("createPnfData occur exception:"+e);
+            log.error("createPnfData occur exception:"+e);
         }
         return result;
     }
@@ -624,21 +611,21 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc getNsdInfo is starting!");
+            log.info("vfc getNsdInfo is starting!");
             Response<ResponseBody> response = this.vfcService.getNsdInfo(nsdInfoId).execute();
-            logger.info("vfc getNsdInfo has finished!");
+            log.info("vfc getNsdInfo has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get getNsdInfo[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get getNsdInfo[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("getNsdInfo occur exception:"+e);
+            log.error("getNsdInfo occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -646,21 +633,21 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc getVnfInfo is starting!");
+            log.info("vfc getVnfInfo is starting!");
             Response<ResponseBody> response = this.vfcService.getVnfInfo(vnfPkgId).execute();
-            logger.info("vfc getVnfInfo has finished!");
+            log.info("vfc getVnfInfo has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get getVnfInfo[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get getVnfInfo[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("getVnfInfo occur exception:"+e);
+            log.error("getVnfInfo occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -668,21 +655,21 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc getPnfInfo is starting!");
+            log.info("vfc getPnfInfo is starting!");
             Response<ResponseBody> response = this.vfcService.getPnfInfo(pnfdInfoId).execute();
-            logger.info("vfc getPnfInfo has finished!");
+            log.info("vfc getPnfInfo has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                logger.info(String.format("Can not get getPnfInfo[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get getPnfInfo[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("getPnfInfo occur exception:"+e);
+            log.error("getPnfInfo occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
@@ -690,44 +677,44 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc listNsTemplates is starting!");
+            log.info("vfc listNsTemplates is starting!");
             Response<ResponseBody> response = this.vfcService.listNsTemplates().execute();
-            logger.info("vfc listNsTemplates has finished!");
+            log.info("vfc listNsTemplates has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get listNsTemplates[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get listNsTemplates[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("listNsTemplates occur exception:"+e);
+            log.error("listNsTemplates occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 
     @Override
     public String fetchNsTemplateData(HttpServletRequest request) {
         String result = "";
         try {
-            logger.info("aai fetchNsTemplateData is starting");
+            log.info("aai fetchNsTemplateData is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.fetchNsTemplateData(requestBody).execute();
-            logger.info("aai fetchNsTemplateData has finished");
+            log.info("aai fetchNsTemplateData has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not fetchNsTemplateData[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not fetchNsTemplateData[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("fetchNsTemplateData occur exception:"+e);
+            log.error("fetchNsTemplateData occur exception:"+e);
         }
         return result;
     }
-    
+
     @Override
     public JSONObject fetchCCVPNTemplateData(HttpServletRequest request, String csarId) {
         JSONObject result = new JSONObject();
@@ -738,37 +725,37 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
             if (getResponse.isSuccessful()) {
                 // call vfc template parser
-                logger.info("calling ccvpn template file parser is starting");
+                log.info("calling ccvpn template file parser is starting");
                 Response<ResponseBody> response = vfcService.fetchTemplateInfo(requestBody).execute();
-                logger.info("calling ccvpn template file parser has finished");
+                log.info("calling ccvpn template file parser has finished");
                 if (response.isSuccessful()) {
                     result.put("status", CommonConstant.CONSTANT_SUCCESS);
                     result.put("result", JSONObject.parseObject(new String(response.body().bytes())));
                 } else {
                     result.put("status", CommonConstant.CONSTANT_FAILED);
                     result.put("error", String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
-                    logger.error(String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
+                    log.error(String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
                }
             } else {
                 // distribute template files to vfc catalog
                 Response<ResponseBody> postResponse = this.vfcService.servicePackages(requestBody).execute();
                 if (postResponse.isSuccessful()) {
                     // call vfc template parser
-                    logger.info("calling ccvpn template file parser is starting");
+                    log.info("calling ccvpn template file parser is starting");
                     Response<ResponseBody> response = vfcService.fetchTemplateInfo(requestBody).execute();
-                    logger.info("calling ccvpn template file parser has finished");
+                    log.info("calling ccvpn template file parser has finished");
                     if (response.isSuccessful()) {
                         result.put("status", CommonConstant.CONSTANT_SUCCESS);
                         result.put("result",JSONObject.parseObject(new String(response.body().bytes())));
                     } else {
                         result.put("status", CommonConstant.CONSTANT_FAILED);
                         result.put("error",String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
-                        logger.error(String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
+                        log.error(String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
                     }
                 } else {
                     result.put("status", CommonConstant.CONSTANT_FAILED);
                     result.put("error",String.format("Can not distribute ccvpn template file. Detail Info [code=%s, message=%s]", postResponse.code(), postResponse.message()));
-                    logger.error(String.format("Can not distribute ccvpn template file. Detail Info [code=%s, message=%s]", postResponse.code(), postResponse.message()));
+                    log.error(String.format("Can not distribute ccvpn template file. Detail Info [code=%s, message=%s]", postResponse.code(), postResponse.message()));
                }
             }
         } catch (Exception e) {
@@ -777,24 +764,24 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         }
         return result;
     }
-    
+
     @Override
     public String instantiateNetworkServiceInstance(HttpServletRequest request, String serviceInstanceId) {
         String result = "";
         try {
-            logger.info("aai instantiateNetworkServiceInstance is starting");
+            log.info("aai instantiateNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
             Response<ResponseBody> response = vfcService.instantiateNetworkServiceInstance(requestBody,serviceInstanceId).execute();
-            logger.info("aai instantiateNetworkServiceInstance has finished");
+            log.info("aai instantiateNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not instantiateNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error(String.format("Can not instantiateNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
-            logger.error("instantiateNetworkServiceInstance occur exception:"+e);
+            log.error("instantiateNetworkServiceInstance occur exception:"+e);
         }
         return result;
     }
@@ -804,20 +791,20 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
         String result="";
         try {
-            logger.info("vfc getVnfInfoById is starting!");
+            log.info("vfc getVnfInfoById is starting!");
             Response<ResponseBody> response = this.vfcService.getVnfInfoById(vnfinstid).execute();
-            logger.info("vfc getVnfInfoById has finished!");
+            log.info("vfc getVnfInfoById has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getVnfInfoById[code=%s, message=%s]", response.code(), response.message()));
+                log.info(String.format("Can not get getVnfInfoById[code=%s, message=%s]", response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
-            logger.error("getVnfInfoById occur exception:"+e);
+            log.error("getVnfInfoById occur exception:"+e);
             result= CommonConstant.CONSTANT_FAILED;;
         }
         return result;
-    
+
     }
 }

@@ -1,0 +1,10 @@
+[
+  {
+    "uuid": "someUuid",
+    "invariantUUID": "someInvariantUuid",
+    "name": "someName",
+    "version": "someVersion",
+    "toscaModelURL": "/foo/bar",
+    "category": "someCategory"
+  }
+]
