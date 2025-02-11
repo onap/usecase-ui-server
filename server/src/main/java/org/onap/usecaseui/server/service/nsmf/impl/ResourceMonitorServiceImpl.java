@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import jakarta.annotation.Resource;
+
 import lombok.RequiredArgsConstructor;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -53,6 +53,7 @@ import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiPDUSessionEst
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
@@ -65,7 +66,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
 
     private final KpiSliceService kpiSliceService;
 
-    @Resource(name = "ResourceMonitorConvertService")
+    @Autowired
     private ResourceMonitorServiceConvert resourceMonitorServiceConvert;
 
     private int kpiHours;
