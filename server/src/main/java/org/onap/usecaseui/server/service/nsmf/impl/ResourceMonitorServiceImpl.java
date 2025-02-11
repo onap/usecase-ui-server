@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import org.onap.usecaseui.server.bean.nsmf.common.ResultHeader;
@@ -49,36 +49,25 @@ import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidt
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiPDUSessionEstSR;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
+@RequiredArgsConstructor
 @Service("ResourceMonitorService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class ResourceMonitorServiceImpl implements ResourceMonitorService {
 
-    private final static Logger logger = LoggerFactory.getLogger(ResourceMonitorServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResourceMonitorServiceImpl.class);
+    private static final Gson gson = new Gson();
 
-    @Resource(name = "ResourceMonitorConvertService")
+    private final KpiSliceService kpiSliceService;
+
+    @Autowired
     private ResourceMonitorServiceConvert resourceMonitorServiceConvert;
-
-    Gson gson = new Gson();
-
-    private KpiSliceService kpiSliceService;
     private int kpiHours;
-
-    public ResourceMonitorServiceImpl() {
-        this(RestfulServices.create(KpiSliceService.class));
-    }
-
-    public ResourceMonitorServiceImpl(KpiSliceService kpiSliceService) {
-        this.kpiSliceService = kpiSliceService;
-    }
 
     public void initConfig() {
         String slicingPath = System.getProperty("user.dir") + File.separator + "config" + File.separator + "slicing.properties";
