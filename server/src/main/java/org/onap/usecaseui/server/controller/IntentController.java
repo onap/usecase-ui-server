@@ -25,6 +25,8 @@ import jakarta.annotation.Resource;
 
 import com.alibaba.fastjson.JSONArray;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+
 import org.apache.commons.collections.MapUtils;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.onap.usecaseui.server.bean.intent.CCVPNInstance;
@@ -51,8 +53,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
+@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RequestMapping("/intent")
 public class IntentController {
@@ -64,19 +65,12 @@ public class IntentController {
     @Resource(name = "IntentInstanceService")
     private IntentInstanceService intentInstanceService;
 
-    private IntentApiService intentApiService;
+    private final IntentApiService intentApiService;
 
     private ObjectMapper omAlarm = new ObjectMapper();
 
     @Resource(name = "SlicingService")
     private SlicingService slicingService;
-
-    public IntentController() {
-        this(RestfulServices.create(IntentApiService.class));
-    }
-    public IntentController(IntentApiService intentApiService) {
-        this.intentApiService = intentApiService;
-    }
 
     @GetMapping(value="/listModel",produces = "application/json;charset=utf8")
     public String getModels() throws JsonProcessingException {

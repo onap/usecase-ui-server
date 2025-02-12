@@ -17,6 +17,9 @@ package org.onap.usecaseui.server.service.nsmf.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,28 +28,18 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
+@RequiredArgsConstructor
 @Service("GeneralConvertService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class GeneralConvertImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneralConvertImpl.class);
-    private AAISliceService aaiSliceService;
 
-    public GeneralConvertImpl() {
-        this(RestfulServices.create(AAISliceService.class));
-    }
-
-    public GeneralConvertImpl(AAISliceService aaiSliceService) {
-        this.aaiSliceService = aaiSliceService;
-    }
+    private final AAISliceService aaiSliceService;
 
     public AAIServiceAndInstance queryServiceUtil(JSONObject object) {
         if (object.containsKey("relationship-list")) {

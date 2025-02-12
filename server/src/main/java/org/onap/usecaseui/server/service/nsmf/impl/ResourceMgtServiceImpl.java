@@ -68,17 +68,23 @@ import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service("ResourceMgtService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class ResourceMgtServiceImpl implements ResourceMgtService {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceMgtServiceImpl.class);
+    private static final Gson gson = new Gson();
+
+    private final AAISliceService aaiSliceService;
+    private final SOSliceService soSliceService;
+
     @Resource(name = "ServiceLcmService")
     private ServiceLcmService serviceLcmService;
 
@@ -87,19 +93,6 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
 
     @Resource(name = "ResourceMgtConvertService")
     private ResourceMgtServiceConvert resourceMgtServiceConvert;
-
-    private AAISliceService aaiSliceService;
-    private SOSliceService soSliceService;
-    Gson gson = new Gson();
-
-    public ResourceMgtServiceImpl() {
-        this(RestfulServices.create(AAISliceService.class), RestfulServices.create(SOSliceService.class));
-    }
-
-    public ResourceMgtServiceImpl(AAISliceService aaiSliceService, SOSliceService soSliceService) {
-        this.aaiSliceService = aaiSliceService;
-        this.soSliceService = soSliceService;
-    }
 
     @Override
     public ServiceResult querySlicingBusiness(int pageNo, int pageSize) {

@@ -23,30 +23,20 @@ import org.onap.usecaseui.server.service.lcm.OrchestratorService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.*;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import retrofit2.Response;
 
+@RequiredArgsConstructor
 @Service("OrchestratorService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class DefaultOrchestratorService implements OrchestratorService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultOrchestratorService.class);
 
-    private AAIService aaiService;
-
-    public DefaultOrchestratorService() {
-        this(RestfulServices.create(AAIService.class));
-    }
-
-    public DefaultOrchestratorService(AAIService aaiService) {
-        this.aaiService = aaiService;
-    }
+    private final AAIService aaiService;
 
     @Override
     public List<AAIEsrNfvo> listOrchestrator() {

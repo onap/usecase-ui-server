@@ -56,36 +56,24 @@ import org.springframework.util.ObjectUtils;
 import retrofit2.Response;
 
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service("TaskMgtService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class TaskMgtServiceImpl implements TaskMgtService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskMgtServiceImpl.class);
 
+    private final SOSliceService soSliceService;
+    private final AAISliceService aaiSliceService;
+
     @Resource(name = "TaskMgtConvertService")
     protected TaskMgtServiceConvert taskMgtServiceConvert;
-
-    private SOSliceService soSliceService;
-
-    private AAISliceService aaiSliceService;
-
-
-    public TaskMgtServiceImpl() {
-        this(RestfulServices.create(SOSliceService.class),RestfulServices.create(AAISliceService.class));
-
-    }
-
-    public TaskMgtServiceImpl(SOSliceService soSliceService,AAISliceService aaiSliceService) {
-        this.soSliceService = soSliceService;
-        this.aaiSliceService = aaiSliceService;
-
-    }
 
     @Override
     public ServiceResult querySlicingTask(int pageNo, int pageSize) {

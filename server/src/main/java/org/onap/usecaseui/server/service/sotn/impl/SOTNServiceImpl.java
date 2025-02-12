@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;
@@ -30,10 +31,8 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 import org.onap.usecaseui.server.service.sotn.SOTNService;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import okhttp3.RequestBody;
@@ -41,21 +40,12 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 @Service("SOTNService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
+@RequiredArgsConstructor
 public class SOTNServiceImpl implements SOTNService{
-	
+
     private static final Logger logger = LoggerFactory.getLogger(SOTNServiceImpl.class);
 
-    private AAIService aaiService;
-
-    public SOTNServiceImpl() {
-        this(RestfulServices.create(AAIService.class));
-    }
-
-    public SOTNServiceImpl(AAIService aaiService) {
-    	this.aaiService = aaiService;
-	}
+    private final AAIService aaiService;
 
 	@Override
 	public String getNetWorkResources() {
@@ -115,7 +105,7 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
-	
+
 	@Override
 	public String getSpecificLogicalLink(String linkName) {
 		String result="";
@@ -135,7 +125,7 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
-	
+
 	@Override
 	public String getHostUrl(String aaiId) {
 		String result="";
@@ -155,7 +145,7 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
-	
+
 	@Override
 	public String getExtAaiId(String aaiId) {
 		String result="";
@@ -175,7 +165,7 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
-	
+
 	@Override
 	public String createHostUrl(HttpServletRequest request,String aaiId) {
 		String result = "";
@@ -196,7 +186,7 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
-	
+
 	@Override
 	public String createTopoNetwork(HttpServletRequest request,String networkId) {
 		String result = "";
@@ -259,7 +249,7 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
-	
+
 	@Override
 	public String createPnf(HttpServletRequest request,String pnfName) {
 		String result = "";
@@ -280,7 +270,7 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
-	
+
 	@Override
 	public String deleteLink(String linkName,String resourceVersion) {
 		String result = "";
@@ -479,7 +469,7 @@ public class SOTNServiceImpl implements SOTNService{
         }
         return result;
 	}
-	
+
 	@Override
 	public String deleteExtNetwork(String networkId,String resourceVersion) {
 		String result = "";

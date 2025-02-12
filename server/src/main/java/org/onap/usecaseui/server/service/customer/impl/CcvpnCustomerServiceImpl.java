@@ -16,6 +16,9 @@
 package org.onap.usecaseui.server.service.customer.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import okhttp3.ResponseBody;
 
@@ -28,7 +31,6 @@ import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ModelConfig;
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.customer.CcvpnCustomerService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.util.RestfulServices;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,26 +39,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-
+@RequiredArgsConstructor
 @Service("CcvpnCustomerService")
 public class CcvpnCustomerServiceImpl implements CcvpnCustomerService {
 
     private static final Logger logger = LoggerFactory.getLogger(CcvpnCustomerServiceImpl.class);
 
-    private AAIService aaiService;
-
-    public CcvpnCustomerServiceImpl() {
-        this(RestfulServices.create(AAIService.class));
-    }
-
-    public CcvpnCustomerServiceImpl(AAIService aaiService) {
-        this.aaiService = aaiService;
-    }
+    private final AAIService aaiService;
 
     @Override
     public ServiceInstances getServiceInstances(String customerId, String serviceType) {

@@ -18,6 +18,8 @@ package org.onap.usecaseui.server.service.nsmf.impl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.onap.usecaseui.server.bean.nsmf.common.PagedResult;
@@ -55,10 +57,9 @@ import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Response;
 
-@Service("TaskMgtConvertService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 @Setter
+@RequiredArgsConstructor
+@Service("TaskMgtConvertService")
 public class TaskMgtServiceConvert {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskMgtServiceConvert.class);
@@ -66,15 +67,7 @@ public class TaskMgtServiceConvert {
     @Resource(name = "GeneralConvertService")
     private GeneralConvertImpl generalConvert;
 
-    private AAISliceService aaiSliceService;
-
-    public TaskMgtServiceConvert() {
-        this(RestfulServices.create(AAISliceService.class));
-    }
-
-    public TaskMgtServiceConvert(AAISliceService aaiSliceService) {
-        this.aaiSliceService = aaiSliceService;
-    }
+    private final AAISliceService aaiSliceService;
 
     void convertSlicingTaskList(SlicingTaskList targetSlicingTaskList, SOTaskRsp sourceSoTaskRsp, int pageNo,
         int pageSize)

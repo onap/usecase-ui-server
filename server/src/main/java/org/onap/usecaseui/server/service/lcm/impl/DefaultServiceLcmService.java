@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.service.lcm.impl;
 
-import static org.onap.usecaseui.server.util.RestfulServices.create;
 import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 
 import java.io.IOException;
@@ -33,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;

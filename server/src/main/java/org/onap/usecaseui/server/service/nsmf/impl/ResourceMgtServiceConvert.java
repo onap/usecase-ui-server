@@ -15,9 +15,6 @@
  */
 package org.onap.usecaseui.server.service.nsmf.impl;
 
-import static org.onap.usecaseui.server.util.RestfulServices.create;
-
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
@@ -26,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.onap.usecaseui.server.bean.nsmf.common.PagedResult;
 import org.onap.usecaseui.server.bean.nsmf.resource.HostedBusinessInfo;
@@ -54,37 +53,23 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceProfil
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceRsp;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
+@RequiredArgsConstructor
 @Service("ResourceMgtConvertService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class ResourceMgtServiceConvert {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceMgtServiceConvert.class);
+    private static final Gson gson = new Gson();
 
     @Resource(name = "GeneralConvertService")
     private GeneralConvertImpl generalConvert;
 
-    private SOSliceService soSliceService;
-    private AAISliceService aaiSliceService;
-    Gson gson = new Gson();
-
-    public ResourceMgtServiceConvert() {
-        this(RestfulServices.create(SOSliceService.class), RestfulServices.create(AAISliceService.class));
-    }
-
-    public ResourceMgtServiceConvert(SOSliceService soSliceService, AAISliceService aaiSliceService) {
-        this.soSliceService = soSliceService;
-        this.aaiSliceService = aaiSliceService;
-    }
+    private final AAISliceService aaiSliceService;
 
     void convertSlicingBusinessList(SlicingBusinessList slicingBusinessList, AAIServiceRsp aAIServiceRsp, int pageNo,
         int pageSize)
@@ -258,7 +243,7 @@ public class ResourceMgtServiceConvert {
             }
         } catch (Exception e) {
             logger.error("Exception in convertBusinessProfileDetails response",e);
-            
+
         }
 
         String useInterval = generalConvert.getUseInterval(businessId);
@@ -354,7 +339,7 @@ public class ResourceMgtServiceConvert {
                 }
             } catch (Exception e) {
                 logger.error("Exception in getIncludedNssiInfoList response",e);
-                
+
             }
         }
     }

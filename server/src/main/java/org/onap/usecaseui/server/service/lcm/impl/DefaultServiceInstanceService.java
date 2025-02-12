@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 
 import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
@@ -31,11 +32,9 @@ import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -47,119 +46,115 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
+@RequiredArgsConstructor
 @Service("ServiceInstanceService")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class DefaultServiceInstanceService implements ServiceInstanceService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultServiceInstanceService.class);
+	private static final Logger logger = LoggerFactory.getLogger(DefaultServiceInstanceService.class);
 
-    private AAIService aaiService;
-    
-    @Resource(name="ServiceLcmService")
-    private ServiceLcmService serviceLcmService;
-    
-    @Resource(name="CustomerService")
-    private CustomerService customerService;
+	private final AAIService aaiService;
 
-    public void setCustomerService(CustomerService customerService) {
-        this.customerService = customerService;
-    }
-    
+	@Resource(name = "ServiceLcmService")
+	private ServiceLcmService serviceLcmService;
+
+	@Resource(name = "CustomerService")
+	private CustomerService customerService;
+
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+	}
+
 	public void setServiceLcmService(ServiceLcmService serviceLcmService) {
 		this.serviceLcmService = serviceLcmService;
 	}
 
-    public DefaultServiceInstanceService() {
-        this(RestfulServices.create(AAIService.class));
-    }
+	@Override
+	public List<String> listServiceInstances(String customerId, String serviceType) {
+		List<String> result = new ArrayList<>();
+		try {
+			Response<ResponseBody> response = aaiService.listServiceInstances(customerId, serviceType).execute();
+			if (response.isSuccessful()) {
+				String resultStr = new String(response.body().bytes());
+				JSONObject object = JSONObject.parseObject(resultStr);
+				if (UuiCommonUtil.isNotNullOrEmpty(object)) {
+					result = this.parseServiceInstance(object, customerId, serviceType);
+				}
+				return result;
+			} else {
+				logger.info(
+						String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
+				return Collections.emptyList();
+			}
+		} catch (IOException e) {
+			logger.error("list services instances occur exception" + e.getMessage());
+			return Collections.emptyList();
+		}
+	}
 
-    public DefaultServiceInstanceService(AAIService aaiService) {
-        this.aaiService = aaiService;
-    }
+	private List<String> parseServiceInstance(JSONObject objects, String customerId, String serviceType)
+			throws JsonProcessingException {
+		List<String> result = new ArrayList<>();
+		JSONArray serviceInstances = objects.getJSONArray("service-instance");
+		for (Object serviceInstance : serviceInstances) {
+			JSONObject object = JSON.parseObject(serviceInstance + "");
+			String serviceInstanceId = object.get("service-instance-id").toString();
+			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
+			ServiceInstanceOperations serviceInstanceOperations = serviceLcmService
+					.getServiceInstanceOperationById(serviceInstanceId);
+			if (!UuiCommonUtil.isNotNullOrEmpty(serviceBean)) {
+				continue;
+			}
+			String serviceDomain = serviceBean.getServiceDomain();
+			object.put("serviceDomain", serviceDomain);
+			object.put("operationResult", serviceInstanceOperations.getOperationResult());
+			object.put("operationId", serviceInstanceOperations.getOperationId());
+			object.put("operationType", serviceInstanceOperations.getOperationType());
+			result.add(object.toString());
+		}
+		return result;
+	}
 
-    @Override
-    public List<String> listServiceInstances(String customerId, String serviceType) {
-    	List<String> result = new ArrayList<>();
-        try {
-            Response<ResponseBody> response = aaiService.listServiceInstances(customerId, serviceType).execute();
-            if (response.isSuccessful()) {
-            	String resultStr=new String(response.body().bytes());
-            	JSONObject object = JSONObject.parseObject(resultStr);
-            	if(UuiCommonUtil.isNotNullOrEmpty(object)){
-            		result=this.parseServiceInstance(object, customerId, serviceType);
-            	}
-                return result;
-            } else {
-                logger.info(String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
-                return Collections.emptyList();
-            }
-        } catch (IOException e) {
-            logger.error("list services instances occur exception"+e.getMessage());
-            return Collections.emptyList();
-        }
-    }
-    
-
-	private List<String> parseServiceInstance(JSONObject objects,String customerId,String serviceType) throws JsonProcessingException{
-    	List<String> result = new ArrayList<>();
-    	JSONArray serviceInstances=objects.getJSONArray("service-instance");
-    	for(Object serviceInstance:serviceInstances){
-    			JSONObject object =  JSON.parseObject(serviceInstance+"");
-    			String serviceInstanceId=object.get("service-instance-id").toString();
-    			ServiceBean serviceBean = serviceLcmService.getServiceBeanByServiceInStanceId(serviceInstanceId);
-    			ServiceInstanceOperations serviceInstanceOperations = serviceLcmService.getServiceInstanceOperationById(serviceInstanceId);
-    			if(!UuiCommonUtil.isNotNullOrEmpty(serviceBean)){
-    				continue;
-    			}
-    			String serviceDomain = serviceBean.getServiceDomain();
-				object.put("serviceDomain",serviceDomain);
-				object.put("operationResult",serviceInstanceOperations.getOperationResult());
-				object.put("operationId",serviceInstanceOperations.getOperationId());
-				object.put("operationType",serviceInstanceOperations.getOperationType());
-				result.add(object.toString());
-    	}
-    	return result;
-    }
-	
 	@Override
 	public String getRelationShipData(String customerId, String serviceType, String serviceId) {
-        try {
-            Response<ResponseBody> response = aaiService.getAAIServiceInstance(customerId, serviceType,serviceId).execute();
-            if (response.isSuccessful()) {
-            	String result=new String(response.body().bytes());
-                return result;
-            } else {
-                logger.info(String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
-                return "";
-            }
-        } catch (IOException e) {
-            logger.error("list services instances occur exception:"+e.getMessage());
-            return "";
-        }
+		try {
+			Response<ResponseBody> response = aaiService.getAAIServiceInstance(customerId, serviceType, serviceId).execute();
+			if (response.isSuccessful()) {
+				String result = new String(response.body().bytes());
+				return result;
+			} else {
+				logger.info(
+						String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
+				return "";
+			}
+		} catch (IOException e) {
+			logger.error("list services instances occur exception:" + e.getMessage());
+			return "";
+		}
 	}
-	
+
 	@Override
-	public String serviceNumByCustomer() throws JsonProcessingException{
-		Map<String,Object> result = new HashMap();
+	public String serviceNumByCustomer() throws JsonProcessingException {
+		Map<String, Object> result = new HashMap();
 		ObjectMapper omAlarm = new ObjectMapper();
 		List<AAICustomer> customers = customerService.listCustomer();
-		int total =0;
-		List<Map<String,Object>> list = new ArrayList<>();
-		if(customers.size()>0){
-			for(AAICustomer customer : customers){
-				Map<String,Object> customerMap = new HashMap<String,Object>();
+		int total = 0;
+		List<Map<String, Object>> list = new ArrayList<>();
+		if (customers.size() > 0) {
+			for (AAICustomer customer : customers) {
+				Map<String, Object> customerMap = new HashMap<String, Object>();
 				int customerNum = 0;
-				List<AAIServiceSubscription> serviceSubscriptions = customerService.listServiceSubscriptions(customer.getGlobalCustomerId());
-				if(serviceSubscriptions.size()>0){
-					for(AAIServiceSubscription serviceSubscription:serviceSubscriptions){
-						List<String> serviceInstances =this.listServiceInstances(customer.getGlobalCustomerId(), serviceSubscription.getServiceType());
-						total+=serviceInstances.size();
-						customerNum+=serviceInstances.size();
+				List<AAIServiceSubscription> serviceSubscriptions = customerService
+						.listServiceSubscriptions(customer.getGlobalCustomerId());
+				if (serviceSubscriptions.size() > 0) {
+					for (AAIServiceSubscription serviceSubscription : serviceSubscriptions) {
+						List<String> serviceInstances = this.listServiceInstances(customer.getGlobalCustomerId(),
+								serviceSubscription.getServiceType());
+						total += serviceInstances.size();
+						customerNum += serviceInstances.size();
 					}
 				}
-				customerMap.put("name",customer.getSubscriberName());
-				customerMap.put("value",customerNum);
+				customerMap.put("name", customer.getSubscriberName());
+				customerMap.put("value", customerNum);
 				list.add(customerMap);
 			}
 		}
@@ -167,25 +162,25 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 		result.put("customerServiceList", list);
 		return omAlarm.writeValueAsString(result);
 	}
-	
-	@Override
-	public String serviceNumByServiceType(String customerId) throws JsonProcessingException{
-		List<AAIServiceSubscription> serviceTypes = customerService.listServiceSubscriptions(customerId);
-		List<Map<String,Object>> list = new ArrayList<>();
-		ObjectMapper omAlarm = new ObjectMapper();
-		
-		for (AAIServiceSubscription aaiServiceSubscription : serviceTypes) {
-			Map<String,Object> serviceTypeMap = new HashMap<String,Object>();
-			List<String> serviceInstances =this.listServiceInstances(customerId, aaiServiceSubscription.getServiceType());
 
-			//serviceTypeMap.put(aaiServiceSubscription.getServiceType(),serviceInstances.size());
+	@Override
+	public String serviceNumByServiceType(String customerId) throws JsonProcessingException {
+		List<AAIServiceSubscription> serviceTypes = customerService.listServiceSubscriptions(customerId);
+		List<Map<String, Object>> list = new ArrayList<>();
+		ObjectMapper omAlarm = new ObjectMapper();
+
+		for (AAIServiceSubscription aaiServiceSubscription : serviceTypes) {
+			Map<String, Object> serviceTypeMap = new HashMap<String, Object>();
+			List<String> serviceInstances = this.listServiceInstances(customerId, aaiServiceSubscription.getServiceType());
+
+			// serviceTypeMap.put(aaiServiceSubscription.getServiceType(),serviceInstances.size());
 			serviceTypeMap.put("name", aaiServiceSubscription.getServiceType());
 			serviceTypeMap.put("value", serviceInstances.size());
 
 			list.add(serviceTypeMap);
 		}
 
-		Map<String,Object> result = new HashMap();
+		Map<String, Object> result = new HashMap();
 		result.put("list", list);
 		return omAlarm.writeValueAsString(result);
 	}

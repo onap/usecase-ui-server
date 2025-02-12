@@ -65,9 +65,8 @@ public class ResourceMgtServiceConvertTest {
     @Before
     public void before() throws Exception {
         aaiSliceService = mock(AAISliceService.class);
-        soSliceService = mock(SOSliceService.class);
         generalConvert = mock(GeneralConvertImpl.class);
-        resourceMgtServiceConvert = new ResourceMgtServiceConvert(soSliceService, aaiSliceService);
+        resourceMgtServiceConvert = new ResourceMgtServiceConvert(aaiSliceService);
         MemberModifier.field(ResourceMgtServiceConvert.class, "generalConvert").set(resourceMgtServiceConvert , generalConvert);
     }
 

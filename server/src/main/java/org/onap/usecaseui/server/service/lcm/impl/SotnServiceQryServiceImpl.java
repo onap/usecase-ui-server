@@ -17,19 +17,18 @@ package org.onap.usecaseui.server.service.lcm.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
 import okhttp3.ResponseBody;
 import org.onap.usecaseui.server.bean.activateEdge.ServiceInstance;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ModelConfig;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ResponseServiceInstanceWrapper;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ServiceInstanceList;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ServiceInstanceListWrapper;
-//import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ServiceSubscriptionWrapper;
 import org.onap.usecaseui.server.service.lcm.SotnServiceQryService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -39,22 +38,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service("SotnServiceQry")
-@org.springframework.context.annotation.Configuration
-@EnableAspectJAutoProxy
 public class SotnServiceQryServiceImpl implements SotnServiceQryService {
 
     private static final Logger logger = LoggerFactory.getLogger(SotnServiceQryServiceImpl.class);
 
-    private AAIService aaiService;
-
-    public SotnServiceQryServiceImpl() {
-        this(RestfulServices.create(AAIService.class));
-    }
-
-    public SotnServiceQryServiceImpl(AAIService aaiService) {
-        this.aaiService = aaiService;
-    }
+    private final AAIService aaiService;
 
     @Override
     public String getServiceInstances(String serviceType) {

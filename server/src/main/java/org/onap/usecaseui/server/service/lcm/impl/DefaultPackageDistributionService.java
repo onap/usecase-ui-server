@@ -22,7 +22,6 @@ import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.DISTRIBUTION_STATUS_DISTRIBUTED;
 import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.RESOURCETYPE_VF;
 
-import static org.onap.usecaseui.server.util.RestfulServices.create;
 import static org.onap.usecaseui.server.util.RestfulServices.extractBody;
 
 import java.io.IOException;
