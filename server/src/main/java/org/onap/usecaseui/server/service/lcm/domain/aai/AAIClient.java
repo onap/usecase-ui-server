@@ -37,7 +37,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface AAIService {
+public interface AAIClient {
 
 
 //    @GET("/api/aai-business/v11/customers")

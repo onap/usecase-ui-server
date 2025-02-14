@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -33,9 +33,9 @@ import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class SotnServiceQryServiceImplTest {
 
-    AAIService aaiService = mock(AAIService.class);
+    AAIClient aaiClient = mock(AAIClient.class);
 
-    SotnServiceQryServiceImpl sotnServiceQryService = new SotnServiceQryServiceImpl(aaiService);
+    SotnServiceQryServiceImpl sotnServiceQryService = new SotnServiceQryServiceImpl(aaiClient);
     ResponseBody result;
 
     @Before
@@ -62,13 +62,13 @@ public class SotnServiceQryServiceImplTest {
     }
     @Test
     public void getServiceInstancesTest() {
-        when(aaiService.listServiceInstances(eq("SOTN-CUST"),eq("SOTN"))).thenReturn(successfulCall(result));
+        when(aaiClient.listServiceInstances(eq("SOTN-CUST"),eq("SOTN"))).thenReturn(successfulCall(result));
         sotnServiceQryService.getServiceInstances("SOTN");
     }
 
     @Test
     public void getServiceInstancesWithThrowException() {
-        when(aaiService.listServiceInstances(eq("SOTN-CUST"),eq("SOTN"))).thenReturn(failedCall("aai is not exist!"));
+        when(aaiClient.listServiceInstances(eq("SOTN-CUST"),eq("SOTN"))).thenReturn(failedCall("aai is not exist!"));
         sotnServiceQryService.getServiceInstances("SOTN");
     }
 

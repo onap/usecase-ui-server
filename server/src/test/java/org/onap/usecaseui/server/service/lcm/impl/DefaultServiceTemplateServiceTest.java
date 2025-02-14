@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
@@ -45,7 +45,6 @@ import retrofit2.Call;
 import java.io.IOException;
 import java.util.*;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -56,7 +55,7 @@ import static org.onap.usecaseui.server.util.CallStub.failedCall;
 import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 
 public class DefaultServiceTemplateServiceTest {
-	
+
     @Test
     public void itCanListDistributedServiceTemplate() {
         List<SDCServiceTemplate> templates = Collections.singletonList(new SDCServiceTemplate("uuid", "uuid", "name", "V1","url", "category"));
@@ -97,14 +96,14 @@ public class DefaultServiceTemplateServiceTest {
         SDCCatalogService sdcService = newSdcCatalogService(nodeUUID);
 
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "regionId"));
-        AAIService aaiService = newAAIService(vim);
+        AAIClient aaiClient = newAAIService(vim);
 
-        ServiceTemplateService service = newServiceTemplateService(uuid, nodeUUID, sdcService, aaiService);
+        ServiceTemplateService service = newServiceTemplateService(uuid, nodeUUID, sdcService, aaiClient);
 
         Assert.assertNotNull(service.fetchServiceTemplateInput(uuid, modelPath));    }
 
-    private DefaultServiceTemplateService newServiceTemplateService(String uuid, String nodeUUID, SDCCatalogService sdcService, AAIService aaiService) {
-        return new DefaultServiceTemplateService(sdcService, aaiService) {
+    private DefaultServiceTemplateService newServiceTemplateService(String uuid, String nodeUUID, SDCCatalogService sdcService, AAIClient aaiClient) {
+        return new DefaultServiceTemplateService(sdcService, aaiClient) {
 
             @Override
             protected void downloadFile(String templateUrl, String toPath) throws IOException {
@@ -191,13 +190,13 @@ public class DefaultServiceTemplateServiceTest {
         return toscaTemplate;
     }
 
-    private AAIService newAAIService(List<VimInfo> vim) {
-        AAIService aaiService = mock(AAIService.class);
+    private AAIClient newAAIService(List<VimInfo> vim) {
+        AAIClient aaiClient = mock(AAIClient.class);
         VimInfoRsp rsp = new VimInfoRsp();
         rsp.setCloudRegion(vim);
         Call<VimInfoRsp> vimCall = successfulCall(rsp);
-        when(aaiService.listVimInfo()).thenReturn(vimCall);
-        return aaiService;
+        when(aaiClient.listVimInfo()).thenReturn(vimCall);
+        return aaiClient;
     }
 
     @Test(expected = SDCCatalogException.class)
@@ -232,20 +231,20 @@ public class DefaultServiceTemplateServiceTest {
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "region"));
         VimInfoRsp rsp = new VimInfoRsp();
         rsp.setCloudRegion(vim);
-        AAIService aaiService = mock(AAIService.class);
-        when(aaiService.listVimInfo()).thenReturn(successfulCall(rsp));
+        AAIClient aaiClient = mock(AAIClient.class);
+        when(aaiClient.listVimInfo()).thenReturn(successfulCall(rsp));
 
-        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiService);
+        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiClient);
 
         Assert.assertSame(vim, service.listVim());
     }
 
     @Test
     public void itCanRetrieveEmptyListWhenNoVimInfoInAAI() {
-        AAIService aaiService = mock(AAIService.class);
-        when(aaiService.listVimInfo()).thenReturn(emptyBodyCall());
+        AAIClient aaiClient = mock(AAIClient.class);
+        when(aaiClient.listVimInfo()).thenReturn(emptyBodyCall());
 
-        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiService);
+        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiClient);
         List<VimInfo> vimInfos = service.listVim();
 
         Assert.assertTrue("vim should be empty.", vimInfos.isEmpty());
@@ -253,10 +252,10 @@ public class DefaultServiceTemplateServiceTest {
 
     @Test(expected = AAIException.class)
     public void itCanThrowExceptionWhenAAIServiceIsNotAvailable() {
-        AAIService aaiService = mock(AAIService.class);
-        when(aaiService.listVimInfo()).thenReturn(failedCall("AAI is not available!"));
+        AAIClient aaiClient = mock(AAIClient.class);
+        when(aaiClient.listVimInfo()).thenReturn(failedCall("AAI is not available!"));
 
-        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiService);
+        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiClient);
         service.listVim();
     }
 
@@ -265,20 +264,20 @@ public class DefaultServiceTemplateServiceTest {
         List<SDNCController> controllers = Collections.singletonList(new SDNCController());
         SDNCControllerRsp rsp = new SDNCControllerRsp();
         rsp.setEsrThirdpartySdncList(controllers);
-        AAIService aaiService = mock(AAIService.class);
-        when(aaiService.listSdncControllers()).thenReturn(successfulCall(rsp));
+        AAIClient aaiClient = mock(AAIClient.class);
+        when(aaiClient.listSdncControllers()).thenReturn(successfulCall(rsp));
 
-        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiService);
+        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiClient);
 
         Assert.assertSame(controllers, service.listSDNCControllers());
     }
 
     @Test
     public void itCanRetrieveEmptyListWhenNoSDNControllerInAAI() {
-        AAIService aaiService = mock(AAIService.class);
-        when(aaiService.listSdncControllers()).thenReturn(emptyBodyCall());
+        AAIClient aaiClient = mock(AAIClient.class);
+        when(aaiClient.listSdncControllers()).thenReturn(emptyBodyCall());
 
-        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiService);
+        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiClient);
         List<SDNCController> controllers = service.listSDNCControllers();
 
         Assert.assertTrue("sdn controller should be empty.", controllers.isEmpty());
@@ -286,10 +285,10 @@ public class DefaultServiceTemplateServiceTest {
 
     @Test(expected = AAIException.class)
     public void itListSDNControllerThrowExceptionWhenAAIServiceIsNotAvailable() {
-        AAIService aaiService = mock(AAIService.class);
-        when(aaiService.listSdncControllers()).thenReturn(failedCall("AAI is not available!"));
+        AAIClient aaiClient = mock(AAIClient.class);
+        when(aaiClient.listSdncControllers()).thenReturn(failedCall("AAI is not available!"));
 
-        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiService);
+        ServiceTemplateService service = new DefaultServiceTemplateService(null,aaiClient);
         service.listSDNCControllers();
     }
     @Test

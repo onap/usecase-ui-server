@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.onap.usecaseui.server.service.lcm.OrchestratorService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.*;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.slf4j.Logger;
@@ -36,18 +36,18 @@ public class DefaultOrchestratorService implements OrchestratorService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultOrchestratorService.class);
 
-    private final AAIService aaiService;
+    private final AAIClient aaiClient;
 
     @Override
     public List<AAIEsrNfvo> listOrchestrator() {
         try {
-            Response<AAIOrchestratorRsp> response = this.aaiService.listOrchestrator().execute();
+            Response<AAIOrchestratorRsp> response = this.aaiClient.listOrchestrator().execute();
             if (response.isSuccessful()) {
                 List<AAIEsrNfvo> nfvoList = response.body().getEsrNfvo();
                 for(AAIEsrNfvo nfvo: nfvoList){
                     String nfvoId = nfvo.getNfvoId();
                     Response<AAISingleOrchestratorRsp> response_orch =
-                        this.aaiService.getOrchestrator(nfvoId).execute();
+                        this.aaiClient.getOrchestrator(nfvoId).execute();
                     EsrSystemInfoList esrSystemInfoList = response_orch.body().getEsrSystemInfoList();
                     List<EsrSystemInfo> esrSystemInfo = esrSystemInfoList.getEsrSystemInfo();
                     nfvo.setName(esrSystemInfo.get(0).getSystemName());
