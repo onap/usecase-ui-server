@@ -16,7 +16,7 @@
 package org.onap.usecaseui.server.service.lcm.impl;
 
 import org.onap.usecaseui.server.service.lcm.CustomerService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
@@ -52,12 +52,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class DefaultCustomerService implements CustomerService {
 
-    private final AAIService aaiService;
+    private final AAIClient aaiClient;
 
     @Override
     public List<AAICustomer> listCustomer() {
         try {
-            Response<AAICustomerRsp> response = this.aaiService.listCustomer().execute();
+            Response<AAICustomerRsp> response = this.aaiClient.listCustomer().execute();
             if (response.isSuccessful()) {
                 return response.body().getCustomer();
             } else {
@@ -76,7 +76,7 @@ public class DefaultCustomerService implements CustomerService {
 		try {
 			log.info("aai createOrUpdateCustomer is starting!");
 			RequestBody requestBody = extractBody(request);
-			Response<ResponseBody> response = this.aaiService.createOrUpdateCustomer(customerId,requestBody).execute();
+			Response<ResponseBody> response = this.aaiClient.createOrUpdateCustomer(customerId,requestBody).execute();
 			log.info("aai createOrUpdateCustomer is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
@@ -96,7 +96,7 @@ public class DefaultCustomerService implements CustomerService {
     		JSONObject result = new JSONObject();
 		try {
 			log.info("aai getCustomerById is starting!");
-			Response<AAICustomer> response = this.aaiService.getCustomerById(customerId).execute();
+			Response<AAICustomer> response = this.aaiClient.getCustomerById(customerId).execute();
 			log.info("aai getCustomerById is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
@@ -117,7 +117,7 @@ public class DefaultCustomerService implements CustomerService {
 		JSONObject result = new JSONObject();
 		try {
 			log.info("aai deleteCustomer is starting!");
-			Response<ResponseBody> response = this.aaiService.deleteCustomer(customerId,resourceVersion).execute();
+			Response<ResponseBody> response = this.aaiClient.deleteCustomer(customerId,resourceVersion).execute();
 			log.info("aai deleteCustomer is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
@@ -138,7 +138,7 @@ public class DefaultCustomerService implements CustomerService {
     @Override
     public List<AAIServiceSubscription> listServiceSubscriptions(String serviceType) {
         try {
-            Response<ServiceSubscriptionRsp> response = this.aaiService.listServiceSubscriptions(serviceType).execute();
+            Response<ServiceSubscriptionRsp> response = this.aaiClient.listServiceSubscriptions(serviceType).execute();
             if (response.isSuccessful()) {
                 return response.body().getServiceSubscriptions();
             } else {
@@ -157,7 +157,7 @@ public class DefaultCustomerService implements CustomerService {
 		try {
 			log.info("aai createOrUpdateServiceType is starting!");
 			RequestBody requestBody = extractBody(request);
-			Response<ResponseBody> response = this.aaiService.createOrUpdateServiceType(customerId,serviceType,requestBody).execute();
+			Response<ResponseBody> response = this.aaiClient.createOrUpdateServiceType(customerId,serviceType,requestBody).execute();
 			log.info("aai createOrUpdateServiceType is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
@@ -177,7 +177,7 @@ public class DefaultCustomerService implements CustomerService {
 		JSONObject result = new JSONObject();
 		try {
 			log.info("aai deleteServiceType is starting!");
-			Response<ResponseBody> response = this.aaiService.deleteServiceType(customerId,serviceType,resourceVersion).execute();
+			Response<ResponseBody> response = this.aaiClient.deleteServiceType(customerId,serviceType,resourceVersion).execute();
 			log.info("aai deleteServiceType is finished!");
 			if(response.isSuccessful()){
 				result.put("status", "SUCCESS");
@@ -201,7 +201,7 @@ public class DefaultCustomerService implements CustomerService {
         try {
             log.info("aai getServiceTypeById is starting!");
             Response<AAIServiceSubscription> response =
-                    this.aaiService.getServiceTypeById(customerId, serviceType).execute();
+                    this.aaiClient.getServiceTypeById(customerId, serviceType).execute();
             log.info("aai getServiceTypeById is finished!");
             if (response.isSuccessful()) {
                 result.put("status", "SUCCESS");
@@ -230,7 +230,7 @@ public class DefaultCustomerService implements CustomerService {
                     + networkInterfaceType + "\"\r\n" + "}";
             log.info("request body {} for Interface type {}" , body,networkInterfaceType);
             RequestBody request = RequestBody.create(MediaType.parse("application/json"), body);
-            Response<ResponseBody> response = this.aaiService.querynNetworkResourceList(request).execute();
+            Response<ResponseBody> response = this.aaiClient.querynNetworkResourceList(request).execute();
             if (response.isSuccessful()) {
                 String jsonResponse = response.body().string();
                 log.info("response json returned {}", jsonResponse);

@@ -28,7 +28,7 @@ import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.lcm.VfNsPackageInfo;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.nsServiceRsp;
@@ -133,20 +133,20 @@ public class DefaultPackageDistributionServiceTest {
         SDCCatalogService sdcService = newSDCService(serviceTemplate, vnf);
 
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "regionId"));
-        AAIService aaiService = newAAIService(vim);
+        AAIClient aaiClient = newAAIService(vim);
 
         PackageDistributionService service = new DefaultPackageDistributionService(sdcService, null, null);
 
         Assert.assertThat(service.retrievePackageInfo(), equalTo(new VfNsPackageInfo(serviceTemplate, vnf)));
     }
 
-    private AAIService newAAIService(List<VimInfo> vim) {
-        AAIService aaiService = mock(AAIService.class);
+    private AAIClient newAAIService(List<VimInfo> vim) {
+        AAIClient aaiClient = mock(AAIClient.class);
         VimInfoRsp rsp = new VimInfoRsp();
         rsp.setCloudRegion(vim);
         Call<VimInfoRsp> vimCall = successfulCall(rsp);
-        when(aaiService.listVimInfo()).thenReturn(vimCall);
-        return aaiService;
+        when(aaiClient.listVimInfo()).thenReturn(vimCall);
+        return aaiClient;
     }
 
     private SDCCatalogService newSDCService(List<SDCServiceTemplate> serviceTemplate, List<Vnf> vnf) {
@@ -169,7 +169,7 @@ public class DefaultPackageDistributionServiceTest {
         when(sdcService.listResources(RESOURCETYPE_VF)).thenReturn(serviceCall);
 
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "regionId"));
-        AAIService aaiService = newAAIService(vim);
+        AAIClient aaiClient = newAAIService(vim);
 
         PackageDistributionService service = new DefaultPackageDistributionService(sdcService, null, null);
         service.retrievePackageInfo();

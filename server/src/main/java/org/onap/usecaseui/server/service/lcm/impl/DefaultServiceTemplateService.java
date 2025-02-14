@@ -24,7 +24,7 @@ import org.onap.usecaseui.server.bean.lcm.ServiceTemplateInput;
 import org.onap.usecaseui.server.bean.lcm.TemplateInput;
 import org.onap.usecaseui.server.constant.CommonConstant;
 import org.onap.usecaseui.server.service.lcm.ServiceTemplateService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCController;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
@@ -40,9 +40,6 @@ import org.openecomp.sdc.toscaparser.api.Property;
 import org.openecomp.sdc.toscaparser.api.ToscaTemplate;
 import org.openecomp.sdc.toscaparser.api.common.JToscaException;
 import org.openecomp.sdc.toscaparser.api.parameters.Input;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
@@ -59,7 +56,7 @@ import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.
 public class DefaultServiceTemplateService implements ServiceTemplateService {
 
     private final SDCCatalogService sdcCatalog;
-    private final AAIService aaiService;
+    private final AAIClient aaiClient;
 
     @Override
     public List<SDCServiceTemplate> listDistributedServiceTemplate() {
@@ -340,7 +337,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     @Override
     public List<VimInfo> listVim() {
         try {
-            Response<VimInfoRsp> response = aaiService.listVimInfo().execute();
+            Response<VimInfoRsp> response = aaiClient.listVimInfo().execute();
             if (response.isSuccessful()) {
                 return response.body().getCloudRegion();
             } else {
@@ -356,7 +353,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     @Override
     public List<SDNCController> listSDNCControllers() {
         try {
-            Response<SDNCControllerRsp> response = aaiService.listSdncControllers().execute();
+            Response<SDNCControllerRsp> response = aaiClient.listSdncControllers().execute();
             if (response.isSuccessful()) {
                 return response.body().getEsrThirdpartySdncList();
             } else {

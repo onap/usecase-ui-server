@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.sotn.PinterfaceRsp;
 import org.onap.usecaseui.server.constant.CommonConstant;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 import org.onap.usecaseui.server.service.sotn.SOTNService;
@@ -45,14 +45,14 @@ public class SOTNServiceImpl implements SOTNService{
 
     private static final Logger logger = LoggerFactory.getLogger(SOTNServiceImpl.class);
 
-    private final AAIService aaiService;
+    private final AAIClient aaiClient;
 
 	@Override
 	public String getNetWorkResources() {
 		String result="";
         try {
         	logger.info("aai getNetWorkResources is starting!");
-            Response<ResponseBody> response = this.aaiService.listNetWorkResources().execute();
+            Response<ResponseBody> response = this.aaiClient.listNetWorkResources().execute();
             logger.info("aai getNetWorkResources has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -71,7 +71,7 @@ public class SOTNServiceImpl implements SOTNService{
 	public List<Pinterface> getPinterfaceByPnfName(String pnfName) {
         try {
         	logger.info("aai getPinterfaceByPnfName is starting!");
-            Response<PinterfaceRsp> response = this.aaiService.getPinterfaceByPnfName(pnfName).execute();
+            Response<PinterfaceRsp> response = this.aaiClient.getPinterfaceByPnfName(pnfName).execute();
             logger.info(String.format("excute aai interface:/api/aai-network/v13/pnfs/pnf/%s/p-interfaces",pnfName));
             logger.info("aai getPinterfaceByPnfName has finished!");
             if (response.isSuccessful()) {
@@ -91,7 +91,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getLogicalLinks is starting!");
-            Response<ResponseBody> response = this.aaiService.getLogicalLinks().execute();
+            Response<ResponseBody> response = this.aaiClient.getLogicalLinks().execute();
             logger.info("aai getLogicalLinks has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -111,7 +111,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getSpecificLogicalLink is starting!");
-            Response<ResponseBody> response = this.aaiService.getSpecificLogicalLink(linkName).execute();
+            Response<ResponseBody> response = this.aaiClient.getSpecificLogicalLink(linkName).execute();
             logger.info("aai getSpecificLogicalLink has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -131,7 +131,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getHostUrl is starting!");
-            Response<ResponseBody> response = this.aaiService.getHostUrl(aaiId).execute();
+            Response<ResponseBody> response = this.aaiClient.getHostUrl(aaiId).execute();
             logger.info("aai getHostUrl has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -151,7 +151,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getExtAaiId is starting!");
-            Response<ResponseBody> response = this.aaiService.getExtAaiId(aaiId).execute();
+            Response<ResponseBody> response = this.aaiClient.getExtAaiId(aaiId).execute();
             logger.info("aai getExtAaiId has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -172,7 +172,7 @@ public class SOTNServiceImpl implements SOTNService{
         try {
         	logger.info("aai createHostUrl is starting");
         	RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = aaiService.createHostUrl(requestBody,aaiId).execute();
+            Response<ResponseBody> response = aaiClient.createHostUrl(requestBody,aaiId).execute();
 			logger.info("aai createHostUrl has finished");
             if (response.isSuccessful()) {
             	result= CommonConstant.CONSTANT_SUCCESS;
@@ -193,7 +193,7 @@ public class SOTNServiceImpl implements SOTNService{
         try {
         	logger.info("aai createTopoNetwork is starting");
         	RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = aaiService.createTopoNetwork(requestBody,networkId).execute();
+            Response<ResponseBody> response = aaiClient.createTopoNetwork(requestBody,networkId).execute();
 			logger.info("aai createTopoNetwork has finished");
             if (response.isSuccessful()) {
             	result= CommonConstant.CONSTANT_SUCCESS;
@@ -214,7 +214,7 @@ public class SOTNServiceImpl implements SOTNService{
         try {
         	logger.info("aai createTerminationPoint is starting");
         	RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = aaiService.createTerminationPoint(requestBody,pnfName,tpId).execute();
+            Response<ResponseBody> response = aaiClient.createTerminationPoint(requestBody,pnfName,tpId).execute();
 			logger.info("aai createTerminationPoint has finished");
             if (response.isSuccessful()) {
             	result= CommonConstant.CONSTANT_SUCCESS;
@@ -235,7 +235,7 @@ public class SOTNServiceImpl implements SOTNService{
         try {
         	logger.info("aai createLink is starting");
         	RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = aaiService.createLink(requestBody,linkName).execute();
+            Response<ResponseBody> response = aaiClient.createLink(requestBody,linkName).execute();
 			logger.info("aai createLink has finished");
             if (response.isSuccessful()) {
             	result= CommonConstant.CONSTANT_SUCCESS;
@@ -256,7 +256,7 @@ public class SOTNServiceImpl implements SOTNService{
         try {
         	logger.info("aai createPnf is starting");
         	RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = aaiService.createPnf(requestBody,pnfName).execute();
+            Response<ResponseBody> response = aaiClient.createPnf(requestBody,pnfName).execute();
 			logger.info("aai createPnf has finished");
             if (response.isSuccessful()) {
             	result= CommonConstant.CONSTANT_SUCCESS;
@@ -276,7 +276,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result = "";
         try {
         	logger.info("aai deleteLink is starting");
-            Response<ResponseBody> response = aaiService.deleteLink(linkName,resourceVersion).execute();
+            Response<ResponseBody> response = aaiClient.deleteLink(linkName,resourceVersion).execute();
 			logger.info("aai deleteLink has finished");
             if (response.isSuccessful()) {
             	result= CommonConstant.CONSTANT_SUCCESS;
@@ -296,7 +296,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getServiceInstances is starting");
-            Response<ResponseBody> response = aaiService.getServiceInstances(customerId, serviceType).execute();
+            Response<ResponseBody> response = aaiClient.getServiceInstances(customerId, serviceType).execute();
 			logger.info("aai getServiceInstances has finished");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -315,7 +315,7 @@ public class SOTNServiceImpl implements SOTNService{
 	public String serviceInstanceInfo(String customerId, String serviceType, String serviceInstanceId) {
         try {
         	logger.info("aai serviceInstanceInfo is starting");
-            Response<ResponseBody> response = aaiService.serviceInstaneInfo(customerId, serviceType, serviceInstanceId).execute();
+            Response<ResponseBody> response = aaiClient.serviceInstaneInfo(customerId, serviceType, serviceInstanceId).execute();
 			logger.info("aai serviceInstanceInfo has finished");
             if (response.isSuccessful()) {
             	String result=new String(response.body().bytes());
@@ -335,7 +335,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getPnfInfo is starting!");
-            Response<ResponseBody> response = this.aaiService.getPnfInfo(pnfName).execute();
+            Response<ResponseBody> response = this.aaiClient.getPnfInfo(pnfName).execute();
             logger.info("aai getPnfInfo has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -355,7 +355,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getAllottedResources is starting!");
-            Response<ResponseBody> response = this.aaiService.getAllottedResources(customerId, serviceType, serviceId).execute();
+            Response<ResponseBody> response = this.aaiClient.getAllottedResources(customerId, serviceType, serviceId).execute();
             logger.info("aai getAllottedResources has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -375,7 +375,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getConnectivityInfo is starting!");
-            Response<ResponseBody> response = this.aaiService.getConnectivityInfo(connectivityId).execute();
+            Response<ResponseBody> response = this.aaiClient.getConnectivityInfo(connectivityId).execute();
             logger.info("aai getConnectivityInfo has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -395,7 +395,7 @@ public class SOTNServiceImpl implements SOTNService{
         String result="";
         try {
             logger.info("aai getVpnBindingInfo is starting!");
-            Response<ResponseBody> response = this.aaiService.getVpnBindingInfo(vpnId).execute();
+            Response<ResponseBody> response = this.aaiClient.getVpnBindingInfo(vpnId).execute();
             logger.info("aai getVpnBindingInfo has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -415,7 +415,7 @@ public class SOTNServiceImpl implements SOTNService{
         String result="";
         try {
             logger.info("aai getNetworkRouteInfo is starting!");
-            Response<ResponseBody> response = this.aaiService.getNetworkRouteInfo(routeId).execute();
+            Response<ResponseBody> response = this.aaiClient.getNetworkRouteInfo(routeId).execute();
             logger.info("aai getNetworkRouteInfo has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -435,7 +435,7 @@ public class SOTNServiceImpl implements SOTNService{
         String result="";
         try {
             logger.info("aai getUniInfo is starting!");
-            Response<ResponseBody> response = this.aaiService.getUniInfo(id).execute();
+            Response<ResponseBody> response = this.aaiClient.getUniInfo(id).execute();
             logger.info("aai getUniInfo has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -455,7 +455,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result="";
         try {
         	logger.info("aai getPinterfaceByVpnId is starting!");
-            Response<ResponseBody> response = this.aaiService.getPinterfaceByVpnId(vpnId).execute();
+            Response<ResponseBody> response = this.aaiClient.getPinterfaceByVpnId(vpnId).execute();
             logger.info("aai getPinterfaceByVpnId has finished!");
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
@@ -475,7 +475,7 @@ public class SOTNServiceImpl implements SOTNService{
 		String result = "";
         try {
         	logger.info("aai deleteExtNetwork is starting");
-            Response<ResponseBody> response = aaiService.deleteExtNetwork(networkId,resourceVersion).execute();
+            Response<ResponseBody> response = aaiClient.deleteExtNetwork(networkId,resourceVersion).execute();
 			logger.info("aai deleteExtNetwork has finished");
             if (response.isSuccessful()) {
             	result= CommonConstant.CONSTANT_SUCCESS;

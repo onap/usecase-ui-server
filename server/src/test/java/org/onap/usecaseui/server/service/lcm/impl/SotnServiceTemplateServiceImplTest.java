@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.E2EServiceInstanceRequest;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ModelConfig;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
@@ -54,18 +54,18 @@ import static org.onap.usecaseui.server.util.CallStub.failedCall;
 
 public class SotnServiceTemplateServiceImplTest {
 
-    AAIService aaiService;
+    AAIClient aaiClient;
     SOService soService;
     ServiceOperation serviceOperation;
     SotnServiceTemplateServiceImpl sotnServiceTemplateService;
 
     @Before
     public void before() throws Exception {
-        aaiService = mock(AAIService.class);
+        aaiClient = mock(AAIClient.class);
         soService = mock(SOService.class);
         sotnServiceTemplateService = new SotnServiceTemplateServiceImpl();
         sotnServiceTemplateService.setSoService(soService);
-        sotnServiceTemplateService.setAaiService(aaiService);
+        sotnServiceTemplateService.setAaiService(aaiClient);
     }
 
     @Test
@@ -110,28 +110,28 @@ public class SotnServiceTemplateServiceImplTest {
     @Test
     public void getServiceInstancesInfoTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("ServiceInstance");
-        when(aaiService.getServiceInstancesForEdge("ISAAC","SOTN","ISAAC")).thenReturn(call);
+        when(aaiClient.getServiceInstancesForEdge("ISAAC","SOTN","ISAAC")).thenReturn(call);
         sotnServiceTemplateService.getServiceInstancesInfo("ISAAC","SOTN","ISAAC");
     }
 
     @Test
     public void getServiceInstancesInfoWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("ServiceInstance");
-        when(aaiService.getServiceInstancesForEdge("ISAAC","SOTN","ISAAC")).thenReturn(call);
+        when(aaiClient.getServiceInstancesForEdge("ISAAC","SOTN","ISAAC")).thenReturn(call);
         sotnServiceTemplateService.getServiceInstancesInfo("ISAAC","SOTN","ISAAC");
     }
 
     @Test
     public void getTerminationPointTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("Pinterface");
-        when(aaiService.getTerminationPoint("SOTN","123")).thenReturn(call);
+        when(aaiClient.getTerminationPoint("SOTN","123")).thenReturn(call);
         sotnServiceTemplateService.getTerminationPoint("SOTN", "123");
     }
 
     @Test
     public void getTerminationPointWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("Pinterface");
-        when(aaiService.getTerminationPoint("SOTN","123")).thenReturn(call);
+        when(aaiClient.getTerminationPoint("SOTN","123")).thenReturn(call);
         sotnServiceTemplateService.getTerminationPoint("SOTN", "123");
     }
 
@@ -139,42 +139,42 @@ public class SotnServiceTemplateServiceImplTest {
     public void getSOTNPinterfaceByVpnIdTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("VpnBinding");
 
-        when(aaiService.getPinterfaceByVpnId("1")).thenReturn(call);
+        when(aaiClient.getPinterfaceByVpnId("1")).thenReturn(call);
         sotnServiceTemplateService.getSOTNPinterfaceByVpnId("1");
     }
 
     @Test
     public void getSOTNPinterfaceByVpnIdWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("VpnBinding");
-        when(aaiService.getPinterfaceByVpnId("1")).thenReturn(call);
+        when(aaiClient.getPinterfaceByVpnId("1")).thenReturn(call);
         sotnServiceTemplateService.getSOTNPinterfaceByVpnId("1");
     }
 
     @Test
     public void getSOTNPnfTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("Pnf");
-        when(aaiService.getPnfInfo("test")).thenReturn(call);
+        when(aaiClient.getPnfInfo("test")).thenReturn(call);
         sotnServiceTemplateService.getSOTNPnf("test");
     }
 
     @Test
     public void getSOTNPnfWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("Pnf");
-        when(aaiService.getPnfInfo("test")).thenReturn(call);
+        when(aaiClient.getPnfInfo("test")).thenReturn(call);
         sotnServiceTemplateService.getSOTNPnf("test");
     }
 
     @Test
     public void getSOTNLinkbyNameTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("LogicalLink");
-        when(aaiService.getSpecificLogicalLink("link")).thenReturn(call);
+        when(aaiClient.getSpecificLogicalLink("link")).thenReturn(call);
         sotnServiceTemplateService.getSOTNLinkbyName("link");
     }
 
     @Test
     public void getSOTNLinkbyNameWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("LogicalLink");
-        when(aaiService.getSpecificLogicalLink("link")).thenReturn(call);
+        when(aaiClient.getSpecificLogicalLink("link")).thenReturn(call);
         sotnServiceTemplateService.getSOTNLinkbyName("link");
     }
 
@@ -182,25 +182,25 @@ public class SotnServiceTemplateServiceImplTest {
     @Test
     public void getUNIInfoTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("Uni");
-        when(aaiService.getUNIInfo("uni-id")).thenReturn(call);
+        when(aaiClient.getUNIInfo("uni-id")).thenReturn(call);
         sotnServiceTemplateService.getUNIInfo("uni-id");
     }
     @Test
     public void getUNIInfoWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("Uni");
-        when(aaiService.getUNIInfo("uni-id")).thenReturn(call);
+        when(aaiClient.getUNIInfo("uni-id")).thenReturn(call);
         sotnServiceTemplateService.getUNIInfo("uni-id");
     }
     @Test
     public void getVnfsTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("Vnfs");
-        when(aaiService.getVNFsDetail("vnf-id")).thenReturn(call);
+        when(aaiClient.getVNFsDetail("vnf-id")).thenReturn(call);
         sotnServiceTemplateService.getVnfs("vnf-id");
     }
     @Test
     public void getVnfsWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("Vnfs");
-        when(aaiService.getVNFsDetail("vnf-id")).thenReturn(call);
+        when(aaiClient.getVNFsDetail("vnf-id")).thenReturn(call);
         sotnServiceTemplateService.getVnfs("vnf-id");
     }
     @Test
@@ -214,7 +214,7 @@ public class SotnServiceTemplateServiceImplTest {
         sotnServiceTemplateService.readFile();
     }
 
-    // TODO: 2021/1/22  
+    // TODO: 2021/1/22
     @Test
     public void getSOTNSiteInformationTopologyTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("ServiceInstance");
@@ -223,12 +223,12 @@ public class SotnServiceTemplateServiceImplTest {
         Call<ResponseBody> call3 = getAaiCall("Connectivity");
         Call<ResponseBody> call4 = getAaiCall("ComplexObj");
         Call<ResponseBody> call5 = getAaiCall("Pinterface");
-        when(aaiService.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
-        when(aaiService.getSiteResourceInfo(anyString())).thenReturn(call2);
-        when(aaiService.getConnectivityInformation(anyString())).thenReturn(call3);
-        when(aaiService.getAllotedResourceFor5G(anyString(),anyString(),anyString(),anyString())).thenReturn(call1);
-        when(aaiService.getComplexObject(anyString())).thenReturn(call4);
-        when(aaiService.getTerminationPoint(anyString(),anyString())).thenReturn(call5);
+        when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
+        when(aaiClient.getSiteResourceInfo(anyString())).thenReturn(call2);
+        when(aaiClient.getConnectivityInformation(anyString())).thenReturn(call3);
+        when(aaiClient.getAllotedResourceFor5G(anyString(),anyString(),anyString(),anyString())).thenReturn(call1);
+        when(aaiClient.getComplexObject(anyString())).thenReturn(call4);
+        when(aaiClient.getTerminationPoint(anyString(),anyString())).thenReturn(call5);
         sotnServiceTemplateService.getSOTNSiteInformationTopology("SOTN", "ISAAC");
     }
     @Test
@@ -239,12 +239,12 @@ public class SotnServiceTemplateServiceImplTest {
         Call<ResponseBody> call3 = getAaiCall("Connectivity");
         Call<ResponseBody> call4 = getAaiCall("ComplexObj");
         Call<ResponseBody> call5 = getAaiCall("Pinterface");
-        when(aaiService.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
-        when(aaiService.getSiteResourceInfo(anyString())).thenReturn(call2);
-        when(aaiService.getConnectivityInformation(anyString())).thenReturn(call3);
-        when(aaiService.getAllotedResourceFor5G(anyString(),anyString(),anyString(),anyString())).thenReturn(call1);
-        when(aaiService.getComplexObject(anyString())).thenReturn(call4);
-        when(aaiService.getTerminationPoint(anyString(),anyString())).thenReturn(call5);
+        when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
+        when(aaiClient.getSiteResourceInfo(anyString())).thenReturn(call2);
+        when(aaiClient.getConnectivityInformation(anyString())).thenReturn(call3);
+        when(aaiClient.getAllotedResourceFor5G(anyString(),anyString(),anyString(),anyString())).thenReturn(call1);
+        when(aaiClient.getComplexObject(anyString())).thenReturn(call4);
+        when(aaiClient.getTerminationPoint(anyString(),anyString())).thenReturn(call5);
         sotnServiceTemplateService.getSOTNSiteInformationTopology("SOTN", "ISAAC");
     }
     @Test
@@ -254,22 +254,22 @@ public class SotnServiceTemplateServiceImplTest {
         Call<ResponseBody> call2 = getAaiCall("SiteResource");
         Call<ResponseBody> call3 = getAaiCall("Connectivity");
         Call<ResponseBody> call4 = getAaiCall("ComplexObj");
-        when(aaiService.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
-        when(aaiService.getSiteResourceInfo(anyString())).thenReturn(call2);
-        when(aaiService.getConnectivityInformation(anyString())).thenReturn(call3);
-        when(aaiService.getAllotedResourceFor5G(anyString(),anyString(),anyString(),anyString())).thenReturn(call1);
-        when(aaiService.getComplexObject(anyString())).thenReturn(call4);
+        when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
+        when(aaiClient.getSiteResourceInfo(anyString())).thenReturn(call2);
+        when(aaiClient.getConnectivityInformation(anyString())).thenReturn(call3);
+        when(aaiClient.getAllotedResourceFor5G(anyString(),anyString(),anyString(),anyString())).thenReturn(call1);
+        when(aaiClient.getComplexObject(anyString())).thenReturn(call4);
         sotnServiceTemplateService.getService("SOTN", "ISAAC");
     }
     @Test
     public void getServiceWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("ServiceInstance");
         ResponseBody result = null;
-        when(aaiService.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
+        when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
         ResponseBody result1 = null;
-        when(aaiService.getConnectivityInformation("1")).thenReturn(failedCall("Failed to get connectivity"));
+        when(aaiClient.getConnectivityInformation("1")).thenReturn(failedCall("Failed to get connectivity"));
         ResponseBody result2 = null;
-        when(aaiService.getAllotedResourceFor5G("1", "SONT", "ISAAC", "2")).thenReturn(failedCall("failed to get allocated resource"));
+        when(aaiClient.getAllotedResourceFor5G("1", "SONT", "ISAAC", "2")).thenReturn(failedCall("failed to get allocated resource"));
         sotnServiceTemplateService.getService("SOTN", "ISAAC");
     }
     @Test
@@ -280,12 +280,12 @@ public class SotnServiceTemplateServiceImplTest {
         Call<ResponseBody> call3 = getAaiCall("Connectivity");
         Call<ResponseBody> call4 = getAaiCall("Pinterface");
         Call<ResponseBody> call5 = getAaiCall("VpnBinding");
-        when(aaiService.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
-        when(aaiService.getUNIInfo(anyString())).thenReturn(call1);
-        when(aaiService.getVNFsDetail(anyString())).thenReturn(call2);
-        when(aaiService.getConnectivityInformation(anyString())).thenReturn(call3);
-        when(aaiService.getTerminationPoint(anyString(),anyString())).thenReturn(call4);
-        when(aaiService.getPinterfaceByVpnId(anyString())).thenReturn(call5);
+        when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
+        when(aaiClient.getUNIInfo(anyString())).thenReturn(call1);
+        when(aaiClient.getVNFsDetail(anyString())).thenReturn(call2);
+        when(aaiClient.getConnectivityInformation(anyString())).thenReturn(call3);
+        when(aaiClient.getTerminationPoint(anyString(),anyString())).thenReturn(call4);
+        when(aaiClient.getPinterfaceByVpnId(anyString())).thenReturn(call5);
         sotnServiceTemplateService.getServiceInformationTopology("example-service-type-val-52265", "NNI-001");
     }
     @Test
@@ -296,12 +296,12 @@ public class SotnServiceTemplateServiceImplTest {
         Call<ResponseBody> call3 = getAaiCall("Connectivity");
         Call<ResponseBody> call4 = getAaiCall("Pinterface");
         Call<ResponseBody> call5 = getAaiCall("VpnBinding");
-        when(aaiService.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
-        when(aaiService.getUNIInfo(anyString())).thenReturn(call1);
-        when(aaiService.getVNFsDetail(anyString())).thenReturn(call2);
-        when(aaiService.getConnectivityInformation(anyString())).thenReturn(call3);
-        when(aaiService.getTerminationPoint(anyString(),anyString())).thenReturn(call4);
-        when(aaiService.getPinterfaceByVpnId(anyString())).thenReturn(call5);
+        when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(call);
+        when(aaiClient.getUNIInfo(anyString())).thenReturn(call1);
+        when(aaiClient.getVNFsDetail(anyString())).thenReturn(call2);
+        when(aaiClient.getConnectivityInformation(anyString())).thenReturn(call3);
+        when(aaiClient.getTerminationPoint(anyString(),anyString())).thenReturn(call4);
+        when(aaiClient.getPinterfaceByVpnId(anyString())).thenReturn(call5);
         sotnServiceTemplateService.getServiceInformationTopology("SOTN", "ISAAC");
     }
 
@@ -309,17 +309,17 @@ public class SotnServiceTemplateServiceImplTest {
     @Test
     public void getVPNBindingInformationTopologyTest() throws Exception {
         Call<ResponseBody> call = getAaiCall("VpnBinding");
-        when(aaiService.getPinterfaceByVpnId(anyString())).thenReturn(call);
+        when(aaiClient.getPinterfaceByVpnId(anyString())).thenReturn(call);
         Call<ResponseBody> call1 = getAaiCall("Pinterface");
-        when(aaiService.getTerminationPoint(anyString(),anyString())).thenReturn(call1);
+        when(aaiClient.getTerminationPoint(anyString(),anyString())).thenReturn(call1);
         sotnServiceTemplateService.getVPNBindingInformationTopology("example-service-type-val-52265", "NNI-001", "vpn-bind-1");
     }
     @Test
     public void getVPNBindingInformationTopologyWithThrowException() throws Exception {
         Call<ResponseBody> call = getAaiCall("VpnBinding");
-        when(aaiService.getPinterfaceByVpnId(anyString())).thenReturn(call);
+        when(aaiClient.getPinterfaceByVpnId(anyString())).thenReturn(call);
         Call<ResponseBody> call1 = getAaiCall("Pinterface");
-        when(aaiService.getTerminationPoint(anyString(),anyString())).thenReturn(call1);
+        when(aaiClient.getTerminationPoint(anyString(),anyString())).thenReturn(call1);
         sotnServiceTemplateService.getVPNBindingInformationTopology("example-service-type-val-52265", "NNI-001", "vpn-bind-1");
     }
 
@@ -329,7 +329,7 @@ public class SotnServiceTemplateServiceImplTest {
         Call<DeleteOperationRsp> sosCall = getDeleteSosCall();
         Response result = null;
         RequestBody requestBody = null;
-        when(aaiService.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(aaiCall);
+        when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(aaiCall);
         when(soService.terminateService(anyString(),any(RequestBody.class))).thenReturn(sosCall);
         sotnServiceTemplateService.deleteService("NNI-001", "vpn-bind-1");
     }
@@ -339,7 +339,7 @@ public class SotnServiceTemplateServiceImplTest {
         Call<ServiceOperation> sosCall = getSosCall();
         Response result = null;
         RequestBody requestBody = null;
-        when(aaiService.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(aaiCall);
+        when(aaiClient.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(aaiCall);
         when(soService.terminateService("serviceId",requestBody)).thenReturn(failedCall("failed to delete the server."));
         sotnServiceTemplateService.deleteService("NNI-001", "vpn-bind-1");
     }
@@ -360,18 +360,18 @@ public class SotnServiceTemplateServiceImplTest {
         Call<ResponseBody> aaiCall3 = getAaiCall("Pinterface");
         Call<ResponseBody> aaiCall4 = getAaiCall("VpnBinding");
         Call<ResponseBody> aaiCall5 = getAaiCall("LogicalLink");
-        when(aaiService.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(aaiCall);
-        when(aaiService.getConnectivityInformation( anyString())).thenReturn(aaiCall1);
-        when(aaiService.getPnfInfo(anyString())).thenReturn(aaiCall2);
-        when(aaiService.getTerminationPoint(anyString(),anyString())).thenReturn(aaiCall3);
-        when(aaiService.getPinterfaceByVpnId(anyString())).thenReturn(aaiCall4);
-        when(aaiService.getSpecificLogicalLink(anyString())).thenReturn(aaiCall5);
+        when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(aaiCall);
+        when(aaiClient.getConnectivityInformation( anyString())).thenReturn(aaiCall1);
+        when(aaiClient.getPnfInfo(anyString())).thenReturn(aaiCall2);
+        when(aaiClient.getTerminationPoint(anyString(),anyString())).thenReturn(aaiCall3);
+        when(aaiClient.getPinterfaceByVpnId(anyString())).thenReturn(aaiCall4);
+        when(aaiClient.getSpecificLogicalLink(anyString())).thenReturn(aaiCall5);
         sotnServiceTemplateService.getSOTNResourceInformationTopology("example-service-type-val-52265", "NNI-001");
     }
     @Test
     public void getSOTNResourceInformationTopologyWithThrowException() throws Exception {
         ResponseBody result = null;
-        when(aaiService.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(failedCall("failed to get sotn resource topology."));
+        when(aaiClient.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(failedCall("failed to get sotn resource topology."));
         sotnServiceTemplateService.getSOTNResourceInformationTopology("example-service-type-val-52265", "NNI-001");
     }
 
@@ -823,4 +823,3 @@ public class SotnServiceTemplateServiceImplTest {
         return call;
     }
 }
-

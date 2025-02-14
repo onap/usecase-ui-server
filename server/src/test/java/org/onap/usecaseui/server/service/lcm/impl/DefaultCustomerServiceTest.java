@@ -31,7 +31,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
@@ -42,38 +42,38 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class DefaultCustomerServiceTest {
-	
+
     @Test
     public void itCanRetrieveCustomersFromAAI() {
         List<AAICustomer> customers = singletonList(new AAICustomer("1", "name", "type","version"));
 
-        AAIService aaiService = mock(AAIService.class);
+        AAIClient aaiClient = mock(AAIClient.class);
         AAICustomerRsp rsp = new AAICustomerRsp();
         rsp.setCustomer(customers);
         Call<AAICustomerRsp> call = successfulCall(rsp);
-        when(aaiService.listCustomer()).thenReturn(call);
+        when(aaiClient.listCustomer()).thenReturn(call);
 
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         Assert.assertSame(customers, customerService.listCustomer());
     }
 
     @Test(expected = AAIException.class)
     public void itWillThrowExceptionWhenAAIIsNotAvailable() {
-        AAIService aaiService = mock(AAIService.class);
+        AAIClient aaiClient = mock(AAIClient.class);
         Call<AAICustomerRsp> call = failedCall("AAI is not available!");
-        when(aaiService.listCustomer()).thenReturn(call);
+        when(aaiClient.listCustomer()).thenReturn(call);
 
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         customerService.listCustomer();
     }
 
     @Test
     public void itWillRetrieveEmptyListWhenNoCustomerInAAI() {
-        AAIService aaiService = mock(AAIService.class);
+        AAIClient aaiClient = mock(AAIClient.class);
         Call<AAICustomerRsp> call = emptyBodyCall();
-        when(aaiService.listCustomer()).thenReturn(call);
+        when(aaiClient.listCustomer()).thenReturn(call);
 
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         List<AAICustomer> customers = customerService.listCustomer();
 
         Assert.assertTrue("customers should be empty list.", customers.isEmpty());
@@ -83,226 +83,226 @@ public class DefaultCustomerServiceTest {
     public void itCanRetrieveServiceSubscriptionsFromAAI() {
         List<AAIServiceSubscription> serviceSubscriptions = singletonList(new AAIServiceSubscription("service type","resourceVersion"));
 
-        AAIService aaiService = mock(AAIService.class);
+        AAIClient aaiClient = mock(AAIClient.class);
         ServiceSubscriptionRsp rsp = new ServiceSubscriptionRsp();
         rsp.setServiceSubscriptions(serviceSubscriptions);
         Call<ServiceSubscriptionRsp> call = successfulCall(rsp);
-        when(aaiService.listServiceSubscriptions("1")).thenReturn(call);
+        when(aaiClient.listServiceSubscriptions("1")).thenReturn(call);
 
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         Assert.assertSame(serviceSubscriptions, customerService.listServiceSubscriptions("1"));
     }
 
     @Test(expected = AAIException.class)
     public void listServiceSubscriptionsWillThrowExceptionWhenAAIIsNotAvailable() {
-        AAIService aaiService = mock(AAIService.class);
+        AAIClient aaiClient = mock(AAIClient.class);
         Call<ServiceSubscriptionRsp> call = failedCall("AAI is not available!");
-        when(aaiService.listServiceSubscriptions("1")).thenReturn(call);
+        when(aaiClient.listServiceSubscriptions("1")).thenReturn(call);
 
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         customerService.listServiceSubscriptions("1");
     }
 
     @Test
     public void itWillRetrieveEmptyListWhenNoServiceSubscriptionsInAAI() {
-        AAIService aaiService = mock(AAIService.class);
+        AAIClient aaiClient = mock(AAIClient.class);
         Call<ServiceSubscriptionRsp> call = emptyBodyCall();
-        when(aaiService.listServiceSubscriptions("1")).thenReturn(call);
+        when(aaiClient.listServiceSubscriptions("1")).thenReturn(call);
 
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         List<AAIServiceSubscription> serviceSubscriptions = customerService.listServiceSubscriptions("1");
 
         Assert.assertTrue("service subscription should be empty list.", serviceSubscriptions.isEmpty());
     }
-    
+
     @Test
     public void itCanCreateOrUpdateCustomer(){
     	HttpServletRequest request = mock(HttpServletRequest.class);
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String customerId="1";
         ResponseBody result=null;
-        when(aaiService.createOrUpdateCustomer(eq(customerId), Mockito.any())).thenReturn(successfulCall(result));
+        when(aaiClient.createOrUpdateCustomer(eq(customerId), Mockito.any())).thenReturn(successfulCall(result));
         customerService.createOrUpdateCustomer(request, customerId);
     }
-    
+
     @Test
     public void createOrUpdateCustomerWillThrowExceptionWhenVFCIsNotAvailable(){
     	HttpServletRequest request = mock(HttpServletRequest.class);
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String customerId="1";
-        when(aaiService.createOrUpdateCustomer(eq(customerId),Mockito.any())).thenReturn(failedCall("VFC is not available!"));
+        when(aaiClient.createOrUpdateCustomer(eq(customerId),Mockito.any())).thenReturn(failedCall("VFC is not available!"));
         customerService.createOrUpdateCustomer(request, customerId);
     }
-    
+
     @Test
     public void createOrUpdateCustomerWillThrowExceptionWhenVFCResponseError(){
     	HttpServletRequest request = mock(HttpServletRequest.class);
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String customerId="1";
-        when(aaiService.createOrUpdateCustomer(eq(customerId),Mockito.any())).thenReturn(emptyBodyCall());
+        when(aaiClient.createOrUpdateCustomer(eq(customerId),Mockito.any())).thenReturn(emptyBodyCall());
         customerService.createOrUpdateCustomer(request, customerId);
     }
 
     @Test
     public void itCanGetCustomerById(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String customerId="1";
         AAICustomer customer = new AAICustomer(customerId, customerId, customerId,customerId);
-        when(aaiService.getCustomerById(eq(customerId))).thenReturn(successfulCall(customer));
+        when(aaiClient.getCustomerById(eq(customerId))).thenReturn(successfulCall(customer));
         customerService.getCustomerById(customerId);
     }
 
     @Test
     public void getCustomerByIdWillThrowExceptionWhenVFCIsNotAvailable(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String customerId="1";
         AAICustomer aaiCustomer = new AAICustomer("","","","");
         Call<AAICustomer> call = successfulCall(aaiCustomer);
-        when(aaiService.getCustomerById(eq(customerId))).thenReturn(call);
+        when(aaiClient.getCustomerById(eq(customerId))).thenReturn(call);
         customerService.getCustomerById(customerId);
     }
 
     @Test
     public void getCustomerByIdWillThrowExceptionWhenVFCResponseError(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String customerId="1";
-        when(aaiService.getCustomerById(eq(customerId))).thenReturn(emptyBodyCall());
+        when(aaiClient.getCustomerById(eq(customerId))).thenReturn(emptyBodyCall());
         customerService.getCustomerById(customerId);
     }
-    
+
     @Test
     public void itCanDeleteCustomerById(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String customerId="1";
         String resourceVersion="1412934";
         ResponseBody result= null;
-        when(aaiService.deleteCustomer(eq(customerId),eq(resourceVersion))).thenReturn(successfulCall(result));
+        when(aaiClient.deleteCustomer(eq(customerId),eq(resourceVersion))).thenReturn(successfulCall(result));
         customerService.deleteCustomer(customerId,resourceVersion);
     }
-    
+
     @Test
     public void deleteCustomerByIdWillThrowExceptionWhenVFCIsNotAvailable(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
     	 String resourceVersion="1412934";
         String customerId="1";
-        when(aaiService.deleteCustomer(eq(customerId),eq(resourceVersion))).thenReturn(failedCall("VFC is not available!"));
+        when(aaiClient.deleteCustomer(eq(customerId),eq(resourceVersion))).thenReturn(failedCall("VFC is not available!"));
         customerService.deleteCustomer(customerId,resourceVersion);
     }
-    
+
     @Test
     public void deleteCustomerByIdWillThrowExceptionWhenVFCResponseError(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
     	 String resourceVersion="1412934";
         String customerId="1";
-        when(aaiService.deleteCustomer(eq(customerId),eq(resourceVersion))).thenReturn(emptyBodyCall());
+        when(aaiClient.deleteCustomer(eq(customerId),eq(resourceVersion))).thenReturn(emptyBodyCall());
         customerService.deleteCustomer(customerId,resourceVersion);
     }
-    
+
     @Test
     public void itCreateOrUpdateServiceType(){
     	HttpServletRequest request2 = mock(HttpServletRequest.class);
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String serviceType="1";
         String customerId="demo";
         ResponseBody result=null;
-        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(successfulCall(result));
+        when(aaiClient.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(successfulCall(result));
         customerService.createOrUpdateServiceType(request2, serviceType,customerId);
     }
-    
+
     @Test
     public void createOrUpdateServiceTypeWillThrowExceptionWhenVFCIsNotAvailable(){
     	HttpServletRequest request2 = mock(HttpServletRequest.class);
         String serviceType="1";
         String customerId="demo";
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
-        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(failedCall("VFC is not available!"));
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
+        when(aaiClient.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(failedCall("VFC is not available!"));
         customerService.createOrUpdateServiceType(request2, serviceType,customerId);
     }
-    
+
     @Test
     public void createOrUpdateServiceTypeWillThrowExceptionWhenVFCResponseError(){
     	HttpServletRequest request2 = mock(HttpServletRequest.class);
         String serviceType="1";
         String customerId="demo";
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
-        when(aaiService.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(emptyBodyCall());
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
+        when(aaiClient.createOrUpdateServiceType(eq(customerId),eq(serviceType),Mockito.any())).thenReturn(emptyBodyCall());
         customerService.createOrUpdateServiceType(request2, serviceType,customerId);
     }
-    
+
     @Test
     public void itCanDeleteServiceType(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String serviceTypeName="1";
         String resourceVersion="214341235";
         String coustomerId="1";
         ResponseBody result=null;
-        when(aaiService.deleteServiceType(eq(coustomerId),eq(serviceTypeName),eq(resourceVersion))).thenReturn(successfulCall(result));
+        when(aaiClient.deleteServiceType(eq(coustomerId),eq(serviceTypeName),eq(resourceVersion))).thenReturn(successfulCall(result));
         customerService.deleteServiceType(coustomerId,serviceTypeName,resourceVersion);
     }
-    
+
     @Test
     public void deleteServiceTypeWillThrowExceptionWhenVFCIsNotAvailable(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String serviceTypeName="1";
         String resourceVersion="214341235";
         String coustomerId="1";
-        when(aaiService.deleteServiceType(eq(coustomerId),eq(serviceTypeName),eq(resourceVersion))).thenReturn(failedCall("VFC is not available!"));
+        when(aaiClient.deleteServiceType(eq(coustomerId),eq(serviceTypeName),eq(resourceVersion))).thenReturn(failedCall("VFC is not available!"));
         customerService.deleteServiceType(coustomerId,serviceTypeName,resourceVersion);
     }
-    
+
     @Test
     public void deleteServiceTypeByIdWillThrowExceptionWhenVFCResponseError(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String serviceTypeName="1";
         String resourceVersion="214341235";
         String coustomerId="1";
-        when(aaiService.deleteServiceType(eq(coustomerId),eq(serviceTypeName),eq(resourceVersion))).thenReturn(emptyBodyCall());
+        when(aaiClient.deleteServiceType(eq(coustomerId),eq(serviceTypeName),eq(resourceVersion))).thenReturn(emptyBodyCall());
         customerService.deleteServiceType(coustomerId,serviceTypeName,resourceVersion);
     }
-    
+
     @Test
     public void itCanGetServiceTypeById(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String serviceTypeName="1";
         String resourceVersion="214341235";
         AAIServiceSubscription aaIServiceSubscription = new AAIServiceSubscription(serviceTypeName,resourceVersion);
-        when(aaiService.getServiceTypeById(eq(serviceTypeName),eq(resourceVersion))).thenReturn(successfulCall(aaIServiceSubscription));
+        when(aaiClient.getServiceTypeById(eq(serviceTypeName),eq(resourceVersion))).thenReturn(successfulCall(aaIServiceSubscription));
         customerService.getServiceTypeById(serviceTypeName,resourceVersion);
     }
-    
+
     @Test
     public void getServiceTypeByIdWillThrowExceptionWhenVFCIsNotAvailable(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String serviceTypeName="1";
         String resourceVersion="214341235";
-        when(aaiService.getServiceTypeById(eq(serviceTypeName),eq(resourceVersion))).thenReturn(failedCall("VFC is not available!"));
+        when(aaiClient.getServiceTypeById(eq(serviceTypeName),eq(resourceVersion))).thenReturn(failedCall("VFC is not available!"));
         customerService.getServiceTypeById(serviceTypeName,resourceVersion);
     }
-    
+
     @Test
     public void getServiceTypeByIdWillThrowExceptionWhenVFCResponseError(){
-        AAIService aaiService = mock(AAIService.class);
-        CustomerService customerService = new DefaultCustomerService(aaiService);
+        AAIClient aaiClient = mock(AAIClient.class);
+        CustomerService customerService = new DefaultCustomerService(aaiClient);
         String serviceTypeName="1";
         String resourceVersion="214341235";
-        when(aaiService.getServiceTypeById(eq(serviceTypeName),eq(resourceVersion))).thenReturn(emptyBodyCall());
+        when(aaiClient.getServiceTypeById(eq(serviceTypeName),eq(resourceVersion))).thenReturn(emptyBodyCall());
         customerService.getServiceTypeById(serviceTypeName,resourceVersion);
     }
 }

@@ -30,7 +30,7 @@ import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ModelConfig;
 
 import org.onap.usecaseui.server.constant.Constant;
 import org.onap.usecaseui.server.service.customer.CcvpnCustomerService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class CcvpnCustomerServiceImpl implements CcvpnCustomerService {
 
     private static final Logger logger = LoggerFactory.getLogger(CcvpnCustomerServiceImpl.class);
 
-    private final AAIService aaiService;
+    private final AAIClient aaiClient;
 
     @Override
     public ServiceInstances getServiceInstances(String customerId, String serviceType) {
@@ -71,7 +71,7 @@ public class CcvpnCustomerServiceImpl implements CcvpnCustomerService {
         ObjectMapper mapper = new ObjectMapper();
         ServiceInstances serviceInstances = null;
         try {
-            Response<ResponseBody> response = this.aaiService.getAllServiceInformation(customerId, serviceType).execute();
+            Response<ResponseBody> response = this.aaiClient.getAllServiceInformation(customerId, serviceType).execute();
             if (response.isSuccessful()) {
                 logger.info("Execute get all service for customer : End");
                 String result = new String(response.body().bytes());
@@ -100,7 +100,7 @@ public class CcvpnCustomerServiceImpl implements CcvpnCustomerService {
         try {
             logger.info("aai querySubscriptionType is starting!");
 
-            Response<ResponseBody> response = this.aaiService.getServiceSubscription(customerId).execute();
+            Response<ResponseBody> response = this.aaiClient.getServiceSubscription(customerId).execute();
             logger.info("aai querySubscriptionType has finished!");
             if (response.isSuccessful()) {
                 result = new String(response.body().bytes());

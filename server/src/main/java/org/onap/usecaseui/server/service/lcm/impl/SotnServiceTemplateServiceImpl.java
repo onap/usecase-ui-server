@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package org.onap.usecaseui.server.service.lcm.impl;
 
 
@@ -23,14 +23,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-//import org.onap.usecaseui.server.bean.lcm.sotne2eservice.*;
-//import org.onap.usecaseui.server.bean.lcm.sotne2eservice.Connectivity;
-//import org.onap.usecaseui.server.bean.sotn.Pinterface;
 import org.onap.usecaseui.server.bean.orderservice.ServiceEstimationBean;
 import org.onap.usecaseui.server.service.lcm.SotnServiceTemplateService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.Relationship;
-//import org.onap.usecaseui.server.service.lcm.domain.aai.bean.ServiceInstance;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
@@ -40,7 +36,6 @@ import org.onap.usecaseui.server.bean.lcm.sotne2eservice.*;
 import org.onap.usecaseui.server.bean.activateEdge.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import retrofit2.Response;
@@ -66,10 +61,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     private static final Logger logger = LoggerFactory.getLogger(SotnServiceTemplateServiceImpl.class);
 
     private SOService soService;
-    private AAIService aaiService;
-
-
-
+    private AAIClient aaiClient;
 
     private Map<String, Model> readConfigToMap(ModelConfig modelConfig) {
 
@@ -222,7 +214,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     public ServiceInstance getServiceInstancesInfo(String customerId, String serviceType, String serviceInstanceId) throws Exception {
         logger.info("Fire getServiceInstances : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getServiceInstancesForEdge(customerId, serviceType, serviceInstanceId).execute();
+        Response<ResponseBody> response = this.aaiClient.getServiceInstancesForEdge(customerId, serviceType, serviceInstanceId).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getServiceInstances : End");
             String result = new String(response.body().bytes());
@@ -237,7 +229,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     private Connectivity getConnectivityInfo(String connectivityinstanceid) throws IOException {
         logger.info("Fire getServiceInstancesForEdge : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getConnectivityInformation(connectivityinstanceid).execute();
+        Response<ResponseBody> response = this.aaiClient.getConnectivityInformation(connectivityinstanceid).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getServiceInstancesForEdge : End");
             String result = new String(response.body().bytes());
@@ -252,8 +244,8 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     public Pinterface getTerminationPoint(String pnfName, String tpId) throws Exception {
         logger.info("Fire getTerminationPoint : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        // Response<ResponseBody> response = this.aaiService.getPinterfaceByPnfName(pnfName,tpId).execute();
-        Response<ResponseBody> response = this.aaiService.getTerminationPoint(pnfName, tpId).execute();
+        // Response<ResponseBody> response = this.aaiClient.getPinterfaceByPnfName(pnfName,tpId).execute();
+        Response<ResponseBody> response = this.aaiClient.getTerminationPoint(pnfName, tpId).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getTerminationPoint : End");
             String result = new String(response.body().bytes());
@@ -267,7 +259,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     private AllottedResource getAllottedResource(String globalCustomerId, String serviceType, String siteserviceinstanceid, String allottedResourceId) throws IOException {
         logger.info("Fire getServiceInstancesForEdge : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getAllotedResourceFor5G(globalCustomerId, serviceType, siteserviceinstanceid, allottedResourceId).execute();
+        Response<ResponseBody> response = this.aaiClient.getAllotedResourceFor5G(globalCustomerId, serviceType, siteserviceinstanceid, allottedResourceId).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getServiceInstancesForEdge : End");
             String result = new String(response.body().bytes());
@@ -282,7 +274,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     private SiteResource getSiteResource(String siteResourceID) throws IOException {
         logger.info("Fire get site resource : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getSiteResourceInfo(siteResourceID).execute();
+        Response<ResponseBody> response = this.aaiClient.getSiteResourceInfo(siteResourceID).execute();
         if (response.isSuccessful()) {
             logger.info("Fire get site resource : End");
             String result = new String(response.body().bytes());
@@ -298,7 +290,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     private ComplexObj getComplexData(String complexID) throws IOException {
         logger.info("Fire get complex Object : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getComplexObject(complexID).execute();
+        Response<ResponseBody> response = this.aaiClient.getComplexObject(complexID).execute();
         if (response.isSuccessful()) {
             logger.info("Fire get complex Object : End");
             String result = new String(response.body().bytes());
@@ -574,9 +566,9 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 
         logger.info("Fire getSOTNPinterfaceByVpnId : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getPinterfaceByVpnId(vpnId).execute();
+        Response<ResponseBody> response = this.aaiClient.getPinterfaceByVpnId(vpnId).execute();
 
-        //Response<ResponseBody> response = this.aaiService.getSOTNPinterfaceByVpnId(vpnId).execute();
+        //Response<ResponseBody> response = this.aaiClient.getSOTNPinterfaceByVpnId(vpnId).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getSOTNPinterfaceByVpnId : End");
             String result = new String(response.body().bytes());
@@ -592,7 +584,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     public Pnf getSOTNPnf(String pnfname) throws Exception {
 	logger.info("Fire getSOTNPnf : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getPnfInfo(pnfname).execute();
+        Response<ResponseBody> response = this.aaiClient.getPnfInfo(pnfname).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getSOTNPnf : End");
             String result = new String(response.body().bytes());
@@ -607,7 +599,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     public LogicalLink getSOTNLinkbyName(String linkName) throws Exception {
         logger.info("Fire getSOTNLinkbyName : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getSpecificLogicalLink(linkName).execute();
+        Response<ResponseBody> response = this.aaiClient.getSpecificLogicalLink(linkName).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getSOTNLinkbyName : End");
             String result = new String(response.body().bytes());
@@ -622,7 +614,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     public Uni getUNIInfo(String uniId) throws Exception {
         logger.info("Fire getUNIInfo : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getUNIInfo(uniId).execute();
+        Response<ResponseBody> response = this.aaiClient.getUNIInfo(uniId).execute();
         if (response.isSuccessful()) {
             logger.info("Fire getUNIInfo : Begin");
             String result = new String(response.body().bytes());
@@ -637,7 +629,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
     public Vnfs getVnfs(String vnfId) throws Exception {
         logger.info("Fire getVnfs : Begin");
         ObjectMapper mapper = new ObjectMapper();
-        Response<ResponseBody> response = this.aaiService.getVNFsDetail(vnfId).execute();
+        Response<ResponseBody> response = this.aaiClient.getVNFsDetail(vnfId).execute();
         if (response.isSuccessful()) {
 	    logger.info("Fire getVnfs : End");
             String result = new String(response.body().bytes());

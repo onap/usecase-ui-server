@@ -20,7 +20,7 @@ import okhttp3.ResponseBody;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.service.customer.impl.CcvpnCustomerServiceImpl;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
@@ -36,13 +36,13 @@ import static org.onap.usecaseui.server.util.CallStub.successfulCall;
 public class CcvpnCustomerServiceImplTest {
 
     CcvpnCustomerServiceImpl dsts = null;
-    AAIService aaiService = null;
+    AAIClient aaiClient = null;
 
 
     @Before
     public void before() throws Exception {
-        aaiService= mock(AAIService.class);
-        dsts = new CcvpnCustomerServiceImpl(aaiService);
+        aaiClient= mock(AAIClient.class);
+        dsts = new CcvpnCustomerServiceImpl(aaiClient);
 
 
     }
@@ -78,13 +78,13 @@ public class CcvpnCustomerServiceImplTest {
     @Test
     public void itCanGetAllServiceInformation(){
         ResponseBody result=null;
-        when(aaiService.getAllServiceInformation("abc", "123")).thenReturn(successfulCall(result));
+        when(aaiClient.getAllServiceInformation("abc", "123")).thenReturn(successfulCall(result));
         dsts.getAllServiceInstances("abc", "123");
     }
 
     @Test
     public void getQuerySubscriptionWithThrowsEexception(){
-        when(aaiService.getServiceSubscription("123")).thenReturn(failedCall("aai is not exist!"));
+        when(aaiClient.getServiceSubscription("123")).thenReturn(failedCall("aai is not exist!"));
         dsts.querySubscriptionType();
     }
 

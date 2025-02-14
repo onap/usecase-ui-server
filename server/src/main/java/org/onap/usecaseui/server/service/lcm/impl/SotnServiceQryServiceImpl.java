@@ -26,7 +26,7 @@ import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ResponseServiceI
 import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ServiceInstanceList;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservicemonitor.ServiceInstanceListWrapper;
 import org.onap.usecaseui.server.service.lcm.SotnServiceQryService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -44,7 +44,7 @@ public class SotnServiceQryServiceImpl implements SotnServiceQryService {
 
     private static final Logger logger = LoggerFactory.getLogger(SotnServiceQryServiceImpl.class);
 
-    private final AAIService aaiService;
+    private final AAIClient aaiClient;
 
     @Override
     public String getServiceInstances(String serviceType) {
@@ -56,7 +56,7 @@ public class SotnServiceQryServiceImpl implements SotnServiceQryService {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            Response<ResponseBody> response = aaiService.listServiceInstances(customerid, serviceType).execute();
+            Response<ResponseBody> response = aaiClient.listServiceInstances(customerid, serviceType).execute();
             if (response.isSuccessful()) {
                 String resultStr=new String(response.body().bytes());
                 ServiceInstanceListWrapper serviceInstances = mapper.readValue(resultStr, new TypeReference<ServiceInstanceListWrapper>() {

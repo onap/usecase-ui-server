@@ -29,7 +29,7 @@ import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.ServiceInstanceService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.AAIService;
+import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAIServiceSubscription;
 import org.onap.usecaseui.server.util.UuiCommonUtil;
@@ -52,7 +52,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DefaultServiceInstanceService.class);
 
-	private final AAIService aaiService;
+	private final AAIClient aaiClient;
 
 	@Resource(name = "ServiceLcmService")
 	private ServiceLcmService serviceLcmService;
@@ -72,7 +72,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 	public List<String> listServiceInstances(String customerId, String serviceType) {
 		List<String> result = new ArrayList<>();
 		try {
-			Response<ResponseBody> response = aaiService.listServiceInstances(customerId, serviceType).execute();
+			Response<ResponseBody> response = aaiClient.listServiceInstances(customerId, serviceType).execute();
 			if (response.isSuccessful()) {
 				String resultStr = new String(response.body().bytes());
 				JSONObject object = JSONObject.parseObject(resultStr);
@@ -117,7 +117,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 	@Override
 	public String getRelationShipData(String customerId, String serviceType, String serviceId) {
 		try {
-			Response<ResponseBody> response = aaiService.getAAIServiceInstance(customerId, serviceType, serviceId).execute();
+			Response<ResponseBody> response = aaiClient.getAAIServiceInstance(customerId, serviceType, serviceId).execute();
 			if (response.isSuccessful()) {
 				String result = new String(response.body().bytes());
 				return result;
@@ -169,12 +169,12 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 		List<Map<String, Object>> list = new ArrayList<>();
 		ObjectMapper omAlarm = new ObjectMapper();
 
-		for (AAIServiceSubscription aaiServiceSubscription : serviceTypes) {
+		for (AAIServiceSubscription aaiClientSubscription : serviceTypes) {
 			Map<String, Object> serviceTypeMap = new HashMap<String, Object>();
-			List<String> serviceInstances = this.listServiceInstances(customerId, aaiServiceSubscription.getServiceType());
+			List<String> serviceInstances = this.listServiceInstances(customerId, aaiClientSubscription.getServiceType());
 
-			// serviceTypeMap.put(aaiServiceSubscription.getServiceType(),serviceInstances.size());
-			serviceTypeMap.put("name", aaiServiceSubscription.getServiceType());
+			// serviceTypeMap.put(aaiClientSubscription.getServiceType(),serviceInstances.size());
+			serviceTypeMap.put("name", aaiClientSubscription.getServiceType());
 			serviceTypeMap.put("value", serviceInstances.size());
 
 			list.add(serviceTypeMap);
