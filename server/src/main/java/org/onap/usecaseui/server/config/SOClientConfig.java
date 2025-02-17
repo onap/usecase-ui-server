@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.onap.usecaseui.server.service.intent.IntentSoService;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -80,5 +81,11 @@ public class SOClientConfig {
     @Bean
     IntentSoService intentSoService() {
         return retrofit().create(IntentSoService.class);
+    }
+
+    @Bean
+    // not at all clear whether this service should interface with SO
+    KpiSliceService kpiSliceService() {
+        return retrofit().create(KpiSliceService.class);
     }
 }
