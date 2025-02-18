@@ -16,14 +16,15 @@
 package org.onap.usecaseui.server.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 import lombok.Data;
 
 @Data
-@Configuration
+@ConfigurationPropertiesScan
 @ConfigurationProperties(prefix = "uui-server.client.sdc")
 public class SDCClientProperties {
+  String baseUrl;
   String username;
   String password;
 }

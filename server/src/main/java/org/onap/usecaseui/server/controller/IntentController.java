@@ -35,14 +35,11 @@ import org.onap.usecaseui.server.bean.intent.IntentResponseBody;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
-import org.onap.usecaseui.server.service.intent.IntentApiService;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.intent.IntentService;
 import org.onap.usecaseui.server.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,8 +61,6 @@ public class IntentController {
 
     @Resource(name = "IntentInstanceService")
     private IntentInstanceService intentInstanceService;
-
-    private final IntentApiService intentApiService;
 
     private ObjectMapper omAlarm = new ObjectMapper();
 

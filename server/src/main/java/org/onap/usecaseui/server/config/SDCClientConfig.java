@@ -20,11 +20,11 @@ import java.io.IOException;
 
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
+import lombok.RequiredArgsConstructor;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -33,14 +33,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @Configuration
+@RequiredArgsConstructor
 public class SDCClientConfig {
 
-    @Value("${uui-server.client.sdc.baseUrl}")
-    String baseUrl;
-    @Value("${uui-server.client.sdc.username}")
-    String username;
-    @Value("${uui-server.client.sdc.password}")
-    String password;
+    private final SDCClientProperties clientProperties;
 
     OkHttpClient okHttpClient() {
         return new OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
@@ -48,7 +44,7 @@ public class SDCClientConfig {
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 Request originalRequest = chain.request();
                 Request.Builder builder = originalRequest.newBuilder()
-                    .header("Authorization", Credentials.basic(username, password))
+                    .header("Authorization", Credentials.basic(clientProperties.getUsername(), clientProperties.getPassword()))
                     .header(HttpHeaders.ACCEPT, "application/json")
                     .header("X-ECOMP-InstanceID", "777");
                 Request newRequest = builder.build();
@@ -59,7 +55,7 @@ public class SDCClientConfig {
 
     Retrofit retrofit() {
         return new Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(clientProperties.getBaseUrl())
             .addConverterFactory(JacksonConverterFactory.create())
             .client(okHttpClient())
             .build();

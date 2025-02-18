@@ -15,6 +15,9 @@
  */
 package org.onap.usecaseui.server;
 
+import org.onap.usecaseui.server.config.AAIClientProperties;
+import org.onap.usecaseui.server.config.SDCClientProperties;
+import org.onap.usecaseui.server.config.SOClientProperties;
 import org.onap.usecaseui.server.util.DmaapSubscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -31,7 +34,11 @@ import org.springframework.web.client.RestTemplate;
 import jakarta.servlet.MultipartConfigElement;
 
 @SpringBootApplication
-@EnableConfigurationProperties
+@EnableConfigurationProperties({
+    AAIClientProperties.class,
+    SDCClientProperties.class,
+    SOClientProperties.class
+})
 @ComponentScan(basePackages = "org.onap.usecaseui.server")
 @EnableAutoConfiguration(exclude={JpaRepositoriesAutoConfiguration.class})
 public class UuiServerApplication {

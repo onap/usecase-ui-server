@@ -26,28 +26,28 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.onap.usecaseui.server.config.AAIClientConfig;
 import org.onap.usecaseui.server.config.SDCClientConfig;
+import org.onap.usecaseui.server.config.SDCClientProperties;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpHeaders;
 import org.wiremock.spring.EnableWireMock;
 
 import lombok.SneakyThrows;
 
 @EnableWireMock
+@EnableConfigurationProperties(SDCClientProperties.class)
 @SpringBootTest(
-    webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {
-        AAIClientConfig.class, SDCClientConfig.class, DefaultServiceTemplateService.class
+        AAIClientConfig.class, SDCClientConfig.class , DefaultServiceTemplateService.class
     },
     properties = {
-        "spring.main.web-application-type=none", // only temporary
         "client.aai.baseUrl=${wiremock.server.baseUrl}",
         "client.aai.username=AAI",
         "client.aai.password=AAI",
-        "uui-server.client.sdc.baseUrl=${wiremock.server.baseUrl}",
+        "uui-server.client.sdc.base-url=${wiremock.server.baseUrl}",
         "uui-server.client.sdc.username=someUser",
         "uui-server.client.sdc.password=somePassword",
     })
