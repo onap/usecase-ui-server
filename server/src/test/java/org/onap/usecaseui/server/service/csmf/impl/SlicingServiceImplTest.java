@@ -47,7 +47,7 @@ import org.onap.usecaseui.server.controller.IntentController;
 import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.impl.DefaultServiceLcmService;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import org.powermock.api.support.membermodification.MemberModifier;
@@ -57,17 +57,17 @@ public class SlicingServiceImplTest {
 
     SlicingServiceImpl slicingService = null;
     SOSliceService soSliceService;
-    AAISliceService aaiSliceService;
+    AAISliceClient aaiSliceClient;
     ServiceLcmService serviceLcmService;
     SlicingProperties slicingProperties;
 
     @Before
     public void before() throws Exception {
-        aaiSliceService = mock(AAISliceService.class);
+        aaiSliceClient = mock(AAISliceClient.class);
         soSliceService = mock(SOSliceService.class);
         serviceLcmService = mock(DefaultServiceLcmService.class);
         slicingProperties = mock(SlicingProperties.class);
-        slicingService = new SlicingServiceImpl(serviceLcmService, aaiSliceService, soSliceService, slicingProperties);
+        slicingService = new SlicingServiceImpl(serviceLcmService, aaiSliceClient, soSliceService, slicingProperties);
         MemberModifier.field(SlicingServiceImpl.class, "serviceLcmService").set(slicingService , serviceLcmService);
     }
 
@@ -110,7 +110,7 @@ public class SlicingServiceImplTest {
     @Test
     public void itCanQuerySlicingOrderList() {
         JSONObject object = new JSONObject();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listOrders(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G))
             .thenReturn(successfulCall(object));
         slicingService.querySlicingOrderList("processing", "1", "100");
@@ -118,7 +118,7 @@ public class SlicingServiceImplTest {
 
     @Test
     public void querySlicingOrderListWithThrowsException() {
-        when(aaiSliceService
+        when(aaiSliceClient
             .listOrders(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G))
             .thenReturn(failedCall("aai is not exist!"));
         slicingService.querySlicingOrderList("processing", "1", "100");
@@ -127,7 +127,7 @@ public class SlicingServiceImplTest {
     @Test
     public void emptyResponseWhenQuerySlicingOrderList() {
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listOrders(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G)).thenReturn(call);
         slicingService.querySlicingOrderList("processing", "1", "100");
     }

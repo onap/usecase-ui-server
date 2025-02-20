@@ -32,7 +32,7 @@ import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationProgress;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskList;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.AnSliceTaskInfo;
@@ -67,7 +67,7 @@ public class TaskMgtServiceConvert {
     @Resource(name = "GeneralConvertService")
     private GeneralConvertImpl generalConvert;
 
-    private final AAISliceService aaiSliceService;
+    private final AAISliceClient aaiSliceClient;
 
     void convertSlicingTaskList(SlicingTaskList targetSlicingTaskList, SOTaskRsp sourceSoTaskRsp, int pageNo,
         int pageSize)
@@ -363,7 +363,7 @@ public class TaskMgtServiceConvert {
         ConnectionLinkList connectionLinkList = new ConnectionLinkList();
         EndPointInfo endPointInfo = new EndPointInfo();
         try {
-            Response<ConnectionLinkList> response = this.aaiSliceService.getConnectionLinks().execute();
+            Response<ConnectionLinkList> response = this.aaiSliceClient.getConnectionLinks().execute();
             if(response.isSuccessful()){
                 connectionLinkList = response.body();
                 logger.info(connectionLinkList.toString());

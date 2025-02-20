@@ -28,7 +28,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData;
@@ -36,12 +36,12 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData
 public class GeneralConvertImplTest {
 
     GeneralConvertImpl generalConvert = null;
-    AAISliceService aaiSliceService = null;
+    AAISliceClient aaiSliceClient = null;
 
     @Before
     public void before() throws Exception {
-        aaiSliceService = mock(AAISliceService.class);
-        generalConvert = new GeneralConvertImpl(aaiSliceService);
+        aaiSliceClient = mock(AAISliceClient.class);
+        generalConvert = new GeneralConvertImpl(aaiSliceClient);
     }
 
     @Test
@@ -84,11 +84,11 @@ public class GeneralConvertImplTest {
         String serviceType = NsmfParamConstant.SERVICE_TYPE_5G;
         String serviceInstanceId = "1234-ty23-rt56-oiu9";
 
-        when(aaiSliceService.queryOrderByService(globalCustomerId, serviceType, serviceInstanceId))
+        when(aaiSliceClient.queryOrderByService(globalCustomerId, serviceType, serviceInstanceId))
             .thenReturn(successfulCall(object));
 
         String orderId = "order123";
-        when(aaiSliceService
+        when(aaiSliceClient
             .queryOrderByOrderId(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, orderId))
             .thenReturn(successfulCall(object));
         generalConvert.getUseInterval(serviceInstanceId);
@@ -100,11 +100,11 @@ public class GeneralConvertImplTest {
         String serviceType = NsmfParamConstant.SERVICE_TYPE_5G;
         String serviceInstanceId = "1234-ty23-rt56-oiu9";
 
-        when(aaiSliceService.queryOrderByService(globalCustomerId, serviceType, serviceInstanceId))
+        when(aaiSliceClient.queryOrderByService(globalCustomerId, serviceType, serviceInstanceId))
             .thenReturn(failedCall("aai is not exist!"));
 
         String orderId = "order123";
-        when(aaiSliceService
+        when(aaiSliceClient
             .queryOrderByOrderId(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, orderId))
             .thenReturn(failedCall("aai is not exist!"));
 

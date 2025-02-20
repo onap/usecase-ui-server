@@ -27,7 +27,7 @@ import okhttp3.RequestBody;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkInfo;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
@@ -38,20 +38,20 @@ public class ResourceMgtServiceImplTest {
 
     ResourceMgtServiceImpl resourceMgtService = null;
     SOSliceService soSliceService;
-    AAISliceService aaiSliceService;
+    AAISliceClient aaiSliceClient;
 
     @Before
     public void before() throws Exception {
-        aaiSliceService = mock(AAISliceService.class);
+        aaiSliceClient = mock(AAISliceClient.class);
         soSliceService = mock(SOSliceService.class);
-        resourceMgtService = new ResourceMgtServiceImpl(aaiSliceService, soSliceService);
+        resourceMgtService = new ResourceMgtServiceImpl(aaiSliceClient, soSliceService);
     }
 
     @Test
     public void itCanQuerySlicingBusiness() {
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listService(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G))
             .thenReturn(successfulCall(object));
         resourceMgtService.querySlicingBusiness(1, 100);
@@ -61,7 +61,7 @@ public class ResourceMgtServiceImplTest {
     public void querySlicingBusinessWithThrowsException() {
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listService(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.querySlicingBusiness(1, 100);
@@ -70,7 +70,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void emptyResponseWhenQuerySlicingBusiness() {
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listService(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G)).thenReturn(call);
         resourceMgtService.querySlicingBusiness(1, 100);
     }
@@ -79,7 +79,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQuerySlicingBusinessByStatus() {
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated"))
             .thenReturn(successfulCall(object));
         resourceMgtService.querySlicingBusinessByStatus("activated", 1, 100);
@@ -88,14 +88,14 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void emptyResponseWhenQuerySlicingBusinessByStatus() {
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated")).thenReturn(call);
         resourceMgtService.querySlicingBusinessByStatus("activated", 1, 100);
     }
 
     @Test
     public void querySlicingBusinessByStatusWithThrowsException() {
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated"))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.querySlicingBusinessByStatus("activated", 1, 100);
@@ -105,11 +105,11 @@ public class ResourceMgtServiceImplTest {
     public void itCanQuerySlicingBusinessDetails() {
         JSONObject object = new JSONObject();
         String businessId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(successfulCall(object));
         NetworkInfo networkInfo = new NetworkInfo();
-        when(aaiSliceService
+        when(aaiSliceClient
             .getServiceNetworkInstance(businessId))
             .thenReturn(successfulCall(networkInfo));
 
@@ -120,7 +120,7 @@ public class ResourceMgtServiceImplTest {
     public void querySlicingBusinessDetailsWithThrowsException() {
 
         String businessId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.querySlicingBusinessDetails(businessId);
@@ -130,7 +130,7 @@ public class ResourceMgtServiceImplTest {
     public void emptyResponseWhenQuerySlicingBusinessDetails() {
         String businessId = "23er-56ty-4567-rgdf5";
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId)).thenReturn(call);
         resourceMgtService.querySlicingBusinessDetails(businessId);
     }
@@ -139,7 +139,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQueryNsiInstances() {
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G))
             .thenReturn(successfulCall(object));
         resourceMgtService.queryNsiInstances(1, 100);
@@ -148,7 +148,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void queryNsiInstancesWithThrowsException() {
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.queryNsiInstances(1, 100);
@@ -157,7 +157,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void emptyResponseWhenQueryNsiInstances() {
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G)).thenReturn(call);
         resourceMgtService.queryNsiInstances(1, 100);
     }
@@ -166,7 +166,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQueryNsiInstancesByStatus() {
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSIByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated"))
             .thenReturn(successfulCall(object));
         resourceMgtService.queryNsiInstancesByStatus("activated", 1, 100);
@@ -175,7 +175,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void queryNsiInstancesByStatusWithThrowsException() {
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSIByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated"))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.queryNsiInstancesByStatus("activated", 1, 100);
@@ -184,7 +184,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void emptyResponseWhenQueryNsiInstancesByStatus() {
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSIByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated")).thenReturn(call);
         resourceMgtService.queryNsiInstancesByStatus("activated", 1, 100);
     }
@@ -193,7 +193,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQueryNsiDetails() {
         JSONObject object = new JSONObject();
         String serviceInstanceId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, serviceInstanceId))
             .thenReturn(successfulCall(object));
         resourceMgtService.queryNsiDetails(serviceInstanceId);
@@ -203,7 +203,7 @@ public class ResourceMgtServiceImplTest {
     public void queryNsiDetailsWithThrowsException() {
 
         String serviceInstanceId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, serviceInstanceId))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.queryNsiDetails(serviceInstanceId);
@@ -213,7 +213,7 @@ public class ResourceMgtServiceImplTest {
     public void emptyResponseWhenQueryNsiDetails() {
         Call<JSONObject> call = emptyBodyCall();
         String serviceInstanceId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, serviceInstanceId)).thenReturn(call);
         resourceMgtService.queryNsiDetails(serviceInstanceId);
     }
@@ -222,7 +222,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQueryNsiRelatedNssiInfo() {
         JSONObject object = new JSONObject();
         String nsiId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
             .thenReturn(successfulCall(object));
         resourceMgtService.queryNsiRelatedNssiInfo(nsiId);
@@ -232,7 +232,7 @@ public class ResourceMgtServiceImplTest {
     public void queryNsiRelatedNssiInfoWithThrowsException() {
 
         String nsiId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.queryNsiRelatedNssiInfo(nsiId);
@@ -242,7 +242,7 @@ public class ResourceMgtServiceImplTest {
     public void emptyResponseWhenQuueryNsiRelatedNssiInfo() {
         Call<JSONObject> call = emptyBodyCall();
         String nsiId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId)).thenReturn(call);
         resourceMgtService.queryNsiRelatedNssiInfo(nsiId);
     }
@@ -251,7 +251,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQueryNssiInstances() {
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G))
             .thenReturn(successfulCall(object));
         resourceMgtService.queryNssiInstances(1, 100);
@@ -260,7 +260,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void queryNssiInstancesWithThrowsException() {
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.queryNssiInstances(1, 100);
@@ -269,7 +269,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void emptyResponseWhenQueryNssiInstances() {
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G)).thenReturn(call);
         resourceMgtService.queryNssiInstances(1, 100);
     }
@@ -278,7 +278,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQueryNssiInstancesByStatus() {
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSIByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated"))
             .thenReturn(successfulCall(object));
         resourceMgtService.queryNssiInstancesByStatus("activated", 1, 100);
@@ -287,7 +287,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void queryNssiInstancesByStatusWithThrowsException() {
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSIByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated"))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.queryNssiInstancesByStatus("activated", 1, 100);
@@ -296,7 +296,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void emptyResponseWhenQueryNssiInstancesByStatus() {
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSIByStatus(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, "activated")).thenReturn(call);
         resourceMgtService.queryNssiInstancesByStatus("activated", 1, 100);
     }
@@ -305,7 +305,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQueryNssiInstancesByEnvironment() {
         JSONObject object = new JSONObject();
         String environmentContext = "cn";
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSIByEnv(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, environmentContext))
             .thenReturn(successfulCall(object));
@@ -315,7 +315,7 @@ public class ResourceMgtServiceImplTest {
     @Test
     public void queryNssiInstancesByEnvironmentWithThrowsException() {
         String environmentContext = "cn";
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSIByEnv(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, environmentContext))
             .thenReturn(failedCall("aai is not exist!"));
@@ -326,7 +326,7 @@ public class ResourceMgtServiceImplTest {
     public void emptyResponseWhenQueryNssiInstancesByEnvironment() {
         String environmentContext = "cn";
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceNSSIByEnv(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, environmentContext)).thenReturn(call);
         resourceMgtService.queryNssiInstancesByEnvironment(environmentContext, 1, 100);
@@ -336,7 +336,7 @@ public class ResourceMgtServiceImplTest {
     public void itCanQueryNssiDetails() {
         JSONObject object = new JSONObject();
         String nssiId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .queryNSIByNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId))
             .thenReturn(successfulCall(object));
         resourceMgtService.queryNssiDetails(nssiId);
@@ -346,7 +346,7 @@ public class ResourceMgtServiceImplTest {
     public void queryNssiDetailsWithThrowsException() {
 
         String nssiId = "23er-56ty-4567-rgdf5";
-        when(aaiSliceService
+        when(aaiSliceClient
             .queryNSIByNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtService.queryNssiDetails(nssiId);
@@ -356,7 +356,7 @@ public class ResourceMgtServiceImplTest {
     public void emptyResponseWhenQueryNssiDetails() {
         String nssiId = "23er-56ty-4567-rgdf5";
         Call<JSONObject> call = emptyBodyCall();
-        when(aaiSliceService
+        when(aaiSliceClient
             .queryNSIByNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId)).thenReturn(call);
         resourceMgtService.queryNssiDetails(nssiId);
     }

@@ -32,7 +32,7 @@ import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationProgress;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskList;
 import org.onap.usecaseui.server.constant.nsmf.NsmfCodeConstant;
 import org.onap.usecaseui.server.service.nsmf.TaskMgtService;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPointInfoList;
@@ -70,7 +70,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
     private static final Logger logger = LoggerFactory.getLogger(TaskMgtServiceImpl.class);
 
     private final SOSliceService soSliceService;
-    private final AAISliceService aaiSliceService;
+    private final AAISliceClient aaiSliceClient;
 
     @Resource(name = "TaskMgtConvertService")
     protected TaskMgtServiceConvert taskMgtServiceConvert;
@@ -347,7 +347,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         ConnectionListVo connectionListVo = new ConnectionListVo();
         List<ConnectionListVo> list = new ArrayList<>();
         try {
-            Response<ConnectionLinkList> response = this.aaiSliceService.getConnectionLinks().execute();
+            Response<ConnectionLinkList> response = this.aaiSliceClient.getConnectionLinks().execute();
             if(response.isSuccessful()){
                 connectionLinkList = response.body();
                 logger.info(connectionLinkList.toString());
@@ -355,21 +355,21 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 List<ConnectionLink> tsciConnectionLink = connectionLinks.stream().filter(e -> e.getLinkType().equals("TsciConnectionLink") && e.getRelationshipList()!=null).collect(Collectors.toList());
                 if(!ObjectUtils.isEmpty(tsciConnectionLink)){
                     for (ConnectionLink connectionLink : tsciConnectionLink) {
-                        Response<EndPointInfoList> anInfo = this.aaiSliceService.getEndpointByLinkName(connectionLink.getLinkName()).execute();
-                        Response<EndPointInfoList> cnInfo = this.aaiSliceService.getEndpointByLinkName2(connectionLink.getLinkName2()).execute();
+                        Response<EndPointInfoList> anInfo = this.aaiSliceClient.getEndpointByLinkName(connectionLink.getLinkName()).execute();
+                        Response<EndPointInfoList> cnInfo = this.aaiSliceClient.getEndpointByLinkName2(connectionLink.getLinkName2()).execute();
 
                         PropertiesVo propertiesVo = new PropertiesVo();
                         List<RelationshipData> relationshipDataList = connectionLink.getRelationshipList().getRelationship().get(0).getRelationshipDataList();
                         List<RelationshipData> allottedResourceId = relationshipDataList.stream().filter(e -> e.getRelationshipKey().equals("allotted-resource.id")).collect(Collectors.toList());
                         List<RelationshipData> serviceInstanceId = relationshipDataList.stream().filter(e -> e.getRelationshipKey().equals("service-instance.service-instance-id")).collect(Collectors.toList());
-                        Response<ConnectionLink> AllottedResource=this.aaiSliceService.getAllottedResource(serviceInstanceId.get(0).getRelationshipValue(),allottedResourceId.get(0).getRelationshipValue()).execute();
+                        Response<ConnectionLink> AllottedResource=this.aaiSliceClient.getAllottedResource(serviceInstanceId.get(0).getRelationshipValue(),allottedResourceId.get(0).getRelationshipValue()).execute();
                         List<Relationship> relationships= AllottedResource.body().getRelationshipList().getRelationship().stream().filter(a-> a.getRelatedTo().equals("network-policy")).collect(Collectors.toList());
                         List<RelationshipData> networkPolicyId=relationships.get(0).getRelationshipDataList().stream().filter(e -> e.getRelationshipKey().equals("network-policy.network-policy-id")).collect(Collectors.toList());
-                        Response<NetworkPolicy> networkPolicy=this.aaiSliceService.getNetworkPolicy(networkPolicyId.get(0).getRelationshipValue()).execute();
+                        Response<NetworkPolicy> networkPolicy=this.aaiSliceClient.getNetworkPolicy(networkPolicyId.get(0).getRelationshipValue()).execute();
                         propertiesVo.setJitter(networkPolicy.body().getJitter());
                         propertiesVo.setLatency(networkPolicy.body().getLatency());
                         propertiesVo.setMaxBandwidth(networkPolicy.body().getMaxBandwidth());
-                        Response<ConnectionLink> serviceInstance=this.aaiSliceService.getServiceInstance(serviceInstanceId.get(0).getRelationshipValue()).execute();
+                        Response<ConnectionLink> serviceInstance=this.aaiSliceClient.getServiceInstance(serviceInstanceId.get(0).getRelationshipValue()).execute();
                         propertiesVo.setResourceSharingLevel(serviceInstance.body().getServiceFunction());
 
                         connectionListVo.setLinkId(connectionLink.getLinkId());

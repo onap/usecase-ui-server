@@ -43,7 +43,7 @@ import org.onap.usecaseui.server.bean.nsmf.task.BusinessDemandInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.NstInfo;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.controller.IntentController;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
@@ -58,15 +58,15 @@ public class ResourceMgtServiceConvertTest {
 
     ResourceMgtServiceConvert resourceMgtServiceConvert = null;
     SOSliceService soSliceService = null;
-    AAISliceService aaiSliceService = null;
+    AAISliceClient aaiSliceClient = null;
 
     GeneralConvertImpl generalConvert;
 
     @Before
     public void before() throws Exception {
-        aaiSliceService = mock(AAISliceService.class);
+        aaiSliceClient = mock(AAISliceClient.class);
         generalConvert = mock(GeneralConvertImpl.class);
-        resourceMgtServiceConvert = new ResourceMgtServiceConvert(aaiSliceService);
+        resourceMgtServiceConvert = new ResourceMgtServiceConvert(aaiSliceClient);
         MemberModifier.field(ResourceMgtServiceConvert.class, "generalConvert").set(resourceMgtServiceConvert , generalConvert);
     }
 
@@ -116,7 +116,7 @@ public class ResourceMgtServiceConvertTest {
         NsiInfo nsiInfo = new NsiInfo();
         String nsiId = "1234-ty23-rt56-oiu9";
 
-        when(aaiSliceService.listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
+        when(aaiSliceClient.listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
             .thenReturn(successfulCall(object));
         resourceMgtServiceConvert.getNsiInfoByBusiness(nsiInfo, nsiId);
     }
@@ -126,7 +126,7 @@ public class ResourceMgtServiceConvertTest {
         NsiInfo nsiInfo = new NsiInfo();
         String nsiId = "1234-ty23-rt56-oiu9";
 
-        when(aaiSliceService.listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
+        when(aaiSliceClient.listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
             .thenReturn(failedCall("aai is not exist!"));
         resourceMgtServiceConvert.getNsiInfoByBusiness(nsiInfo, nsiId);
     }
@@ -153,7 +153,7 @@ public class ResourceMgtServiceConvertTest {
         NstInfo nstInfo = new NstInfo();
         String nsiId = "1234-ty23-rt56-oiu9";
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
             .thenReturn(successfulCall(object));
 
@@ -161,7 +161,7 @@ public class ResourceMgtServiceConvertTest {
         String modelVersionId = "v00001";
 
         AAIServiceNST aaiServiceNST = new AAIServiceNST();
-        when(aaiSliceService.queryServiceNST(modelInvariantId, modelVersionId))
+        when(aaiSliceClient.queryServiceNST(modelInvariantId, modelVersionId))
             .thenReturn(successfulCall(aaiServiceNST));
 
         try {
@@ -176,7 +176,7 @@ public class ResourceMgtServiceConvertTest {
         NstInfo nstInfo = new NstInfo();
         String nsiId = "1234-ty23-rt56-oiu9";
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
             .thenReturn(failedCall("aai is not exist!"));
 
@@ -184,7 +184,7 @@ public class ResourceMgtServiceConvertTest {
         String modelVersionId = "v00001";
 
         AAIServiceNST aaiServiceNST = new AAIServiceNST();
-        when(aaiSliceService.queryServiceNST(modelInvariantId, modelVersionId))
+        when(aaiSliceClient.queryServiceNST(modelInvariantId, modelVersionId))
             .thenReturn(failedCall("aai is not exist!"));
 
         try {
@@ -199,7 +199,7 @@ public class ResourceMgtServiceConvertTest {
         JSONObject object = new JSONObject();
         String businessId = "1234-ty23-rt56-oiu9";
 
-        when(aaiSliceService.queryAllottedResources(NsmfParamConstant.CUSTOM_5G,
+        when(aaiSliceClient.queryAllottedResources(NsmfParamConstant.CUSTOM_5G,
             NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(successfulCall(object));
         try {
@@ -213,7 +213,7 @@ public class ResourceMgtServiceConvertTest {
     public void getNsiIdByBusinessWithThrowsException() {
         String businessId = "1234-ty23-rt56-oiu9";
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .queryAllottedResources(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(failedCall("aai is not exist!"));
         try {
@@ -230,7 +230,7 @@ public class ResourceMgtServiceConvertTest {
         SlicingBusinessDetails slicingBusinessDetails = new SlicingBusinessDetails();
         AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
 
-        when(aaiSliceService.getServiceProfiles(NsmfParamConstant.CUSTOM_5G,
+        when(aaiSliceClient.getServiceProfiles(NsmfParamConstant.CUSTOM_5G,
             NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(successfulCall(object));
         when(generalConvert.getUseInterval(eq(businessId))).thenReturn(businessId);
@@ -302,7 +302,7 @@ public class ResourceMgtServiceConvertTest {
         nssiIdList.add(nssiId);
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId))
             .thenReturn(successfulCall(object));
 
@@ -324,7 +324,7 @@ public class ResourceMgtServiceConvertTest {
         String nssiId = "nssiTest01";
         nssiIdList.add(nssiId);
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId))
             .thenReturn(failedCall("aai is not exist!"));
 
@@ -347,7 +347,7 @@ public class ResourceMgtServiceConvertTest {
         businessIdList.add(businessId);
         JSONObject object = new JSONObject();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(successfulCall(object));
         try {
@@ -368,7 +368,7 @@ public class ResourceMgtServiceConvertTest {
         String businessId = "busiId001";
         businessIdList.add(businessId);
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId))
             .thenReturn(failedCall("aai is not exist!"));
         try {
@@ -480,7 +480,7 @@ public class ResourceMgtServiceConvertTest {
         HostedNsiList hostedNsiList = new HostedNsiList();
         AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
 
-        when(aaiSliceService.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
+        when(aaiSliceClient.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
             NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
             .thenReturn(successfulCall(object));
         try {
@@ -497,7 +497,7 @@ public class ResourceMgtServiceConvertTest {
         HostedNsiList hostedNsiList = new HostedNsiList();
         AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
 
-        when(aaiSliceService
+        when(aaiSliceClient
             .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId))
             .thenReturn(failedCall("aai is not exist!"));
         try {

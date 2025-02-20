@@ -45,7 +45,7 @@ import org.onap.usecaseui.server.bean.nsmf.resource.SubscriberInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.BusinessDemandInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.NstInfo;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
@@ -69,7 +69,7 @@ public class ResourceMgtServiceConvert {
     @Resource(name = "GeneralConvertService")
     private GeneralConvertImpl generalConvert;
 
-    private final AAISliceService aaiSliceService;
+    private final AAISliceClient aaiSliceClient;
 
     void convertSlicingBusinessList(SlicingBusinessList slicingBusinessList, AAIServiceRsp aAIServiceRsp, int pageNo,
         int pageSize)
@@ -109,7 +109,7 @@ public class ResourceMgtServiceConvert {
     void getNsiInfoByBusiness(NsiInfo nsiInfo, String nsiId) {
         try {
             AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId)
                 .execute();
             if (response.isSuccessful()) {
@@ -137,7 +137,7 @@ public class ResourceMgtServiceConvert {
         String modelInvariantId;
         String modelVersionId;
         try {
-            Response<JSONObject> response = this.aaiSliceService.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
+            Response<JSONObject> response = this.aaiSliceClient.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, nsiId).execute();
             if (response.isSuccessful()) {
                 JSONObject object = response.body();
@@ -158,7 +158,7 @@ public class ResourceMgtServiceConvert {
         }
 
         try {
-            Response<AAIServiceNST> nstResponse = this.aaiSliceService.queryServiceNST(modelInvariantId, modelVersionId)
+            Response<AAIServiceNST> nstResponse = this.aaiSliceClient.queryServiceNST(modelInvariantId, modelVersionId)
                 .execute();
             if (nstResponse.isSuccessful()) {
                 AAIServiceNST aaiServiceNST = nstResponse.body();
@@ -180,7 +180,7 @@ public class ResourceMgtServiceConvert {
         throws IOException {
         List<AAIServiceAndInstance> aaiServiceAndInstanceList = new ArrayList<>();
         try {
-            Response<JSONObject> response = this.aaiSliceService.queryAllottedResources(NsmfParamConstant.CUSTOM_5G,
+            Response<JSONObject> response = this.aaiSliceClient.queryAllottedResources(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, businessId).execute();
             if (response.isSuccessful()) {
                 logger.info("getNsiIdByBusiness: queryAllottedResources response is: {}", response.body());
@@ -222,7 +222,7 @@ public class ResourceMgtServiceConvert {
 
         AAIServiceProfiles aaiServiceProfiles = new AAIServiceProfiles();
         try {
-            Response<JSONObject> response = this.aaiSliceService.getServiceProfiles(NsmfParamConstant.CUSTOM_5G,
+            Response<JSONObject> response = this.aaiSliceClient.getServiceProfiles(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, businessId).execute();
 
             if (response.isSuccessful()) {
@@ -318,7 +318,7 @@ public class ResourceMgtServiceConvert {
             i++;
             try {
                 AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
-                Response<JSONObject> response = this.aaiSliceService
+                Response<JSONObject> response = this.aaiSliceClient
                     .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId)
                     .execute();
                 if (response.isSuccessful()) {
@@ -350,7 +350,7 @@ public class ResourceMgtServiceConvert {
             try {
                 // 添加给slicingTaskCreationProgress赋值的代码
                 AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
-                Response<JSONObject> response = this.aaiSliceService
+                Response<JSONObject> response = this.aaiSliceClient
                     .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId)
                     .execute();
                 if (response.isSuccessful()) {
@@ -465,7 +465,7 @@ public class ResourceMgtServiceConvert {
         List<HostedNsiInfo> hostedNsiInfoList = new ArrayList<>();
         for (String nsiId : nsiIdList) {
             try {
-                Response<JSONObject> response = this.aaiSliceService.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
+                Response<JSONObject> response = this.aaiSliceClient.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
                     NsmfParamConstant.SERVICE_TYPE_5G, nsiId).execute();
                 if (response.isSuccessful()) {
                     JSONObject object = response.body();

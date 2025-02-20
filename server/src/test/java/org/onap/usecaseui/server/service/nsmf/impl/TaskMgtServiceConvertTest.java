@@ -34,7 +34,7 @@ import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskAuditInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationInfo;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskCreationProgress;
 import org.onap.usecaseui.server.bean.nsmf.task.SlicingTaskList;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLink;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipList;
@@ -50,14 +50,14 @@ import org.onap.usecaseui.server.service.slicingdomain.so.bean.TnBHSliceTaskInfo
 public class TaskMgtServiceConvertTest {
 
     TaskMgtServiceConvert taskMgtServiceConvert = null;
-    AAISliceService aaiSliceService;
+    AAISliceClient aaiSliceClient;
     GeneralConvertImpl generalConvert;
 
     @Before
     public void before() throws Exception {
-        aaiSliceService = mock(AAISliceService.class);
+        aaiSliceClient = mock(AAISliceClient.class);
         generalConvert = mock(GeneralConvertImpl.class);
-        taskMgtServiceConvert = new TaskMgtServiceConvert(aaiSliceService);
+        taskMgtServiceConvert = new TaskMgtServiceConvert(aaiSliceClient);
         taskMgtServiceConvert.setGeneralConvert(generalConvert);
     }
 
@@ -95,7 +95,7 @@ public class TaskMgtServiceConvertTest {
 
     @Test
     public void convertSlicingTaskListWithThrowsException() {
-        when(aaiSliceService.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
+        when(aaiSliceClient.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
         SlicingTaskList targetSlicingTaskList = new SlicingTaskList();
         SOTaskRsp soTaskRsp = new SOTaskRsp();
         soTaskRsp.setTask(null);
@@ -277,13 +277,13 @@ public class TaskMgtServiceConvertTest {
         logicalLink.add(connectionLink);
         connectionLinkList.setLogicalLink(logicalLink);
 
-        when(aaiSliceService.getConnectionLinks()).thenReturn(successfulCall(connectionLinkList));
+        when(aaiSliceClient.getConnectionLinks()).thenReturn(successfulCall(connectionLinkList));
         taskMgtServiceConvert.queryEndPointId("123");
     }
 
     @Test
     public void queryEndPointIdWithThrowsException() {
-        when(aaiSliceService.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
+        when(aaiSliceClient.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
         taskMgtServiceConvert.queryEndPointId("123");
     }
 }

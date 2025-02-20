@@ -15,7 +15,6 @@
  */
 package org.onap.usecaseui.server.service.slicingdomain.aai;
 
-import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkInfo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceNST;
 
@@ -28,11 +27,10 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Netwo
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.SliceProfileList;
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface AAISliceService {
+public interface AAISliceClient {
 
 	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=service-profile")
     Call<JSONObject> listService(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType);

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData;
@@ -39,7 +39,7 @@ public class GeneralConvertImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneralConvertImpl.class);
 
-    private final AAISliceService aaiSliceService;
+    private final AAISliceClient aaiSliceClient;
 
     public AAIServiceAndInstance queryServiceUtil(JSONObject object) {
         if (object.containsKey("relationship-list")) {
@@ -101,7 +101,7 @@ public class GeneralConvertImpl {
         AAIServiceAndInstance aaiServiceAndInstance = new AAIServiceAndInstance();
         try {
             // TODO
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .queryOrderByService(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, serviceId)
                 .execute();
             if (response.isSuccessful()) {
@@ -109,7 +109,7 @@ public class GeneralConvertImpl {
                 logger.info("getUseInterval: queryOrderByService response is:{}", response.body());
                 aaiServiceAndInstance = queryServiceUtil(object);
                 String orderId = getOrderIdFromRelation(aaiServiceAndInstance);
-                Response<JSONObject> orderResponse = this.aaiSliceService
+                Response<JSONObject> orderResponse = this.aaiSliceClient
                     .queryOrderByOrderId(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, orderId)
                     .execute();
                 if (orderResponse.isSuccessful()) {
