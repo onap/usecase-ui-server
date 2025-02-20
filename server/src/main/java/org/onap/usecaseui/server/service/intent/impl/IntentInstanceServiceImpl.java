@@ -36,7 +36,7 @@ import org.onap.usecaseui.server.bean.intent.IntentInstance;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
-import org.onap.usecaseui.server.service.intent.IntentAaiService;
+import org.onap.usecaseui.server.service.intent.IntentAaiClient;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
 import org.onap.usecaseui.server.service.intent.IntentSoService;
 import org.onap.usecaseui.server.service.intent.config.IntentProperties;
@@ -67,15 +67,15 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     private static final int MIN_BANDWIDTH = 100;
 
     private final SlicingService slicingService;
-    private final IntentAaiService intentAaiService;
+    private final IntentAaiClient intentAaiClient;
     private final IntentSoService intentSoService;
     private final SessionFactory sessionFactory;
     private final ResourceMgtService resourceMgtService;
     private final IntentProperties intentProperties;
 
-    public IntentInstanceServiceImpl(SlicingService slicingService, IntentAaiService intentAaiService, IntentSoService intentSoService, SessionFactory sessionFactory, ResourceMgtService resourceMgtService, IntentProperties intentProperties) {
+    public IntentInstanceServiceImpl(SlicingService slicingService, IntentAaiClient intentAaiClient, IntentSoService intentSoService, SessionFactory sessionFactory, ResourceMgtService resourceMgtService, IntentProperties intentProperties) {
         this.slicingService = slicingService;
-        this.intentAaiService = intentAaiService;
+        this.intentAaiClient = intentAaiClient;
         this.intentSoService = intentSoService;
         this.sessionFactory = sessionFactory;
         this.resourceMgtService = resourceMgtService;
@@ -329,7 +329,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         if (instance == null || instance.getResourceInstanceId() == null) {
             return -1;
         }
-        Response<JSONObject> response = intentAaiService.getInstanceInfo(instance.getResourceInstanceId()).execute();
+        Response<JSONObject> response = intentAaiClient.getInstanceInfo(instance.getResourceInstanceId()).execute();
         logger.debug(response.toString());
         if (response.isSuccessful()) {
             String status = response.body().getString("orchestration-status");
@@ -383,7 +383,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         List<CCVPNInstance> instanceList = getInstanceByFinishedFlag("1");
         for (CCVPNInstance instance : instanceList) {
             String serviceInstanceId = instance.getResourceInstanceId();
-            Response<JSONObject> response = intentAaiService.getInstanceNetworkInfo(serviceInstanceId).execute();
+            Response<JSONObject> response = intentAaiClient.getInstanceNetworkInfo(serviceInstanceId).execute();
             if (!response.isSuccessful()) {
                 logger.error("get Intent-Instance Bandwidth error:" + response.toString());
                 continue;
@@ -409,7 +409,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
                 continue;
             }
 
-            Response<JSONObject> networkPolicyInfoResponse = intentAaiService.getInstanceNetworkPolicyInfo(networkPolicyId).execute();
+            Response<JSONObject> networkPolicyInfoResponse = intentAaiClient.getInstanceNetworkPolicyInfo(networkPolicyId).execute();
             if (!networkPolicyInfoResponse.isSuccessful()) {
                 logger.error("get Intent-Instance networkPolicyInfo error:" + networkPolicyInfoResponse.toString());
                 continue;
@@ -422,7 +422,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             instancePerformance.setJobId(instance.getJobId());
             instancePerformance.setDate(new Date());
 
-            Response<JSONObject> metadatumResponse = intentAaiService.getInstanceBandwidth(serviceInstanceId).execute();
+            Response<JSONObject> metadatumResponse = intentAaiClient.getInstanceBandwidth(serviceInstanceId).execute();
             if (!metadatumResponse.isSuccessful()) {
                 logger.error("get Intent-Instance metadatum error:" + metadatumResponse.toString());
                 continue;
@@ -630,7 +630,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         Map<String, Object> result = new HashMap<>();
         List<String> accessNodeList = new ArrayList<>();
         List<String> cloudAccessNodeList = new ArrayList<>();
-        Response<JSONObject> response = intentAaiService.queryNetworkRoute().execute();
+        Response<JSONObject> response = intentAaiClient.queryNetworkRoute().execute();
         if (!response.isSuccessful()) {
             logger.error(response.toString());
             throw new RuntimeException("Query Access Node Info Error");
@@ -732,7 +732,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
     public void addCustomer() throws IOException {
         String globalCustomerId = intentProperties.getGlobalCustomerId();
-        Response<JSONObject> queryCustomerResponse = intentAaiService.queryCustomer(globalCustomerId).execute();
+        Response<JSONObject> queryCustomerResponse = intentAaiClient.queryCustomer(globalCustomerId).execute();
         if (queryCustomerResponse.isSuccessful()) {
             return;
         }
@@ -743,7 +743,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("subscriber-name", subscriberName);
         params.put("subscriber-type", subscriberType);
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
-        intentAaiService.addCustomer(globalCustomerId, requestBody).execute();
+        intentAaiClient.addCustomer(globalCustomerId, requestBody).execute();
     }
 
     @Override
@@ -937,14 +937,14 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     public void addSubscription() throws IOException {
         String globalCustomerId = intentProperties.getGlobalCustomerId();
         String serviceType = intentProperties.getServiceType();
-        Response<JSONObject> querySubscription = intentAaiService.querySubscription(globalCustomerId, serviceType).execute();
+        Response<JSONObject> querySubscription = intentAaiClient.querySubscription(globalCustomerId, serviceType).execute();
         if (querySubscription.isSuccessful()) {
             return;
         }
         Map<String, Object> params = new HashMap<>();
         params.put("service-type", serviceType);
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
-        intentAaiService.addSubscription(globalCustomerId, serviceType, requestBody).execute();
+        intentAaiClient.addSubscription(globalCustomerId, serviceType, requestBody).execute();
     }
 
     public Properties getProperties() throws IOException {
@@ -963,7 +963,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         String serviceType = intentProperties.getServiceType();
         String resourceVersion = null;
         if (serviceInstanceId != null) {
-            Response<JSONObject> queryServiceInstance = intentAaiService.queryServiceInstance(globalCustomerId, serviceType, serviceInstanceId).execute();
+            Response<JSONObject> queryServiceInstance = intentAaiClient.queryServiceInstance(globalCustomerId, serviceType, serviceInstanceId).execute();
             if (queryServiceInstance.isSuccessful()) {
                 JSONObject body = queryServiceInstance.body();
                 resourceVersion  = body.getString("resource-version");
@@ -986,7 +986,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
             params.put("resource-version",resourceVersion);
         }
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
-        intentAaiService.saveServiceInstance(globalCustomerId,serviceType,serviceInstanceId,requestBody).execute();
+        intentAaiClient.saveServiceInstance(globalCustomerId,serviceType,serviceInstanceId,requestBody).execute();
 
     }
     public void deleteIntentInstanceToAAI(String serviceInstanceId) throws IOException {
@@ -997,11 +997,11 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         if (serviceInstanceId == null) {
             return;
         }
-        Response<JSONObject> queryServiceInstance = intentAaiService.queryServiceInstance(globalCustomerId, serviceType, serviceInstanceId).execute();
+        Response<JSONObject> queryServiceInstance = intentAaiClient.queryServiceInstance(globalCustomerId, serviceType, serviceInstanceId).execute();
         if (queryServiceInstance.isSuccessful()) {
             JSONObject body = queryServiceInstance.body();
             String resourceVersion  = body.getString("resource-version");
-            intentAaiService.deleteServiceInstance(globalCustomerId,serviceType,serviceInstanceId,resourceVersion).execute();
+            intentAaiClient.deleteServiceInstance(globalCustomerId,serviceType,serviceInstanceId,resourceVersion).execute();
         }
     }
 
@@ -1028,7 +1028,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("resource-sharing-level", slicingOrderInfo.getResourceSharingLevel());
         params.put("data-owner", IntentConstant.INTENT_INSTANCE_DATA_OWNER);
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
-        intentAaiService.saveServiceInstance(globalCustomerId,serviceType,serviceId,requestBody).execute();
+        intentAaiClient.saveServiceInstance(globalCustomerId,serviceType,serviceId,requestBody).execute();
     }
 
     @Override

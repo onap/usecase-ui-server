@@ -26,7 +26,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface IntentAaiService {
+public interface IntentAaiClient {
     @GET("/aai/v24/business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}?depth=all")
     Call<JSONObject> getInstanceNetworkInfo(@Path("resource-service-id") String resourceServiceId);
 

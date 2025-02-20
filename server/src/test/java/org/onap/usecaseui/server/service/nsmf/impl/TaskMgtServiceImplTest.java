@@ -47,21 +47,21 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Relat
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipList;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
 
 public class TaskMgtServiceImplTest {
 
     TaskMgtServiceImpl taskMgtService = null;
     SOSliceService soSliceService = null;
-    AAISliceService aaiSliceService = null;
+    AAISliceClient aaiSliceClient = null;
     TaskMgtServiceConvert taskMgtServiceConvert = null;
 
     @Before
     public void before() throws Exception {
         soSliceService = mock(SOSliceService.class);
-        aaiSliceService = mock(AAISliceService.class);
-        taskMgtService = new TaskMgtServiceImpl(soSliceService,aaiSliceService);
+        aaiSliceClient = mock(AAISliceClient.class);
+        taskMgtService = new TaskMgtServiceImpl(soSliceService,aaiSliceClient);
         taskMgtServiceConvert = mock(TaskMgtServiceConvert.class);
         taskMgtService.taskMgtServiceConvert = taskMgtServiceConvert;
     }
@@ -201,7 +201,7 @@ public class TaskMgtServiceImplTest {
     @Test
     public void queryConnectionLinksWithThrowsException() {
         String taskId = "we23-345r-45ty-5687";
-        when(aaiSliceService.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
+        when(aaiSliceClient.getConnectionLinks()).thenReturn(failedCall("so is not exist!"));
         taskMgtService.queryConnectionLinks(3,5);
     }
 
@@ -232,10 +232,10 @@ public class TaskMgtServiceImplTest {
         String name2 = "name2";
         EndPointInfoList endPointInfoList = new EndPointInfoList();
 
-        when(aaiSliceService.getConnectionLinks()).thenReturn(successfulCall(connectionLinkList));
-        when(aaiSliceService.getEndpointByLinkName(name1)).thenReturn(successfulCall(endPointInfoList));
-        when(aaiSliceService.getEndpointByLinkName2(name2)).thenReturn(successfulCall(endPointInfoList));
-        when(aaiSliceService.getAllottedResource(taskId, taskId)).thenReturn(successfulCall(connectionLink));
+        when(aaiSliceClient.getConnectionLinks()).thenReturn(successfulCall(connectionLinkList));
+        when(aaiSliceClient.getEndpointByLinkName(name1)).thenReturn(successfulCall(endPointInfoList));
+        when(aaiSliceClient.getEndpointByLinkName2(name2)).thenReturn(successfulCall(endPointInfoList));
+        when(aaiSliceClient.getAllottedResource(taskId, taskId)).thenReturn(successfulCall(connectionLink));
 
         taskMgtService.queryConnectionLinks(3,5);
     }

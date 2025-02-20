@@ -46,7 +46,7 @@ import org.onap.usecaseui.server.bean.intent.IntentModel;
 import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
-import org.onap.usecaseui.server.service.intent.IntentAaiService;
+import org.onap.usecaseui.server.service.intent.IntentAaiClient;
 import org.onap.usecaseui.server.service.intent.IntentSoService;
 import org.onap.usecaseui.server.service.intent.config.IntentProperties;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgress;
@@ -77,7 +77,7 @@ public class IntentInstanceServiceImplTest {
     private IntentInstanceServiceImpl intentInstanceService;
 
     @Mock
-    private IntentAaiService intentAaiService;
+    private IntentAaiClient intentAaiClient;
 
     @Mock
     private IntentSoService intentSoService;
@@ -104,7 +104,7 @@ public class IntentInstanceServiceImplTest {
         MemberModifier.field(IntentInstanceServiceImpl.class, "sessionFactory").set(intentInstanceService , sessionFactory);
         MemberModifier.field(IntentInstanceServiceImpl.class, "resourceMgtService").set(intentInstanceService , resourceMgtService);
         MemberModifier.field(IntentInstanceServiceImpl.class, "slicingService").set(intentInstanceService , slicingService);
-        MemberModifier.field(IntentInstanceServiceImpl.class, "intentAaiService").set(intentInstanceService , intentAaiService);
+        MemberModifier.field(IntentInstanceServiceImpl.class, "intentAaiClient").set(intentInstanceService , intentAaiClient);
         MemberModifier.field(IntentInstanceServiceImpl.class, "intentSoService").set(intentInstanceService , intentSoService);
         when(sessionFactory.openSession()).thenReturn(session);
 
@@ -273,7 +273,7 @@ public class IntentInstanceServiceImplTest {
         jsonObject.put("orchestration-status", "created");
         Call mockCall = PowerMockito.mock(Call.class);
         Response<JSONObject> response = Response.success(jsonObject);
-        Mockito.when(intentAaiService.getInstanceInfo(anyString())).thenReturn(mockCall);
+        Mockito.when(intentAaiClient.getInstanceInfo(anyString())).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
 
         IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
@@ -362,7 +362,7 @@ public class IntentInstanceServiceImplTest {
                 "    }\n" +
                 "}");
         Response<JSONObject> response = Response.success(jsonObject);
-        Mockito.when(intentAaiService.getInstanceNetworkInfo(any())).thenReturn(mockCall);
+        Mockito.when(intentAaiClient.getInstanceNetworkInfo(any())).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
 
         Call mockCall1 = PowerMockito.mock(Call.class);
@@ -412,7 +412,7 @@ public class IntentInstanceServiceImplTest {
                 "    }\n" +
                 "}");
         Response<JSONObject> response1 = Response.success(jsonObject1);
-        Mockito.when(intentAaiService.getInstanceNetworkPolicyInfo(any())).thenReturn(mockCall1);
+        Mockito.when(intentAaiClient.getInstanceNetworkPolicyInfo(any())).thenReturn(mockCall1);
         Mockito.when(mockCall1.execute()).thenReturn(response1);
 
         Call mockCall2 = PowerMockito.mock(Call.class);
@@ -431,7 +431,7 @@ public class IntentInstanceServiceImplTest {
                 "    ]\n" +
                 "}");
         Response<JSONObject> response2 = Response.success(jsonObject2);
-        Mockito.when(intentAaiService.getInstanceBandwidth(any())).thenReturn(mockCall2);
+        Mockito.when(intentAaiClient.getInstanceBandwidth(any())).thenReturn(mockCall2);
         Mockito.when(mockCall2.execute()).thenReturn(response2);
 
         Transaction tx = Mockito.mock(Transaction.class);
@@ -602,7 +602,7 @@ public class IntentInstanceServiceImplTest {
                 "    ]\n" +
                 "}");
         Response<JSONObject> response = Response.success(body);
-        Mockito.when(intentAaiService.queryNetworkRoute()).thenReturn(mockCall);
+        Mockito.when(intentAaiClient.queryNetworkRoute()).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
         Map<String, Object> result = (Map<String, Object>) intentInstanceService.queryAccessNodeInfo();
         assertEquals(((List)result.get("accessNodeList")).size(), 3);
@@ -675,8 +675,8 @@ public class IntentInstanceServiceImplTest {
             }
         });
 
-        when(intentAaiService.queryCustomer(anyString())).thenReturn(mockCall);
-        when(intentAaiService.addCustomer(anyString(), any())).thenReturn(mockCall);
+        when(intentAaiClient.queryCustomer(anyString())).thenReturn(mockCall);
+        when(intentAaiClient.addCustomer(anyString(), any())).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(response);
 
         Properties properties = new Properties();
@@ -688,7 +688,7 @@ public class IntentInstanceServiceImplTest {
         // doReturn(properties).when(spy).getProperties();
 
         spy.addCustomer();
-        Mockito.verify(intentAaiService,Mockito.times(1)).addCustomer(anyString(),any());
+        Mockito.verify(intentAaiClient,Mockito.times(1)).addCustomer(anyString(),any());
     }
 
 
@@ -714,16 +714,16 @@ public class IntentInstanceServiceImplTest {
             }
         });
         when(intentProperties.getServiceType()).thenReturn("someServiceType");
-        when(intentAaiService.querySubscription(anyString(),anyString())).thenReturn(mockCall);
+        when(intentAaiClient.querySubscription(anyString(),anyString())).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(response);
 
         IntentInstanceServiceImpl spy = spy(intentInstanceService);
 
         Call mockCall2 = PowerMockito.mock(Call.class);
-        when(intentAaiService.addSubscription(anyString(),anyString(),any())).thenReturn(mockCall2);
+        when(intentAaiClient.addSubscription(anyString(),anyString(),any())).thenReturn(mockCall2);
 
         spy.addSubscription();
-        Mockito.verify(intentAaiService,Mockito.times(1)).addSubscription(anyString(),anyString(),any());
+        Mockito.verify(intentAaiClient,Mockito.times(1)).addSubscription(anyString(),anyString(),any());
     }
 
     @Test
@@ -737,7 +737,7 @@ public class IntentInstanceServiceImplTest {
         body.put("resource-version",123);
         Call mockCall = PowerMockito.mock(Call.class);
         Response<JSONObject> response = Response.success(body);
-        when(intentAaiService.queryServiceInstance(anyString(),anyString(),anyString())).thenReturn(mockCall);
+        when(intentAaiClient.queryServiceInstance(anyString(),anyString(),anyString())).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(response);
 
         CCVPNInstance instance = new CCVPNInstance();
@@ -746,11 +746,11 @@ public class IntentInstanceServiceImplTest {
 
         Call mockCall2 = PowerMockito.mock(Call.class);
         Response<JSONObject> response2 = Response.success(body);
-        when(intentAaiService.saveServiceInstance(anyString(),anyString(),anyString(),any())).thenReturn(mockCall2);
+        when(intentAaiClient.saveServiceInstance(anyString(),anyString(),anyString(),any())).thenReturn(mockCall2);
         when(mockCall2.execute()).thenReturn(response2);
 
         spy.saveIntentInstanceToAAI("CCVPN-id",instance);
-        Mockito.verify(intentAaiService, Mockito.times(1)).saveServiceInstance(anyString(),anyString(),anyString(),any());
+        Mockito.verify(intentAaiClient, Mockito.times(1)).saveServiceInstance(anyString(),anyString(),anyString(),any());
 
     }
     @Test
@@ -764,16 +764,16 @@ public class IntentInstanceServiceImplTest {
         body.put("resource-version",123);
         Call mockCall = PowerMockito.mock(Call.class);
         Response<JSONObject> response = Response.success(body);
-        when(intentAaiService.queryServiceInstance(anyString(),anyString(),anyString())).thenReturn(mockCall);
+        when(intentAaiClient.queryServiceInstance(anyString(),anyString(),anyString())).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(response);
 
         Call mockCall2 = PowerMockito.mock(Call.class);
         Response<JSONObject> response2 = Response.success(body);
-        when(intentAaiService.deleteServiceInstance(anyString(),anyString(),anyString(),anyString())).thenReturn(mockCall2);
+        when(intentAaiClient.deleteServiceInstance(anyString(),anyString(),anyString(),anyString())).thenReturn(mockCall2);
         when(mockCall2.execute()).thenReturn(response2);
 
         spy.deleteIntentInstanceToAAI("CCVPN-id");
-        Mockito.verify(intentAaiService, Mockito.times(1)).deleteServiceInstance(anyString(),anyString(),anyString(),any());
+        Mockito.verify(intentAaiClient, Mockito.times(1)).deleteServiceInstance(anyString(),anyString(),anyString(),any());
 
     }
     @Test

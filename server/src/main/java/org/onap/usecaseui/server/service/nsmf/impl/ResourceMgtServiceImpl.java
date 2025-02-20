@@ -46,7 +46,7 @@ import org.onap.usecaseui.server.constant.nsmf.NsmfCodeConstant;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceAndInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceRsp;
@@ -60,10 +60,8 @@ import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import org.onap.usecaseui.server.util.DateUtils;
-import org.onap.usecaseui.server.util.RestfulServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
 
@@ -82,7 +80,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
     private static final Logger logger = LoggerFactory.getLogger(ResourceMgtServiceImpl.class);
     private static final Gson gson = new Gson();
 
-    private final AAISliceService aaiSliceService;
+    private final AAISliceClient aaiSliceClient;
     private final SOSliceService soSliceService;
 
     @Resource(name = "ServiceLcmService")
@@ -104,7 +102,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .listService(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G).execute();
             if (response.isSuccessful()) {
                 logger.info("querySlicingBusiness: listService reponse is:{}", response.body());
@@ -145,7 +143,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
     }
 
     public void addBusinessProgress(SlicingBusinessList slicingBusinessList)  {
-        System.out.println(aaiSliceService);
+        System.out.println(aaiSliceClient);
         System.out.println(serviceLcmService);
         System.out.println(generalConvert);
         if (slicingBusinessList.getSlicingBusinessInfoList() == null
@@ -208,7 +206,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
         AAIServiceRsp aAIServiceRsp = new AAIServiceRsp();
         try {
-            Response<JSONObject> response = this.aaiSliceService.listServiceByStatus(
+            Response<JSONObject> response = this.aaiSliceClient.listServiceByStatus(
                 NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, processingStatus).execute();
             if (response.isSuccessful()) {
                 logger.info("querySlicingBusinessByStatus: listServiceByStatus reponse is:{}", response.body());
@@ -260,7 +258,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .listServiceById(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, businessId)
                 .execute();
             if (response.isSuccessful()) {
@@ -279,7 +277,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing business details query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
-            Response<NetworkInfo> networkInfoResponse = this.aaiSliceService
+            Response<NetworkInfo> networkInfoResponse = this.aaiSliceClient
                 .getServiceNetworkInstance(businessId).execute();
             if (networkInfoResponse.isSuccessful()) {
                 NetworkInfo networkInfo = networkInfoResponse.body();
@@ -292,7 +290,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                         .filter(e -> e.getRelationshipKey()
                             .equals("service-instance.service-instance-id")).collect(Collectors.toList());
                     String networkRouteCnId = serviceInstanceInfo.get(0).getRelationshipValue();
-                    Response<NetworkInfo> networkInfoResponse1 = this.aaiSliceService
+                    Response<NetworkInfo> networkInfoResponse1 = this.aaiSliceClient
                         .getServiceNetworkInstance(networkRouteCnId).execute();
                     if (networkInfoResponse1.isSuccessful()) {
                         NetworkInfo networkInfo1 = networkInfoResponse1.body();
@@ -306,7 +304,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                             List<RelationshipData> networkInfoRelationshipDataList = networkRouteCn.get(0)
                                 .getRelationshipDataList();
                             String networkRouteId = networkInfoRelationshipDataList.get(0).getRelationshipValue();
-                            Response<EndPointInfoList> networkInfoEndPointInfoList = this.aaiSliceService
+                            Response<EndPointInfoList> networkInfoEndPointInfoList = this.aaiSliceClient
                                 .getEndpointByLinkName(networkRouteId).execute();
                             if (networkInfoEndPointInfoList.isSuccessful()) {
                                 EndPointInfoList endPointInfoList = networkInfoEndPointInfoList.body();
@@ -335,7 +333,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                                 .filter(e -> e.getRelationshipKey()
                                     .equals("service-instance.service-instance-id")).collect(Collectors.toList());
 
-                            Response<SliceProfileList> executeTn = this.aaiSliceService
+                            Response<SliceProfileList> executeTn = this.aaiSliceClient
                                 .getSliceProfiles(tnServiceInstanceInfo.get(0).getRelationshipValue()).execute();
                             if (executeTn.isSuccessful()) {
                                 SliceProfileList body = executeTn.body();
@@ -397,7 +395,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
 
         String resultMsg;
         try {
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .listServiceNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G).execute();
             if (response.isSuccessful()) {
                 logger.info("queryNsiInstances: listServiceNSI reponse is:{}", response.body());
@@ -442,7 +440,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            Response<JSONObject> response = this.aaiSliceService.listServiceNSIByStatus(
+            Response<JSONObject> response = this.aaiSliceClient.listServiceNSIByStatus(
                 NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, instanceStatus).execute();
             if (response.isSuccessful()) {
                 logger.info("queryNsiInstancesByStatus: listServiceNSIByStatus reponse is:{}", response.body());
@@ -489,7 +487,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            Response<JSONObject> response = this.aaiSliceService.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
+            Response<JSONObject> response = this.aaiSliceClient.querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, serviceInstanceId).execute();
             if (response.isSuccessful()) {
                 JSONObject object = response.body();
@@ -528,7 +526,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         NsiRelatedNssiInfo nsiRelatedNssiInfo = new NsiRelatedNssiInfo();
         String resultMsg;
         try {
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .querySerAndSubInsByNSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nsiId)
                 .execute();
             if (response.isSuccessful()) {
@@ -570,7 +568,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
         AAIServiceRsp aAIServiceRsp = new AAIServiceRsp();
         try {
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .listServiceNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G).execute();
             if (response.isSuccessful()) {
                 logger.info("queryNssiInstances: listServiceNSSI reponse is:{}", response.body());
@@ -615,7 +613,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
         AAIServiceRsp aAIServiceRsp = new AAIServiceRsp();
         try {
-            Response<JSONObject> response = this.aaiSliceService.listServiceNSSIByStatus(
+            Response<JSONObject> response = this.aaiSliceClient.listServiceNSSIByStatus(
                 NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, instanceStatus).execute();
             if (response.isSuccessful()) {
                 logger.info("queryNssiInstancesByStatus: listServiceNSSIByStatus reponse is:{}", response.body());
@@ -662,7 +660,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
         AAIServiceRsp aAIServiceRsp = new AAIServiceRsp();
         try {
-            Response<JSONObject> response = this.aaiSliceService.listServiceNSSIByEnv(NsmfParamConstant.CUSTOM_5G,
+            Response<JSONObject> response = this.aaiSliceClient.listServiceNSSIByEnv(NsmfParamConstant.CUSTOM_5G,
                 NsmfParamConstant.SERVICE_TYPE_5G, environmentContext).execute();
             if (response.isSuccessful()) {
                 logger.info("queryNssiInstancesByEnvironment: listServiceNSSIByEnv reponse is:{}", response.body());
@@ -708,7 +706,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
         String resultMsg;
 
         try {
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .queryNSIByNSSI(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G, nssiId).execute();
             if (response.isSuccessful()) {
                 logger.info("queryNssiDetails: queryNSIByNSSI reponse is:{}", response.body());

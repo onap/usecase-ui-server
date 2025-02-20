@@ -54,7 +54,7 @@ import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceService;
+import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
@@ -69,7 +69,7 @@ public class SlicingServiceImpl implements SlicingService {
 
     private static final Gson gson = new Gson();
     private final ServiceLcmService serviceLcmService;
-    private final AAISliceService aaiSliceService;
+    private final AAISliceClient aaiSliceClient;
     private final SOSliceService soSliceService;
     private final SlicingProperties slicingProperties;
 
@@ -193,7 +193,7 @@ public class SlicingServiceImpl implements SlicingService {
 
         try {
             // TODO
-            Response<JSONObject> response = this.aaiSliceService
+            Response<JSONObject> response = this.aaiSliceClient
                 .listOrders(NsmfParamConstant.CUSTOM_5G, NsmfParamConstant.SERVICE_TYPE_5G).execute();
             if (response.isSuccessful()) {
                 log.info("querySlicingOrderList: listService reponse is:{}", response.body());
