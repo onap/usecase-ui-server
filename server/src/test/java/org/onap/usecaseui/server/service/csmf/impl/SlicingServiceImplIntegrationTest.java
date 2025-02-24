@@ -20,15 +20,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,16 +43,15 @@ import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.config.AAIClientConfig;
 import org.onap.usecaseui.server.config.SOClientConfig;
 import org.onap.usecaseui.server.constant.csmf.CsmfParamConstant;
-import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.onap.usecaseui.server.service.lcm.impl.DefaultServiceLcmService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -60,6 +61,7 @@ import org.wiremock.spring.EnableWireMock;
 
 import lombok.SneakyThrows;
 
+@EnableAutoConfiguration
 @EnableWireMock
 @EnableConfigurationProperties
 @SpringBootTest(
@@ -105,6 +107,9 @@ public class SlicingServiceImplIntegrationTest {
     @Value("${uui-server.client.aai.password}")
     String aaiPassword;
 
+    @Value("${uui-server.client.aai.apiVersion}")
+    String apiVersion;
+
     @BeforeEach
     void setup() {
       slicingService = new SlicingServiceImpl(serviceLcmService,aaiSliceClient,soSliceService, slicingProperties);
@@ -140,7 +145,7 @@ public class SlicingServiceImplIntegrationTest {
     @Test
     void thatSlicingOrdersCanBeListed() {
         stubFor(
-            get(String.format("/api/aai-business/v13/customers/customer/%s/service-subscriptions/service-subscription/%s/service-instances?service-role=communication-service", "5GCustomer", "5G"))
+            get("/aai/%s/business/customers/customer/%s/service-subscriptions/service-subscription/%s/service-instances?service-role=communication-service".formatted(apiVersion, "5GCustomer", "5G"))
             .withBasicAuth(aaiUsername, aaiPassword)
             .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
             .withHeader("X-TransactionId", equalTo("7777"))
@@ -151,6 +156,7 @@ public class SlicingServiceImplIntegrationTest {
 
         ServiceResult result = slicingService.querySlicingOrderList(CsmfParamConstant.ALL, "1","10");
 
+        verify(getRequestedFor(urlEqualTo("/aai/%s/business/customers/customer/%s/service-subscriptions/service-subscription/%s/service-instances?service-role=communication-service".formatted(apiVersion, "5GCustomer", "5G"))));
         assertNotNull(result);
         OrderList orderList = (OrderList) result.getResult_body();
         assertEquals(2, orderList.getRecord_number());

@@ -30,6 +30,7 @@ import org.onap.usecaseui.server.config.SDCClientProperties;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,7 @@ import org.wiremock.spring.EnableWireMock;
 import lombok.SneakyThrows;
 
 @EnableWireMock
+@EnableAutoConfiguration
 @EnableConfigurationProperties(SDCClientProperties.class)
 @SpringBootTest(
     classes = {
