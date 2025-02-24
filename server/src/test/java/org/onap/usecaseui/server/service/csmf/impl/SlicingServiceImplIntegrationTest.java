@@ -20,8 +20,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -105,6 +108,9 @@ public class SlicingServiceImplIntegrationTest {
     @Value("${uui-server.client.aai.password}")
     String aaiPassword;
 
+    @Value("${uui-server.client.aai.apiVersion}")
+    String apiVersion;
+
     @BeforeEach
     void setup() {
       slicingService = new SlicingServiceImpl(serviceLcmService,aaiSliceClient,soSliceService, slicingProperties);
@@ -140,7 +146,7 @@ public class SlicingServiceImplIntegrationTest {
     @Test
     void thatSlicingOrdersCanBeListed() {
         stubFor(
-            get(String.format("/api/aai-business/v13/customers/customer/%s/service-subscriptions/service-subscription/%s/service-instances?service-role=communication-service", "5GCustomer", "5G"))
+            get("/aai/%s/customers/customer/%s/service-subscriptions/service-subscription/%s/service-instances?service-role=communication-service".formatted(apiVersion, "5GCustomer", "5G"))
             .withBasicAuth(aaiUsername, aaiPassword)
             .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
             .withHeader("X-TransactionId", equalTo("7777"))
@@ -151,6 +157,7 @@ public class SlicingServiceImplIntegrationTest {
 
         ServiceResult result = slicingService.querySlicingOrderList(CsmfParamConstant.ALL, "1","10");
 
+        verify(getRequestedFor(urlEqualTo("/aai/%s/customers/customer/%s/service-subscriptions/service-subscription/%s/service-instances?service-role=communication-service".formatted(apiVersion, "5GCustomer", "5G"))));
         assertNotNull(result);
         OrderList orderList = (OrderList) result.getResult_body();
         assertEquals(2, orderList.getRecord_number());

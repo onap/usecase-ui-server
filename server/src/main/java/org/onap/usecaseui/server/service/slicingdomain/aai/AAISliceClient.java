@@ -32,77 +32,77 @@ import retrofit2.http.Query;
 
 public interface AAISliceClient {
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=service-profile")
-    Call<JSONObject> listService(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType);
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=service-profile")
+  Call<JSONObject> listService(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=service-profile")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=service-profile")
 	Call<JSONObject> listServiceByStatus(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Query("orchestration-status") String orchestrationStatus);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
 	Call<JSONObject> listServiceById(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String businessId);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nsi")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nsi")
 	Call<JSONObject> listServiceNSI(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nsi")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nsi")
 	Call<JSONObject> listServiceNSIByStatus(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Query("orchestration-status") String orchestrationStatus);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nssi")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nssi")
 	Call<JSONObject> listServiceNSSI(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nssi")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nssi")
 	Call<JSONObject> listServiceNSSIByStatus(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Query("orchestration-status") String orchestrationStatus);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nssi")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=nssi")
 	Call<JSONObject> listServiceNSSIByEnv(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Query("environment-context") String environmentContext);
 
-	@GET("/api/aai-business/v19/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/service-profiles")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/service-profiles")
 	Call<JSONObject> getServiceProfiles(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}/allotted-resources")
 	Call<JSONObject> queryAllottedResources(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
 	Call<JSONObject> querySerAndSubInsByNSI(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
 	Call<JSONObject> queryNSIByNSSI(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
 	Call<JSONObject> queryOrderByService(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{service-instance-id}")
 	Call<JSONObject> queryOrderByOrderId(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType,@Path("service-instance-id") String serviceInstanceId);
 
-	@GET("/api/aai-sdc/v13/models/model/{model-invariant-id}/model-vers/model-ver/{model-version-id}")
+	@GET("service-design-and-creation/models/model/{model-invariant-id}/model-vers/model-ver/{model-version-id}")
 	Call<AAIServiceNST> queryServiceNST(@Path("model-invariant-id") String modelInvariantIid,
-			@Path("model-version-id") String modelVersionId);
+																			@Path("model-version-id") String modelVersionId);
 
-	@GET("/api/aai-business/v13/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=communication-service")
+	@GET("business/customers/customer/{global-customer-id}/service-subscriptions/service-subscription/{service-type}/service-instances?service-role=communication-service")
 	Call<JSONObject> listOrders(@Path("global-customer-id") String globalCustomerId,@Path("service-type") String serviceType);
 
-	@GET("/api/aai-network/v21/logical-links")
+	@GET("network/logical-links")
 	Call<ConnectionLinkList> getConnectionLinks();
 
-	@GET("/api/aai-network/v21/network-routes/network-route/{route-id}")
+	@GET("network/network-routes/network-route/{route-id}")
 	Call<EndPointInfoList> getEndpointByLinkName(@Path("route-id") String linkName);
 
-	@GET("/api/aai-network/v21/network-routes/network-route/{route-id}")
+	@GET("network/network-routes/network-route/{route-id}")
 	Call<EndPointInfoList> getEndpointByLinkName2(@Path("route-id") String linkName2);
 
-	@GET("/api/aai-business/v21/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}/allotted-resources/allotted-resource/{allotted-resource-id}")
+	@GET("business/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}/allotted-resources/allotted-resource/{allotted-resource-id}")
 	Call<ConnectionLink> getAllottedResource(@Path("service-instance-id") String serviceInstancesId,@Path("allotted-resource-id") String allottedResourceId);
 
-	@GET("/api/aai-business/v21/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}")
+	@GET("business/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}")
 	Call<ConnectionLink> getServiceInstance(@Path("service-instance-id") String serviceInstancesId);
 
-	@GET("/api/aai-business/v21/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}")
+	@GET("business/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}")
 	Call<NetworkInfo> getServiceNetworkInstance(@Path("service-instance-id") String serviceInstancesId);
 
-	@GET("/api/aai-network/v21/network-policies/network-policy/{network-policy-id}")
+	@GET("network/network-policies/network-policy/{network-policy-id}")
 	Call<NetworkPolicy> getNetworkPolicy(@Path("network-policy-id")String relationshipValue);
 
-	@GET("/api/aai-business/v21/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}/slice-profiles")
+	@GET("business/customers/customer/5GCustomer/service-subscriptions/service-subscription/5G/service-instances/service-instance/{service-instance-id}/slice-profiles")
 	Call<SliceProfileList> getSliceProfiles(@Path("service-instance-id") String serviceInstancesId);
 
 }

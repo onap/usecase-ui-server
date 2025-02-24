@@ -27,29 +27,28 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.onap.usecaseui.server.config.AAIClientConfig;
-import org.onap.usecaseui.server.controller.lcm.CustomerController;
 import org.onap.usecaseui.server.service.lcm.CustomerService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpHeaders;
 import org.wiremock.spring.EnableWireMock;
 
 @EnableWireMock
 @SpringBootTest(
-    webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {
-        AAIClientConfig.class, DefaultCustomerService.class, CustomerController.class
+        AAIClientConfig.class, DefaultCustomerService.class
     },
     properties = {
-        "spring.main.web-application-type=none", // only temporary
         "uui-server.client.aai.baseUrl=${wiremock.server.baseUrl}",
         "uui-server.client.aai.username=AAI",
         "uui-server.client.aai.password=AAI"
     })
 public class DefaultCustomerServiceIntegrationTest {
+
+    @Value("${uui-server.client.aai.apiVersion}")
+    String apiVersion;
 
     @Autowired
     CustomerService customerService;
@@ -63,7 +62,7 @@ public class DefaultCustomerServiceIntegrationTest {
     @Test
     void thatAAIRequestsAreCorrect() {
         stubFor(
-            get("/api/aai-business/v13/customers")
+            get("/aai/%s/customers".formatted(apiVersion))
             .withBasicAuth(username, password)
             .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
             .withHeader("X-TransactionId", equalTo("7777"))

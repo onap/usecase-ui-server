@@ -27,39 +27,39 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface IntentAaiClient {
-    @GET("/aai/v24/business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}?depth=all")
+    @GET("business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}?depth=all")
     Call<JSONObject> getInstanceNetworkInfo(@Path("resource-service-id") String resourceServiceId);
 
-    @GET("/aai/v24/network/network-policies/network-policy/{networkPolicyId}?depth=all")
+    @GET("network/network-policies/network-policy/{networkPolicyId}?depth=all")
     Call<JSONObject> getInstanceNetworkPolicyInfo(@Path("networkPolicyId") String networkPolicyId);
 
-    @GET("/aai/v24/business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}/metadata")
+    @GET("business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}/metadata")
     Call<JSONObject> getInstanceBandwidth(@Path("resource-service-id") String resourceServiceId);
 
-    @GET("/aai/v24/business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}")
+    @GET("business/customers/customer/IBNCustomer/service-subscriptions/service-subscription/IBN/service-instances/service-instance/{resource-service-id}")
     Call<JSONObject> getInstanceInfo(@Path("resource-service-id") String resourceServiceId);
 
-    @PUT("/aai/v24/business/customers/customer/{globalCustomerId}")
+    @PUT("business/customers/customer/{globalCustomerId}")
     Call<Void> addCustomer(@Path("globalCustomerId") String globalCustomerId,@Body RequestBody body);
 
-    @GET("/aai/v24/business/customers/customer/{globalCustomerId}")
+    @GET("business/customers/customer/{globalCustomerId}")
     Call<JSONObject> queryCustomer(@Path("globalCustomerId") String globalCustomerId);
 
-    @PUT("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}")
+    @PUT("business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}")
     Call<Void> addSubscription(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType,@Body RequestBody body);
 
-    @GET("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}")
+    @GET("business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}")
     Call<JSONObject> querySubscription(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType);
 
-    @PUT("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
+    @PUT("business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
     Call<Void> saveServiceInstance(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType, @Path("serviceInstanceId") String serviceInstanceId, @Body RequestBody body);
 
-    @GET("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
+    @GET("business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
     Call<JSONObject> queryServiceInstance(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType, @Path("serviceInstanceId") String serviceInstanceId);
 
-    @DELETE("/aai/v24/business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
+    @DELETE("business/customers/customer/{globalCustomerId}/service-subscriptions/service-subscription/{serviceType}/service-instances/service-instance/{serviceInstanceId}")
     Call<Void> deleteServiceInstance(@Path("globalCustomerId") String globalCustomerId, @Path("serviceType") String serviceType, @Path("serviceInstanceId") String serviceInstanceId, @Query("resource-version") String resourceVersion);
 
-    @GET("/aai/v24/network/network-routes")
+    @GET("network/network-routes")
     Call<JSONObject> queryNetworkRoute();
 }

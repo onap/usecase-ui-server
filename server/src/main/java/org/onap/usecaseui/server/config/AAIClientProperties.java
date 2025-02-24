@@ -25,6 +25,7 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "uui-server.client.aai")
 public class AAIClientProperties {
   String baseUrl;
+  String apiVersion;
   String username;
   String password;
 }

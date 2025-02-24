@@ -19,9 +19,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -55,18 +59,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.wiremock.spring.EnableWireMock;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+
 import lombok.SneakyThrows;
 
 @EnableWireMock
-@SpringBootTest(
-  classes = {
-        AAIClientConfig.class,
-        SOClientConfig.class,
-        SlicingServiceImpl.class,
-        SlicingProperties.class,
-        IntentProperties.class
-  },
-  properties = {
+@SpringBootTest(classes = {
+    AAIClientConfig.class,
+    SOClientConfig.class,
+    SlicingServiceImpl.class,
+    SlicingProperties.class,
+    IntentProperties.class
+}, properties = {
     "uui-server.client.aai.baseUrl=${wiremock.server.baseUrl}",
     "uui-server.client.aai.username=AAI",
     "uui-server.client.aai.password=AAI",
@@ -78,8 +82,7 @@ import lombok.SneakyThrows;
     "uui-server.slicing.global-subscriber-id=someGlobalSubscriberId",
     "uui-server.slicing.service-type=someServiceType",
     "uui-server.ccvpn.globalCustomerId=defaultGlobalCustomerId"
-  }
-)
+})
 @EnableConfigurationProperties
 public class IntentInstanceServiceIntegrationTest {
 
@@ -94,6 +97,9 @@ public class IntentInstanceServiceIntegrationTest {
 
   @Value("${uui-server.client.aai.password}")
   String aaiPassword;
+
+  @Value("${uui-server.client.aai.apiVersion}")
+  String apiVersion;
 
   @Mock
   ResourceMgtServiceImpl resourceMgtServiceImpl;
@@ -122,7 +128,8 @@ public class IntentInstanceServiceIntegrationTest {
     Transaction transaction = mock(Transaction.class);
     when(sessionFactory.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
-    this.intentService = new IntentInstanceServiceImpl(slicingService, intentAaiClient, intentSoService, sessionFactory, resourceMgtServiceImpl, intentProperties);
+    this.intentService = new IntentInstanceServiceImpl(slicingService, intentAaiClient, intentSoService, sessionFactory,
+        resourceMgtServiceImpl, intentProperties);
   }
 
   IntentInstanceServiceImpl intentService;
@@ -133,51 +140,53 @@ public class IntentInstanceServiceIntegrationTest {
     byte[] requestBytes = Files.readAllBytes(Paths.get("src/test/resources/__files/requests/createIntentRequest.json"));
     String expectedRequestBody = new String(requestBytes, StandardCharsets.UTF_8);
     stubFor(
-      post("/so/infra/serviceIntent/v1/create")
-        .withBasicAuth(soUsername, soPassword)
-        .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
-        .withHeader("X-TransactionId", equalTo("9999"))
-        .withHeader("X-FromAppId", equalTo("onap-cli"))
-        .withRequestBody(equalToJson(expectedRequestBody))
-        .willReturn(
-            aResponse().withBodyFile("createIntentResponse.json")
-        ));
+        post("/so/infra/serviceIntent/v1/create")
+            .withBasicAuth(soUsername, soPassword)
+            .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
+            .withHeader("X-TransactionId", equalTo("9999"))
+            .withHeader("X-FromAppId", equalTo("onap-cli"))
+            .withRequestBody(equalToJson(expectedRequestBody))
+            .willReturn(
+                aResponse().withBodyFile("createIntentResponse.json")));
 
     stubFor(
-        get("/aai/v24/business/customers/customer/defaultGlobalCustomerId")
-        .withBasicAuth(aaiUsername, aaiPassword)
-        .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
-        .withHeader("X-TransactionId", equalTo("7777"))
-        .withHeader("X-FromAppId", equalTo("uui"))
-        .willReturn(
-            aResponse().withBodyFile("customersResponse.json")
-        ));
+        get("/aai/%s/business/customers/customer/defaultGlobalCustomerId".formatted(apiVersion))
+            .withBasicAuth(aaiUsername, aaiPassword)
+            .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
+            .withHeader("X-TransactionId", equalTo("7777"))
+            .withHeader("X-FromAppId", equalTo("uui"))
+            .willReturn(
+                aResponse().withBodyFile("customersResponse.json")));
 
     stubFor(
-        get("/aai/v24/business/customers/customer/defaultGlobalCustomerId/service-subscriptions/service-subscription/defaultServiceType")
-        .withBasicAuth(aaiUsername, aaiPassword)
-        .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
-        .withHeader("X-TransactionId", equalTo("7777"))
-        .withHeader("X-FromAppId", equalTo("uui"))
-        .willReturn(
-            aResponse().withBodyFile("customersResponse.json")
-        ));
+        get("/aai/%s/business/customers/customer/defaultGlobalCustomerId/service-subscriptions/service-subscription/defaultServiceType".formatted(apiVersion))
+            .withBasicAuth(aaiUsername, aaiPassword)
+            .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
+            .withHeader("X-TransactionId", equalTo("7777"))
+            .withHeader("X-FromAppId", equalTo("uui"))
+            .willReturn(
+                aResponse().withBodyFile("customersResponse.json")));
 
     stubFor(
-        put("/aai/v24/business/customers/customer/defaultGlobalCustomerId/service-subscriptions/service-subscription/defaultServiceType/service-instances/service-instance/IBN-someInstanceId")
-        .withBasicAuth(aaiUsername, aaiPassword)
-        .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
-        .withHeader("X-TransactionId", equalTo("7777"))
-        .withHeader("X-FromAppId", equalTo("uui"))
-        .willReturn(
-            aResponse().withBodyFile("customersResponse.json")
-        ));
+        put("/aai/%s/business/customers/customer/defaultGlobalCustomerId/service-subscriptions/service-subscription/defaultServiceType/service-instances/service-instance/IBN-someInstanceId".formatted(apiVersion))
+            .withBasicAuth(aaiUsername, aaiPassword)
+            .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
+            .withHeader("X-TransactionId", equalTo("7777"))
+            .withHeader("X-FromAppId", equalTo("uui"))
+            .willReturn(
+                aResponse().withBodyFile("customersResponse.json")));
 
     CCVPNInstance ccVpnInstance = new CCVPNInstance();
     ccVpnInstance.setInstanceId("someInstanceId");
     ccVpnInstance.setAccessPointOneName("accessPointOneName");
     int result = intentService.createCCVPNInstance(ccVpnInstance);
     assertEquals(1, result);
+    WireMock.verify(postRequestedFor(urlEqualTo("/so/infra/serviceIntent/v1/create")));
+    WireMock.verify(getRequestedFor(urlEqualTo("/aai/%s/business/customers/customer/defaultGlobalCustomerId".formatted(apiVersion))));
+    WireMock.verify(getRequestedFor(urlEqualTo(
+        "/aai/%s/business/customers/customer/defaultGlobalCustomerId/service-subscriptions/service-subscription/defaultServiceType".formatted(apiVersion))));
+    WireMock.verify(putRequestedFor(urlEqualTo(
+        "/aai/%s/business/customers/customer/defaultGlobalCustomerId/service-subscriptions/service-subscription/defaultServiceType/service-instances/service-instance/IBN-someInstanceId".formatted(apiVersion))));
   }
 
 }

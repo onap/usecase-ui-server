@@ -21,11 +21,14 @@ import java.io.IOException;
 import org.onap.usecaseui.server.service.intent.IntentAaiClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
+import io.micrometer.core.instrument.binder.okhttp3.OkHttpObservationInterceptor;
+import io.micrometer.observation.ObservationRegistry;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -38,49 +41,54 @@ public class AAIClientConfig {
 
     @Value("${uui-server.client.aai.baseUrl}")
     String baseUrl;
+    @Value("${uui-server.client.aai.apiVersion}")
+    String apiVersion;
     @Value("${uui-server.client.aai.username}")
     String username;
     @Value("${uui-server.client.aai.password}")
     String password;
 
     @Bean
-    OkHttpClient okHttpClient() {
-        return new OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request originalRequest = chain.request();
-                Request.Builder builder = originalRequest.newBuilder()
-                    .header("Authorization", Credentials.basic(username, password))
-                    .header(HttpHeaders.ACCEPT, "application/json")
-                    .header("X-TransactionId", "7777")
-                    .header("X-FromAppId", "uui");
-                Request newRequest = builder.build();
-                return chain.proceed(newRequest);
-            }
-        }).build();
+    OkHttpClient okHttpClient(ObservationRegistry observationRegistry) {
+        return new OkHttpClient().newBuilder()
+            .addInterceptor(
+                    OkHttpObservationInterceptor.builder(observationRegistry, "http.client.requests").build())
+            .addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request originalRequest = chain.request();
+                    Request.Builder builder = originalRequest.newBuilder()
+                        .header("Authorization", Credentials.basic(username, password))
+                        .header(HttpHeaders.ACCEPT, "application/json")
+                        .header("X-TransactionId", "7777")
+                        .header("X-FromAppId", "uui");
+                    Request newRequest = builder.build();
+                    return chain.proceed(newRequest);
+                }
+            }).build();
     }
 
-    @Bean
-    Retrofit retrofit(OkHttpClient okHttpClient) {
+    @Bean("retrofitAAI")
+    Retrofit retrofitAAI(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(baseUrl + "/aai/" + apiVersion + "/")
             .addConverterFactory(JacksonConverterFactory.create())
             .client(okHttpClient)
             .build();
     }
 
     @Bean
-    AAIClient aaiClient(Retrofit retrofit) {
+    AAIClient aaiClient(@Qualifier("retrofitAAI") Retrofit retrofit) {
         return retrofit.create(AAIClient.class);
     }
 
     @Bean
-    AAISliceClient aaiSliceClient(Retrofit retrofit) {
+    AAISliceClient aaiSliceClient(@Qualifier("retrofitAAI") Retrofit retrofit) {
         return retrofit.create(AAISliceClient.class);
     }
 
     @Bean
-    IntentAaiClient intentAaiClient(Retrofit retrofit) {
+    IntentAaiClient intentAaiClient(@Qualifier("retrofitAAI") Retrofit retrofit) {
         return retrofit.create(IntentAaiClient.class);
     }
 }
