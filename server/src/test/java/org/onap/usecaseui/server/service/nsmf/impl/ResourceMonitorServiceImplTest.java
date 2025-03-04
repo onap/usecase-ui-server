@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceList;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
@@ -35,12 +35,12 @@ import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
 public class ResourceMonitorServiceImplTest {
 
     ResourceMonitorServiceImpl resourceMonitorService = null;
-    KpiSliceService kpiSliceService = null;
+    KpiSliceClient kpiSliceClient = null;
 
     @Before
     public void before() throws Exception {
-        kpiSliceService = mock(KpiSliceService.class);
-        resourceMonitorService = new ResourceMonitorServiceImpl(kpiSliceService);
+        kpiSliceClient = mock(KpiSliceClient.class);
+        resourceMonitorService = new ResourceMonitorServiceImpl(kpiSliceClient);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ResourceMonitorServiceImplTest {
 
         KpiTotalTraffic kpiTotalTraffic = new KpiTotalTraffic();
         RequestBody body = null;
-        when(kpiSliceService.listTotalTraffic(body)).thenReturn(successfulCall(kpiTotalTraffic));
+        when(kpiSliceClient.listTotalTraffic(body)).thenReturn(successfulCall(kpiTotalTraffic));
         resourceMonitorService.querySlicingUsageTraffic(queryTimestamp, serviceList);
     }
 
@@ -75,7 +75,7 @@ public class ResourceMonitorServiceImplTest {
         String queryTimestamp = "1577071879000";
 
         RequestBody body = null;
-        when(kpiSliceService.listTotalTraffic(body)).thenReturn(failedCall("kpi is not exist!"));
+        when(kpiSliceClient.listTotalTraffic(body)).thenReturn(failedCall("kpi is not exist!"));
         resourceMonitorService.querySlicingUsageTraffic(queryTimestamp, serviceList);
     }
 
@@ -91,7 +91,7 @@ public class ResourceMonitorServiceImplTest {
 
         KpiUserNumber kpiUserNumber = new KpiUserNumber();
         RequestBody body = null;
-        when(kpiSliceService.listUserNumber(body)).thenReturn(successfulCall(kpiUserNumber));
+        when(kpiSliceClient.listUserNumber(body)).thenReturn(successfulCall(kpiUserNumber));
         resourceMonitorService.querySlicingOnlineUserNumber(queryTimestamp, serviceList);
     }
 
@@ -106,7 +106,7 @@ public class ResourceMonitorServiceImplTest {
         String queryTimestamp = "1577071879000";
 
         RequestBody body = null;
-        when(kpiSliceService.listUserNumber(body)).thenReturn(failedCall("kpi is not exist!"));
+        when(kpiSliceClient.listUserNumber(body)).thenReturn(failedCall("kpi is not exist!"));
         resourceMonitorService.querySlicingOnlineUserNumber(queryTimestamp, serviceList);
     }
 
@@ -122,7 +122,7 @@ public class ResourceMonitorServiceImplTest {
 
         KpiTotalBandwidth kpiTotalBandwidth = new KpiTotalBandwidth();
         RequestBody body = null;
-        when(kpiSliceService.listTotalBandwidth(body)).thenReturn(successfulCall(kpiTotalBandwidth));
+        when(kpiSliceClient.listTotalBandwidth(body)).thenReturn(successfulCall(kpiTotalBandwidth));
         resourceMonitorService.querySlicingTotalBandwidth(queryTimestamp, serviceList);
     }
 
@@ -137,7 +137,7 @@ public class ResourceMonitorServiceImplTest {
         String queryTimestamp = "1577071879000";
 
         RequestBody body = null;
-        when(kpiSliceService.listTotalBandwidth(body)).thenReturn(failedCall("kpi is not exist!"));
+        when(kpiSliceClient.listTotalBandwidth(body)).thenReturn(failedCall("kpi is not exist!"));
         resourceMonitorService.querySlicingTotalBandwidth(queryTimestamp, serviceList);
     }
 
@@ -152,7 +152,7 @@ public class ResourceMonitorServiceImplTest {
         String queryTimestamp = "1577071879000";
 
         RequestBody body = null;
-        when(kpiSliceService.listPDUSessionEstSR(body)).thenReturn(failedCall("kpi is not exist!"));
+        when(kpiSliceClient.listPDUSessionEstSR(body)).thenReturn(failedCall("kpi is not exist!"));
         resourceMonitorService.querySlicingPDUSessionEstSR(queryTimestamp, serviceList);
     }
 }

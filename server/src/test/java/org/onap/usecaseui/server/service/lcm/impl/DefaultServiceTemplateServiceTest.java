@@ -32,7 +32,7 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogClient;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
 import org.openecomp.sdc.toscaparser.api.NodeTemplate;
@@ -59,7 +59,7 @@ public class DefaultServiceTemplateServiceTest {
     @Test
     public void itCanListDistributedServiceTemplate() {
         List<SDCServiceTemplate> templates = Collections.singletonList(new SDCServiceTemplate("uuid", "uuid", "name", "V1","url", "category"));
-        SDCCatalogService sdcService = mock(SDCCatalogService.class);
+        SDCCatalogClient sdcService = mock(SDCCatalogClient.class);
         when(sdcService.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(successfulCall(templates));
 
         ServiceTemplateService service = new DefaultServiceTemplateService(sdcService,null);
@@ -69,7 +69,7 @@ public class DefaultServiceTemplateServiceTest {
 
     @Test(expected = SDCCatalogException.class)
     public void retrieveServiceWillThrowExceptionWhenSDCIsNotAvailable() {
-        SDCCatalogService sdcService = mock(SDCCatalogService.class);
+        SDCCatalogClient sdcService = mock(SDCCatalogClient.class);
         when(sdcService.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(failedCall("SDC is not available!"));
 
         ServiceTemplateService service = new DefaultServiceTemplateService(sdcService,null);
@@ -78,7 +78,7 @@ public class DefaultServiceTemplateServiceTest {
 
     @Test
     public void itWillRetrieveEmptyWhenNoServiceTemplateCanGet() {
-        SDCCatalogService sdcService = mock(SDCCatalogService.class);
+        SDCCatalogClient sdcService = mock(SDCCatalogClient.class);
         when(sdcService.listServices(CATEGORY_E2E_SERVICE, DISTRIBUTION_STATUS_DISTRIBUTED)).thenReturn(emptyBodyCall());
 
         ServiceTemplateService service = new DefaultServiceTemplateService(sdcService,null);
@@ -93,7 +93,7 @@ public class DefaultServiceTemplateServiceTest {
         String modelPath = "model_path";
         String nodeUUID = "2";
 
-        SDCCatalogService sdcService = newSdcCatalogService(nodeUUID);
+        SDCCatalogClient sdcService = newSdcCatalogService(nodeUUID);
 
         List<VimInfo> vim = Collections.singletonList(new VimInfo("owner", "regionId"));
         AAIClient aaiClient = newAAIService(vim);
@@ -102,7 +102,7 @@ public class DefaultServiceTemplateServiceTest {
 
         Assert.assertNotNull(service.fetchServiceTemplateInput(uuid, modelPath));    }
 
-    private DefaultServiceTemplateService newServiceTemplateService(String uuid, String nodeUUID, SDCCatalogService sdcService, AAIClient aaiClient) {
+    private DefaultServiceTemplateService newServiceTemplateService(String uuid, String nodeUUID, SDCCatalogClient sdcService, AAIClient aaiClient) {
         return new DefaultServiceTemplateService(sdcService, aaiClient) {
 
             @Override
@@ -120,8 +120,8 @@ public class DefaultServiceTemplateServiceTest {
         };
     }
 
-    private SDCCatalogService newSdcCatalogService(String nodeUUID) throws IOException {
-        SDCCatalogService sdcService = mock(SDCCatalogService.class);
+    private SDCCatalogClient newSdcCatalogService(String nodeUUID) throws IOException {
+        SDCCatalogClient sdcService = mock(SDCCatalogClient.class);
         when(sdcService.getService(nodeUUID)).thenReturn(successfulCall(new SDCServiceTemplate(nodeUUID, nodeUUID, "node", "V1", "nodeModelUrl", "service")));
         return sdcService;
     }
@@ -293,7 +293,7 @@ public class DefaultServiceTemplateServiceTest {
     }
     @Test
     public void testDownloadFile() throws IOException {
-        SDCCatalogService sdcService = mock(SDCCatalogService.class);
+        SDCCatalogClient sdcService = mock(SDCCatalogClient.class);
         ResponseBody result= new ResponseBody() {
             @Nullable
             @Override

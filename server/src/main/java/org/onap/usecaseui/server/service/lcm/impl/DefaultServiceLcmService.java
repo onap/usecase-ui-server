@@ -35,7 +35,7 @@ import org.hibernate.SessionFactory;
 import org.onap.usecaseui.server.bean.ServiceBean;
 import org.onap.usecaseui.server.bean.ServiceInstanceOperations;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.lcm.domain.so.SOClient;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.SaveOrUpdateOperationRsp;
@@ -54,7 +54,7 @@ import retrofit2.Response;
 public class DefaultServiceLcmService implements ServiceLcmService {
 
     private final EntityManagerFactory entityManagerFactory;
-    private final SOService soService;
+    private final SOClient soClient;
 
     public Session getSession() {
         return entityManagerFactory.unwrap(SessionFactory.class).getCurrentSession();}
@@ -64,7 +64,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         try {
             log.info("so instantiate is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ServiceOperation> response = soService.instantiateService(requestBody).execute();
+            Response<ServiceOperation> response = soClient.instantiateService(requestBody).execute();
             log.info("so instantiate has finished");
             if (response.isSuccessful()) {
                 return response.body();
@@ -82,7 +82,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
     public OperationProgressInformation queryOperationProgress(String serviceId, String operationId) {
         try {
             Response<OperationProgressInformation> response =
-                    soService.queryOperationProgress(serviceId, operationId).execute();
+                    soClient.queryOperationProgress(serviceId, operationId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
@@ -100,7 +100,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         try {
             log.info("so terminate is starting");
             RequestBody requestBody = extractBody(request);
-            Response<DeleteOperationRsp> response = soService.terminateService(serviceId, requestBody).execute();
+            Response<DeleteOperationRsp> response = soClient.terminateService(serviceId, requestBody).execute();
             log.info("so terminate has finished");
             if (response.isSuccessful()) {
                 return response.body();
@@ -119,7 +119,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         try {
             log.info("so scale is finished");
             RequestBody requestBody = extractBody(request);
-            Response<SaveOrUpdateOperationRsp> response = soService.scaleService(serviceId, requestBody).execute();
+            Response<SaveOrUpdateOperationRsp> response = soClient.scaleService(serviceId, requestBody).execute();
             log.info("so scale has finished");
             if (response.isSuccessful()) {
                 log.info("scaleService response content is :" + response.body().toString());
@@ -139,7 +139,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
         try {
             log.info("so update is starting");
             RequestBody requestBody = extractBody(request);
-            Response<SaveOrUpdateOperationRsp> response = soService.updateService(serviceId, requestBody).execute();
+            Response<SaveOrUpdateOperationRsp> response = soClient.updateService(serviceId, requestBody).execute();
             log.info("so update has finished");
             if (response.isSuccessful()) {
                 return response.body();

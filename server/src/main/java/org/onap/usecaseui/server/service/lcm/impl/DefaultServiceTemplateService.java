@@ -30,7 +30,7 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.bean.SDNCControllerRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfo;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.VimInfoRsp;
 import org.onap.usecaseui.server.service.lcm.domain.aai.exceptions.AAIException;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogClient;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.exceptions.SDCCatalogException;
 import org.onap.usecaseui.server.util.RestfulServices;
@@ -55,7 +55,7 @@ import static org.onap.usecaseui.server.service.lcm.domain.sdc.consts.SDCConsts.
 @Service("ServiceTemplateService")
 public class DefaultServiceTemplateService implements ServiceTemplateService {
 
-    private final SDCCatalogService sdcCatalog;
+    private final SDCCatalogClient sdcCatalog;
     private final AAIClient aaiClient;
 
     @Override

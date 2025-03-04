@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
-import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.lcm.domain.so.SOClient;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.Operation;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
@@ -51,24 +51,24 @@ public class DefaultServiceLcmServiceTest {
 
 	@Before
 	public void before() throws Exception {
-		SOService soService = mock(SOService.class);
-		service = new DefaultServiceLcmService(entityManagerFactory, soService);
+		SOClient soClient = mock(SOClient.class);
+		service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
 	}
 
     @Test
     public void itCanInstantiateService() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         Operation op = new Operation();
         op.setOperationId("1");
         op.setServiceId("1");
         ServiceOperation operation = new ServiceOperation();
         operation.setService(op);
-        when(soService.instantiateService(Mockito.any())).thenReturn(successfulCall(operation));
+        when(soClient.instantiateService(Mockito.any())).thenReturn(successfulCall(operation));
 
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         Assert.assertSame(operation, service.instantiateService(request));
     }
@@ -103,175 +103,175 @@ public class DefaultServiceLcmServiceTest {
 
     @Test(expected = SOException.class)
     public void instantiateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
-        SOService soService = mock(SOService.class);
-        when(soService.instantiateService(Mockito.any())).thenReturn(failedCall("SO is not available!"));
+        SOClient soClient = mock(SOClient.class);
+        when(soClient.instantiateService(Mockito.any())).thenReturn(failedCall("SO is not available!"));
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.instantiateService(request);
     }
 
     @Test(expected = SOException.class)
     public void instantiateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
-        SOService soService = mock(SOService.class);
-        when(soService.instantiateService(Mockito.any())).thenReturn(emptyBodyCall());
+        SOClient soClient = mock(SOClient.class);
+        when(soClient.instantiateService(Mockito.any())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.instantiateService(request);
     }
 
     @Test
     public void itCanTerminateService() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
         DeleteOperationRsp rsp = new DeleteOperationRsp();
         rsp.setOperationId("1");
-        when(soService.terminateService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
+        when(soClient.terminateService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         Assert.assertSame(rsp, service.terminateService(serviceId, request));
     }
 
     @Test(expected = SOException.class)
     public void terminateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
-        when(soService.terminateService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
+        when(soClient.terminateService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.terminateService(serviceId, request);
     }
 
     @Test(expected = SOException.class)
     public void terminateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
-        when(soService.terminateService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
+        when(soClient.terminateService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.terminateService(serviceId, request);
     }
 
     @Test
     public void itCanQueryOperationProgress() {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
         String operationId = "1";
         OperationProgressInformation progress = new OperationProgressInformation();
-        when(soService.queryOperationProgress(serviceId, operationId)).thenReturn(successfulCall(progress));
+        when(soClient.queryOperationProgress(serviceId, operationId)).thenReturn(successfulCall(progress));
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         Assert.assertSame(progress, service.queryOperationProgress(serviceId, operationId));
     }
 
     @Test(expected = SOException.class)
     public void queryOperationProgressWillThrowExceptionWhenSOIsNotAvailable() {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
         String operationId = "1";
-        when(soService.queryOperationProgress(serviceId, operationId)).thenReturn(failedCall("SO is not available!"));
+        when(soClient.queryOperationProgress(serviceId, operationId)).thenReturn(failedCall("SO is not available!"));
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.queryOperationProgress(serviceId, operationId);
     }
 
     @Test(expected = SOException.class)
     public void queryOperationProgressWillThrowExceptionWhenSOResponseError() {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
         String operationId = "1";
-        when(soService.queryOperationProgress(serviceId, operationId)).thenReturn(emptyBodyCall());
+        when(soClient.queryOperationProgress(serviceId, operationId)).thenReturn(emptyBodyCall());
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.queryOperationProgress(serviceId, operationId);
     }
 
     @Test(expected = SOException.class)
     public void scaleServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
-        when(soService.scaleService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
+        when(soClient.scaleService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.scaleService(serviceId, request);
     }
 
     @Test(expected = SOException.class)
     public void scaleServiceWillThrowExceptionWhenSOResponseError() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
-        when(soService.scaleService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
+        when(soClient.scaleService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.scaleService(serviceId, request);
     }
 
     @Test
     public void itCanScaleService() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
         SaveOrUpdateOperationRsp rsp = new SaveOrUpdateOperationRsp();
         rsp.setOperationId("1");
-        when(soService.scaleService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
+        when(soClient.scaleService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         Assert.assertSame(rsp, service.scaleService(serviceId, request));
     }
 
     @Test(expected = SOException.class)
     public void updateServiceWillThrowExceptionWhenSOIsNotAvailable() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         String serviceId = "1";
-        when(soService.updateService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
+        when(soClient.updateService(eq(serviceId), Mockito.any())).thenReturn(failedCall("SO is not available!"));
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.updateService(serviceId, request);
     }
 
     @Test(expected = SOException.class)
     public void updateServiceWillThrowExceptionWhenSOResponseError() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
 
         String serviceId = "1";
-        when(soService.updateService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
+        when(soClient.updateService(eq(serviceId), Mockito.any())).thenReturn(emptyBodyCall());
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         service.updateService(serviceId, request);
     }
 
     @Test
     public void itCanUpdateService() throws IOException {
-        SOService soService = mock(SOService.class);
+        SOClient soClient = mock(SOClient.class);
         EntityManagerFactory entityManagerFactory = mock(EntityManagerFactory.class);
         String serviceId = "1";
         SaveOrUpdateOperationRsp rsp = new SaveOrUpdateOperationRsp();
         rsp.setOperationId("1");
-        when(soService.updateService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
+        when(soClient.updateService(eq(serviceId), Mockito.any())).thenReturn(successfulCall(rsp));
         HttpServletRequest request = mockRequest();
 
-        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soService);
+        ServiceLcmService service = new DefaultServiceLcmService(entityManagerFactory, soClient);
 
         Assert.assertSame(rsp, service.updateService(serviceId, request));
     }

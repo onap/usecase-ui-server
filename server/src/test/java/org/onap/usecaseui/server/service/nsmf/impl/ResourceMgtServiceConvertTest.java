@@ -51,13 +51,13 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceProfil
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceRsp;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.RelationshipData;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
 import org.powermock.api.support.membermodification.MemberModifier;
 
 public class ResourceMgtServiceConvertTest {
 
     ResourceMgtServiceConvert resourceMgtServiceConvert = null;
-    SOSliceService soSliceService = null;
+    SOSliceClient soSliceClient = null;
     AAISliceClient aaiSliceClient = null;
 
     GeneralConvertImpl generalConvert;

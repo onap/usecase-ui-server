@@ -38,7 +38,7 @@ import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.intent.IntentAaiClient;
 import org.onap.usecaseui.server.service.intent.IntentInstanceService;
-import org.onap.usecaseui.server.service.intent.IntentSoService;
+import org.onap.usecaseui.server.service.intent.IntentSoClient;
 import org.onap.usecaseui.server.service.intent.config.IntentProperties;
 import org.onap.usecaseui.server.service.nsmf.ResourceMgtService;
 import org.onap.usecaseui.server.util.ExportUtil;
@@ -68,15 +68,15 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
 
     private final SlicingService slicingService;
     private final IntentAaiClient intentAaiClient;
-    private final IntentSoService intentSoService;
+    private final IntentSoClient intentSoClient;
     private final SessionFactory sessionFactory;
     private final ResourceMgtService resourceMgtService;
     private final IntentProperties intentProperties;
 
-    public IntentInstanceServiceImpl(SlicingService slicingService, IntentAaiClient intentAaiClient, IntentSoService intentSoService, SessionFactory sessionFactory, ResourceMgtService resourceMgtService, IntentProperties intentProperties) {
+    public IntentInstanceServiceImpl(SlicingService slicingService, IntentAaiClient intentAaiClient, IntentSoClient intentSoClient, SessionFactory sessionFactory, ResourceMgtService resourceMgtService, IntentProperties intentProperties) {
         this.slicingService = slicingService;
         this.intentAaiClient = intentAaiClient;
-        this.intentSoService = intentSoService;
+        this.intentSoClient = intentSoClient;
         this.sessionFactory = sessionFactory;
         this.resourceMgtService = resourceMgtService;
         this.intentProperties = defaultPropertiesFromFile(intentProperties);
@@ -241,7 +241,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         params.put("additionalProperties",additionalProperties);
 
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
-        Response<JSONObject> response = intentSoService.createIntentInstance(requestBody).execute();
+        Response<JSONObject> response = intentSoClient.createIntentInstance(requestBody).execute();
         if (response.isSuccessful()) {
             return response.body().getString("jobId");
         }
@@ -315,7 +315,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
     private int getProgressByJobId(CCVPNInstance instance) throws IOException {
-        Response<JSONObject> response = intentSoService.queryOperationProgress(instance.getResourceInstanceId(), instance.getJobId()).execute();
+        Response<JSONObject> response = intentSoClient.queryOperationProgress(instance.getResourceInstanceId(), instance.getJobId()).execute();
         logger.debug(response.toString());
         if (response.isSuccessful()) {
             if (response.body().containsKey("operation")) {
@@ -495,7 +495,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
         additionalProperties.put("enableSdnc", "true");
         params.put("additionalProperties", additionalProperties);
         okhttp3.RequestBody requestBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), JSON.toJSONString(params));
-        intentSoService.deleteIntentInstance(requestBody).execute();
+        intentSoClient.deleteIntentInstance(requestBody).execute();
     }
     private String deleteInstance(CCVPNInstance instance) {
         Transaction tx = null;

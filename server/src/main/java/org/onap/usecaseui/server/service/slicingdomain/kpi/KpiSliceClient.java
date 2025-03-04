@@ -25,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface KpiSliceService {
+public interface KpiSliceClient {
 
     @POST("/api/datalake/v1/exposure/userNumber")
     Call<KpiUserNumber> listUserNumber(@Body RequestBody body);

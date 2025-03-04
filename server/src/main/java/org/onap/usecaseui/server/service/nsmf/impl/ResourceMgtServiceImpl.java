@@ -56,7 +56,7 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Relat
 import org.onap.usecaseui.server.bean.nsmf.resource.ConnectionLinkInfo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.SliceProfileInfo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.SliceProfileList;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import org.onap.usecaseui.server.util.DateUtils;
@@ -81,7 +81,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
     private static final Gson gson = new Gson();
 
     private final AAISliceClient aaiSliceClient;
-    private final SOSliceService soSliceService;
+    private final SOSliceClient soSliceClient;
 
     @Resource(name = "ServiceLcmService")
     private ServiceLcmService serviceLcmService;
@@ -166,7 +166,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
             String operationId = serviceInstanceOperations.getOperationId();
             Response<SOOperation> response = null;
             try {
-                response = this.soSliceService.queryOperationProgress(businessId, operationId)
+                response = this.soSliceClient.queryOperationProgress(businessId, operationId)
                     .execute();
                 if (response.isSuccessful()) {
                     SOOperation soOperation = response.body();
@@ -748,7 +748,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 NsmfParamConstant.SERVICE_TYPE_5G);
             String jsonstr = JSON.toJSONString(subscriberInfo);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
-            Response<ActivateService> activeResponse = this.soSliceService.activeService(serviceId, requestBody)
+            Response<ActivateService> activeResponse = this.soSliceClient.activeService(serviceId, requestBody)
                 .execute();
 
             if (activeResponse.isSuccessful()) {
@@ -796,7 +796,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 NsmfParamConstant.SERVICE_TYPE_5G);
             String jsonstr = JSON.toJSONString(subscriberInfo);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
-            Response<ActivateService> activeResponse = this.soSliceService.deactiveService(serviceId, requestBody)
+            Response<ActivateService> activeResponse = this.soSliceClient.deactiveService(serviceId, requestBody)
                 .execute();
 
             if (activeResponse.isSuccessful()) {
@@ -844,7 +844,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 NsmfParamConstant.SERVICE_TYPE_5G);
             String jsonstr = JSON.toJSONString(subscriberInfo);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
-            Response<ActivateService> activeResponse = this.soSliceService.terminateService(serviceId, requestBody)
+            Response<ActivateService> activeResponse = this.soSliceClient.terminateService(serviceId, requestBody)
                 .execute();
 
             if (activeResponse.isSuccessful()) {
@@ -893,7 +893,7 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
             if (serviceInstanceOperations != null) {
                 String operationId = serviceInstanceOperations.getOperationId();
                 logger.info("queryOperationProgress: operationId is:{}", operationId);
-                Response<SOOperation> response = this.soSliceService.queryOperationProgress(serviceId, operationId)
+                Response<SOOperation> response = this.soSliceClient.queryOperationProgress(serviceId, operationId)
                     .execute();
                 if (response.isSuccessful()) {
                     SOOperation soOperation = response.body();

@@ -48,7 +48,7 @@ import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.impl.DefaultServiceLcmService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import org.powermock.api.support.membermodification.MemberModifier;
 import retrofit2.Call;
@@ -56,7 +56,7 @@ import retrofit2.Call;
 public class SlicingServiceImplTest {
 
     SlicingServiceImpl slicingService = null;
-    SOSliceService soSliceService;
+    SOSliceClient soSliceClient;
     AAISliceClient aaiSliceClient;
     ServiceLcmService serviceLcmService;
     SlicingProperties slicingProperties;
@@ -64,10 +64,10 @@ public class SlicingServiceImplTest {
     @Before
     public void before() throws Exception {
         aaiSliceClient = mock(AAISliceClient.class);
-        soSliceService = mock(SOSliceService.class);
+        soSliceClient = mock(SOSliceClient.class);
         serviceLcmService = mock(DefaultServiceLcmService.class);
         slicingProperties = mock(SlicingProperties.class);
-        slicingService = new SlicingServiceImpl(serviceLcmService, aaiSliceClient, soSliceService, slicingProperties);
+        slicingService = new SlicingServiceImpl(serviceLcmService, aaiSliceClient, soSliceClient, slicingProperties);
         MemberModifier.field(SlicingServiceImpl.class, "serviceLcmService").set(slicingService , serviceLcmService);
     }
 
@@ -90,7 +90,7 @@ public class SlicingServiceImplTest {
 
         CreateResponse createResponse = new CreateResponse();
         RequestBody requestBody = null;
-        when(soSliceService
+        when(soSliceClient
             .submitOrders(requestBody))
             .thenReturn(successfulCall(createResponse));
         slicingService.createSlicingService(slicingOrder);
@@ -101,7 +101,7 @@ public class SlicingServiceImplTest {
 
         SlicingOrder slicingOrder = new SlicingOrder();
         RequestBody requestBody = null;
-        when(soSliceService
+        when(soSliceClient
             .submitOrders(requestBody))
             .thenReturn(failedCall("so is not exist!"));
         slicingService.createSlicingService(slicingOrder);
@@ -172,7 +172,7 @@ public class SlicingServiceImplTest {
         String businessId = "test123";
         String operationId = "opera123";
         when(serviceLcmService.getServiceInstanceOperationById(businessId)).thenReturn(new ServiceInstanceOperations());
-        when(soSliceService.queryOperationProgress(businessId, operationId))
+        when(soSliceClient.queryOperationProgress(businessId, operationId))
             .thenReturn(successfulCall(soOperation));
         slicingService.addProgressToOrder(orderList);
     }
@@ -195,7 +195,7 @@ public class SlicingServiceImplTest {
 
         String businessId = "test123";
         String operationId = "opera123";
-        when(soSliceService.queryOperationProgress(businessId, operationId))
+        when(soSliceClient.queryOperationProgress(businessId, operationId))
             .thenReturn(failedCall("so is not exist!"));
         slicingService.addProgressToOrder(orderList);
     }

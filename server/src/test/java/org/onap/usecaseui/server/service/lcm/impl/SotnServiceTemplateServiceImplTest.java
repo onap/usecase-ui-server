@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.E2EServiceInstanceRequest;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.ModelConfig;
 import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
-import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.lcm.domain.so.SOClient;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import retrofit2.Call;
@@ -55,16 +55,16 @@ import static org.onap.usecaseui.server.util.CallStub.failedCall;
 public class SotnServiceTemplateServiceImplTest {
 
     AAIClient aaiClient;
-    SOService soService;
+    SOClient soClient;
     ServiceOperation serviceOperation;
     SotnServiceTemplateServiceImpl sotnServiceTemplateService;
 
     @Before
     public void before() throws Exception {
         aaiClient = mock(AAIClient.class);
-        soService = mock(SOService.class);
+        soClient = mock(SOClient.class);
         sotnServiceTemplateService = new SotnServiceTemplateServiceImpl();
-        sotnServiceTemplateService.setSoService(soService);
+        sotnServiceTemplateService.setSoClient(soClient);
         sotnServiceTemplateService.setAaiClient(aaiClient);
     }
 
@@ -77,7 +77,7 @@ public class SotnServiceTemplateServiceImplTest {
         map.put("l2vpn","34");
         map.put("sotnUni","45");
         Call<ServiceOperation> call = getSosCall();
-        when(soService.instantiateSOTNService(any(E2EServiceInstanceRequest.class))).thenReturn(call);
+        when(soClient.instantiateSOTNService(any(E2EServiceInstanceRequest.class))).thenReturn(call);
         sotnServiceTemplateService.instantiate_CCVPN_Service(map);
     }
 
@@ -89,21 +89,21 @@ public class SotnServiceTemplateServiceImplTest {
         map.put("l2vpn","34");
         map.put("sotnUni","45");
         Call<ServiceOperation> call = getSosCall();
-        when(soService.instantiateSOTNService(any(E2EServiceInstanceRequest.class))).thenReturn(call);
+        when(soClient.instantiateSOTNService(any(E2EServiceInstanceRequest.class))).thenReturn(call);
         sotnServiceTemplateService.instantiate_CCVPN_Service(map);
     }
 
     @Test
     public void createSotnServiceTest() {
         Call<ServiceOperation> call = getSosCall();
-        when(soService.instantiateSOTNService(any(E2EServiceInstanceRequest.class))).thenReturn(call);
+        when(soClient.instantiateSOTNService(any(E2EServiceInstanceRequest.class))).thenReturn(call);
         sotnServiceTemplateService.createSotnService(new E2EServiceInstanceRequest());
     }
 
     @Test
     public void createSotnServiceWithThrowException() {
         Call<ServiceOperation> call = getSosCall();
-        when(soService.instantiateSOTNService(any(E2EServiceInstanceRequest.class))).thenReturn(call);
+        when(soClient.instantiateSOTNService(any(E2EServiceInstanceRequest.class))).thenReturn(call);
         sotnServiceTemplateService.createSotnService(new E2EServiceInstanceRequest());
     }
 
@@ -330,7 +330,7 @@ public class SotnServiceTemplateServiceImplTest {
         Response result = null;
         RequestBody requestBody = null;
         when(aaiClient.getServiceInstancesForEdge(anyString(),anyString(),anyString())).thenReturn(aaiCall);
-        when(soService.terminateService(anyString(),any(RequestBody.class))).thenReturn(sosCall);
+        when(soClient.terminateService(anyString(),any(RequestBody.class))).thenReturn(sosCall);
         sotnServiceTemplateService.deleteService("NNI-001", "vpn-bind-1");
     }
     @Test
@@ -340,7 +340,7 @@ public class SotnServiceTemplateServiceImplTest {
         Response result = null;
         RequestBody requestBody = null;
         when(aaiClient.getServiceInstancesForEdge("ISAAC", "example-service-type-val-52265", "NNI-001")).thenReturn(aaiCall);
-        when(soService.terminateService("serviceId",requestBody)).thenReturn(failedCall("failed to delete the server."));
+        when(soClient.terminateService("serviceId",requestBody)).thenReturn(failedCall("failed to delete the server."));
         sotnServiceTemplateService.deleteService("NNI-001", "vpn-bind-1");
     }
     @Test

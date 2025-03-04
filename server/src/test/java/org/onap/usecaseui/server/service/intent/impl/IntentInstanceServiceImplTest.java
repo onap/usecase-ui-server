@@ -47,7 +47,7 @@ import org.onap.usecaseui.server.bean.nsmf.common.ServiceResult;
 import org.onap.usecaseui.server.constant.IntentConstant;
 import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.intent.IntentAaiClient;
-import org.onap.usecaseui.server.service.intent.IntentSoService;
+import org.onap.usecaseui.server.service.intent.IntentSoClient;
 import org.onap.usecaseui.server.service.intent.config.IntentProperties;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgress;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.OperationProgressInformation;
@@ -80,7 +80,7 @@ public class IntentInstanceServiceImplTest {
     private IntentAaiClient intentAaiClient;
 
     @Mock
-    private IntentSoService intentSoService;
+    private IntentSoClient intentSoClient;
 
     @Mock
     private IntentProperties intentProperties;
@@ -105,7 +105,7 @@ public class IntentInstanceServiceImplTest {
         MemberModifier.field(IntentInstanceServiceImpl.class, "resourceMgtService").set(intentInstanceService , resourceMgtService);
         MemberModifier.field(IntentInstanceServiceImpl.class, "slicingService").set(intentInstanceService , slicingService);
         MemberModifier.field(IntentInstanceServiceImpl.class, "intentAaiClient").set(intentInstanceService , intentAaiClient);
-        MemberModifier.field(IntentInstanceServiceImpl.class, "intentSoService").set(intentInstanceService , intentSoService);
+        MemberModifier.field(IntentInstanceServiceImpl.class, "intentSoClient").set(intentInstanceService , intentSoClient);
         when(sessionFactory.openSession()).thenReturn(session);
 
         when(intentProperties.getGlobalCustomerId()).thenReturn("someCustomer");
@@ -165,7 +165,7 @@ public class IntentInstanceServiceImplTest {
         Call mockCall = PowerMockito.mock(Call.class);
         JSONObject body = JSONObject.parseObject("{\"jobId\":\"123\"}");
         Response<JSONObject> response = Response.success(body);
-        Mockito.when(intentSoService.createIntentInstance(any())).thenReturn(mockCall);
+        Mockito.when(intentSoClient.createIntentInstance(any())).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
 
         IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
@@ -190,7 +190,7 @@ public class IntentInstanceServiceImplTest {
         Call mockCall = PowerMockito.mock(Call.class);
         JSONObject body = JSONObject.parseObject("{\"jobId\":\"123\"}");
         Response<JSONObject> response = Response.success(body);
-        Mockito.when(intentSoService.createIntentInstance(any())).thenReturn(mockCall);
+        Mockito.when(intentSoClient.createIntentInstance(any())).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
 
         IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
@@ -237,7 +237,7 @@ public class IntentInstanceServiceImplTest {
         jsonObject.put("operation", operation);
         Call mockCall = PowerMockito.mock(Call.class);
         Response<JSONObject> response = Response.success(jsonObject);
-        Mockito.when(intentSoService.queryOperationProgress(anyString(),anyString())).thenReturn(mockCall);
+        Mockito.when(intentSoClient.queryOperationProgress(anyString(),anyString())).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
 
         IntentInstanceServiceImpl spy = PowerMockito.spy(intentInstanceService);
@@ -454,7 +454,7 @@ public class IntentInstanceServiceImplTest {
         when(query.uniqueResult()).thenReturn(instance);
 
         Call mockCall = PowerMockito.mock(Call.class);
-        when(intentSoService.deleteIntentInstance(any())).thenReturn(mockCall);
+        when(intentSoClient.deleteIntentInstance(any())).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(null);
 
         Transaction tx = PowerMockito.mock(Transaction.class);
@@ -481,7 +481,7 @@ public class IntentInstanceServiceImplTest {
         when(query.uniqueResult()).thenReturn(instance);
 
         Call mockCall = PowerMockito.mock(Call.class);
-        when(intentSoService.deleteIntentInstance(any())).thenReturn(mockCall);
+        when(intentSoClient.deleteIntentInstance(any())).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(null);
 
         Transaction tx = PowerMockito.mock(Transaction.class);
@@ -536,7 +536,7 @@ public class IntentInstanceServiceImplTest {
         Call mockCall = PowerMockito.mock(Call.class);
         JSONObject body = JSONObject.parseObject("{\"jobId\":\"123\"}");
         Response<JSONObject> response = Response.success(body);
-        Mockito.when(intentSoService.createIntentInstance(any())).thenReturn(mockCall);
+        Mockito.when(intentSoClient.createIntentInstance(any())).thenReturn(mockCall);
         Mockito.when(mockCall.execute()).thenReturn(response);
 
         Transaction tx = Mockito.mock(Transaction.class);

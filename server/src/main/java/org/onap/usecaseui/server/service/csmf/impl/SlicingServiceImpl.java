@@ -56,7 +56,7 @@ import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.AAIServiceInstance;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import org.onap.usecaseui.server.util.nsmf.NsmfCommonUtil;
 import org.springframework.stereotype.Service;
@@ -70,7 +70,7 @@ public class SlicingServiceImpl implements SlicingService {
     private static final Gson gson = new Gson();
     private final ServiceLcmService serviceLcmService;
     private final AAISliceClient aaiSliceClient;
-    private final SOSliceService soSliceService;
+    private final SOSliceClient soSliceClient;
     private final SlicingProperties slicingProperties;
 
     @Override
@@ -92,7 +92,7 @@ public class SlicingServiceImpl implements SlicingService {
             String jsonstr = gson.toJson(creationRequest);
             log.info("createSlicingService:creationRequest request is:{}", jsonstr);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
-            Response<CreateResponse> updateResponse = soSliceService
+            Response<CreateResponse> updateResponse = soSliceClient
                 .submitOrders(requestBody).execute();
 
             if (updateResponse.isSuccessful()) {
@@ -289,7 +289,7 @@ public class SlicingServiceImpl implements SlicingService {
             String operationId = serviceInstanceOperations.getOperationId();
             Response<SOOperation> response = null;
             try {
-                response = this.soSliceService.queryOperationProgress(businessId, operationId)
+                response = this.soSliceClient.queryOperationProgress(businessId, operationId)
                     .execute();
                 if (response.isSuccessful()) {
                     SOOperation soOperation = response.body();

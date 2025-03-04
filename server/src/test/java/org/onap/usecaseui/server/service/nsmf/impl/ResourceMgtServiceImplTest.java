@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.NetworkInfo;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.ActivateService;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOOperation;
 import retrofit2.Call;
@@ -37,14 +37,14 @@ import retrofit2.Call;
 public class ResourceMgtServiceImplTest {
 
     ResourceMgtServiceImpl resourceMgtService = null;
-    SOSliceService soSliceService;
+    SOSliceClient soSliceClient;
     AAISliceClient aaiSliceClient;
 
     @Before
     public void before() throws Exception {
         aaiSliceClient = mock(AAISliceClient.class);
-        soSliceService = mock(SOSliceService.class);
-        resourceMgtService = new ResourceMgtServiceImpl(aaiSliceClient, soSliceService);
+        soSliceClient = mock(SOSliceClient.class);
+        resourceMgtService = new ResourceMgtServiceImpl(aaiSliceClient, soSliceClient);
     }
 
     @Test
@@ -368,7 +368,7 @@ public class ResourceMgtServiceImplTest {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
 
         ActivateService activateService = new ActivateService();
-        when(soSliceService.activeService(serviceId, requestBody))
+        when(soSliceClient.activeService(serviceId, requestBody))
             .thenReturn(successfulCall(activateService));
         resourceMgtService.activateSlicingService(serviceId);
     }
@@ -379,7 +379,7 @@ public class ResourceMgtServiceImplTest {
         String serviceId = "23er-56ty-4567-rgdf5";
         String jsonstr = "testJson";
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
-        when(soSliceService.activeService(serviceId, requestBody))
+        when(soSliceClient.activeService(serviceId, requestBody))
             .thenReturn(failedCall("so is not exist!"));
         resourceMgtService.activateSlicingService(serviceId);
     }
@@ -391,7 +391,7 @@ public class ResourceMgtServiceImplTest {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
         Call<ActivateService> call = emptyBodyCall();
 
-        when(soSliceService.activeService(serviceId, requestBody)).thenReturn(call);
+        when(soSliceClient.activeService(serviceId, requestBody)).thenReturn(call);
         resourceMgtService.activateSlicingService(serviceId);
     }
 
@@ -401,7 +401,7 @@ public class ResourceMgtServiceImplTest {
 
         ActivateService activateService = new ActivateService();
         RequestBody requestBody = null;
-        when(soSliceService.deactiveService(serviceId, requestBody))
+        when(soSliceClient.deactiveService(serviceId, requestBody))
             .thenReturn(successfulCall(activateService));
         resourceMgtService.deactivateSlicingService(serviceId);
     }
@@ -411,7 +411,7 @@ public class ResourceMgtServiceImplTest {
 
         String serviceId = "23er-56ty-4567-rgdf5";
         RequestBody requestBody = null;
-        when(soSliceService.deactiveService(serviceId, requestBody))
+        when(soSliceClient.deactiveService(serviceId, requestBody))
             .thenReturn(failedCall("so is not exist!"));
         resourceMgtService.deactivateSlicingService(serviceId);
     }
@@ -423,7 +423,7 @@ public class ResourceMgtServiceImplTest {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
         Call<ActivateService> call = emptyBodyCall();
 
-        when(soSliceService.deactiveService(serviceId, requestBody)).thenReturn(call);
+        when(soSliceClient.deactiveService(serviceId, requestBody)).thenReturn(call);
         resourceMgtService.deactivateSlicingService(serviceId);
     }
 
@@ -433,7 +433,7 @@ public class ResourceMgtServiceImplTest {
 
         ActivateService activateService = new ActivateService();
         RequestBody requestBody = null;
-        when(soSliceService.terminateService(serviceId, requestBody))
+        when(soSliceClient.terminateService(serviceId, requestBody))
             .thenReturn(successfulCall(activateService));
         resourceMgtService.terminateSlicingService(serviceId);
     }
@@ -443,7 +443,7 @@ public class ResourceMgtServiceImplTest {
 
         String serviceId = "23er-56ty-4567-rgdf5";
         RequestBody requestBody = null;
-        when(soSliceService.terminateService(serviceId, requestBody))
+        when(soSliceClient.terminateService(serviceId, requestBody))
             .thenReturn(failedCall("so is not exist!"));
         resourceMgtService.terminateSlicingService(serviceId);
     }
@@ -455,7 +455,7 @@ public class ResourceMgtServiceImplTest {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
         Call<ActivateService> call = emptyBodyCall();
 
-        when(soSliceService.terminateService(serviceId, requestBody)).thenReturn(call);
+        when(soSliceClient.terminateService(serviceId, requestBody)).thenReturn(call);
         resourceMgtService.terminateSlicingService(serviceId);
     }
 
@@ -465,7 +465,7 @@ public class ResourceMgtServiceImplTest {
         String operationId = "2345-5675-3456-er45";
         SOOperation soOperation = new SOOperation();
 
-        when(soSliceService.queryOperationProgress(serviceId, operationId))
+        when(soSliceClient.queryOperationProgress(serviceId, operationId))
             .thenReturn(successfulCall(soOperation));
         resourceMgtService.queryOperationProgress(serviceId);
     }
@@ -476,7 +476,7 @@ public class ResourceMgtServiceImplTest {
         String serviceId = "23er-56ty-4567-rgdf5";
         String operationId = "2345-5675-3456-er45";
 
-        when(soSliceService.queryOperationProgress(serviceId, operationId))
+        when(soSliceClient.queryOperationProgress(serviceId, operationId))
             .thenReturn(failedCall("so is not exist!"));
         resourceMgtService.queryOperationProgress(serviceId);
     }
@@ -487,7 +487,7 @@ public class ResourceMgtServiceImplTest {
         String operationId = "2345-5675-3456-er45";
         Call<SOOperation> call = emptyBodyCall();
 
-        when(soSliceService.queryOperationProgress(serviceId, operationId)).thenReturn(call);
+        when(soSliceClient.queryOperationProgress(serviceId, operationId)).thenReturn(call);
         resourceMgtService.queryOperationProgress(serviceId);
     }
 }

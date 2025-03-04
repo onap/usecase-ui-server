@@ -68,7 +68,7 @@ public class DefaultServiceTemplateServiceIntegrationTest {
     @SneakyThrows
     void thatSDCCatalogRequestsAreCorrect() {
         stubFor(
-            get(urlPathEqualTo("/api/sdc/v1/catalog/services"))
+            get(urlPathEqualTo("/v1/catalog/services"))
             .withQueryParam("category", equalTo("E2E Service"))
             .withQueryParam("distributionStatus", equalTo("DISTRIBUTED"))
             .withBasicAuth(username, password)

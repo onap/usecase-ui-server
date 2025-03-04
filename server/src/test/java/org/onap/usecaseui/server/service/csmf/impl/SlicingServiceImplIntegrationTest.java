@@ -48,7 +48,7 @@ import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.impl.DefaultServiceLcmService;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -90,7 +90,7 @@ public class SlicingServiceImplIntegrationTest {
 
     @MockBean ServiceLcmService serviceLcmService;
     @Autowired AAISliceClient aaiSliceClient;
-    @Autowired SOSliceService soSliceService;
+    @Autowired SOSliceClient soSliceClient;
     @Autowired SlicingProperties slicingProperties;
 
     SlicingService slicingService;
@@ -112,7 +112,7 @@ public class SlicingServiceImplIntegrationTest {
 
     @BeforeEach
     void setup() {
-      slicingService = new SlicingServiceImpl(serviceLcmService,aaiSliceClient,soSliceService, slicingProperties);
+      slicingService = new SlicingServiceImpl(serviceLcmService,aaiSliceClient,soSliceClient, slicingProperties);
     }
 
     @Test

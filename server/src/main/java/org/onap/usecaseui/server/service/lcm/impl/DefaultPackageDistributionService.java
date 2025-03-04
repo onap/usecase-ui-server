@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,18 +39,15 @@ import org.onap.usecaseui.server.constant.CommonConstant;
 import org.onap.usecaseui.server.service.lcm.PackageDistributionService;
 import org.onap.usecaseui.server.service.lcm.ServiceLcmService;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.nsServiceRsp;
-import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogClient;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.SDCServiceTemplate;
 import org.onap.usecaseui.server.service.lcm.domain.sdc.bean.Vnf;
-import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcService;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcClient;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Csar;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.DistributionResult;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.Job;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.beans.JobStatus;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.exceptions.VfcException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -66,8 +62,8 @@ import retrofit2.Response;
 @Service("PackageDistributionService")
 public class DefaultPackageDistributionService implements PackageDistributionService {
 
-    private final SDCCatalogService sdcCatalogService;
-    private final VfcService vfcService;
+    private final SDCCatalogClient sdcCatalogClient;
+    private final VfcClient vfcClient;
     private final ServiceLcmService serviceLcmService;
 
     @Override
@@ -80,7 +76,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public List<Vnf> sdcVfPackageInfo() {
         try {
-            Response<List<Vnf>> response = sdcCatalogService.listResources(RESOURCETYPE_VF).execute();
+            Response<List<Vnf>> response = sdcCatalogClient.listResources(RESOURCETYPE_VF).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
@@ -96,7 +92,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public List<SDCServiceTemplate> sdcNsPackageInfo() {
         try {
-            Response<List<SDCServiceTemplate>> response = sdcCatalogService.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED).execute();
+            Response<List<SDCServiceTemplate>> response = sdcCatalogClient.listServices(CATEGORY_NS, DISTRIBUTION_STATUS_DISTRIBUTED).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
@@ -112,7 +108,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public DistributionResult postNsPackage(Csar csar) {
         try {
-            Response<DistributionResult> response = vfcService.distributeNsPackage(csar).execute();
+            Response<DistributionResult> response = vfcClient.distributeNsPackage(csar).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
@@ -127,7 +123,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public Job postVfPackage(Csar csar) {
         try {
-            Response<Job> response = vfcService.distributeVnfPackage(csar).execute();
+            Response<Job> response = vfcClient.distributeVnfPackage(csar).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
@@ -142,7 +138,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public JobStatus getJobStatus(String jobId, String responseId) {
         try {
-            Response<JobStatus> response = vfcService.getJobStatus(jobId, responseId).execute();
+            Response<JobStatus> response = vfcClient.getJobStatus(jobId, responseId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
@@ -156,7 +152,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
 
     @Override
     public JobStatus getNsLcmJobStatus(String serviceInstanceId,String jobId, String responseId,String operationType) {        try {
-        Response<JobStatus> response = vfcService.getNsLcmJobStatus(jobId, responseId).execute();
+        Response<JobStatus> response = vfcClient.getNsLcmJobStatus(jobId, responseId).execute();
         if (response.isSuccessful()) {
             return response.body();
         } else {
@@ -170,7 +166,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public DistributionResult deleteNsPackage(String csarId) {
         try {
-            Response<DistributionResult> response = vfcService.deleteNsPackage(csarId).execute();
+            Response<DistributionResult> response = vfcClient.deleteNsPackage(csarId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
@@ -185,7 +181,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
     @Override
     public Job deleteVfPackage(String csarId) {
         try {
-            Response<Job> response = vfcService.deleteVnfPackage(csarId).execute();
+            Response<Job> response = vfcClient.deleteVnfPackage(csarId).execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {
@@ -202,7 +198,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc getVnfPackages is starting!");
-            Response<ResponseBody> response = this.vfcService.getVnfPackages().execute();
+            Response<ResponseBody> response = this.vfcClient.getVnfPackages().execute();
             log.info("vfc getVnfPackages has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -223,7 +219,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc getNetworkServicePackages is starting!");
-            Response<ResponseBody> response = this.vfcService.getNetworkServicePackages().execute();
+            Response<ResponseBody> response = this.vfcClient.getNetworkServicePackages().execute();
             log.info("vfc getNetworkServicePackages has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -245,7 +241,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc getPnfPackages is starting!");
-            Response<ResponseBody> response = this.vfcService.getPnfPackages().execute();
+            Response<ResponseBody> response = this.vfcClient.getPnfPackages().execute();
             log.info("vfc getPnfPackages has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -267,7 +263,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc downLoadNsPackage is starting!");
-            Response<ResponseBody> response = this.vfcService.downLoadNsPackage(nsdInfoId).execute();
+            Response<ResponseBody> response = this.vfcClient.downLoadNsPackage(nsdInfoId).execute();
             log.info("vfc downLoadNsPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -289,7 +285,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc downLoadPnfPackage is starting!");
-            Response<ResponseBody> response = this.vfcService.downLoadNsPackage(pnfdInfoId).execute();
+            Response<ResponseBody> response = this.vfcClient.downLoadNsPackage(pnfdInfoId).execute();
             log.info("vfc downLoadPnfPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -311,7 +307,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc downLoadVnfPackage is starting!");
-            Response<ResponseBody> response = this.vfcService.downLoadNsPackage(vnfPkgId).execute();
+            Response<ResponseBody> response = this.vfcClient.downLoadNsPackage(vnfPkgId).execute();
             log.info("vfc downLoadVnfPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -333,7 +329,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc deleteNsdPackage is starting!");
-            response = this.vfcService.deleteNsdPackage(nsdInfoId).execute();
+            response = this.vfcClient.deleteNsdPackage(nsdInfoId).execute();
             log.info("vfc deleteNsdPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -358,7 +354,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc deleteVnfPackage is starting!");
-            response = this.vfcService.deleteVnfdPackage(vnfPkgId).execute();
+            response = this.vfcClient.deleteVnfdPackage(vnfPkgId).execute();
             log.info("vfc deleteVnfPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -383,7 +379,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc deletePnfPackage is starting!");
-            response = this.vfcService.deletePnfdPackage(pnfdInfoId).execute();
+            response = this.vfcClient.deletePnfdPackage(pnfdInfoId).execute();
             log.info("vfc deletePnfPackage has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -407,7 +403,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         List<String> result = new ArrayList<>();
         try {
             log.info("vfc getNetworkServiceInfo is starting!");
-            Response<nsServiceRsp> response = this.vfcService.getNetworkServiceInfo().execute();
+            Response<nsServiceRsp> response = this.vfcClient.getNetworkServiceInfo().execute();
             log.info("vfc getNetworkServiceInfo has finished!");
             if (response.isSuccessful()) {
                 List<String> nsServices = response.body().nsServices;
@@ -439,7 +435,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai createNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.createNetworkServiceInstance(requestBody).execute();
+            Response<ResponseBody> response = vfcClient.createNetworkServiceInstance(requestBody).execute();
             log.info("aai createNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -460,7 +456,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc deleteNetworkServiceInstance is starting!");
-            response = this.vfcService.deleteNetworkServiceInstance(nsInstanceId).execute();
+            response = this.vfcClient.deleteNetworkServiceInstance(nsInstanceId).execute();
             log.info("vfc deleteNetworkServiceInstance has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -485,7 +481,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai terminateNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.terminateNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
+            Response<ResponseBody> response = vfcClient.terminateNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
             log.info("aai terminateNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -506,7 +502,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai healNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.healNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
+            Response<ResponseBody> response = vfcClient.healNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
             log.info("aai healNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -527,7 +523,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai scaleNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.scaleNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
+            Response<ResponseBody> response = vfcClient.scaleNetworkServiceInstance(networkServiceInstanceId,requestBody).execute();
             log.info("aai scaleNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -548,7 +544,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai createNetworkServiceData is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.createNetworkServiceData(requestBody).execute();
+            Response<ResponseBody> response = vfcClient.createNetworkServiceData(requestBody).execute();
             log.info("aai createNetworkServiceData has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -569,7 +565,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai createVnfData is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.createVnfData(requestBody).execute();
+            Response<ResponseBody> response = vfcClient.createVnfData(requestBody).execute();
             log.info("aai createVnfData has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -590,7 +586,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai createPnfData is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.createPnfData(requestBody).execute();
+            Response<ResponseBody> response = vfcClient.createPnfData(requestBody).execute();
             log.info("aai createPnfData has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -611,7 +607,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc getNsdInfo is starting!");
-            Response<ResponseBody> response = this.vfcService.getNsdInfo(nsdInfoId).execute();
+            Response<ResponseBody> response = this.vfcClient.getNsdInfo(nsdInfoId).execute();
             log.info("vfc getNsdInfo has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -633,7 +629,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc getVnfInfo is starting!");
-            Response<ResponseBody> response = this.vfcService.getVnfInfo(vnfPkgId).execute();
+            Response<ResponseBody> response = this.vfcClient.getVnfInfo(vnfPkgId).execute();
             log.info("vfc getVnfInfo has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -655,7 +651,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc getPnfInfo is starting!");
-            Response<ResponseBody> response = this.vfcService.getPnfInfo(pnfdInfoId).execute();
+            Response<ResponseBody> response = this.vfcClient.getPnfInfo(pnfdInfoId).execute();
             log.info("vfc getPnfInfo has finished!");
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
@@ -677,7 +673,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc listNsTemplates is starting!");
-            Response<ResponseBody> response = this.vfcService.listNsTemplates().execute();
+            Response<ResponseBody> response = this.vfcClient.listNsTemplates().execute();
             log.info("vfc listNsTemplates has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -699,7 +695,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai fetchNsTemplateData is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.fetchNsTemplateData(requestBody).execute();
+            Response<ResponseBody> response = vfcClient.fetchNsTemplateData(requestBody).execute();
             log.info("aai fetchNsTemplateData has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -720,12 +716,12 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             RequestBody requestBody = extractBody(request);
             // search template from vfc catalog
-            Response<ResponseBody> getResponse = this.vfcService.servicePackages(csarId).execute();
+            Response<ResponseBody> getResponse = this.vfcClient.servicePackages(csarId).execute();
 
             if (getResponse.isSuccessful()) {
                 // call vfc template parser
                 log.info("calling ccvpn template file parser is starting");
-                Response<ResponseBody> response = vfcService.fetchTemplateInfo(requestBody).execute();
+                Response<ResponseBody> response = vfcClient.fetchTemplateInfo(requestBody).execute();
                 log.info("calling ccvpn template file parser has finished");
                 if (response.isSuccessful()) {
                     result.put("status", CommonConstant.CONSTANT_SUCCESS);
@@ -737,11 +733,11 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                }
             } else {
                 // distribute template files to vfc catalog
-                Response<ResponseBody> postResponse = this.vfcService.servicePackages(requestBody).execute();
+                Response<ResponseBody> postResponse = this.vfcClient.servicePackages(requestBody).execute();
                 if (postResponse.isSuccessful()) {
                     // call vfc template parser
                     log.info("calling ccvpn template file parser is starting");
-                    Response<ResponseBody> response = vfcService.fetchTemplateInfo(requestBody).execute();
+                    Response<ResponseBody> response = vfcClient.fetchTemplateInfo(requestBody).execute();
                     log.info("calling ccvpn template file parser has finished");
                     if (response.isSuccessful()) {
                         result.put("status", CommonConstant.CONSTANT_SUCCESS);
@@ -770,7 +766,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         try {
             log.info("aai instantiateNetworkServiceInstance is starting");
             RequestBody requestBody = extractBody(request);
-            Response<ResponseBody> response = vfcService.instantiateNetworkServiceInstance(requestBody,serviceInstanceId).execute();
+            Response<ResponseBody> response = vfcClient.instantiateNetworkServiceInstance(requestBody,serviceInstanceId).execute();
             log.info("aai instantiateNetworkServiceInstance has finished");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
@@ -791,7 +787,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         String result="";
         try {
             log.info("vfc getVnfInfoById is starting!");
-            Response<ResponseBody> response = this.vfcService.getVnfInfoById(vnfinstid).execute();
+            Response<ResponseBody> response = this.vfcClient.getVnfInfoById(vnfinstid).execute();
             log.info("vfc getVnfInfoById has finished!");
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());

@@ -25,7 +25,7 @@ import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-public interface SOService {
+public interface SOClient {
 
     @POST("/api/so-serviceInstances/v3")
     Call<ServiceOperation> instantiateService(@Body RequestBody body);

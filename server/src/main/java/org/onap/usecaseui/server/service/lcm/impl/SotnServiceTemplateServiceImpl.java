@@ -29,7 +29,7 @@ import org.onap.usecaseui.server.service.lcm.domain.aai.AAIClient;
 import org.onap.usecaseui.server.service.lcm.domain.aai.bean.Relationship;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.DeleteOperationRsp;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.ServiceOperation;
-import org.onap.usecaseui.server.service.lcm.domain.so.SOService;
+import org.onap.usecaseui.server.service.lcm.domain.so.SOClient;
 import org.onap.usecaseui.server.service.lcm.domain.so.bean.Operation;
 import org.onap.usecaseui.server.service.lcm.domain.so.exceptions.SOException;
 import org.onap.usecaseui.server.bean.lcm.sotne2eservice.*;
@@ -60,7 +60,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
 
     private static final Logger logger = LoggerFactory.getLogger(SotnServiceTemplateServiceImpl.class);
 
-    private SOService soService;
+    private SOClient soClient;
     private AAIClient aaiClient;
 
     private Map<String, Model> readConfigToMap(ModelConfig modelConfig) {
@@ -133,7 +133,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         Operation result = new Operation();
         try {
               logger.info("SO instantiate SOTN service is starting");
-            Response<ServiceOperation> sotnserviceresponse = soService.instantiateSOTNService(requestBody).execute();
+            Response<ServiceOperation> sotnserviceresponse = soClient.instantiateSOTNService(requestBody).execute();
               logger.info("SO instantiate SOTN service has finished");
             if (sotnserviceresponse.isSuccessful()) {
                 logger.info("SO instantiate SOTN service is successful");
@@ -525,7 +525,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             try {
                 logger.info("so begin terminate site service " + siteserviceId);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), requestStr);
-                Response<DeleteOperationRsp> response = soService.terminateService(siteserviceId, requestBody).execute();
+                Response<DeleteOperationRsp> response = soClient.terminateService(siteserviceId, requestBody).execute();
                 logger.info("so terminate has finished");
                 if (response.isSuccessful()) {
                     logger.info("so terminated site service " + siteserviceId + "successfully...");
@@ -547,7 +547,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
         try {
             logger.info("so begin terminate Connectivity service " + serviceId);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), requestStr);
-            Response<DeleteOperationRsp> response = soService.terminateService(serviceId, requestBody).execute();
+            Response<DeleteOperationRsp> response = soClient.terminateService(serviceId, requestBody).execute();
             logger.info("so terminate has finished");
             if (response.isSuccessful()) {
                 logger.info("so terminated connectivity service " + serviceId + "successfully...");

@@ -45,7 +45,7 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.EndPo
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Relationship;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipData;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.RelationshipList;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
 import org.onap.usecaseui.server.service.slicingdomain.aai.AAISliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.ConnectionLinkList;
@@ -53,15 +53,15 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connection.Conne
 public class TaskMgtServiceImplTest {
 
     TaskMgtServiceImpl taskMgtService = null;
-    SOSliceService soSliceService = null;
+    SOSliceClient soSliceClient = null;
     AAISliceClient aaiSliceClient = null;
     TaskMgtServiceConvert taskMgtServiceConvert = null;
 
     @Before
     public void before() throws Exception {
-        soSliceService = mock(SOSliceService.class);
+        soSliceClient = mock(SOSliceClient.class);
         aaiSliceClient = mock(AAISliceClient.class);
-        taskMgtService = new TaskMgtServiceImpl(soSliceService,aaiSliceClient);
+        taskMgtService = new TaskMgtServiceImpl(soSliceClient,aaiSliceClient);
         taskMgtServiceConvert = mock(TaskMgtServiceConvert.class);
         taskMgtService.taskMgtServiceConvert = taskMgtServiceConvert;
     }
@@ -69,13 +69,13 @@ public class TaskMgtServiceImplTest {
     @Test
     public void itCanQuerySlicingTask() {
         JSONArray jsonArray = new JSONArray();
-        when(soSliceService.listTask()).thenReturn(successfulCall(jsonArray));
+        when(soSliceClient.listTask()).thenReturn(successfulCall(jsonArray));
         taskMgtService.querySlicingTask(1, 100);
     }
 
     @Test
     public void querySlicingTaskWithThrowsException() {
-        when(soSliceService.listTask()).thenReturn(failedCall("so is not exist!"));
+        when(soSliceClient.listTask()).thenReturn(failedCall("so is not exist!"));
         taskMgtService.querySlicingTask(1, 100);
     }
 
@@ -83,14 +83,14 @@ public class TaskMgtServiceImplTest {
     public void itCanQuerySlicingTaskByStatus() {
         JSONArray jsonArray = new JSONArray();
         String status = "Planning";
-        when(soSliceService.listTaskByStage(status)).thenReturn(successfulCall(jsonArray));
+        when(soSliceClient.listTaskByStage(status)).thenReturn(successfulCall(jsonArray));
         taskMgtService.querySlicingTaskByStatus(status, 1, 100);
     }
 
     @Test
     public void querySlicingTaskByStatusWithThrowsException() {
         String status = "Planning";
-        when(soSliceService.listTaskByStage(status)).thenReturn(failedCall("so is not exist!"));
+        when(soSliceClient.listTaskByStage(status)).thenReturn(failedCall("so is not exist!"));
         taskMgtService.querySlicingTaskByStatus(status, 1, 100);
     }
 
@@ -98,14 +98,14 @@ public class TaskMgtServiceImplTest {
     public void itCanQueryTaskAuditInfo() {
         String taskId = "we23-345r-45ty-5687";
         SOTask soTask = new SOTask();
-        when(soSliceService.getTaskById(taskId)).thenReturn(successfulCall(soTask));
+        when(soSliceClient.getTaskById(taskId)).thenReturn(successfulCall(soTask));
         taskMgtService.queryTaskAuditInfo(taskId);
     }
 
     @Test
     public void queryTaskAuditInfoWithThrowsException() {
         String taskId = "we23-345r-45ty-5687";
-        when(soSliceService.getTaskById(taskId)).thenReturn(failedCall("so is not exist!"));
+        when(soSliceClient.getTaskById(taskId)).thenReturn(failedCall("so is not exist!"));
         taskMgtService.queryTaskAuditInfo(taskId);
     }
 
@@ -141,8 +141,8 @@ public class TaskMgtServiceImplTest {
         soTask.setParams(params);
         String jsonstr = JSON.toJSONString(soTask);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
-        when(soSliceService.getTaskById(taskId)).thenReturn(successfulCall(soTask));
-        when(soSliceService.updateService(taskId, requestBody)).thenReturn(successfulCall(responseBody));
+        when(soSliceClient.getTaskById(taskId)).thenReturn(successfulCall(soTask));
+        when(soSliceClient.updateService(taskId, requestBody)).thenReturn(successfulCall(responseBody));
 
         taskMgtService.updateTaskAuditInfo(slicingTaskAuditInfo);
     }
@@ -164,7 +164,7 @@ public class TaskMgtServiceImplTest {
             }
         };
 
-        when(soSliceService.updateService(taskId, requestBody)).thenReturn(failedCall("so is not exist!"));
+        when(soSliceClient.updateService(taskId, requestBody)).thenReturn(failedCall("so is not exist!"));
         taskMgtService.updateTaskAuditInfo(slicingTaskAuditInfo);
     }
 
@@ -172,14 +172,14 @@ public class TaskMgtServiceImplTest {
     public void itCanQueryTaskCreationInfo() {
         String taskId = "we23-345r-45ty-5687";
         SOTask soTask = new SOTask();
-        when(soSliceService.getTaskByIdD(taskId)).thenReturn(successfulCall(soTask));
+        when(soSliceClient.getTaskByIdD(taskId)).thenReturn(successfulCall(soTask));
         taskMgtService.queryTaskCreationInfo(taskId);
     }
 
     @Test
     public void queryTaskCreationInfoWithThrowsException() {
         String taskId = "we23-345r-45ty-5687";
-        when(soSliceService.getTaskByIdD(taskId)).thenReturn(failedCall("so is not exist!"));
+        when(soSliceClient.getTaskByIdD(taskId)).thenReturn(failedCall("so is not exist!"));
         taskMgtService.queryTaskCreationInfo(taskId);
     }
 
@@ -187,14 +187,14 @@ public class TaskMgtServiceImplTest {
     public void itCanQueryTaskCreationProgress() {
         String taskId = "we23-345r-45ty-5687";
         SOTask soTask = new SOTask();
-        when(soSliceService.getTaskByIdD(taskId)).thenReturn(successfulCall(soTask));
+        when(soSliceClient.getTaskByIdD(taskId)).thenReturn(successfulCall(soTask));
         taskMgtService.queryTaskCreationProgress(taskId);
     }
 
     @Test
     public void queryTaskCreationProgressWithThrowsException() {
         String taskId = "we23-345r-45ty-5687";
-        when(soSliceService.getTaskByIdD(taskId)).thenReturn(failedCall("so is not exist!"));
+        when(soSliceClient.getTaskByIdD(taskId)).thenReturn(failedCall("so is not exist!"));
         taskMgtService.queryTaskCreationProgress(taskId);
     }
 

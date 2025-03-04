@@ -23,17 +23,17 @@ import retrofit2.http.*;
 
 import java.util.List;
 
-public interface SDCCatalogService {
+public interface SDCCatalogClient {
 
-    @GET("/api/sdc/v1/catalog/services")
+    @GET("v1/catalog/services")
     Call<List<SDCServiceTemplate>> listServices(@Query("category")String category, @Query("distributionStatus") String distributionStatus);
 
-    @GET("/api/sdc/v1/catalog/services/{uuid}/metadata")
+    @GET("v1/catalog/services/{uuid}/metadata")
     Call<SDCServiceTemplate> getService(@Path("uuid") String uuid);
 
     @GET
     Call<ResponseBody> downloadCsar(@Url String fileUrl);
 
-    @GET("/api/sdc/v1/catalog/resources")
+    @GET("v1/catalog/resources")
     Call<List<Vnf>> listResources(@Query("resourceType") String resourceType);
 }

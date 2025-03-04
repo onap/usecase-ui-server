@@ -25,7 +25,7 @@ import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-public interface IntentSoService {
+public interface IntentSoClient {
 
     @POST("/so/infra/serviceIntent/v1/create")
     Call<JSONObject> createIntentInstance(@Body RequestBody body);

@@ -47,7 +47,7 @@ import org.onap.usecaseui.server.service.csmf.SlicingService;
 import org.onap.usecaseui.server.service.csmf.config.SlicingProperties;
 import org.onap.usecaseui.server.service.csmf.impl.SlicingServiceImpl;
 import org.onap.usecaseui.server.service.intent.IntentAaiClient;
-import org.onap.usecaseui.server.service.intent.IntentSoService;
+import org.onap.usecaseui.server.service.intent.IntentSoClient;
 import org.onap.usecaseui.server.service.intent.config.IntentProperties;
 import org.onap.usecaseui.server.service.lcm.impl.DefaultServiceLcmService;
 import org.onap.usecaseui.server.service.nsmf.impl.ResourceMgtServiceImpl;
@@ -116,7 +116,7 @@ public class IntentInstanceServiceIntegrationTest {
   IntentAaiClient intentAaiClient;
 
   @Autowired
-  IntentSoService intentSoService;
+  IntentSoClient intentSoClient;
 
   @Autowired
   IntentProperties intentProperties;
@@ -130,7 +130,7 @@ public class IntentInstanceServiceIntegrationTest {
     Transaction transaction = mock(Transaction.class);
     when(sessionFactory.openSession()).thenReturn(session);
     when(session.beginTransaction()).thenReturn(transaction);
-    this.intentService = new IntentInstanceServiceImpl(slicingService, intentAaiClient, intentSoService, sessionFactory,
+    this.intentService = new IntentInstanceServiceImpl(slicingService, intentAaiClient, intentSoClient, sessionFactory,
         resourceMgtServiceImpl, intentProperties);
   }
 

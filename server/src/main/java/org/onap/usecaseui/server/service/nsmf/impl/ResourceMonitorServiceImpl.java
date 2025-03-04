@@ -45,7 +45,7 @@ import org.onap.usecaseui.server.bean.nsmf.monitor.UsageTrafficList;
 import org.onap.usecaseui.server.constant.nsmf.NsmfCodeConstant;
 import org.onap.usecaseui.server.constant.nsmf.NsmfParamConstant;
 import org.onap.usecaseui.server.service.nsmf.ResourceMonitorService;
-import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalBandwidth;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiTotalTraffic;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.bean.KpiUserNumber;
@@ -64,7 +64,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
     private static final Logger logger = LoggerFactory.getLogger(ResourceMonitorServiceImpl.class);
     private static final Gson gson = new Gson();
 
-    private final KpiSliceService kpiSliceService;
+    private final KpiSliceClient kpiSliceClient;
 
     @Autowired
     private ResourceMonitorServiceConvert resourceMonitorServiceConvert;
@@ -102,7 +102,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                     .buildTrafficReqInfo(serviceInfo, newTimestamp);
                 String jsonstr = JSON.toJSONString(trafficReqInfo);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
-                Response<KpiTotalTraffic> response = this.kpiSliceService.listTotalTraffic(requestBody).execute();
+                Response<KpiTotalTraffic> response = this.kpiSliceClient.listTotalTraffic(requestBody).execute();
                 if (response.isSuccessful()) {
                     KpiTotalTraffic kpiTotalTraffic = response.body();
                     logger.info("querySlicingUsageTraffic: listTotalTraffic reponse is:{}",
@@ -154,7 +154,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                     .buildSlicingKpiReqInfo(serviceInfo, newTimestamp, kpiHours);
                 String jsonstr = JSON.toJSONString(slicingKpiReqInfo);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
-                Response<KpiUserNumber> response = this.kpiSliceService.listUserNumber(requestBody).execute();
+                Response<KpiUserNumber> response = this.kpiSliceClient.listUserNumber(requestBody).execute();
 
                 if (response.isSuccessful()) {
                     KpiUserNumber kpiUserNumber = response.body();
@@ -209,7 +209,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                     .buildSlicingKpiReqInfo(serviceInfo, newTimestamp, kpiHours);
                 String jsonstr = JSON.toJSONString(slicingKpiReqInfo);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
-                Response<KpiTotalBandwidth> response = this.kpiSliceService.listTotalBandwidth(requestBody).execute();
+                Response<KpiTotalBandwidth> response = this.kpiSliceClient.listTotalBandwidth(requestBody).execute();
 
                 if (response.isSuccessful()) {
                     KpiTotalBandwidth kpiTotalBandwidth = response.body();
@@ -263,7 +263,7 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                     .buildSlicingPDUSessionEstSRKpiReqInfo(serviceInfo, queryTimestamp, kpiHours);
                 String jsonstr = JSON.toJSONString(slicingKpiReqInfo);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
-                Response<KpiPDUSessionEstSR> response =this.kpiSliceService.listPDUSessionEstSR(requestBody).execute();
+                Response<KpiPDUSessionEstSR> response =this.kpiSliceClient.listPDUSessionEstSR(requestBody).execute();
                 if (response.isSuccessful()) {
                     KpiPDUSessionEstSR kpiPDUSessionEstSR = response.body();
                     logger.info("querySlicingPDUSessionEstSR: listPDUSessionEstSR reponse is:{}",

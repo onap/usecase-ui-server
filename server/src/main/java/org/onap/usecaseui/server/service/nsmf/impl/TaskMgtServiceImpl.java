@@ -43,7 +43,7 @@ import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.Con
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.ConnectionVo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.EndPointInfoListVo;
 import org.onap.usecaseui.server.service.slicingdomain.aai.bean.connectionvo.PropertiesVo;
-import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceService;
+import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTask;
 import org.onap.usecaseui.server.service.slicingdomain.so.bean.SOTaskRsp;
 import org.onap.usecaseui.server.util.RestfulServices;
@@ -69,7 +69,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskMgtServiceImpl.class);
 
-    private final SOSliceService soSliceService;
+    private final SOSliceClient soSliceClient;
     private final AAISliceClient aaiSliceClient;
 
     @Resource(name = "TaskMgtConvertService")
@@ -86,7 +86,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         String resultMsg;
 
         try {
-            Response<JSONArray> response = this.soSliceService.listTask().execute();
+            Response<JSONArray> response = this.soSliceClient.listTask().execute();
             if (response.isSuccessful()) {
                 Gson gson = new Gson();
                 Type type = new TypeToken<List<SOTask>>() {
@@ -127,7 +127,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         SOTaskRsp soTaskRsp = new SOTaskRsp();
         String resultMsg;
         try {
-            Response<JSONArray> response = this.soSliceService.listTaskByStage(status).execute();
+            Response<JSONArray> response = this.soSliceClient.listTaskByStage(status).execute();
             if (response.isSuccessful()) {
                 Gson gson = new Gson();
                 Type type = new TypeToken<List<SOTask>>() {
@@ -168,7 +168,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
 
         try {
             // TODO
-            Response<SOTask> response = this.soSliceService.getTaskById(taskId).execute();
+            Response<SOTask> response = this.soSliceClient.getTaskById(taskId).execute();
             if (response.isSuccessful()) {
                 SOTask soTaskInfo = response.body();
                 Gson gson = new Gson();
@@ -203,7 +203,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         ResultHeader resultHeader = new ResultHeader();
         String resultMsg;
         try {
-            Response<SOTask> response = this.soSliceService.getTaskById(slicingTaskAuditInfo.getTaskId()).execute();
+            Response<SOTask> response = this.soSliceClient.getTaskById(slicingTaskAuditInfo.getTaskId()).execute();
             if (response.isSuccessful()) {
                 SOTask soTaskInfo = response.body();
                 Gson gson = new Gson();
@@ -214,11 +214,11 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 String jsonstr = JSON.toJSONString(soTaskInfo);
                 logger.info("updateTaskAuditInfo: the requestBody body is:{}", jsonstr);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr);
-                Response<ResponseBody> updateResponse = soSliceService
+                Response<ResponseBody> updateResponse = soSliceClient
                     .updateService(slicingTaskAuditInfo.getTaskId(), requestBody).execute();
 
                 if (updateResponse.isSuccessful()) {
-                    Response<ResponseBody> commitResponse = this.soSliceService
+                    Response<ResponseBody> commitResponse = this.soSliceClient
                         .commitTask(slicingTaskAuditInfo.getTaskId()).execute();
                     if (commitResponse.isSuccessful()) {
                         resultMsg = "5G slicing task submit result.";
@@ -266,7 +266,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         String resultMsg;
 
         try {
-            Response<SOTask> response = this.soSliceService.getTaskByIdD(taskId).execute();
+            Response<SOTask> response = this.soSliceClient.getTaskByIdD(taskId).execute();
             if (response.isSuccessful()) {
                 Gson gson = new Gson();
                 SOTask soTask = response.body();
@@ -307,7 +307,7 @@ public class TaskMgtServiceImpl implements TaskMgtService {
         String resultMsg;
 
         try {
-            Response<SOTask> response = this.soSliceService.getTaskByIdD(taskId).execute();
+            Response<SOTask> response = this.soSliceClient.getTaskByIdD(taskId).execute();
             if (response.isSuccessful()) {
                 SOTask soTask = response.body();
                 Gson gson = new Gson();

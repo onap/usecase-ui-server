@@ -33,7 +33,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface SOSliceService {
+public interface SOSliceClient {
 
 	@GET("/api/so-serviceInstances/v3/{serviceId}/operations/{operationId}")
 	Call<SOOperation> queryOperationProgress(@Path("serviceId") String serviceId,

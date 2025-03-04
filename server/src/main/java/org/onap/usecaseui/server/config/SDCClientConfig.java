@@ -18,8 +18,8 @@ package org.onap.usecaseui.server.config;
 
 import java.io.IOException;
 
-import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogService;
-import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcService;
+import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogClient;
+import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -62,12 +62,12 @@ public class SDCClientConfig {
     }
 
     @Bean
-    SDCCatalogService sdcCatalogService() {
-        return retrofit().create(SDCCatalogService.class);
+    SDCCatalogClient sdcCatalogClient() {
+        return retrofit().create(SDCCatalogClient.class);
     }
 
     @Bean
-    VfcService vfcService() {
-        return retrofit().create(VfcService.class);
+    VfcClient vfcClient() {
+        return retrofit().create(VfcClient.class);
     }
 }
