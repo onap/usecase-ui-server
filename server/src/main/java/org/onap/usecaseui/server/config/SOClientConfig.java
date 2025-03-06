@@ -22,11 +22,14 @@ import org.onap.usecaseui.server.service.intent.IntentSoClient;
 import org.onap.usecaseui.server.service.lcm.domain.so.SOClient;
 import org.onap.usecaseui.server.service.slicingdomain.kpi.KpiSliceClient;
 import org.onap.usecaseui.server.service.slicingdomain.so.SOSliceClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
+import io.micrometer.core.instrument.binder.okhttp3.OkHttpObservationInterceptor;
+import io.micrometer.observation.ObservationRegistry;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -44,48 +47,53 @@ public class SOClientConfig {
     @Value("${uui-server.client.so.password}")
     String password;
 
-    OkHttpClient okHttpClient() {
-        return new OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request originalRequest = chain.request();
-                Request.Builder builder = originalRequest.newBuilder()
-                    .header("Authorization", Credentials.basic(username, password))
-                    .header(HttpHeaders.ACCEPT, "application/json")
-                    .header("X-TransactionId", "9999")
-                    .header("X-FromAppId", "onap-cli");
-                Request newRequest = builder.build();
-                return chain.proceed(newRequest);
-            }
-        }).build();
+    @Bean("okHttpClientSO")
+    OkHttpClient okHttpClient(ObservationRegistry observationRegistry) {
+        return new OkHttpClient().newBuilder()
+            .addInterceptor(
+                    OkHttpObservationInterceptor.builder(observationRegistry, "http.client.requests").build())
+            .addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request originalRequest = chain.request();
+                    Request.Builder builder = originalRequest.newBuilder()
+                        .header("Authorization", Credentials.basic(username, password))
+                        .header(HttpHeaders.ACCEPT, "application/json")
+                        .header("X-TransactionId", "9999")
+                        .header("X-FromAppId", "onap-cli");
+                    Request newRequest = builder.build();
+                    return chain.proceed(newRequest);
+                }
+            }).build();
     }
 
-    Retrofit retrofit() {
+    @Bean("retrofitSO")
+    Retrofit retrofitSo(@Qualifier("okHttpClientSO") OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(JacksonConverterFactory.create())
-            .client(okHttpClient())
+            .client(okHttpClient)
             .build();
     }
 
     @Bean
-    SOClient soClient() {
-        return retrofit().create(SOClient.class);
+    SOClient soClient(@Qualifier("retrofitSO") Retrofit retrofit) {
+        return retrofit.create(SOClient.class);
     }
 
     @Bean
-    SOSliceClient soSliceClient() {
-        return retrofit().create(SOSliceClient.class);
+    SOSliceClient soSliceClient(@Qualifier("retrofitSO") Retrofit retrofit) {
+        return retrofit.create(SOSliceClient.class);
     }
 
     @Bean
-    IntentSoClient intentSoClient() {
-        return retrofit().create(IntentSoClient.class);
+    IntentSoClient intentSoClient(@Qualifier("retrofitSO") Retrofit retrofit) {
+        return retrofit.create(IntentSoClient.class);
     }
 
     @Bean
     // not at all clear whether this service should interface with SO
-    KpiSliceClient kpiSliceClient() {
-        return retrofit().create(KpiSliceClient.class);
+    KpiSliceClient kpiSliceClient(@Qualifier("retrofitSO") Retrofit retrofit) {
+        return retrofit.create(KpiSliceClient.class);
     }
 }

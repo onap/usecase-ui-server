@@ -35,37 +35,39 @@ import retrofit2.http.Query;
 
 public interface SOSliceClient {
 
-	@GET("/api/so-serviceInstances/v3/{serviceId}/operations/{operationId}")
+	@GET("onap/so/infra/e2eServiceInstances/v3/{serviceId}/operations/{operationId}")
 	Call<SOOperation> queryOperationProgress(@Path("serviceId") String serviceId,
 			@Path("operationId") String operationId);
 
-	@POST("/api/so-serviceInstances/v3/{serviceInstanceId}/activate")
+	@POST("onap/so/infra/serviceInstantiation/v3/serviceInstances/{serviceInstanceId}/activate")
 	Call<ActivateService> activeService(@Path("serviceInstanceId") String serviceInstanceId, @Body RequestBody body);
 
-	@POST("/api/so-serviceInstances/v3/{serviceInstanceId}/deactivate")
+	@POST("onap/so/infra/serviceInstantiation/v3/serviceInstances/{serviceInstanceId}/deactivate")
 	Call<ActivateService> deactiveService(@Path("serviceInstanceId") String serviceInstanceId, @Body RequestBody body);
 
-	@HTTP(method = "DELETE",path = "/api/so-serviceInstances/v3/{serviceInstanceId}",hasBody = true)
+	@HTTP(method = "DELETE",path = "onap/so/infra/serviceInstantiation/v3/serviceInstances/{serviceInstanceId}",hasBody = true)
 	Call<ActivateService> terminateService(@Path("serviceInstanceId") String serviceInstanceId, @Body RequestBody body);
 
-	@GET("/api/so-orchestrationTasks/v4")
+	@GET("onap/so/infra/tasks/v4")
 	Call<JSONArray> listTask();
 
-	@GET("/api/so-orchestrationTasks/v4")
+	@GET("onap/so/infra/tasks/v4")
 	Call<JSONArray> listTaskByStage(@Query("status") String status );
 
-	@GET("/api/so-orchestrationTasks/v4/{taskId}")
+	@GET("onap/so/infra/tasks/v4/{taskId}")
 	Call<SOTask> getTaskById(@Path("taskId") String taskId);
 
-	@GET("/api/so-orchestrationTasks/v4/{taskId}")
+	@GET("onap/so/infra/tasks/v4/{taskId}")
 	Call<SOTask> getTaskByIdD(@Path("taskId") String taskId);
 
-	@PUT("/api/so-orchestrationTasks/v4/{taskId}")
+	@PUT("onap/so/infra/orchestrationTasks/v4/{taskId}")
 	Call<ResponseBody> updateService(@Path("taskId") String taskId, @Body RequestBody body);
 
-	@POST("/api/so-orchestrationTasks/v4/{taskId}/commit")
+	@POST("onap/so/infra/orchestrationTasks/v4/{taskId}/commit")
 	Call<ResponseBody> commitTask(@Path("taskId") String taskId);
 
-	@POST("/api/so-serviceInstances/v3")
+	// It's not quite clear if this should be
+	// infra/e2eServiceInstances/{version} or infra/orchestrationTasks/{version}
+	@POST("onap/so/infra/e2eServiceInstances/v3")
 	Call<CreateResponse> submitOrders(@Body RequestBody body);
 }

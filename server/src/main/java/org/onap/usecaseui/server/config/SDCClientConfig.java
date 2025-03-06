@@ -20,10 +20,13 @@ import java.io.IOException;
 
 import org.onap.usecaseui.server.service.lcm.domain.sdc.SDCCatalogClient;
 import org.onap.usecaseui.server.service.lcm.domain.vfc.VfcClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
+import io.micrometer.core.instrument.binder.okhttp3.OkHttpObservationInterceptor;
+import io.micrometer.observation.ObservationRegistry;
 import lombok.RequiredArgsConstructor;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
@@ -38,36 +41,41 @@ public class SDCClientConfig {
 
     private final SDCClientProperties clientProperties;
 
-    OkHttpClient okHttpClient() {
-        return new OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request originalRequest = chain.request();
-                Request.Builder builder = originalRequest.newBuilder()
-                    .header("Authorization", Credentials.basic(clientProperties.getUsername(), clientProperties.getPassword()))
-                    .header(HttpHeaders.ACCEPT, "application/json")
-                    .header("X-ECOMP-InstanceID", "777");
-                Request newRequest = builder.build();
-                return chain.proceed(newRequest);
-            }
-        }).build();
+    @Bean("okHttpClientSDC")
+    OkHttpClient okHttpClient(ObservationRegistry observationRegistry) {
+        return new OkHttpClient().newBuilder()
+            .addInterceptor(
+                    OkHttpObservationInterceptor.builder(observationRegistry, "http.client.requests").build())
+            .addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request originalRequest = chain.request();
+                    Request.Builder builder = originalRequest.newBuilder()
+                        .header("Authorization", Credentials.basic(clientProperties.getUsername(), clientProperties.getPassword()))
+                        .header(HttpHeaders.ACCEPT, "application/json")
+                        .header("X-ECOMP-InstanceID", "777");
+                    Request newRequest = builder.build();
+                    return chain.proceed(newRequest);
+                }
+            }).build();
     }
 
-    Retrofit retrofit() {
+    @Bean("retrofitSDC")
+    Retrofit retrofit(@Qualifier("okHttpClientSDC") OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
             .baseUrl(clientProperties.getBaseUrl())
             .addConverterFactory(JacksonConverterFactory.create())
-            .client(okHttpClient())
+            .client(okHttpClient)
             .build();
     }
 
     @Bean
-    SDCCatalogClient sdcCatalogClient() {
-        return retrofit().create(SDCCatalogClient.class);
+    SDCCatalogClient sdcCatalogClient(@Qualifier("retrofitSDC") Retrofit retrofit) {
+        return retrofit.create(SDCCatalogClient.class);
     }
 
     @Bean
-    VfcClient vfcClient() {
-        return retrofit().create(VfcClient.class);
+    VfcClient vfcClient(@Qualifier("retrofitSDC") Retrofit retrofit) {
+        return retrofit.create(VfcClient.class);
     }
 }

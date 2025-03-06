@@ -19,13 +19,11 @@ package org.onap.usecaseui.server.service.nsmf.impl;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -34,19 +32,16 @@ import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceList;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceOnlineUserInfo;
 import org.onap.usecaseui.server.bean.nsmf.monitor.ServiceOnlineUserList;
-import org.onap.usecaseui.server.config.AAIClientConfig;
 import org.onap.usecaseui.server.config.SOClientConfig;
-import org.onap.usecaseui.server.controller.lcm.CustomerController;
-import org.onap.usecaseui.server.service.lcm.CustomerService;
-import org.onap.usecaseui.server.service.lcm.domain.aai.bean.AAICustomer;
-import org.onap.usecaseui.server.service.lcm.impl.DefaultCustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpHeaders;
 import org.wiremock.spring.EnableWireMock;
 
+@EnableAutoConfiguration
 @EnableWireMock
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = {
     SOClientConfig.class, ResourceMonitorServiceImpl.class, ResourceMonitorServiceConvert.class

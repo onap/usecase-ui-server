@@ -121,7 +121,7 @@ public class SlicingServiceImplIntegrationTest {
         byte[] requestBytes = Files.readAllBytes(Paths.get("src/test/resources/__files/requests/submitOrdersRequest.json"));
         String expectedRequestBody = new String(requestBytes, StandardCharsets.UTF_8);
         stubFor(
-          post("/api/so-serviceInstances/v3")
+          post("/onap/so/infra/e2eServiceInstances/v3")
             .withBasicAuth(soUsername, soPassword)
             .withHeader(HttpHeaders.ACCEPT, equalTo("application/json"))
             .withHeader("X-TransactionId", equalTo("9999"))
