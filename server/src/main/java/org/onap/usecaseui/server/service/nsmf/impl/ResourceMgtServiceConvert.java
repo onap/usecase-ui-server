@@ -121,9 +121,9 @@ public class ResourceMgtServiceConvert {
                 nsiInfo.setNsiOrchestrationStatus(aaiServiceAndInstance.getOrchestrationStatus());
                 nsiInfo.setNsiType(aaiServiceAndInstance.getServiceType());
             } else {
-                logger.error(String
-                    .format("getNsiInfoByBusiness: Can not get listServiceById [code={}, message={}]", response.code(),
-                        response.message()));
+                logger.error("getNsiInfoByBusiness: Can not get listServiceById [code={}, message={}]"
+                        .formatted(response.code(),
+                                response.message()));
                 return;
             }
         } catch (Exception e) {
@@ -147,9 +147,9 @@ public class ResourceMgtServiceConvert {
                 modelInvariantId = aaiNsi.getModelInvariantId();
                 modelVersionId = aaiNsi.getModelVersionId();
             } else {
-                logger.error(String
-                    .format("getNstInfoByBusiness: Can not get listServiceById [code={}, message={}]", response.code(),
-                        response.message()));
+                logger.error("getNstInfoByBusiness: Can not get listServiceById [code={}, message={}]"
+                        .formatted(response.code(),
+                                response.message()));
                 return;
             }
         } catch (Exception e) {
@@ -166,8 +166,8 @@ public class ResourceMgtServiceConvert {
                 nstInfo.setNstId(aaiServiceNST.getModelVersionId());
                 nstInfo.setNstName(aaiServiceNST.getModelName());
             } else {
-                logger.error(String.format("Can not get queryServiceNST [code={}, message={}]", nstResponse.code(),
-                    nstResponse.message()));
+                logger.error("Can not get queryServiceNST [code={}, message={}]".formatted(nstResponse.code(),
+                        nstResponse.message()));
                 return;
             }
         } catch (Exception e) {
@@ -199,10 +199,10 @@ public class ResourceMgtServiceConvert {
                 }
 
             } else {
-                logger.error(String
-                    .format("getNsiIdByBusiness: Can not get queryAllottedResources[code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                logger.error("getNsiIdByBusiness: Can not get queryAllottedResources[code={}, message={}]"
+                        .formatted(
+                                response.code(),
+                                response.message()));
                 return "";
             }
         } catch (Exception e) {
@@ -235,10 +235,10 @@ public class ResourceMgtServiceConvert {
                     aaiServiceProfiles = objectProfile
                         .parseObject(objectProfile.toString(), AAIServiceProfiles.class);
                 } else {
-                    logger.error(String
-                        .format("convertBusinessProfileDetails：Can not get getServiceProfiles[code={}, message={}]",
-                            response.code(),
-                            response.message()));
+                    logger.error("convertBusinessProfileDetails：Can not get getServiceProfiles[code={}, message={}]"
+                            .formatted(
+                                    response.code(),
+                                    response.message()));
                 }
             }
         } catch (Exception e) {
@@ -332,10 +332,10 @@ public class ResourceMgtServiceConvert {
                     includedNssiInfoList.add(includedNssiInfo);
 
                 } else {
-                    logger.error(String
-                        .format("getIncludedNssiInfoList：Can not get listServiceById [code={}, message={}]",
-                            response.code(),
-                            response.message()));
+                    logger.error("getIncludedNssiInfoList：Can not get listServiceById [code={}, message={}]"
+                            .formatted(
+                                    response.code(),
+                                    response.message()));
                 }
             } catch (Exception e) {
                 logger.error("Exception in getIncludedNssiInfoList response",e);
@@ -363,10 +363,10 @@ public class ResourceMgtServiceConvert {
                     hostedBusinessInfoList.add(hostedBusinessInfo);
 
                 } else {
-                    logger.error(String
-                        .format("getHostedBusinessInfoList: Can not get listServiceById [code={}, message={}]",
-                            response.code(),
-                            response.message()));
+                    logger.error("getHostedBusinessInfoList: Can not get listServiceById [code={}, message={}]"
+                            .formatted(
+                                    response.code(),
+                                    response.message()));
                 }
             } catch (Exception e) {
                 logger.error("Exception in getHostedBusinessInfoList response",e);
@@ -478,9 +478,9 @@ public class ResourceMgtServiceConvert {
                     hostedNsiInfo.setOrchestrationStatus(aaiNssi.getOrchestrationStatus());
                     hostedNsiInfoList.add(hostedNsiInfo);
                 } else {
-                    logger.error(String.format("convertNssiDetails: Can not get listServiceById [code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                    logger.error("convertNssiDetails: Can not get listServiceById [code={}, message={}]".formatted(
+                            response.code(),
+                            response.message()));
                 }
             } catch (Exception e) {
                 logger.error("Exception in convertNssiDetails response",e);

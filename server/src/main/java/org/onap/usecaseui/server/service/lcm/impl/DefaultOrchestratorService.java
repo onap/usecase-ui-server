@@ -55,7 +55,7 @@ public class DefaultOrchestratorService implements OrchestratorService {
                 }
                 return nfvoList;
             } else {
-                logger.info(String.format("Can not get orchestrators[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get orchestrators[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {

@@ -57,7 +57,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getNetWorkResources[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getNetWorkResources[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result = CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -72,12 +72,12 @@ public class SOTNServiceImpl implements SOTNService{
         try {
         	logger.info("aai getPinterfaceByPnfName is starting!");
             Response<PinterfaceRsp> response = this.aaiClient.getPinterfaceByPnfName(pnfName).execute();
-            logger.info(String.format("excute aai interface:/api/aai-network/v13/pnfs/pnf/%s/p-interfaces",pnfName));
+            logger.info("excute aai interface:/api/aai-network/v13/pnfs/pnf/%s/p-interfaces".formatted(pnfName));
             logger.info("aai getPinterfaceByPnfName has finished!");
             if (response.isSuccessful()) {
                 return response.body().getPinterfaces();
             } else {
-                logger.info(String.format("Can not get getPinterfaceByPnfName[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getPinterfaceByPnfName[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -96,7 +96,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getLogicalLinks[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getLogicalLinks[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -116,7 +116,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getSpecificLogicalLink[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getSpecificLogicalLink[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -136,7 +136,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getHostUrl[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getHostUrl[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -156,7 +156,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getExtAaiId[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getExtAaiId[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -178,7 +178,7 @@ public class SOTNServiceImpl implements SOTNService{
             	result= CommonConstant.CONSTANT_SUCCESS;
             } else {
             	result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createHostUrl[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not createHostUrl[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
         	result= CommonConstant.CONSTANT_FAILED;
@@ -199,7 +199,7 @@ public class SOTNServiceImpl implements SOTNService{
             	result= CommonConstant.CONSTANT_SUCCESS;
             } else {
             	result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createTopoNetwork[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not createTopoNetwork[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
         	result= CommonConstant.CONSTANT_FAILED;
@@ -220,7 +220,7 @@ public class SOTNServiceImpl implements SOTNService{
             	result= CommonConstant.CONSTANT_SUCCESS;
             } else {
             	result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createTerminationPoint[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not createTerminationPoint[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
         	result= CommonConstant.CONSTANT_FAILED;
@@ -241,7 +241,7 @@ public class SOTNServiceImpl implements SOTNService{
             	result= CommonConstant.CONSTANT_SUCCESS;
             } else {
             	result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createLink[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not createLink[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
         	result="FAILED";
@@ -262,7 +262,7 @@ public class SOTNServiceImpl implements SOTNService{
             	result= CommonConstant.CONSTANT_SUCCESS;
             } else {
             	result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not createPnf[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not createPnf[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
         	result= CommonConstant.CONSTANT_FAILED;
@@ -282,7 +282,7 @@ public class SOTNServiceImpl implements SOTNService{
             	result= CommonConstant.CONSTANT_SUCCESS;
             } else {
             	result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not deleteLink[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not deleteLink[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
         	result= CommonConstant.CONSTANT_FAILED;
@@ -301,7 +301,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.error(String.format("Can not getServiceInstances[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not getServiceInstances[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (Exception e) {
@@ -321,7 +321,7 @@ public class SOTNServiceImpl implements SOTNService{
             	String result=new String(response.body().bytes());
                 return result;
             } else {
-                logger.error(String.format("Can not serviceInstanceInfo[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not serviceInstanceInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 throw new SOException("aai serviceInstanceInfo failed!");
             }
         } catch (Exception e) {
@@ -340,7 +340,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getPnfInfo[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getPnfInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -360,7 +360,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getAllottedResources[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getAllottedResources[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -380,7 +380,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getConnectivityInfo[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getConnectivityInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -400,7 +400,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getVpnBindingInfo[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getVpnBindingInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -420,7 +420,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getNetworkRouteInfo[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getNetworkRouteInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -440,7 +440,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getUniInfo[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getUniInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -460,7 +460,7 @@ public class SOTNServiceImpl implements SOTNService{
             if (response.isSuccessful()) {
             	result=new String(response.body().bytes());
             } else {
-                logger.info(String.format("Can not get getPinterfaceByVpnId[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get getPinterfaceByVpnId[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;
             }
         } catch (IOException e) {
@@ -481,7 +481,7 @@ public class SOTNServiceImpl implements SOTNService{
             	result= CommonConstant.CONSTANT_SUCCESS;
             } else {
             	result= CommonConstant.CONSTANT_FAILED;
-                logger.error(String.format("Can not deleteExtNetwork[code=%s, message=%s]", response.code(), response.message()));
+                logger.error("Can not deleteExtNetwork[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
         	result= CommonConstant.CONSTANT_FAILED;

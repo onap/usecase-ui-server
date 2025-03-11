@@ -45,7 +45,7 @@ public class ResourceMonitorController {
     @ResponseBody
     @PostMapping(value = {
         "/queryTimestamp/{queryTimestamp}/trafficData"}, produces = "application/json")
-    public ServiceResult querySlicingUsageTraffic(@PathVariable(value = "queryTimestamp") String queryTimestamp,
+    public ServiceResult querySlicingUsageTraffic(@PathVariable String queryTimestamp,
         @RequestBody
             ServiceList serviceList) {
         return resourceMonitorService.querySlicingUsageTraffic(queryTimestamp, serviceList);
@@ -54,7 +54,7 @@ public class ResourceMonitorController {
     @ResponseBody
     @PostMapping(value = {
         "/queryTimestamp/{queryTimestamp}/onlineUsers"}, produces = "application/json")
-    public ServiceResult querySlicingOnlineUserNumber(@PathVariable(value = "queryTimestamp") String queryTimestamp,
+    public ServiceResult querySlicingOnlineUserNumber(@PathVariable String queryTimestamp,
         @RequestBody
             ServiceList serviceList) {
         return resourceMonitorService.querySlicingOnlineUserNumber(queryTimestamp, serviceList);
@@ -63,7 +63,7 @@ public class ResourceMonitorController {
     @ResponseBody
     @PostMapping(value = {
         "/queryTimestamp/{queryTimestamp}/bandwidth"}, produces = "application/json")
-    public ServiceResult querySlicingTotalBandwidth(@PathVariable(value = "queryTimestamp") String queryTimestamp,
+    public ServiceResult querySlicingTotalBandwidth(@PathVariable String queryTimestamp,
         @RequestBody
             ServiceList serviceList) {
         return resourceMonitorService.querySlicingTotalBandwidth(queryTimestamp, serviceList);
@@ -72,7 +72,7 @@ public class ResourceMonitorController {
     @ResponseBody
     @PostMapping(value = {
         "/queryTimestamp/{queryTimestamp}/pDUSessionEstSR"}, produces = "application/json")
-    public ServiceResult querySlicingPDUSessionEstSR(@PathVariable(value = "queryTimestamp") String queryTimestamp,
+    public ServiceResult querySlicingPDUSessionEstSR(@PathVariable String queryTimestamp,
         @RequestBody
             ServiceList serviceList) {
         return resourceMonitorService.querySlicingPDUSessionEstSR(queryTimestamp, serviceList);

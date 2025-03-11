@@ -76,7 +76,7 @@ public class SotnServiceQryServiceImpl implements SotnServiceQryService {
                 }
 
             else {
-                logger.info(String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
+                logger.info("Can not get service instances[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return null;
             }
         } catch (IOException e) {

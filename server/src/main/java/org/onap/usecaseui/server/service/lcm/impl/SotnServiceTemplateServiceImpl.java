@@ -139,7 +139,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
                 logger.info("SO instantiate SOTN service is successful");
                 return sotnserviceresponse.body();
             } else {
-                logger.error(String.format("Can not instantiate SOTN service[code=%s, message=%s]", sotnserviceresponse.code(), sotnserviceresponse.message()));
+                logger.error("Can not instantiate SOTN service[code=%s, message=%s]".formatted(sotnserviceresponse.code(), sotnserviceresponse.message()));
                 throw new SOException("SO instantiate SOTN service failed!");
             }
         } catch (Exception e) {
@@ -542,7 +542,7 @@ public class SotnServiceTemplateServiceImpl implements SotnServiceTemplateServic
             logger.info("Began to sleep for " + sleeptime);
             Thread.sleep(sleeptime);
         } catch (InterruptedException e) {
-            logger.error(String.format("Thread Interruppted from sleep while deleting service subscription"));
+            logger.error("Thread Interruppted from sleep while deleting service subscription".formatted());
         }
         try {
             logger.info("so begin terminate Connectivity service " + serviceId);

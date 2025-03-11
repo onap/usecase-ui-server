@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.service.slicingdomain.aai.bean;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 
@@ -22,10 +23,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AAIService implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2847142014162429886L;
+    /**
+     * 
+     */
+    @Serial
+    private static final long serialVersionUID = -2847142014162429886L;
 
 	private String serviceInstanceId;
 

@@ -76,7 +76,7 @@ public class SotnController {
 	}
     
     @GetMapping(value = {"/getPinterfaceByPnfName/{pnfName:.+}"})
-    public List<Pinterface>  getPinterfaceByPnfName(@PathVariable(value="pnfName") String pnfName){
+    public List<Pinterface>  getPinterfaceByPnfName(@PathVariable String pnfName){
     	return sotnService.getPinterfaceByPnfName(pnfName);
     }
     
@@ -86,47 +86,47 @@ public class SotnController {
     }
     
     @GetMapping(value = {"/getSpecificLogicalLink/{linkName:.+}"})
-    public String getSpecificLogicalLink(@PathVariable(value="linkName") String linkName){
+    public String getSpecificLogicalLink(@PathVariable String linkName){
     	return sotnService.getSpecificLogicalLink(linkName);
     }
     
     @GetMapping(value = {"/getHostUrl/{aaiId:.+}"})
-    public String getHostUrl(@PathVariable(value="aaiId") String aaiId){
+    public String getHostUrl(@PathVariable String aaiId){
     	return sotnService.getHostUrl(aaiId);
     }
     
     @GetMapping(value = {"/getExtAaiId/{aaiId:.+}"})
-    public String getExtAaiId(@PathVariable(value="aaiId") String aaiId){
+    public String getExtAaiId(@PathVariable String aaiId){
     	return sotnService.getExtAaiId(aaiId);
     }
     
     @PutMapping(value = {"/createHostUrl/{aaiId:.+}"})
-    public String createHostUrl(HttpServletRequest request,@PathVariable(value="aaiId") String aaiId){
+    public String createHostUrl(HttpServletRequest request,@PathVariable String aaiId){
     	return sotnService.createHostUrl(request, aaiId);
     }
     
     @PutMapping(value = {"/createTopoNetwork/{networkId:.+}"})
-    public String createTopoNetwork(HttpServletRequest request,@PathVariable(value="networkId") String networkId){
+    public String createTopoNetwork(HttpServletRequest request,@PathVariable String networkId){
     	return sotnService.createTopoNetwork(request,networkId);
     }
     
     @PutMapping(value = {"/pnf/{pnfName:.+}/p-interfaces/p-interface/{tp-id:.+}/createTerminationPoint"})
-    public String createTerminationPoint(HttpServletRequest request,@PathVariable(value="pnfName") String pnfName,@PathVariable(value="tp-id") String tpId){
+    public String createTerminationPoint(HttpServletRequest request,@PathVariable String pnfName,@PathVariable(value="tp-id") String tpId){
     	return sotnService.createTerminationPoint(request,pnfName,tpId);
     }
     
     @PutMapping(value = {"/createLink/{linkName:.+}"})
-    public String createLink(HttpServletRequest request,@PathVariable(value="linkName") String linkName){
+    public String createLink(HttpServletRequest request,@PathVariable String linkName){
     	return sotnService.createLink(request, linkName);
     }
     
     @PutMapping(value = {"/createPnf/{pnfName:.+}"})
-    public String createPnf(HttpServletRequest request,@PathVariable(value="pnfName") String pnfName){
+    public String createPnf(HttpServletRequest request,@PathVariable String pnfName){
     	return sotnService.createPnf(request, pnfName);
     }
     
     @DeleteMapping(value = {"/deleteLink/{linkName:.+}/{resourceVersion:.+}"})
-    public String deleteLink(@PathVariable(value="linkName") String linkName,@PathVariable(value="resourceVersion") String resourceVersion){
+    public String deleteLink(@PathVariable String linkName,@PathVariable String resourceVersion){
     	return sotnService.deleteLink(linkName,resourceVersion);
     }
     
@@ -172,7 +172,7 @@ public class SotnController {
 	}
 
     @GetMapping(value = {"/getPinterfaceByVpnId/{vpnId:.+}"})
-    public String getPinterfaceByVpnId(@PathVariable(value="vpnId") String vpnId){
+    public String getPinterfaceByVpnId(@PathVariable String vpnId){
     	return sotnService.getPinterfaceByVpnId(vpnId);
     }
     
@@ -184,7 +184,7 @@ public class SotnController {
     }
 
     @DeleteMapping(value = {"/deleteExtNetWork"})
-    public String deleteExtNetwork(@RequestParam String extNetworkId,@RequestParam(value="resourceVersion") String resourceVersion){
+    public String deleteExtNetwork(@RequestParam String extNetworkId,@RequestParam String resourceVersion){
     	return sotnService.deleteExtNetwork(extNetworkId,resourceVersion);
     }
     

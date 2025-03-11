@@ -22,18 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.classic.methods.*;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.onap.usecaseui.server.bean.HttpResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -343,7 +343,7 @@ public class HttpUtil {
         return sb.toString();
     }
 
-    private static void setHeader(HttpRequestBase request, Map<String, String> headerMap) {
+    private static void setHeader(HttpUriRequestBase request, Map<String, String> headerMap) {
         if (headerMap != null) {
             Set<String> keySet = headerMap.keySet();
             for (String key : keySet) {
@@ -369,10 +369,10 @@ public class HttpUtil {
     }
 
     private static void setResponse(CloseableHttpResponse response, HttpResponseResult responseResult) throws IOException {
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        if (response.getCode() == HttpStatus.SC_OK) {
             responseResult.setResultContent(EntityUtils.toString(response.getEntity(), ENCODING_UTF8));
         }
-        responseResult.setResultCode(response.getStatusLine().getStatusCode());
+        responseResult.setResultCode(response.getCode());
         response.close();
     }
 }

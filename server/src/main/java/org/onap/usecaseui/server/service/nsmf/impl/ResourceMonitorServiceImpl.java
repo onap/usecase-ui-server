@@ -113,10 +113,10 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                     resultMsg = "5G slicing usage traffic query result.";
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
                 } else {
-                    logger.error(String
-                        .format("querySlicingUsageTraffic: Can not get ActivateService[code={}, message={}]",
-                            response.code(),
-                            response.message()));
+                    logger.error("querySlicingUsageTraffic: Can not get ActivateService[code={}, message={}]"
+                            .formatted(
+                                    response.code(),
+                                    response.message()));
                     resultMsg = "5G slicing usage traffic query failed!";
                     resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                 }
@@ -166,10 +166,10 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                     resultMsg = "5G slicing online users query result.";
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
                 } else {
-                    logger.error(String
-                        .format("querySlicingOnlineUserNumber: Can not get KpiUserNumber[code={}, message={}]",
-                            response.code(),
-                            response.message()));
+                    logger.error("querySlicingOnlineUserNumber: Can not get KpiUserNumber[code={}, message={}]"
+                            .formatted(
+                                    response.code(),
+                                    response.message()));
                     resultMsg = "5G slicing online users query failed!";
                     resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                 }
@@ -222,10 +222,10 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                     resultMsg = "5G slicing total bandwidth query result.";
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
                 } else {
-                    logger.error(String
-                        .format("querySlicingTotalBandwidth: Can not get KpiUserNumber[code={}, message={}]",
-                            response.code(),
-                            response.message()));
+                    logger.error("querySlicingTotalBandwidth: Can not get KpiUserNumber[code={}, message={}]"
+                            .formatted(
+                                    response.code(),
+                                    response.message()));
                     resultMsg = "5G slicing total bandwidth query failed!";
                     resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                 }
@@ -275,10 +275,10 @@ public class ResourceMonitorServiceImpl implements ResourceMonitorService {
                     resultMsg = "5G slicing service PDUSessionEstSR query result.";
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
                 } else {
-                    logger.error(String
-                        .format("querySlicingPDUSessionEstSR: Can not get KpiUserNumber[code={}, message={}]",
-                            response.code(),
-                            response.message()));
+                    logger.error("querySlicingPDUSessionEstSR: Can not get KpiUserNumber[code={}, message={}]"
+                            .formatted(
+                                    response.code(),
+                                    response.message()));
                     resultMsg = "5G slicing PDUSessionEstSR query failed!";
                     resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                 }

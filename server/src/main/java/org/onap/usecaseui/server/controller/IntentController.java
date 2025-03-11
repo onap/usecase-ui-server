@@ -75,7 +75,7 @@ public class IntentController {
 
     @RequestMapping("/uploadModel")
     @ResponseBody
-    public String uploadModel (@RequestParam("file") MultipartFile file,@RequestParam("modelType")String modelType) {
+    public String uploadModel (@RequestParam MultipartFile file,@RequestParam String modelType) {
         String fileName = file.getOriginalFilename();
 
         String filePath = IntentConstant.UPLOADPATH + fileName ;
@@ -391,7 +391,7 @@ public class IntentController {
         if (hashCodeV < 0) {
             hashCodeV = -hashCodeV;
         }
-        String instanceId = first + String.format("%015d", hashCodeV);
+        String instanceId = first + "%015d".formatted(hashCodeV);
         return instanceId;
     }
 

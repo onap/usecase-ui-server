@@ -15,6 +15,7 @@
  */
 package org.onap.usecaseui.server.bean;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.persistence.Column;
@@ -25,11 +26,12 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="service_instance_operations")
 public class ServiceInstanceOperations implements Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+    /**
+     * 
+     */
+    @Serial
+    private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "service_instance_id")

@@ -98,8 +98,8 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
                 logger.error(
-                    String.format("querySlicingTask: Can not get slicingTaskList[code={}, message={}]", response.code(),
-                        response.message()));
+                        "querySlicingTask: Can not get slicingTaskList[code={}, message={}]".formatted(response.code(),
+                                response.message()));
                 resultMsg = "5G slicing task result query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -138,9 +138,9 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 resultMsg = "5G slicing task query based on status result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("querySlicingTaskByStatus: Can not get slicingTaskList[code={}, message={}]",
-                    response.code(),
-                    response.message()));
+                logger.error("querySlicingTaskByStatus: Can not get slicingTaskList[code={}, message={}]".formatted(
+                        response.code(),
+                        response.message()));
                 resultMsg = "5G slicing task result query based on status failed. ";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -178,9 +178,9 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 resultMsg = "5G slicing task configure audit information query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("queryTaskAuditInfo: Can not get slicingTaskAuditInfo[code={}, message={}]",
-                    response.code(),
-                    response.message()));
+                logger.error("queryTaskAuditInfo: Can not get slicingTaskAuditInfo[code={}, message={}]".formatted(
+                        response.code(),
+                        response.message()));
                 resultMsg = "5G slicing task configure audit information query failed.";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -224,23 +224,23 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                         resultMsg = "5G slicing task submit result.";
                         resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
                     } else {
-                        logger.error(String.format("updateTaskAuditInfo: Can not commitTask [code={}, message={}]",
-                            commitResponse.code(),
-                            commitResponse.message()));
+                        logger.error("updateTaskAuditInfo: Can not commitTask [code={}, message={}]".formatted(
+                                commitResponse.code(),
+                                commitResponse.message()));
                         resultMsg = "5G slicing task submit failed.";
                         resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                     }
                 } else {
-                    logger.error(String
-                        .format("updateTaskAuditInfo: Can not updateService [code={}, message={}]", response.code(),
-                            response.message()));
+                    logger.error("updateTaskAuditInfo: Can not updateService [code={}, message={}]"
+                            .formatted(response.code(),
+                                    response.message()));
                     resultMsg = "5G slicing task submit failed.";
                     resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                 }
             } else {
-                logger.error(String.format("updateTaskAuditInfo: Can not get slicingTaskAuditInfo[code={}, message={}]",
-                    response.code(),
-                    response.message()));
+                logger.error("updateTaskAuditInfo: Can not get slicingTaskAuditInfo[code={}, message={}]".formatted(
+                        response.code(),
+                        response.message()));
                 resultMsg = "5G slicing task submit failed.";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -277,10 +277,10 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 resultMsg = "5G slicing task creation infomation query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("updateTaskAuditInfo: Can not get slicingTaskCreationInfo[code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                logger.error("updateTaskAuditInfo: Can not get slicingTaskCreationInfo[code={}, message={}]"
+                        .formatted(
+                                response.code(),
+                                response.message()));
                 resultMsg = "5G slicing task creation infomation query failed.";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -316,9 +316,9 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 resultMsg = "5G slicing task operation progress query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("queryTaskCreationProgress: Can not get slicingTaskCreationProgress[code={}, message={}]",
-                        response.code(), response.message()));
+                logger.error("queryTaskCreationProgress: Can not get slicingTaskCreationProgress[code={}, message={}]"
+                        .formatted(
+                                response.code(), response.message()));
                 resultMsg = "5G slicing task operation progress query failed.";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -389,8 +389,8 @@ public class TaskMgtServiceImpl implements TaskMgtService {
                 resultMsg = "ConnectionLinks query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             }else {
-                logger.error(String
-                        .format("queryConnectionLinks: Can not get ConnectionLinks[code={}, message={}]",
+                logger.error("queryConnectionLinks: Can not get ConnectionLinks[code={}, message={}]"
+                        .formatted(
                                 response.code(), response.message()));
                 resultMsg = "ConnectionLinks progress query failed.";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);

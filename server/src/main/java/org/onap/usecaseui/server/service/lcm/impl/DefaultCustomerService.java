@@ -61,7 +61,7 @@ public class DefaultCustomerService implements CustomerService {
             if (response.isSuccessful()) {
                 return response.body().getCustomer();
             } else {
-                log.info(String.format("Can not get customers[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get customers[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -82,7 +82,7 @@ public class DefaultCustomerService implements CustomerService {
 				result.put("status", "SUCCESS");
 			}else{
 				result.put("status", "FAILED");
-				result.put("errorMessage",String.format("Can not get createOrUpdateCustomer[code=%s, message=%s]", response.code(), response.message()));
+				result.put("errorMessage","Can not get createOrUpdateCustomer[code=%s, message=%s]".formatted(response.code(), response.message()));
 			}
 		} catch (IOException e) {
 			result.put("status", "FAILED");
@@ -103,7 +103,7 @@ public class DefaultCustomerService implements CustomerService {
 				result.put("result",response.body());
 			}else{
 				result.put("status", "FAILED");
-				result.put("errorMessage",String.format("Can not get getCustomerById[code=%s, message=%s]", response.code(), response.message()));
+				result.put("errorMessage","Can not get getCustomerById[code=%s, message=%s]".formatted(response.code(), response.message()));
 			}
 		} catch (IOException e) {
 			result.put("status", "FAILED");
@@ -123,7 +123,7 @@ public class DefaultCustomerService implements CustomerService {
 				result.put("status", "SUCCESS");
 			}else{
 				result.put("status", "FAILED");
-				result.put("errorMessage",String.format("Can not get deleteCustomer[code=%s, message=%s]", response.code(), response.message()));
+				result.put("errorMessage","Can not get deleteCustomer[code=%s, message=%s]".formatted(response.code(), response.message()));
 			}
 		} catch (IOException e) {
 			result.put("status", "FAILED");
@@ -142,7 +142,7 @@ public class DefaultCustomerService implements CustomerService {
             if (response.isSuccessful()) {
                 return response.body().getServiceSubscriptions();
             } else {
-                log.info(String.format("Can not get service-subscriptions[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get service-subscriptions[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -163,7 +163,7 @@ public class DefaultCustomerService implements CustomerService {
 				result.put("status", "SUCCESS");
 			}else{
 				result.put("status", "FAILED");
-				result.put("errorMessage",String.format("Can not get createOrUpdateServiceType[code=%s, message=%s]", response.code(), response.message()));
+				result.put("errorMessage","Can not get createOrUpdateServiceType[code=%s, message=%s]".formatted(response.code(), response.message()));
 			}
 		} catch (IOException e) {
 			result.put("status", "FAILED");
@@ -183,7 +183,7 @@ public class DefaultCustomerService implements CustomerService {
 				result.put("status", "SUCCESS");
 			}else{
 				result.put("status", "FAILED");
-				result.put("errorMessage",String.format("Can not get deleteServiceType[code=%s, message=%s]", response.code(), response.message()));
+				result.put("errorMessage","Can not get deleteServiceType[code=%s, message=%s]".formatted(response.code(), response.message()));
 			}
 		} catch (IOException e) {
 			result.put("status", "FAILED");
@@ -208,7 +208,7 @@ public class DefaultCustomerService implements CustomerService {
                 result.put("result", response.body());
             } else {
                 result.put("status", "FAILED");
-                result.put("errorMessage", String.format("Can not get getServiceTypeById[code=%s, message=%s]",
+                result.put("errorMessage", "Can not get getServiceTypeById[code=%s, message=%s]".formatted(
                         response.code(), response.message()));
             }
         } catch (IOException e) {
@@ -255,50 +255,70 @@ public class DefaultCustomerService implements CustomerService {
             log.info("Request to AAI Fails dues to " + e);
             log.info("Mocking Response Data");
 
-            String jsonMock = "{\r\n" + "    \"results\": [\r\n" + "        {\r\n"
-                    + "            \"p-interface\": {\r\n"
-                    + "                \"interface-name\": \"nodeId-11.11.11.12-ltpId-2\",\r\n"
-                    + "                \"speed-value\": \"100\",\r\n" + "                \"speed-units\": \"Gbps\",\r\n"
-                    + "                \"port-description\": \"\",\r\n"
-                    + "                \"interface-type\": \"XPONDER-NETWORK\",\r\n"
-                    + "                \"network-interface-type\": \"ENNI\",\r\n"
-                    + "                \"resource-version\": \"1572522050145\",\r\n"
-                    + "                \"in-maint\": true,\r\n"
-                    + "                \"network-ref\": \"otn-topology\",\r\n"
-                    + "                \"operational-status\": \"up\",\r\n"
-                    + "                \"relationship-list\": {\r\n" + "                    \"relationship\": [\r\n"
-                    + "                        {\r\n"
-                    + "                            \"related-to\": \"logical-link\",\r\n"
-                    + "                            \"relationship-label\": \"tosca.relationships.network.LinksTo\",\r\n"
-                    + "                            \"related-link\": \"/aai/v16/network/logical-links/logical-link/nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\",\r\n"
-                    + "                            \"relationship-data\": [\r\n"
-                    + "                                {\r\n"
-                    + "                                    \"relationship-key\": \"logical-link.link-name\",\r\n"
-                    + "                                    \"relationship-value\": \"nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\"\r\n"
-                    + "                                }\r\n" + "                            ]\r\n"
-                    + "                        }\r\n" + "                    ]\r\n" + "                }\r\n"
-                    + "           }\r\n" + "        },\r\n" + "        {\r\n" + "            \"p-interface\": {\r\n"
-                    + "                \"interface-name\": \"nodeId-12.12.12.12-ltpId-1\",\r\n"
-                    + "                \"speed-value\": \"100\",\r\n" + "                \"speed-units\": \"Gbps\",\r\n"
-                    + "                \"port-description\": \"\",\r\n"
-                    + "                \"interface-type\": \"XPONDER-NETWORK\",\r\n"
-                    + "                \"network-interface-type\": \"ENNI\",\r\n"
-                    + "                \"resource-version\": \"1572522469912\",\r\n"
-                    + "                \"in-maint\": true,\r\n"
-                    + "                \"network-ref\": \"tapi-topology\",\r\n"
-                    + "                \"operational-status\": \"up\",\r\n"
-                    + "                \"relationship-list\": {\r\n" + "                    \"relationship\": [\r\n"
-                    + "                        {\r\n"
-                    + "                            \"related-to\": \"logical-link\",\r\n"
-                    + "                            \"relationship-label\": \"tosca.relationships.network.LinksTo\",\r\n"
-                    + "                            \"related-link\": \"/aai/v16/network/logical-links/logical-link/nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\",\r\n"
-                    + "                            \"relationship-data\": [\r\n"
-                    + "                                {\r\n"
-                    + "                                    \"relationship-key\": \"logical-link.link-name\",\r\n"
-                    + "                                    \"relationship-value\": \"nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1\"\r\n"
-                    + "                                }\r\n" + "                            ]\r\n"
-                    + "                        }\r\n" + "                    ]\r\n" + "                }\r\n"
-                    + "            }\r\n" + "        }\r\n" + "    ]\r\n" + "}\r\n" + "";
+            String jsonMock = """
+                    {
+                        "results": [
+                            {
+                                "p-interface": {
+                                    "interface-name": "nodeId-11.11.11.12-ltpId-2",
+                                    "speed-value": "100",
+                                    "speed-units": "Gbps",
+                                    "port-description": "",
+                                    "interface-type": "XPONDER-NETWORK",
+                                    "network-interface-type": "ENNI",
+                                    "resource-version": "1572522050145",
+                                    "in-maint": true,
+                                    "network-ref": "otn-topology",
+                                    "operational-status": "up",
+                                    "relationship-list": {
+                                        "relationship": [
+                                            {
+                                                "related-to": "logical-link",
+                                                "relationship-label": "tosca.relationships.network.LinksTo",
+                                                "related-link": "/aai/v16/network/logical-links/logical-link/nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1",
+                                                "relationship-data": [
+                                                    {
+                                                        "relationship-key": "logical-link.link-name",
+                                                        "relationship-value": "nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                               }
+                            },
+                            {
+                                "p-interface": {
+                                    "interface-name": "nodeId-12.12.12.12-ltpId-1",
+                                    "speed-value": "100",
+                                    "speed-units": "Gbps",
+                                    "port-description": "",
+                                    "interface-type": "XPONDER-NETWORK",
+                                    "network-interface-type": "ENNI",
+                                    "resource-version": "1572522469912",
+                                    "in-maint": true,
+                                    "network-ref": "tapi-topology",
+                                    "operational-status": "up",
+                                    "relationship-list": {
+                                        "relationship": [
+                                            {
+                                                "related-to": "logical-link",
+                                                "relationship-label": "tosca.relationships.network.LinksTo",
+                                                "related-link": "/aai/v16/network/logical-links/logical-link/nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1",
+                                                "relationship-data": [
+                                                    {
+                                                        "relationship-key": "logical-link.link-name",
+                                                        "relationship-value": "nodeId-11.11.11.12-ltpId-2_nodeId-12.12.12.12-ltpId-1"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                    """;
 
             try {
                 niResponse = mapper.readValue(jsonMock, AAINetworkInterfaceResponse.class);

@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.onap.usecase-ui.server</groupId>
         <artifactId>usecase-ui-server-parent</artifactId>
-        <version>15.0.3-SNAPSHOT</version>
+        <version>15.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>usecase-ui-server-standalone</artifactId>
