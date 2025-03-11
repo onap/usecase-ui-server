@@ -46,8 +46,8 @@ public class SotnServiceLcmController {
     @GetMapping(
             value = {"/uui-lcm/Sotnservices/servicesubscription/{subscriptionType}/serviceinstance/{instanceid}"},
             produces = "application/json")
-    public String getSotnService(@PathVariable("subscriptionType") String subscriptionType,
-            @PathVariable("instanceid") String instanceid) {
+    public String getSotnService(@PathVariable String subscriptionType,
+            @PathVariable String instanceid) {
         logger.info("Get Service called");
         return sotnServiceTemplateService.getService(subscriptionType, instanceid);
     }
@@ -56,8 +56,8 @@ public class SotnServiceLcmController {
     @DeleteMapping(
             value = {"/uui-lcm/Sotnservices/servicesubscription/{subscriptionType}/serviceinstance/{instanceid}"},
             produces = "application/json")
-    public DeleteOperationRsp getDeleteSotnService(@PathVariable("subscriptionType") String subscriptionType,
-            @PathVariable("instanceid") String instanceid) throws Exception {
+    public DeleteOperationRsp getDeleteSotnService(@PathVariable String subscriptionType,
+            @PathVariable String instanceid) throws Exception {
         logger.info("Delete Service called");
         DeleteOperationRsp deleteOperationRsp = sotnServiceTemplateService.deleteService(subscriptionType, instanceid);
         return deleteOperationRsp;
@@ -77,7 +77,7 @@ public class SotnServiceLcmController {
             "/uui-lcm/Sotnservices/topology/service/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{serviceInstanceId}"},
             produces = "application/json")
     public String getSiteInformationTopology(@PathVariable("service-type") String servicetype,
-            @PathVariable("serviceInstanceId") String serviceInstanceId) throws Exception {
+            @PathVariable String serviceInstanceId) throws Exception {
         logger.info("Site topology called.");
         return sotnServiceTemplateService.getSOTNSiteInformationTopology(servicetype, serviceInstanceId);
     }
@@ -87,7 +87,7 @@ public class SotnServiceLcmController {
             "/uui-lcm/Sotnservices/resourceTopology/service/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{serviceInstanceId}"},
             produces = "application/json")
     public String getResourceInformationTopology(@PathVariable("service-type") String servicetype,
-            @PathVariable("serviceInstanceId") String serviceInstanceId) throws Exception {
+            @PathVariable String serviceInstanceId) throws Exception {
         logger.info("Resource topology called.");
         return sotnServiceTemplateService.getSOTNResourceInformationTopology(servicetype, serviceInstanceId);
     }
@@ -97,7 +97,7 @@ public class SotnServiceLcmController {
             "/uui-lcm/Sotnservices/serviceTopology/service/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{serviceInstanceId}"},
             produces = "application/json")
     public String getServiceInformationTopology(@PathVariable("service-type") String servicetype,
-            @PathVariable("serviceInstanceId") String serviceInstanceId) throws Exception {
+            @PathVariable String serviceInstanceId) throws Exception {
         logger.info("Service topology called.");
         return sotnServiceTemplateService.getServiceInformationTopology(servicetype, serviceInstanceId);
     }
@@ -107,7 +107,7 @@ public class SotnServiceLcmController {
             "/uui-lcm/Sotnservices/vpnbindingTopology/service/service-subscriptions/service-subscription/{service-type}/service-instances/service-instance/{serviceInstanceId}/vpn-informations/vpn-information/{vpinId}"},
              produces = "application/json")
     public String getVpnInformationTopology(@PathVariable("service-type") String servicetype,
-            @PathVariable("serviceInstanceId") String serviceInstanceId, @PathVariable("vpinId") String vpinId)
+            @PathVariable String serviceInstanceId, @PathVariable String vpinId)
             throws Exception {
         logger.info("Vpn Binding topology called.");
         return sotnServiceTemplateService.getVPNBindingInformationTopology(servicetype, serviceInstanceId, vpinId);
@@ -115,7 +115,7 @@ public class SotnServiceLcmController {
 
     @ResponseBody
     @GetMapping(value = {"/uui-lcm/Sotnservices/serviceStatus/service-instance/{instanceid}"}, produces = "application/json")
-    public String getSotnServicestatus(@PathVariable("instanceid") String instanceid) {
+    public String getSotnServicestatus(@PathVariable String instanceid) {
         logger.info("service status called.");
         return sotnServiceTemplateService.getSOTNInstantiationstatus(instanceid);
     }

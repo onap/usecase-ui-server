@@ -12,6 +12,7 @@
  */
 package org.onap.usecaseui.server.service.slicingdomain.aai.bean;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import lombok.Setter;
 @Setter
 public class AAIServiceInstance implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2847142014162429886L;
 
     @JsonProperty("service-instance-id")

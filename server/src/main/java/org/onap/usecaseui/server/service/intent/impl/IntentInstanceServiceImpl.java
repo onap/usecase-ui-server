@@ -787,8 +787,7 @@ public class IntentInstanceServiceImpl implements IntentInstanceService {
     }
 
     private IntentInstance assembleIntentInstanceFormSliceInfo(IntentInstance instance, Object body) {
-        if(body instanceof Map){
-            Map map = (Map) body;
+        if(body instanceof Map map){
             JSONObject jsonObject = new JSONObject(map);
             JSONObject slicingOrderInfo = jsonObject.getJSONObject("slicing_order_info");
             String intent_content = slicingOrderInfo.getString("intentContent");

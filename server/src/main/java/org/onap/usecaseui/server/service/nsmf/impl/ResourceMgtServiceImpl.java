@@ -118,9 +118,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing business instances query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("querySlicingBusiness: Can not get slicingBusinessList[code={}, message={}]",
-                    response.code(),
-                    response.message()));
+                logger.error("querySlicingBusiness: Can not get slicingBusinessList[code={}, message={}]".formatted(
+                        response.code(),
+                        response.message()));
                 resultMsg = "5G slicing task result query failed!";
                 if (response.code() == NsmfCodeConstant.RESOURCE_NOT_FOUND_CODE){
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
@@ -219,10 +219,10 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing business instances query based on status result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("querySlicingBusinessByStatus: Can not get slicingBusinessList[code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                logger.error("querySlicingBusinessByStatus: Can not get slicingBusinessList[code={}, message={}]"
+                        .formatted(
+                                response.code(),
+                                response.message()));
                 resultMsg = "5G slicing task result query based on status failed!";
                 if (response.code() == NsmfCodeConstant.RESOURCE_NOT_FOUND_CODE){
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
@@ -270,10 +270,10 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing business details query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("querySlicingBusinessDetails: Can not get AAIServiceInstance[code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                logger.error("querySlicingBusinessDetails: Can not get AAIServiceInstance[code={}, message={}]"
+                        .formatted(
+                                response.code(),
+                                response.message()));
                 resultMsg = "5G slicing business details query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -319,10 +319,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                                     anSliceTaskInfo.setNextHopInfo(endPointInfoList.getNextHop());
                                 }
                             } else {
-                                logger.error(String.format(
-                                    "querySlicingBusinessDetails: Can not get getEndpointByLinkName[code={}, message={}]",
-                                    response.code(),
-                                    response.message()));
+                                logger.error("querySlicingBusinessDetails: Can not get getEndpointByLinkName[code={}, message={}]".formatted(
+                                        response.code(),
+                                        response.message()));
                                 resultMsg = "5G slicing business details query failed!";
                                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                             }
@@ -342,28 +341,25 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                                 tnBHSliceTaskInfo.setMaxBandWidth(sliceProfileInfo.getMaxBandwidth());
                                 tnBHSliceTaskInfo.setLinkType("P2P");
                             } else {
-                                logger.error(String.format(
-                                    "querySlicingBusinessDetails: Can not getSliceProfiles [code={}, message={}]",
-                                    response.code(),
-                                    response.message()));
+                                logger.error("querySlicingBusinessDetails: Can not getSliceProfiles [code={}, message={}]".formatted(
+                                        response.code(),
+                                        response.message()));
                                 resultMsg = "5G slicing business details query failed!";
                                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                             }
                         }
                     } else {
-                        logger.error(String.format(
-                            "querySlicingBusinessDetails: Can not get getServiceNetworkInstance [code={}, message={}]",
-                            response.code(),
-                            response.message()));
+                        logger.error("querySlicingBusinessDetails: Can not get getServiceNetworkInstance [code={}, message={}]".formatted(
+                                response.code(),
+                                response.message()));
                         resultMsg = "5G slicing business details query failed!";
                         resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                     }
                 }
             } else {
-                logger.error(String.format(
-                    "querySlicingBusinessDetails: Can not init getServiceNetworkInstance [code={}, message={}]",
-                    response.code(),
-                    response.message()));
+                logger.error("querySlicingBusinessDetails: Can not init getServiceNetworkInstance [code={}, message={}]".formatted(
+                        response.code(),
+                        response.message()));
                 resultMsg = "5G slicing service operation progress query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -406,9 +402,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing NSI service instances query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("queryNsiInstances: Can not get AAIServiceInstanceRsp[code={}, message={}]",
-                    response.code(),
-                    response.message()));
+                logger.error("queryNsiInstances: Can not get AAIServiceInstanceRsp[code={}, message={}]".formatted(
+                        response.code(),
+                        response.message()));
                 resultMsg = "5G slicing NSI service instances query failed!";
                 if (response.code() == NsmfCodeConstant.RESOURCE_NOT_FOUND_CODE){
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
@@ -451,10 +447,10 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing NSI service instances based on status result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("queryNsiInstancesByStatus: Can not get AAIServiceInstanceRsp[code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                logger.error("queryNsiInstancesByStatus: Can not get AAIServiceInstanceRsp[code={}, message={}]"
+                        .formatted(
+                                response.code(),
+                                response.message()));
                 resultMsg = "5G slicing NSI service instances based on status query failed!";
                 if (response.code() == NsmfCodeConstant.RESOURCE_NOT_FOUND_CODE){
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
@@ -498,9 +494,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing business details query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("queryNsiDetails: Can not get AAIServiceAndInstance[code={}, message={}]", response.code(),
-                        response.message()));
+                logger.error("queryNsiDetails: Can not get AAIServiceAndInstance[code={}, message={}]"
+                        .formatted(response.code(),
+                                response.message()));
                 resultMsg = "5G slicing business details query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -538,10 +534,10 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "NSSI associated with NSI result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("queryNsiRelatedNssiInfo: Can not get AAIServiceAndInstance[code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                logger.error("queryNsiRelatedNssiInfo: Can not get AAIServiceAndInstance[code={}, message={}]"
+                        .formatted(
+                                response.code(),
+                                response.message()));
                 resultMsg = "NSSI associated with NSI result query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -579,9 +575,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing NSI service instances query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("queryNssiInstances: Can not get AAIServiceInstanceRsp[code={}, message={}]",
-                    response.code(),
-                    response.message()));
+                logger.error("queryNssiInstances: Can not get AAIServiceInstanceRsp[code={}, message={}]".formatted(
+                        response.code(),
+                        response.message()));
                 resultMsg = "5G slicing NSSI service instances result query failed!";
                 if (response.code() == NsmfCodeConstant.RESOURCE_NOT_FOUND_CODE){
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
@@ -625,10 +621,10 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing NSSI service instances based on status result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("queryNssiInstancesByStatus: Can not get AAIServiceInstanceRsp[code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                logger.error("queryNssiInstancesByStatus: Can not get AAIServiceInstanceRsp[code={}, message={}]"
+                        .formatted(
+                                response.code(),
+                                response.message()));
                 resultMsg = "5G slicing NSSI service instances based on status query failed!";
                 if (response.code() == NsmfCodeConstant.RESOURCE_NOT_FOUND_CODE){
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
@@ -671,10 +667,10 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing NSSI query based on environment context result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("queryNssiInstancesByEnvironment: Can not get AAIServiceInstanceRsp[code={}, message={}]",
-                        response.code(),
-                        response.message()));
+                logger.error("queryNssiInstancesByEnvironment: Can not get AAIServiceInstanceRsp[code={}, message={}]"
+                        .formatted(
+                                response.code(),
+                                response.message()));
                 resultMsg = "5G slicing NSSI service instances based on environment query failed!";
                 if (response.code() == NsmfCodeConstant.RESOURCE_NOT_FOUND_CODE){
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
@@ -716,9 +712,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing service nssi details query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String
-                    .format("queryNssiDetails: Can not get AAIServiceAndInstance[code={}, message={}]", response.code(),
-                        response.message()));
+                logger.error("queryNssiDetails: Can not get AAIServiceAndInstance[code={}, message={}]"
+                        .formatted(response.code(),
+                                response.message()));
                 resultMsg = "5G slicing service nssi details query failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -764,9 +760,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing service activated normally.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("activateSlicingService: Can not get ActivateService[code={}, message={}]",
-                    activeResponse.code(),
-                    activeResponse.message()));
+                logger.error("activateSlicingService: Can not get ActivateService[code={}, message={}]".formatted(
+                        activeResponse.code(),
+                        activeResponse.message()));
                 resultMsg = "5G slicing service activated failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -812,9 +808,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing service deactivated normally.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("deactivateSlicingService: Can not get ActivateService[code={}, message={}]",
-                    activeResponse.code(),
-                    activeResponse.message()));
+                logger.error("deactivateSlicingService: Can not get ActivateService[code={}, message={}]".formatted(
+                        activeResponse.code(),
+                        activeResponse.message()));
                 resultMsg = "5G slicing service deactivation failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -860,9 +856,9 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                 resultMsg = "5G slicing service terminated normally.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                logger.error(String.format("terminateSlicingService: Can not get ActivateService[code={}, message={}]",
-                    activeResponse.code(),
-                    activeResponse.message()));
+                logger.error("terminateSlicingService: Can not get ActivateService[code={}, message={}]".formatted(
+                        activeResponse.code(),
+                        activeResponse.message()));
                 resultMsg = "5G slicing service termination failed!";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -925,8 +921,8 @@ public class ResourceMgtServiceImpl implements ResourceMgtService {
                         }
                     }
                 } else {
-                    logger.error(String.format("Can not get SOOperation[code={}, message={}]", response.code(),
-                        response.message()));
+                    logger.error("Can not get SOOperation[code={}, message={}]".formatted(response.code(),
+                            response.message()));
                     resultMsg = "5G slicing service operation progress query failed!";
                     resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
                 }

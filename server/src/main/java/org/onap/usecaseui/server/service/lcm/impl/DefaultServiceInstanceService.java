@@ -82,7 +82,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 				return result;
 			} else {
 				logger.info(
-						String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
+                        "Can not get service instances[code=%s, message=%s]".formatted(response.code(), response.message()));
 				return Collections.emptyList();
 			}
 		} catch (IOException e) {
@@ -123,7 +123,7 @@ public class DefaultServiceInstanceService implements ServiceInstanceService {
 				return result;
 			} else {
 				logger.info(
-						String.format("Can not get service instances[code=%s, message=%s]", response.code(), response.message()));
+                        "Can not get service instances[code=%s, message=%s]".formatted(response.code(), response.message()));
 				return "";
 			}
 		} catch (IOException e) {

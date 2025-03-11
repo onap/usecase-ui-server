@@ -119,16 +119,16 @@ public class GeneralConvertImpl {
                     String useInterval = aaiOrderServiceAndInstance.getWorkloadContext();
                     return useInterval;
                 } else {
-                    logger.error(String
-                        .format("getUseInterval: Can not get queryOrderByOrderId[code={}, message={}]", response.code(),
-                            response.message()));
+                    logger.error("getUseInterval: Can not get queryOrderByOrderId[code={}, message={}]"
+                            .formatted(response.code(),
+                                    response.message()));
                     return "";
                 }
 
             } else {
-                logger.error(String
-                    .format("getUseInterval: Can not get queryOrderByService[code={}, message={}]", response.code(),
-                        response.message()));
+                logger.error("getUseInterval: Can not get queryOrderByService[code={}, message={}]"
+                        .formatted(response.code(),
+                                response.message()));
                 return "";
             }
         } catch (Exception e) {

@@ -12,6 +12,7 @@
  */
 package org.onap.usecaseui.server.service.slicingdomain.aai.bean;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class AAIServiceRsp implements Serializable {
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = 3571621205575997704L;
     private List<AAIService> aAIService;
 

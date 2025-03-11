@@ -56,9 +56,9 @@ public class SlicingController {
         value = {"/5gSlicing/orders/status/{status}/pageNo/{pageNo}/pageSize/{pageSize}"},
         produces = "application/json")
     public ServiceResult querySlicingServiceOrder(
-        @PathVariable(value="status") String status,
-        @PathVariable(value="pageNo") String pageNo,
-        @PathVariable(value="pageSize") String pageSize) {
+        @PathVariable String status,
+        @PathVariable String pageNo,
+        @PathVariable String pageSize) {
         return slicingService.querySlicingOrderList(status, pageNo, pageSize);
     }
 
