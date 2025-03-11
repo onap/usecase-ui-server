@@ -55,6 +55,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.wiremock.spring.EnableWireMock;
@@ -64,6 +65,7 @@ import lombok.SneakyThrows;
 @EnableAutoConfiguration
 @EnableWireMock
 @EnableConfigurationProperties
+@ActiveProfiles("test")
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {

@@ -65,7 +65,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.info(String.format("Can not get distributed e2e service templates[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get distributed e2e service templates[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -80,7 +80,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     }
 
     private ServiceTemplateInput fetchServiceTemplate(String uuid, String toscaModelPath, boolean isVF) {
-        String toPath = String.format("/home/uui/%s.csar", uuid);
+        String toPath = "/home/uui/%s.csar".formatted(uuid);
         //String toPath = String.format("D:\\work/%s.csar", uuid);
         try {
         	if(!UuiCommonUtil.isExistFile(toPath)){
@@ -97,12 +97,12 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
     protected void downloadFile(String toscaModelPath, String toPath) throws IOException {
         try {
             String msbUrl = RestfulServices.getMsbAddress();
-            String templateUrl = String.format("https://%s%s", msbUrl, toscaModelPath);
+            String templateUrl = "https://%s%s".formatted(msbUrl, toscaModelPath);
             log.info("download Csar File Url is:"+templateUrl);
             ResponseBody body = sdcCatalog.downloadCsar(templateUrl).execute().body();
             Files.write(body.bytes(),new File(toPath));
         } catch (IOException e) {
-            log.error(String.format("Download %s failed!", toscaModelPath));
+            log.error("Download %s failed!".formatted(toscaModelPath));
             throw e;
         }
     }
@@ -262,7 +262,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             SDCServiceTemplate template = response.body();
             return template.getToscaModelURL();
         } else {
-            log.info(String.format("Cannot get tosca model for node template[%s]", nodeUUID));
+            log.info("Cannot get tosca model for node template[%s]".formatted(nodeUUID));
             return null;
         }
     }
@@ -341,7 +341,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             if (response.isSuccessful()) {
                 return response.body().getCloudRegion();
             } else {
-                log.info(String.format("Can not get vim info[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get vim info[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -357,7 +357,7 @@ public class DefaultServiceTemplateService implements ServiceTemplateService {
             if (response.isSuccessful()) {
                 return response.body().getEsrThirdpartySdncList();
             } else {
-                log.info(String.format("Can not get sdnc controllers[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get sdnc controllers[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {

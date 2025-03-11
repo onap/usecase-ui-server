@@ -80,7 +80,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.info(String.format("Can not get VF resources[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get VF resources[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -96,7 +96,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.info(String.format("Can not get NS services[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get NS services[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -112,7 +112,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.info(String.format("Can not post NS packages[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not post NS packages[code=%s, message=%s]".formatted(response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -127,7 +127,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.info(String.format("Can not get VF packages[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get VF packages[code=%s, message=%s]".formatted(response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -142,7 +142,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get Job status[code=%s, message=%s]".formatted(response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -156,7 +156,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
         if (response.isSuccessful()) {
             return response.body();
         } else {
-            log.info(String.format("Can not get Job status[code=%s, message=%s]", response.code(), response.message()));
+            log.info("Can not get Job status[code=%s, message=%s]".formatted(response.code(), response.message()));
             throw new VfcException("VFC service getNsLcmJobStatus is not available!");
         }
     } catch (IOException e) {
@@ -170,7 +170,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.info(String.format("Can not delete NS packages[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not delete NS packages[code=%s, message=%s]".formatted(response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -185,7 +185,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.info(String.format("Can not delete VF packages[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not delete VF packages[code=%s, message=%s]".formatted(response.code(), response.message()));
                 throw new VfcException("VFC service is not available!");
             }
         } catch (IOException e) {
@@ -203,7 +203,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                log.info(String.format("Can not get getVnfPackages[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get getVnfPackages[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -224,7 +224,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                log.info(String.format("Can not get getNetworkServicePackages[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get getNetworkServicePackages[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -246,7 +246,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                log.info(String.format("Can not get getPnfPackages[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get getPnfPackages[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -268,7 +268,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get downLoadNsPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get downLoadNsPackage[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -290,7 +290,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get downLoadPnfPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get downLoadPnfPackage[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -312,7 +312,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get downLoadVnfPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get downLoadVnfPackage[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -334,7 +334,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get deleteNsdPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get deleteNsdPackage[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -359,7 +359,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get deleteNsdPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get deleteNsdPackage[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -384,7 +384,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get deletePnfPackage[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get deletePnfPackage[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -419,7 +419,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 }
                 return result;
             } else {
-                log.info(String.format("Can not get getNetworkServiceInfo[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get getNetworkServiceInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -441,7 +441,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not createNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not createNetworkServiceInstance[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -461,7 +461,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get deleteNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get deleteNetworkServiceInstance[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -487,7 +487,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not terminateNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not terminateNetworkServiceInstance[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -508,7 +508,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not healNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not healNetworkServiceInstance[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -529,7 +529,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not scaleNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not scaleNetworkServiceInstance[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -550,7 +550,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not createNetworkServiceData[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not createNetworkServiceData[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -571,7 +571,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not createVnfData[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not createVnfData[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -592,7 +592,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not createPnfData[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not createPnfData[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -612,7 +612,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get getNsdInfo[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get getNsdInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -634,7 +634,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get getVnfInfo[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get getVnfInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -656,7 +656,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result= CommonConstant.CONSTANT_SUCCESS;
             } else {
-                log.info(String.format("Can not get getPnfInfo[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get getPnfInfo[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -678,7 +678,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                log.info(String.format("Can not get listNsTemplates[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get listNsTemplates[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {
@@ -701,7 +701,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not fetchNsTemplateData[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not fetchNsTemplateData[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -728,8 +728,8 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                     result.put("result", JSONObject.parseObject(new String(response.body().bytes())));
                 } else {
                     result.put("status", CommonConstant.CONSTANT_FAILED);
-                    result.put("error", String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
-                    log.error(String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
+                    result.put("error", "Can not parse ccvpn template file. Detail Info [code=%s, message=%s]".formatted(response.code(), response.message()));
+                    log.error("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]".formatted(response.code(), response.message()));
                }
             } else {
                 // distribute template files to vfc catalog
@@ -744,13 +744,13 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                         result.put("result",JSONObject.parseObject(new String(response.body().bytes())));
                     } else {
                         result.put("status", CommonConstant.CONSTANT_FAILED);
-                        result.put("error",String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
-                        log.error(String.format("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]", response.code(), response.message()));
+                        result.put("error","Can not parse ccvpn template file. Detail Info [code=%s, message=%s]".formatted(response.code(), response.message()));
+                        log.error("Can not parse ccvpn template file. Detail Info [code=%s, message=%s]".formatted(response.code(), response.message()));
                     }
                 } else {
                     result.put("status", CommonConstant.CONSTANT_FAILED);
-                    result.put("error",String.format("Can not distribute ccvpn template file. Detail Info [code=%s, message=%s]", postResponse.code(), postResponse.message()));
-                    log.error(String.format("Can not distribute ccvpn template file. Detail Info [code=%s, message=%s]", postResponse.code(), postResponse.message()));
+                    result.put("error","Can not distribute ccvpn template file. Detail Info [code=%s, message=%s]".formatted(postResponse.code(), postResponse.message()));
+                    log.error("Can not distribute ccvpn template file. Detail Info [code=%s, message=%s]".formatted(postResponse.code(), postResponse.message()));
                }
             }
         } catch (Exception e) {
@@ -772,7 +772,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
                 result=new String(response.body().bytes());
             } else {
                 result= CommonConstant.CONSTANT_FAILED;
-                log.error(String.format("Can not instantiateNetworkServiceInstance[code=%s, message=%s]", response.code(), response.message()));
+                log.error("Can not instantiateNetworkServiceInstance[code=%s, message=%s]".formatted(response.code(), response.message()));
             }
         } catch (Exception e) {
             result= CommonConstant.CONSTANT_FAILED;
@@ -792,7 +792,7 @@ public class DefaultPackageDistributionService implements PackageDistributionSer
             if (response.isSuccessful()) {
                 result=new String(response.body().bytes());
             } else {
-                log.info(String.format("Can not get getVnfInfoById[code=%s, message=%s]", response.code(), response.message()));
+                log.info("Can not get getVnfInfoById[code=%s, message=%s]".formatted(response.code(), response.message()));
                 result= CommonConstant.CONSTANT_FAILED;;
             }
         } catch (IOException e) {

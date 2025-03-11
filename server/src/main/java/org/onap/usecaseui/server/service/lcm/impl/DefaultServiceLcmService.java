@@ -69,7 +69,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.error(String.format("Can not instantiate service[code=%s, message=%s]", response.code(),
+                log.error("Can not instantiate service[code=%s, message=%s]".formatted(response.code(),
                         response.message()));
                 throw new SOException("SO instantiate service failed!");
             }
@@ -86,7 +86,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.error(String.format("Can not query operation process[code=%s, message=%s]", response.code(),
+                log.error("Can not query operation process[code=%s, message=%s]".formatted(response.code(),
                         response.message()));
                 throw new SOException("SO query operation process failed!");
             }
@@ -105,7 +105,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.error(String.format("Can not terminate service[code=%s, message=%s]", response.code(),
+                log.error("Can not terminate service[code=%s, message=%s]".formatted(response.code(),
                         response.message()));
                 throw new SOException("SO terminate service failed!");
             }
@@ -125,7 +125,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
                 log.info("scaleService response content is :" + response.body().toString());
                 return response.body();
             } else {
-                log.error(String.format("Can not scaleService service[code=%s, message=%s]", response.code(),
+                log.error("Can not scaleService service[code=%s, message=%s]".formatted(response.code(),
                         response.message()));
                 throw new SOException("SO terminate service failed!");
             }
@@ -144,7 +144,7 @@ public class DefaultServiceLcmService implements ServiceLcmService {
             if (response.isSuccessful()) {
                 return response.body();
             } else {
-                log.error(String.format("Can not updateService service[code=%s, message=%s]", response.code(),
+                log.error("Can not updateService service[code=%s, message=%s]".formatted(response.code(),
                         response.message()));
                 throw new SOException("SO terminate service failed!");
             }

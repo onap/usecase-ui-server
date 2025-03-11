@@ -33,12 +33,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.http.HttpHeaders;
 import org.wiremock.spring.EnableWireMock;
 
 @EnableAutoConfiguration
 // @AutoConfigureObservability
 @EnableWireMock
+@ActiveProfiles("test")
 @SpringBootTest(
     classes = {
         AAIClientConfig.class, DefaultCustomerService.class

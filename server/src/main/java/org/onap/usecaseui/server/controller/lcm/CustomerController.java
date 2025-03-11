@@ -74,7 +74,7 @@ public class CustomerController {
     
     @ResponseBody
     @GetMapping(value = {"/uui-lcm/customers/{customerId}/service-subscriptions"} , produces = "application/json")
-    public List<AAIServiceSubscription> getServiceSubscriptions(@PathVariable(value="customerId") String customerId){
+    public List<AAIServiceSubscription> getServiceSubscriptions(@PathVariable String customerId){
         return customerService.listServiceSubscriptions(customerId);
     }
     

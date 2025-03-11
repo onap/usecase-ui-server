@@ -375,9 +375,9 @@ public class TaskMgtServiceConvert {
                 endPointInfo.setANEndPointId(connectionLink.getLinkName());
                 endPointInfo.setCNEndPointId(connectionLink.getLinkName2());
             }else {
-                logger.error(String
-                    .format("queryEndPointId: Can not get ConnectionLinks[code={}, message={}]",
-                        response.code(), response.message()));
+                logger.error("queryEndPointId: Can not get ConnectionLinks[code={}, message={}]"
+                        .formatted(
+                                response.code(), response.message()));
             }
         } catch (Exception e) {
             logger.error(e.getMessage());

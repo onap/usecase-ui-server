@@ -50,7 +50,7 @@ public class SotnServiceQryController {
 
     @ResponseBody
     @GetMapping(value = {"/uui-lcm/Sotnservices/ServiceInstances/{serviceType}"}, produces = "application/json")
-    public String getSotnServiceInstances(@PathVariable(value="serviceType") String serviceType){
+    public String getSotnServiceInstances(@PathVariable String serviceType){
         System.out.println("Get Service Instance called.");
         String response = sotnServiceQryService.getServiceInstances(serviceType);
         return response;

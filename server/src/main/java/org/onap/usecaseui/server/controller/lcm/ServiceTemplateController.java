@@ -57,7 +57,7 @@ public class ServiceTemplateController {
 
     @ResponseBody
     @GetMapping(value = {"/uui-lcm/service-templates/{uuid}"}, produces = "application/json")
-    public ServiceTemplateInput getServiceTemplateInput(@PathVariable("uuid") String uuid, @RequestParam("toscaModelPath") String toscaModelPath){
+    public ServiceTemplateInput getServiceTemplateInput(@PathVariable String uuid, @RequestParam String toscaModelPath){
 	ServiceTemplateInput serviceTemplateInput = serviceTemplateService.fetchServiceTemplateInput(uuid, "/api"+toscaModelPath);
         return serviceTemplateInput;
     }
@@ -70,7 +70,7 @@ public class ServiceTemplateController {
 
      @ResponseBody
          @GetMapping(value = {"/uui-lcm/getAllNI/{networkId}"}, produces = "application/json")
-	     public List<String> getAllNetworkInterface(@PathVariable("networkId") String networkId){
+	     public List<String> getAllNetworkInterface(@PathVariable String networkId){
 		         	List<String> nIList = customerService.fetchNIList(networkId);
 				    	
 	   	return nIList;

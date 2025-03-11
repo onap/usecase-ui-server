@@ -91,7 +91,7 @@ public class SlicingServiceImpl implements SlicingService {
 
             String jsonstr = gson.toJson(creationRequest);
             log.info("createSlicingService:creationRequest request is:{}", jsonstr);
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonstr.toString());
+            RequestBody requestBody = RequestBody.create(jsonstr.toString(), MediaType.parse("application/json"));
             Response<CreateResponse> updateResponse = soSliceClient
                 .submitOrders(requestBody).execute();
 
@@ -107,9 +107,9 @@ public class SlicingServiceImpl implements SlicingService {
                 resultMsg = "5G slicing order created normally.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                log.error(String
-                    .format("createSlicingService: Can not submitOrders [code={}, message={}]", updateResponse.code(),
-                        updateResponse.message()));
+                log.error("createSlicingService: Can not submitOrders [code={}, message={}]"
+                        .formatted(updateResponse.code(),
+                                updateResponse.message()));
                 resultMsg = "5G slicing order created failed.";
                 resultHeader.setResult_code(NsmfCodeConstant.ERROR_CODE_UNKNOWN);
             }
@@ -207,9 +207,9 @@ public class SlicingServiceImpl implements SlicingService {
                 resultMsg = "5G slicing order query result.";
                 resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);
             } else {
-                log.error(String.format("querySlicingOrderList: Can not get listOrders[code={}, message={}]",
-                    response.code(),
-                    response.message()));
+                log.error("querySlicingOrderList: Can not get listOrders[code={}, message={}]".formatted(
+                        response.code(),
+                        response.message()));
                 resultMsg = "\"5G slicing order query failed!";
                 if (response.code() == NsmfCodeConstant.RESOURCE_NOT_FOUND_CODE) {
                     resultHeader.setResult_code(NsmfCodeConstant.SUCCESS_CODE);

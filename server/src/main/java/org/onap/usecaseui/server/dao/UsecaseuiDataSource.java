@@ -18,12 +18,14 @@ package org.onap.usecaseui.server.dao;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@DependsOnDatabaseInitialization
 public class UsecaseuiDataSource
 {
     @Value("${spring.database.driver.classname}")

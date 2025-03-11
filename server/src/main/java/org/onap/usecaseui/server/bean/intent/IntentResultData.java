@@ -17,10 +17,13 @@ package org.onap.usecaseui.server.bean.intent;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 public class IntentResultData implements Serializable {
+    @Serial
     private static final long serialVersionUID = 4238217913168412725L;
 
     private Integer code;

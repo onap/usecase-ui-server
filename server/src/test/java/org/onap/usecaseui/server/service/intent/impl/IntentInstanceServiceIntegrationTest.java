@@ -58,6 +58,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.context.ActiveProfiles;
 import org.wiremock.spring.EnableWireMock;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -66,6 +67,7 @@ import lombok.SneakyThrows;
 
 @EnableWireMock
 @EnableAutoConfiguration
+@ActiveProfiles("test")
 @SpringBootTest(classes = {
     AAIClientConfig.class,
     SOClientConfig.class,

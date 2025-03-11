@@ -104,20 +104,20 @@ public class PackageDistributionController {
 
     @ResponseBody
     @GetMapping(value = {"/uui-lcm/jobs/{jobId}"}, produces = "application/json")
-    public JobStatus getJobStatus(@PathVariable(value="jobId") String jobId, HttpServletRequest request){
+    public JobStatus getJobStatus(@PathVariable String jobId, HttpServletRequest request){
         String responseId = request.getParameter("responseId");
         return packageDistributionService.getJobStatus(jobId, responseId);
     }
 
     @ResponseBody
     @DeleteMapping(value = {"/uui-lcm/ns-packages/{casrId}"}, produces = "application/json")
-    public DistributionResult deleteNsPackage(@PathVariable("casrId") String casrId){
+    public DistributionResult deleteNsPackage(@PathVariable String casrId){
         return packageDistributionService.deleteNsPackage(casrId);
     }
     
     @ResponseBody
     @GetMapping(value = {"/uui-lcm/jobs/getNsLcmJobStatus/{jobId}"}, produces = "application/json")
-    public JobStatus getNsLcmJobStatus(@PathVariable(value="jobId") String jobId, HttpServletRequest request){
+    public JobStatus getNsLcmJobStatus(@PathVariable String jobId, HttpServletRequest request){
         String responseId = request.getParameter("responseId");
         String serviceInstanceId = request.getParameter("serviceInstanceId");
         String operationType = request.getParameter("operationType");
@@ -138,7 +138,7 @@ public class PackageDistributionController {
     
     @ResponseBody
     @DeleteMapping(value = {"/uui-lcm/vf-packages/{casrId}"}, produces = "application/json")
-    public Job deleteVfPackage(@PathVariable("casrId") String casrId){
+    public Job deleteVfPackage(@PathVariable String casrId){
         return packageDistributionService.deleteVfPackage(casrId);
     }
     

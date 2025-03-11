@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.http.HttpHeaders;
 import org.wiremock.spring.EnableWireMock;
 
@@ -41,6 +42,7 @@ import lombok.SneakyThrows;
 @EnableWireMock
 @EnableAutoConfiguration
 @EnableConfigurationProperties(SDCClientProperties.class)
+@ActiveProfiles("test")
 @SpringBootTest(
     classes = {
         AAIClientConfig.class, SDCClientConfig.class , DefaultServiceTemplateService.class

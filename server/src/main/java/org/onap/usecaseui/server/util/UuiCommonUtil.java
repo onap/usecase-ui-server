@@ -69,24 +69,24 @@ public class UuiCommonUtil {
 		if(null == obj) {
 			return false;
 		}
-		if(obj instanceof Collection) {
-			if (((Collection)obj).size() == 0) {
+		if(obj instanceof Collection collection) {
+			if (collection.size() == 0) {
 				return false;
 			}
-		} else if (obj instanceof String) {
-			if (((String)obj).trim().equals("")) {
+		} else if (obj instanceof String string) {
+			if (string.trim().equals("")) {
 				return false;
 			}
-		} else if (obj instanceof Map) {
-			if (((Map)obj).size() == 0) {
+		} else if (obj instanceof Map map) {
+			if (map.size() == 0) {
 				return false;
 			}
 		} else if (obj.getClass().isArray()) {
 			if(Array.getLength(obj) == 0) {
 				return false;
 			}
-		} else if (obj instanceof StringBuffer) {
-			if (((StringBuffer)obj).length() == 0) {
+		} else if (obj instanceof StringBuffer buffer) {
+			if (buffer.length() == 0) {
 				return false;
 			}
 		}

@@ -38,11 +38,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.http.HttpHeaders;
 import org.wiremock.spring.EnableWireMock;
 
 @EnableAutoConfiguration
 @EnableWireMock
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = {
     SOClientConfig.class, ResourceMonitorServiceImpl.class, ResourceMonitorServiceConvert.class
 }, properties = {

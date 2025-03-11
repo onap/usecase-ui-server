@@ -78,7 +78,7 @@ public class ServiceLcmController {
 
     @ResponseBody
     @GetMapping(value = {"/uui-lcm/services/{serviceId}/operations/{operationId}"}, produces = "application/json")
-    public OperationProgressInformation queryOperationProgress(HttpServletRequest request,@PathVariable(value="serviceId") String serviceId, @PathVariable(value="operationId") String operationId){
+    public OperationProgressInformation queryOperationProgress(HttpServletRequest request,@PathVariable String serviceId, @PathVariable String operationId){
     	String operationType = request.getParameter("operationType");
     	String operationResult = CommonConstant.IN_PROGRESS_CODE;
     	OperationProgressInformation operationProgressInformation =serviceLcmService.queryOperationProgress(serviceId, operationId);
@@ -102,7 +102,7 @@ public class ServiceLcmController {
 
     @ResponseBody
     @DeleteMapping(value = {"/uui-lcm/services/{serviceId}"}, produces = "application/json")
-    public DeleteOperationRsp terminateService(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request) throws ParseException{
+    public DeleteOperationRsp terminateService(@PathVariable String serviceId, HttpServletRequest request) throws ParseException{
     	DeleteOperationRsp deleteOperationRsp = serviceLcmService.terminateService(serviceId, request);
     	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId,deleteOperationRsp.getOperationId(), CommonConstant.DELETING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
     	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
@@ -124,7 +124,7 @@ public class ServiceLcmController {
      */
     @ResponseBody
     @PostMapping(value = {"/uui-lcm/services/scaleServices/{serviceId}"}, produces = "application/json")
-    public SaveOrUpdateOperationRsp scaleServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request) throws ParseException{
+    public SaveOrUpdateOperationRsp scaleServices(@PathVariable String serviceId, HttpServletRequest request) throws ParseException{
     	SaveOrUpdateOperationRsp saveOrUpdateOperationRsp =serviceLcmService.scaleService(serviceId, request);
     	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId,saveOrUpdateOperationRsp.getOperationId(), CommonConstant.SCALING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
     	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);
@@ -146,7 +146,7 @@ public class ServiceLcmController {
      */
     @ResponseBody
     @PutMapping(value = {"/uui-lcm/services/updateService/{serviceId}"}, produces = "application/json")
-    public SaveOrUpdateOperationRsp updateServices(@PathVariable(value = "serviceId") String serviceId, HttpServletRequest request) throws ParseException{
+    public SaveOrUpdateOperationRsp updateServices(@PathVariable String serviceId, HttpServletRequest request) throws ParseException{
     	SaveOrUpdateOperationRsp saveOrUpdateOperationRsp =serviceLcmService.scaleService(serviceId, request);
     	ServiceInstanceOperations serviceOpera = new ServiceInstanceOperations(serviceId,saveOrUpdateOperationRsp.getOperationId(), CommonConstant.UPDATING_CODE,"0", CommonConstant.IN_PROGRESS_CODE,DateUtils.dateToString(DateUtils.now()),null);
     	serviceLcmService.saveOrUpdateServiceInstanceOperation(serviceOpera);

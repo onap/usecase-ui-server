@@ -122,25 +122,25 @@ public class ResourceMgtController {
 
     @ResponseBody
     @PutMapping(value = {"/{serviceId}/activate"}, produces = "application/json")
-    public ServiceResult activateSlicingService(@PathVariable(value = "serviceId") String serviceId) {
+    public ServiceResult activateSlicingService(@PathVariable String serviceId) {
         return resourceMgtService.activateSlicingService(serviceId);
     }
 
     @ResponseBody
     @PutMapping(value = {"/{serviceId}/deactivate"}, produces = "application/json")
-    public ServiceResult deactivateSlicingService(@PathVariable(value = "serviceId") String serviceId) {
+    public ServiceResult deactivateSlicingService(@PathVariable String serviceId) {
         return resourceMgtService.deactivateSlicingService(serviceId);
     }
 
     @ResponseBody
     @DeleteMapping(value = {"/{serviceId}"}, produces = "application/json")
-    public ServiceResult terminateSlicingService(@PathVariable(value = "serviceId") String serviceId) {
+    public ServiceResult terminateSlicingService(@PathVariable String serviceId) {
         return resourceMgtService.terminateSlicingService(serviceId);
     }
 
     @ResponseBody
     @GetMapping(value = {"/{serviceId}/progress"}, produces = "application/json")
-    public ServiceResult queryOperationProgress(@PathVariable(value = "serviceId") String serviceId) {
+    public ServiceResult queryOperationProgress(@PathVariable String serviceId) {
         return resourceMgtService.queryOperationProgress(serviceId);
     }
 }

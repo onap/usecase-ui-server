@@ -84,10 +84,10 @@ public class RestfulServices {
             }
             br.close();
             logger.info("The request body content is: " + sb.toString());
-            return RequestBody.create(MediaType.parse("application/json"), sb.toString());
+            return RequestBody.create(sb.toString(), MediaType.parse("application/json"));
         } catch (Exception e) {
             logger.info("RestfulServices occur exection,this content is: " + e.getMessage());
-            return RequestBody.create(MediaType.parse("application/json"), sb.toString());
+            return RequestBody.create(sb.toString(), MediaType.parse("application/json"));
         } finally {
             if (null != br) {
                 br.close();
@@ -118,4 +118,3 @@ public class RestfulServices {
         return hostnameVerifier;
     }
 }
-

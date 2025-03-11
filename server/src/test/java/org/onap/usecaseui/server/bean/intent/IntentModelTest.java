@@ -41,7 +41,7 @@ public class IntentModelTest {
         intentModel.getModelType();
         intentModel.setModelType("ccvpn");
         intentModel.getModelType();
-        intentModel.setSize(new Float(1));
+        intentModel.setSize(Float.valueOf(1));
 
         intentModel.getActive();
         intentModel.getCreateTime();
